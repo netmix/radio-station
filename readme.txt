@@ -250,6 +250,7 @@ You may translate the plugin into another language. Please visit our WordPress T
 * Fix to mismatched flush rewrite rules flag function name
 * Fix to undefined index warnings for new Schedule Overrides
 * Fix to not 404 author pages for DJs without blog posts
+* Fix to implode blog array for Show blog post listing
 
 = 2.2.7 =
 * Dutch translation added (Thank you to André Dortmont for the file!)

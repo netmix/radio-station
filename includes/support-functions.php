@@ -417,6 +417,7 @@ function radio_station_myplaylist_get_posts_for_show( $show_id = null, $title = 
 
 	if ( $blog_array ) {
 
+		// 2.2.8: fix to implode blog array to string
 		$blogposts = $wpdb->get_results(
 			$wpdb->prepare(
 				"SELECT posts.ID, posts.post_title
@@ -425,7 +426,7 @@ function radio_station_myplaylist_get_posts_for_show( $show_id = null, $title = 
 					posts.post_status = 'publish'
 				ORDER BY posts.post_date DESC
 				LIMIT %d",
-				$blog_array,
+				implode( ',', $blog_array ),
 				$limit
 			)
 		);
