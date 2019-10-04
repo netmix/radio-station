@@ -1,26 +1,34 @@
 === Radio Station ===
 Contributors: tonyzeoli, majick, nourma
 Donate link: https://netmix.co/donate
-Tags: dj, music, playlist, radio, scheduling
+Tags: dj, music, playlist, radio, shows, scheduling, broadcasting
 Requires at least: 3.3.1
 Tested up to: 5.2.2
 Stable tag: trunk
+License: GPLv2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Radio Station is a plugin to build and manage a Show Calendar in a radio station's WordPress website. It's functionality is based on Drupal 6's Station plugin.
+Radio Station is a plugin to build and manage a Show Calendar in a radio station or Internet broadcaster's WordPress website. Functionality is based on Drupal 6's Station plugin.
 
 == Description ==
 
-Radio Station is a plugin to build and manage a Show Calendar in radio station's WordPress website. It's functionality is based on Drupal 6's Station plugin, reworked for use in Wordpress. The plugin includes the ability to associate users (as member role "DJ"") with the included custom post type of "Shows" (schedulable blocks of time that contain a Show description, and other meta information), and generate playlists associated with those shows. The plugin contains a widget to display the currently on-air DJ with a link to the DJ's Show page and current playlist.  A schedule of all Shows can also be generated and added to a page with a short code. Shows can be categorized and a category filter appears when the Calendar is added using a short code to a WordPress page or post.
+Radio Station is a plugin to build and manage a Show Calendar in a radio station or Internet broadcaster's WordPress website. It's functionality is based on Drupal 6's Station plugin, reworked for use in Wordpress.
 
-We are grateful to Nikki Blight for her contribution to creating and developing this plugin for as long as she could maintain the codebase. As of June 22, 2019, Radio Station will will managed by Tony Zeoli and developed by contributing committers to the project.
+The plugin includes the ability to associate users (as member role "DJ"") with the included custom post type of "Shows" (schedulable blocks of time that contain a Show description, and other meta information), and generate playlists associated with those shows.
 
-If you are a WordPress developer interested in contributing to this plugin, please follow plugin development on Github: <a href="https://github.com/netmix/radio-station">https://github.com/netmix/radio-station</a>.
+The plugin contains a widget to display the currently on-air DJ with a link to the DJ's Show page and current playlist.  A schedule of all Shows can also be generated and added to a page with a short code. Shows can be categorized and a category filter appears when the Calendar is added using a short code to a WordPress page or post.
 
-You may also submit feature requests here: <a href="https://github.com/netmix/radio-station/issues">https://github.com/netmix/radio-station/issues<a/>
+We are grateful to Nikki Blight for her contribution to creating and developing this plugin for as long as she could maintain the codebase. As of June 22, 2019, Radio Station is managed by <a href="https://profiles.wordpress.org/tonyzeoli/">Tony Zeoli</a>  and developed by contributing committers to the project.
 
-We are actively seeking radio station partners and donations to fund further development of the free, open source version of this plugin at: <a href="https://netmix.co/donate">https://netmix.co/donate</a>.
+If you are a WordPress developer wanting to contribute to Radio Station, please join the team and follow plugin development on Github: <a href="https://github.com/netmix/radio-station">https://github.com/netmix/radio-station</a>/.
 
-Please give 24-48 hours to answer support questions, which will be handled in the Wordpress Support Forums for this free version of the plugin here: <a href="https://wordpress.org/support/plugin/radio-station/">https://wordpress.org/support/plugin/radio-station/</a>
+Submit bugs and feature requests here: <a href="https://github.com/netmix/radio-station/issues">https://github.com/netmix/radio-station/issues</a>
+
+We are actively seeking radio station partners and donations to fund further development of the free, open source version of this plugin at: <a href="https://www.patreon.com/radiostation">https://www.patreon.com/radiostation</a>.
+
+For plugin support, please give 24-48 hours to answer support questions, which will be handled in the Wordpress Support Forums for this free version of the plugin here: <a href="https://wordpress.org/support/plugin/radio-station/">https://wordpress.org/support/plugin/radio-station/</a>
+
+You can find a demo version of the plugin on our demo site here: <a href="https://radiostationdemo.com">https://radiostationdemo.com</a>
 
 == Installation ==
 
@@ -222,6 +230,7 @@ little out of the scope of this plugin.  I recommend Cimy User Extra Fields:  ht
 Right now:
 
 Albanian (sq_AL)
+Dutch (nl_NL)
 French (fr_FR)
 German (de_DE)
 Italian (it_IT)
@@ -230,13 +239,48 @@ Serbian (sr_RS)
 Spanish (es_ES)
 Catalan (ca)
 
-= Can you translate the plugin into my language? =
+= Can the plugin be translated into my language? =
 
-My foreign language skills are rather lacking.  I managed a Spanish translation, sheerly due to the fact that I still remember at least some of what 
-I learned in high school Spanish class.  But I've included the .pot file in the /languages directory.  If you want to give it a shot, be my guest.  If 
-you send me your finished translation, I'd love to include it.
+You may translate the plugin into another language. Please visit our WordPress Translate project page for this plugin for further instruction: <a target="_top" href="https://translate.wordpress.org/locale/en-gb/default/wp-plugins/radio-station/">https://translate.wordpress.org/locale/en-gb/default/wp-plugins/radio-station/</a> The radio-station.pot file is located in the /languages directory of the plugin. Please send the finished translation to info@netmix.com. We'd love to include it.
 
 == Changelog ==
+
+= 2.2.8 =
+* Fix to remove strict type checking from in_array (introduced 2.2.6)
+* Fix to mismatched flush rewrite rules flag function name
+* Fix to undefined index warnings for new Schedule Overrides
+* Fix to not 404 author pages for DJs without blog posts
+
+= 2.2.7 =
+* Dutch translation added (Thank you to André Dortmont for the file!)
+* Added Tabbed Display for Master Schedule Shortcode (via Tutorial)
+* Add Show list columns with active, shift, DJs and show image displays
+* Add Schedule Override list columns with date sorting and filtering
+* Add playlist track information labels to Now Playing Widget
+* Added meridiem (am/pm) translations via WP Locale class
+* Added star rating link to plugin announcement box
+* Added update subscription form to plugin Help page
+* Fix to checkbox value saving for On Air/Upcoming Widgets
+* Fix 12 hour show time display in Upcoming Widget
+* Fix PM 12 hour shot time display in On Air Widget
+* Fix to schedule override date picker value visibility
+* Fix to weekday and month translations to use WP Locale
+* Fix to checkbox value saving in Upcoming Widget
+* Split Plugin Admin Functions into separate file
+* Split Post Type Admin Functions into separate include
+* Revert anonymous function use in widget registrations
+
+= 2.2.6 =
+* Reorganize master-list shortcode into templates
+* Add constant for plugin directory
+* Use WP_Query instead of get_posts
+* New posts_per_page and tax_query
+* Fixes for undefined indexes
+* Fixes for raw mysql queries
+* Typecasting to support strict comparisons
+
+= 2.2.5 =
+* WordPress coding standards and best practices (thanks to Mike Garrett @mikengarrett)
 
 = 2.2.4 =
 * added title position and avatar width options to widgets
@@ -502,6 +546,67 @@ you send me your finished translation, I'd love to include it.
 * Initial release
 
 == Upgrade Notice ==
+
+= 2.2.7 =
+* Dutch translation added (Thank you to André Dortmont for the file!)
+* Added Tabbed Display for Master Schedule Shortcode (via Tutorial)
+* Add Show list columns with active, shift, DJs and show image displays
+* Add Schedule Override list columns with date sorting and filtering
+* Add playlist track information labels to Now Playing Widget
+* Added meridiem (am/pm) translations via WP Locale class
+* Added star rating link to plugin announcement box
+* Added update subscription form to plugin Help page
+* Fix to checkbox value saving for On Air/Upcoming Widgets
+* Fix 12 hour show time display in Upcoming Widget
+* Fix PM 12 hour shot time display in On Air Widget
+* Fix to schedule override date picker value visibility
+* Fix to weekday and month translations to use WP Locale
+* Fix to checkbox value saving in Upcoming Widget
+* Split Plugin Admin Functions into separate file
+* Split Post Type Admin Functions into separate include
+* Revert anonymous function use in widget registrations
+
+= 2.2.6 =
+* Reorganize master-list shortcode into templates,
+* Add constant for plugin directory,
+* WP_Query instead of get_posts,
+* new posts_per_page and tax_query,
+* fixes for undefined indexes,
+* fixes for raw mysql queries,
+* typecasting to support strict comparisons.
+
+= 2.2.5 =
+* WordPress coding standards and best practices (thanks to Mike Garrett @mikengarrett)
+
+= 2.2.4 =
+Adds title position and avatar width options to widgets; missing DJ author links as new option to widgets; cleanup, improve and fix enqueued Widget CSS (on air/upcoming); show Encore Presentation in show widget displays; fix to Show shift Encore Presentation checkbox saving
+
+= 2.2.3 =
+* added flush rewrite rules on plugin activation/deactivation
+* added show_admin_column and show_in_quick_edit for Genres
+* added show metadata and schedule value sanitization
+* fix to 00 minute validation for Schedule Override
+* convert span tags to div tags in Widgets to fix line breaks
+
+= 2.2.2 =
+* shift main playlist and show metaboxes above editor
+* set plugin custom post types editor to Classic Editor
+* add high priority to side metaboxes for plugin post types
+* added dismissable development changeover admin notice
+* added simple Patreon supporter image button and blurb
+* added filter for DJ Avatar size on Author page template
+* fix to Schedule Override metabox value saving
+* fix to Playlist track list overflowing metabox
+* fix to missing day of week headings in master schedule
+* fix to file_exists check for DJ on Air stylesheet path
+* fix to make DJ multi-select input full metabox width
+* fix to expand admin menu when on genre taxonomy page
+* fix to expand admin menu when editing plugin post types
+* fix to genre submenu item link for current page
+* added GitHub URI to plugin header for GitHub updater
+
+= 2.2.1 =
+* Re-commit all missing files via SVN
 
 = 2.2.0 =
 * WordPress coding standards refactoring for WP 5 (thanks to Tony Hayes @majick777)

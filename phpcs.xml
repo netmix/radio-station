@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<ruleset name="WordPress-Theme">
+	<description>WordPress Coding Standards</description>
+	<rule ref="WordPress-Extra"></rule>
+</ruleset>

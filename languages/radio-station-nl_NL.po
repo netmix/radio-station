@@ -1,0 +1,548 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: radio station\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-11-08 08:27-0600\n"
+"PO-Revision-Date: 2018-05-10 10:18+0200\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: _e;__;esc_attr_e\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Generator: Poedit 2.0.7\n"
+"X-Poedit-Basepath: c:/xampp/htdocs/wp352test/wp-content/plugins/radio-"
+"station\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: nl\n"
+"X-Poedit-SearchPath-0: includes\n"
+"X-Poedit-SearchPath-1: templates\n"
+"X-Poedit-SearchPath-2: .\n"
+
+#: includes/dj-on-air.php:90 includes/dj-on-air.php:664
+#: includes/playlist.php:22 includes/playlist.php:359 includes/playlist.php:546
+msgid "View Playlist"
+msgstr "Bekijk de playlist"
+
+#: includes/dj-on-air.php:480
+msgid "None Upcoming"
+msgstr "Geen Volgende"
+
+#: includes/dj-on-air.php:495
+msgid "The current on-air DJ."
+msgstr "De huidige on-air DJ."
+
+#: includes/dj-on-air.php:496
+msgid "Radio Station: Show/DJ On-Air"
+msgstr ""
+
+#: includes/dj-on-air.php:511 includes/dj-on-air.php:738
+#: includes/playlist.php:436
+msgid "Title"
+msgstr "Titel"
+
+#: includes/dj-on-air.php:519 includes/dj-on-air.php:746
+msgid "Show Avatars"
+msgstr "Laat avatar zien"
+
+#: includes/dj-on-air.php:526
+msgid "Link to the Show/DJ's profile"
+msgstr "Link naar de Show/DJ's profiel"
+
+#: includes/dj-on-air.php:533 includes/dj-on-air.php:767
+msgid "Display schedule info for this show"
+msgstr "Laat de geschedulde informatie van de show zien"
+
+#: includes/dj-on-air.php:540
+msgid "Display link to show's playlist"
+msgstr "Laat de link van de playlist van de show zien"
+
+#: includes/dj-on-air.php:545
+msgid "Default DJ Name"
+msgstr "Standaard DJ naam"
+
+#: includes/dj-on-air.php:548 includes/dj-on-air.php:761
+msgid ""
+"If no Show/DJ is scheduled for the current hour, display this name/text."
+msgstr ""
+"ALs er geen show is gescheduled voor dit uur, laat deze naam/tekst zien."
+
+#: includes/dj-on-air.php:552 includes/dj-on-air.php:779
+msgid "Time Format"
+msgstr "Tijdsformaat"
+
+#: includes/dj-on-air.php:554 includes/dj-on-air.php:781
+msgid "12-hour"
+msgstr "12-uur"
+
+#: includes/dj-on-air.php:555 includes/dj-on-air.php:782
+msgid "24-hour"
+msgstr "24-uur"
+
+#: includes/dj-on-air.php:558
+msgid "Choose time format for displayed schedules"
+msgstr "Kies het tijdsformaat voor de getoonde schedules"
+
+#: includes/dj-on-air.php:722
+msgid "The upcoming DJs/Shows."
+msgstr "De volgende DJ's/Shows"
+
+#: includes/dj-on-air.php:723
+msgid "Radio Station: Upcoming DJ On-Air"
+msgstr "Radio Station: De volgende DJ On-Air"
+
+#: includes/dj-on-air.php:753
+msgid "Link to Show/DJ's user profile"
+msgstr "Link naar Show/DJ's gebruikers profiel"
+
+#: includes/dj-on-air.php:758
+msgid "No Additional Schedules"
+msgstr "Geen Extra Schedules"
+
+#: includes/dj-on-air.php:772
+msgid "Limit"
+msgstr "Limiet"
+
+#: includes/dj-on-air.php:775
+msgid "Number of upcoming DJs/Shows to display."
+msgstr "Aantal volgende DJ's/Shows om te tonen"
+
+#: includes/dj-on-air.php:785
+msgid "Choose time format for displayed schedules."
+msgstr "Kies het tijdsformaat voor de getoonde schedules"
+
+#: includes/master_schedule.php:21 includes/master_schedule.php:22
+msgid "Schedule Override"
+msgstr "Schedule Override"
+
+#: includes/master_schedule.php:23 includes/master_schedule.php:24
+msgid "Add Schedule Override"
+msgstr "Maak Schedule Override"
+
+#: includes/master_schedule.php:25
+msgid "Edit Schedule Override"
+msgstr "Edit Schedule Override"
+
+#: includes/master_schedule.php:26
+msgid "New Schedule Override"
+msgstr "Nieuwe Schedule Override"
+
+#: includes/master_schedule.php:27
+msgid "View Schedule Override"
+msgstr "Bekijk Schedule Override"
+
+#: includes/master_schedule.php:30
+msgid "Post type for Schedule Override"
+msgstr "Post het type voorde Schedule Override"
+
+#: includes/master_schedule.php:49
+msgid "Override Schedule"
+msgstr "Override Schedule"
+
+#: includes/master_schedule.php:79
+msgid "Date"
+msgstr "Datum"
+
+#: includes/master_schedule.php:82 includes/playlist.php:756
+#: includes/playlist.php:835
+msgid "Start Time"
+msgstr "Start tijd"
+
+#: includes/master_schedule.php:108 includes/playlist.php:782
+#: includes/playlist.php:861
+msgid "End Time"
+msgstr "Eind tijd"
+
+#: includes/master_schedule.php:432 includes/master_schedule.php:595
+msgid "encore airing"
+msgstr "Nogmaals On Air"
+
+#: includes/master_schedule.php:437 includes/master_schedule.php:600
+msgid "Audio File"
+msgstr "Audio File"
+
+#: includes/master_schedule.php:454
+msgid "Sun"
+msgstr "Zon"
+
+#: includes/master_schedule.php:454
+msgid "Mon"
+msgstr "Maan"
+
+#: includes/master_schedule.php:454
+msgid "Tue"
+msgstr "Dins"
+
+#: includes/master_schedule.php:454
+msgid "Wed"
+msgstr "Woe"
+
+#: includes/master_schedule.php:454
+msgid "Thu"
+msgstr "Don"
+
+#: includes/master_schedule.php:454
+msgid "Fri"
+msgstr "Vrij"
+
+#: includes/master_schedule.php:454
+msgid "Sat"
+msgstr "Zat"
+
+#: includes/master_schedule.php:619 includes/playlist.php:572
+msgid "Genres"
+msgstr "Genres"
+
+#: includes/playlist.php:16 templates/single-show.php:136
+msgid "Playlists"
+msgstr "Playlists"
+
+#: includes/playlist.php:17
+msgid "Playlist"
+msgstr "Playlist"
+
+#: includes/playlist.php:18 includes/playlist.php:19
+msgid "Add Playlist"
+msgstr "Maak Playlist"
+
+#: includes/playlist.php:20
+msgid "Edit Playlist"
+msgstr "Edit Playlist"
+
+#: includes/playlist.php:21
+msgid "New Playlist"
+msgstr "Nieuwe Playlist"
+
+#: includes/playlist.php:25
+msgid "Post type for Playlist descriptions"
+msgstr "Post type voor Playlist omschrijving"
+
+#: includes/playlist.php:42
+msgid "Shows"
+msgstr "Shows"
+
+#: includes/playlist.php:43 includes/playlist.php:191
+msgid "Show"
+msgstr "Show"
+
+#: includes/playlist.php:44 includes/playlist.php:45
+msgid "Add Show"
+msgstr "Maak Show Aan"
+
+#: includes/playlist.php:46
+msgid "Edit Show"
+msgstr "Edit Show"
+
+#: includes/playlist.php:47
+msgid "New Show"
+msgstr "Nieuwe Show"
+
+#: includes/playlist.php:48
+msgid "View Show"
+msgstr "Bekijk Show"
+
+#: includes/playlist.php:51
+msgid "Post type for Show descriptions"
+msgstr "Post type voor Show omschrijving"
+
+#: includes/playlist.php:71
+msgid "Playlist Entries"
+msgstr "Playlist Entries"
+
+#: includes/playlist.php:93 templates/single-playlist.php:43
+msgid "Artist"
+msgstr "Artiest"
+
+#: includes/playlist.php:93 templates/single-playlist.php:44
+msgid "Song"
+msgstr "Nummer"
+
+#: includes/playlist.php:93 templates/single-playlist.php:45
+msgid "Album"
+msgstr "Album"
+
+#: includes/playlist.php:93 templates/single-playlist.php:46
+msgid "Record Label"
+msgstr "Platenlabel"
+
+#: includes/playlist.php:93 templates/single-playlist.php:47
+msgid "DJ Comments"
+msgstr "DJ commentaar"
+
+#: includes/playlist.php:93
+msgid "New"
+msgstr "Nieuw"
+
+#: includes/playlist.php:93
+msgid "Status"
+msgstr "Status"
+
+#: includes/playlist.php:93 includes/playlist.php:127 includes/playlist.php:144
+#: includes/playlist.php:807 includes/playlist.php:888
+msgid "Remove"
+msgstr "Verwijder"
+
+#: includes/playlist.php:119 includes/playlist.php:144
+msgid "Queued"
+msgstr "Queued"
+
+#: includes/playlist.php:123 includes/playlist.php:144
+msgid "Played"
+msgstr "Gespeeld"
+
+#: includes/playlist.php:136
+msgid "Add Entry"
+msgstr "Maak Entry Aan"
+
+#: includes/playlist.php:163 includes/playlist.php:164
+#: templates/single-show.php:99
+msgid "Schedule"
+msgstr "Uitzenddag"
+
+#: includes/playlist.php:166 includes/playlist.php:167
+msgid "Publish"
+msgstr "Publish"
+
+#: includes/playlist.php:170
+msgid "Submit for Review"
+msgstr "Submit voor Review"
+
+#: includes/playlist.php:171 includes/playlist.php:176
+msgid "Update Playlist"
+msgstr "Update Playlist"
+
+#: includes/playlist.php:175
+msgid "Update"
+msgstr "Update"
+
+#: includes/playlist.php:420
+msgid "Display the current song."
+msgstr "Laat de huidige song zien"
+
+#: includes/playlist.php:421
+msgid "Radio Station: Now Playing"
+msgstr "Radio Station: Now Playing"
+
+#: includes/playlist.php:444
+msgid "Show Artist Name"
+msgstr "Laat Artiest Naam Zien"
+
+#: includes/playlist.php:451
+msgid "Show Song Title"
+msgstr "Laat Titel Zien"
+
+#: includes/playlist.php:458
+msgid "Show Album Name"
+msgstr "Laat Album Zien"
+
+#: includes/playlist.php:465
+msgid "Show Record Label Name"
+msgstr "Laat Record Label Zien"
+
+#: includes/playlist.php:472
+msgid "Show DJ Comments"
+msgstr "Show DJ Commentaar"
+
+#: includes/playlist.php:573 templates/single-show.php:60
+msgid "Genre"
+msgstr "Genre"
+
+#: includes/playlist.php:594
+msgid "Information"
+msgstr "Informatie"
+
+#: includes/playlist.php:612
+msgid "Active"
+msgstr "Actief"
+
+#: includes/playlist.php:614
+msgid ""
+"Check this box if show is currently active (Show will not appear on "
+"programming schedule if unchecked)"
+msgstr ""
+"Vink deze box aan als de huidige show actief is (De show zal niet "
+"verschijnenin de programmering indien niet aangevinkt)"
+
+#: includes/playlist.php:616
+msgid "Current Audio File"
+msgstr "Huidige Audio File"
+
+#: includes/playlist.php:619
+msgid "DJ Email"
+msgstr "DJ Email"
+
+#: includes/playlist.php:622
+msgid "Website Link"
+msgstr "Website Link"
+
+#: includes/playlist.php:633
+msgid "DJs"
+msgstr "DJs"
+
+#: includes/playlist.php:719
+msgid "Schedules"
+msgstr "Schedules"
+
+#: includes/playlist.php:744 includes/playlist.php:824
+msgid "Day"
+msgstr "Dag"
+
+#: includes/playlist.php:747 includes/playlist.php:827
+msgid "Monday"
+msgstr "Maandag"
+
+#: includes/playlist.php:748 includes/playlist.php:828
+msgid "Tuesday"
+msgstr "Dinsdag"
+
+#: includes/playlist.php:749 includes/playlist.php:829
+msgid "Wednesday"
+msgstr "Woensdag"
+
+#: includes/playlist.php:750 includes/playlist.php:830
+msgid "Thursday"
+msgstr "Donderdag"
+
+#: includes/playlist.php:751 includes/playlist.php:831
+msgid "Friday"
+msgstr "Vrijdag"
+
+#: includes/playlist.php:752 includes/playlist.php:832
+msgid "Saturday"
+msgstr "Zaterdag"
+
+#: includes/playlist.php:753 includes/playlist.php:833
+msgid "Sunday"
+msgstr "Zondag"
+
+#: includes/playlist.php:806 includes/playlist.php:886
+msgid "Encore Presentation"
+msgstr "Nogmaals Gepresenteerd"
+
+#: includes/playlist.php:817
+msgid "Add Shift"
+msgstr "Voeg Shift Toe"
+
+#: includes/playlist.php:980
+msgid "More Playlists"
+msgstr "Meer Playlists"
+
+#: includes/playlist.php:1041
+msgid "More Blog Posts"
+msgstr "Meer Blog Posts"
+
+#: templates/archive-playlist.php:15
+msgid "Playlist Archive for"
+msgstr "Playlist Archief voor"
+
+#: templates/archive-playlist.php:50 templates/single-playlist.php:13
+#: templates/single-show.php:13
+msgid "Post navigation"
+msgstr "Post Navigatie"
+
+#: templates/archive-playlist.php:51
+msgid "Older posts"
+msgstr "Oudere posts"
+
+#: templates/archive-playlist.php:52
+msgid "Newer posts"
+msgstr "Nieuwe posts"
+
+#: templates/archive-playlist.php:61 templates/author.php:93
+#: templates/playlist-archive-template.php:63
+#: templates/show-blog-archive-template.php:71
+msgid "Nothing Found"
+msgstr "Niets Gevonden"
+
+#: templates/archive-playlist.php:65 templates/author.php:97
+#: templates/playlist-archive-template.php:67
+#: templates/show-blog-archive-template.php:75
+msgid ""
+"Apologies, but no results were found for the requested archive. Perhaps "
+"searching will help find a related post."
+msgstr ""
+"Excuses, maar er is niets gevonden in het archief. Misschien helpt de search "
+"functie om een post te vinden."
+
+#: templates/author.php:51
+#, php-format
+msgid "Author Archives: %s"
+msgstr "Auteur Archieven: %s"
+
+#: templates/author.php:70
+#, php-format
+msgid "About %s"
+msgstr "Over: %s"
+
+#: templates/playlist-archive-template.php:16
+msgid "Playlist Archive"
+msgstr "Playlist Archief"
+
+#: templates/show-blog-archive-template.php:16
+msgid "Blog Archive"
+msgstr "Blog Archief"
+
+#: templates/show-blog-archive-template.php:46
+msgid "Posted by"
+msgstr "Gepost door"
+
+#: templates/single-playlist.php:14 templates/single-show.php:14
+msgid "Previous"
+msgstr "Vorige"
+
+#: templates/single-playlist.php:15 templates/single-show.php:15
+msgid "Next"
+msgstr "Volgende"
+
+#: templates/single-playlist.php:32 templates/single-show.php:144
+msgid "Pages:"
+msgstr "Paginas:"
+
+#: templates/single-playlist.php:65
+msgid "No entries for this playlist"
+msgstr "Niets gevonden voor deze playlist"
+
+#: templates/single-show.php:32
+msgid "Hosted by"
+msgstr "Gepresenteerd door"
+
+#: templates/single-show.php:84
+msgid "Email the DJ"
+msgstr "Email de DJ"
+
+#: templates/single-show.php:88
+msgid "Show Website"
+msgstr "Laat De Website Zien"
+
+#: templates/single-show.php:95
+msgid "Most recent broadcast"
+msgstr "Laatste Uitzending"
+
+#: templates/single-show.php:140
+msgid "Blog Posts"
+msgstr "Blog Posts"
+
+#: radio-station.php:244 radio-station.php:330
+msgid "Export Playlists"
+msgstr "Exporteer Playlist"
+
+#: radio-station.php:244 radio-station.php:451
+msgid "Export"
+msgstr "Exporteer"
+
+#: radio-station.php:323
+msgid "Right-click and download this file to save your export"
+msgstr "Klik met rechts en download deze file om deze export op te slaan"
+
+#: radio-station.php:340
+msgid "Start Date"
+msgstr "Start Datum"
+
+#: radio-station.php:394
+msgid "End Date"
+msgstr "Eind Datum"
+
+#: radio-station.php:466
+msgid "Related to Show"
+msgstr "Gerelateerd aan de Show"

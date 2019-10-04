@@ -6,7 +6,7 @@
 <hr />
 
 <strong>I'm seeing 404 Not Found errors when I click on the link for a show!</strong>
-<p>Try re-saving your site's permalink settings.  Wordpress sometimes gets confused with a new custom post type is added.</p>
+<p>Try re-saving your site's permalink settings.  WordPress sometimes gets confused with a new custom post type is added.</p>
 
 <hr />
 
@@ -136,7 +136,7 @@ The following attributes are available for the shortcode:
 
 <p>First, grab the radio-station/templates/playlist-archive-template.php file, and copy it to your active theme directory.
 <br /><br />
-Then, create a Page in wordpress to hold the playlist archive.
+Then, create a Page in WordPress to hold the playlist archive.
 <br /><br />
 Under Page Attributes, set the template to Playlist Archive.  Please note: If you don't copy the template file to your theme first, the option to select it will not appear.</p>
 
@@ -146,7 +146,7 @@ Under Page Attributes, set the template to Playlist Archive.  Please note: If yo
 
 <p>Yes, in much the same way as the full playlist archive described above. First, grab the radio-station/templates/show-blog-archive-template.php file, and copy it to your active theme directory.
 <br /><br />
-Then, create a Page in wordpress to hold the blog archive.
+Then, create a Page in WordPress to hold the blog archive.
 <br /><br />
 Under Page Attributes, set the template to Show Blog Archive.</p>
 

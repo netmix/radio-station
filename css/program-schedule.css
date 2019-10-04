@@ -1,5 +1,5 @@
 /* Table Style Grid */
-
+/* ---------------- */
 #master-program-schedule {
 	width: 100%;
 }
@@ -74,6 +74,7 @@
 }
 
 /* Div Style Grid */
+/* -------------- */
 #master-schedule-divs {
 	width: 100%;
 }
@@ -130,3 +131,65 @@
     z-index: 5;
 }
 
+/* Tabbed Styled List */
+/* ------------------ */
+#master-schedule-tabs {
+	border: none; 
+	padding: 0;
+	margin: 0;
+}
+.master-schedule-tabs-day {
+	float: left; 
+	display: block; 
+	width: 100px; 
+	margin: 0px; 
+	cursor: pointer; 
+	text-align: center; 
+	background-color: #eeeeee; 
+    	color: #444444;
+    	border-radius: 7px 7px 0 0;
+    	border: 1px solid #000000;
+ }
+.master-schedule-tabs-panel {
+	display: none; 
+	float: left; 
+	margin: 0; 
+	position: relative; 
+	text-align: left; 
+	width: 702px; 
+	list-style: none;
+}
+.master-schedule-tabs-day-name {
+	padding: 5px 0 5px 0;
+}
+.master-schedule-tabs-show {
+	padding: 20px 10px 10px 10px;
+	clear: both;
+	list-style: none;
+}
+.master-schedule-tabs-day.active-day-tab {
+	font-weight: bold; 
+	background-color: #ffffff; 
+	color: #000000;
+	border-bottom: 0;
+}
+.master-schedule-tabs-panel.active-day-panel {
+	display: block; 
+	border: 1px solid #333333; 
+	background-color: #ffffff;
+	border-top: 0;
+	border-radius: 0 0 7px 7px;
+}
+.master-schedule-tabs-show .show-info, .master-schedule-tabs-show .show-genres, 
+.master-schedule-tabs-show .show-image {
+	display: inline-block;
+	vertical-align: top;
+}
+.master-schedule-tabs-show .show-image {
+	margin-right: 30px;
+	min-width: 200px;
+}
+.master-schedule-tabs-show .show-genres {
+	float: right;
+	margin-right: 10px;
+}
