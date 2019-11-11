@@ -65,6 +65,7 @@ this will only override the widgets and their corresponding shortcodes.  If you 
 
 ### How do I get the last song played to show up? 
 
+
 You'll find a widget for just that purpose under the Widgets tab.  You can also use the shortcode `[now-playing]` in your page/post, or use `do_shortcode('[now-playing]');` in your template files.
 
 The following attributes are available for the shortcode:
@@ -74,6 +75,7 @@ The following attributes are available for the shortcode:
 * 'album' => Display album name.  Valid values are 0 for hide, 1 for show.  Default is 0.
 * 'label' => Display label name.  Valid values are 0 for hide, 1 for show.  Default is 0.
 * 'comments' => Display DJ comments.  Valid values are 0 for hide, 1 for show.  Default is 0.
+
 
 Example:
 `[now-playing title="Current Song" artist="1" song="1" album="1" label="1" comments="0"]`
@@ -98,13 +100,14 @@ The following attributes are available for the shortcode:
 Example:
 `[dj-widget title="Now On-Air" display_djs="1" show_avatar="1" show_link="1" default_name="RadioBot" time="12" show_sched="1" show_playlist="1"]`
 
-
 ### Can I display upcoming shows, too? 
+
 
 You'll find a widget for just that purpose under the Widgets tab.  You can also use the shortcode `[dj-coming-up-widget]` in your page/post, or you can use
 `do_shortcode('[dj-coming-up-widget]');` in your template files.
 
 The following attributes are available for the shortcode:
+
 * 'title' => The title you would like to appear over the on-air block 
 * 'display_djs' => Display the names of the DJs on the show.  Valid values are 0 for hide names, 1 for show names.  Default is 0.
 * 'show_avatar' => Display a show's thumbnail.  Valid values are 0 for hide avatar, 1 for show avatar.  Default is 0.
@@ -137,7 +140,7 @@ into your theme directory and change the CSS rules for the page.
 
 Copy the radio-station/templates/djonair.css file to your theme directory.
 
-### How do I get an archive page that lists ALL of the playlists instead of just the archives of individual shows? 
+### How do I get an archive page that lists ALL of the playlists instead of just the archives of individual shows?
 
 First, grab the radio-station/templates/playlist-archive-template.php file, and copy it to your active theme directory.  Then, create a Page in wordpress
 to hold the playlist archive.  Under Page Attributes, set the template to Playlist Archive.  Please note: If you don't copy the template file to your theme first, 
@@ -147,6 +150,7 @@ the option to select it will not appear.
 
 Yes, in much the same way as the full playlist archive described above. First, grab the radio-station/templates/show-blog-archive-template.php file, and copy it to 
 your active theme directory.  Then, create a Page in wordpress to hold the blog archive.  Under Page Attributes, set the template to Show Blog Archive.
+
 
 ### How can I list all of my shows? 
 
@@ -204,7 +208,6 @@ without permission.
 Under the Playlists menu in the dashboard is an Export link.  Simply specify the a date range, and a text file will be generated for you.
 
 ### Can my DJ's have customized user pages in addition to Show pages? 
-
 Yes.  These pages are the same as any other author page (edit or create the author.php template file in your theme directory).  A sample can be found 
 in the radio-station/templates/author.php file (please note that this file doesn't actually do anything unless you copy it over to your theme's
 directory).  Like the other theme templates included with this plugin, this file is based on the TwentyEleven theme and may need to be modified in
@@ -214,6 +217,7 @@ order to work with your theme.
 
 Then you'll need to install a plugin that lets you add a different image to your DJ's user account and edit your author.php theme file accordingly.  That's a 
 little out of the scope of this plugin.  I recommend Cimy User Extra Fields:  http://wordpress.org/extend/plugins/cimy-user-extra-fields/
+
 
 ### What languages other than English is the plugin available in? 
 
@@ -231,4 +235,5 @@ Right now:
 
 ### Can the plugin be translated into my language? 
 
-You may translate the plugin into another language. Please visit our WordPress Translate project page for this plugin for further instruction: <a target="_top" href="https://translate.wordpress.org/locale/en-gb/default/wp-plugins/radio-station/">https://translate.wordpress.org/locale/en-gb/default/wp-plugins/radio-station/</a> The radio-station.pot file is located in the /languages directory of the plugin. Please send the finished translation to info@netmix.com. We'd love to include it.
+You may translate the plugin into another language. Please visit our WordPress Translate project page for this plugin 
+for further instruction: <a target="_top" href="https://translate.wordpress.org/locale/en-gb/default/wp-plugins/radio-station/">https://translate.wordpress.org/locale/en-gb/default/wp-plugins/radio-station/</a> The radio-station.pot file is located in the /languages directory of the plugin. Please send the finished translation to info@netmix.com. We'd love to include it.
