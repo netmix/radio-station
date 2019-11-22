@@ -1,3 +1,6 @@
+/* Radio Station Widget Styles */
+/* --------------------------- */
+
 /* Widget Layout */
 .on-air-dj-avatar {
 	padding-bottom: 5px;
@@ -57,3 +60,6 @@
 	clear: both;
 }
 
+#myplaylist-nowplaying {
+	line-height: 1.6em;
+}

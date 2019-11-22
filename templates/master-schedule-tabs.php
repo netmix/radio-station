@@ -3,20 +3,24 @@
  * Template for master schedule shortcode tabs style.
  ref: http://nlb-creations.com/2014/06/06/radio-station-tutorial-creating-a-tabbed-programming-schedule/
  */
-// output as a list
-$flip = $days_of_the_week;
-foreach ( $master_list as $hour => $days ) {
-	foreach ( $days as $day => $mins ) {
-		foreach ( $mins as $fmin => $fshow ) {
-			$flip[ $day ][ $hour ][ $fmin ] = $fshow;
-		}
-	}
-}
 
+// --- get all the required info ---
+$weekdays = radio_station_get_schedule_weekdays();
+$schedule = radio_station_get_current_schedule();
+$hours = radio_station_get_hours();
+$now = strtotime( current_time( 'mysql' ) );
+$am = str_replace( ' ', '', radio_station_translate_meridiem( 'am' ) );
+$pm = str_replace( ' ', '', radio_station_translate_meridiem( 'pm' ) );
+ 
+// --- filter show avatar size ---
+$avatar_size = apply_filters( 'radio_station_schedule_show_avatar_size', 'thumbnail', 'tabs' );
+
+// --- start tabbed schedule output ---
 $output .= '<ul id="master-schedule-tabs">';
 
 $panels = '';
-foreach ( $flip as $day => $hours ) {
+// 2.3.0: loop weekdays instead of legacy master list
+foreach ( $weekdays as $day ) {
 
 	// 2.2.2: use translate function for weekday string
 	$display_day = radio_station_translate_weekday( $day );
@@ -27,91 +31,131 @@ foreach ( $flip as $day => $hours ) {
 	// 2.2.7: separate headings from panels for tab view
 	$panels .= '<ul class="master-schedule-tabs-panel" id="master-schedule-tabs-day-' . strtolower( $day ) . '">';
 
+	// --- get shifts for this day ---
+	if ( isset( $schedule[$day] ) ) {$shifts = $schedule[$day];} else {$shifts = array();}
+
 	$foundshows = false;
-	foreach ( $hours as $hour => $mins ) {
+	
+	// 2.3.0: loop schedule day shifts instead of hours and minutes
+	if ( count( $shifts ) > 0 ) {
+	
+		$foundshows = true;
+	
+		foreach ( $shifts as $shift ) {
 
-		foreach ( $mins as $min => $show ) {
+			$show = $shift['show'];
 
-			$foundshows = true;
 			$panels .= '<li class="master-schedule-tabs-show">';
 
 				// --- Show Image ---
 				// (defaults to display on)
-				if ( $atts['show_image'] !== 'false' ) {
-					$panels .= '<div class="show-image">';
-					if ( has_post_thumbnail( $show['id'] ) ) {
-						$panels .= get_the_post_thumbnail( $show['id'], 'thumbnail' );
+				if ( ( $atts['show_image'] !== 'false' )  && ( $atts['show_image'] !== '0' ) ) {
+					// 2.3.0: filter show avatar by show and context
+					$show_avatar = radio_station_get_show_avatar( $show['id'], $avatar_size );
+					$show_avatar = apply_filters( 'radio_station_schedule_show_avatar', $show_avatar, $show['id'], 'tabs' );
+					if ( $show_avatar ) {
+						$panels .= '<div class="show-image">';
+							$panels .= $show_avatar;
+						$panels .= '</div>';
 					}
-					$panels .= '</div>';
 				}
 
 				// --- Show Information ---
 				$panels .= '<div class="show-info">';
 
-					$panels .= '<div class="show-title">';
+					// --- show title ---
+					$show_title = get_the_title( $show['id'] );
 					if ( $atts['show_link'] ) {
-						$panels .= '<a href="' . get_permalink( $show['id'] ) . '">' . get_the_title( $show['id'] ) . '</a>';
-					} else {
-						$panels .= get_the_title( $show['id'] );
+						// 2.3.0: filter show link by show and context			
+						$show_link = get_permalink( $show['id'] );			
+						$show_link = apply_filters( 'radio_station_schedule_show_link', $show_link, $show['id'], 'list' );
+						if ( $show_link ) {
+							$show_title = '<a href="' . esc_url( $show_link ) . '">' . $show_title . '</a>';
+						}
 					}
-					$panels .= '</div>';
+					$panels .= '<span class="show-title">';
+						$panels .= $show_title;
+					$panels .= '</span>';
 
-					if ( $atts['show_djs'] ) {
-						$panels .= '<div class="show-dj-names">';
+					// --- show hosts ---
+					if ( $atts['show_djs'] || $atts['show_hosts'] ) {
 
-						$show_names = get_post_meta( $show['id'], 'show_user_list', true );
-						$count = 0;
+						$hosts = ''; 
+						if ( $show['hosts'] && is_array( $show['hosts'] ) && ( count( $show['hosts'] ) > 0 ) ) {
 
-						if ( $show_names ) {
-							$panels .= '<span class="show-dj-names-leader"> '.__( 'with', 'radio-station').' </span>';
-							foreach ( $show_names as $name ) {
+							$count = 0; $host_count = count( $show['hosts'] );
+							$hosts .= '<span class="show-dj-names-leader"> '.__( 'with', 'radio-station').' </span>';
+							foreach ( $show['hosts'] as $host ) {
 								$count++;
-								$user_info = get_userdata( $name );
-								$panels .= $user_info->display_name;
+								$user_info = get_userdata( $host );
+								$hosts .= $user_info->display_name;
 
-								$names_count = count( $show_names );
-								if ( ( 1 === $count && 2 === $names_count ) || ( $names_count > 2 && $count === $names_count - 1 ) ) {
-									$panels .= ' '.__( 'and', 'radio-station' ).' ';
-								} elseif ( $count < $names_count && $names_count > 2 ) {
-									$panels .= ', ';
+								if ( ( ( 1 === $count ) && ( 2 === $names_count ) ) 
+								  || ( ( $host_count > 2 ) && ( ( $count === $host_count - 1 ) ) ) ) {
+									$hosts .= ' ' . __( 'and', 'radio-station' ) . ' ';
+								} elseif ( ( $count < $host_count ) && ( $host_count > 2 ) ) {
+									$hosts .= ', ';
 								}
 							}
 						}
 
-						$panels .= '</div>';
+						$hosts = apply_filters( 'radio_station_schedule_show_hosts', $hosts, $show['id'], 'tabs' );
+						if ( $hosts ) {
+							$panels .= '<div class="show-dj-names">';
+								$panels .= $hosts;
+							$panels .= '</div>';
+						}
 					}
 
+					// --- show times ---
 					if ( $atts['display_show_time'] ) {
 
-						$panels .= '<div class="show-time">';
-
-						if ( 12 === (int) $timeformat ) {
-
-							// 2.2.7: added meridiem translation
-							$starttime = strtotime( '1981-04-28 ' . $show['time']['start_hour'] . ':' . $show['time']['start_min'] . ':00 ' );
-							$endtime = strtotime( '1981-04-28 ' . $show['time']['end_hour'] . ':' . $show['time']['end_min'] . ':00 ' );
-							$panels .= date( 'g:i', $starttime ) . ' ' . radio_station_translate_meridiem( date( 'a', $starttime ) );
-							$panels .= ' - ';
-							$panels .= date( 'g:i', $endtime ) . ' ' . radio_station_translate_meridiem( date( 'a', $endtime ) );
-
+						// --- convert shift time for display ---
+						// 2.3.0: updated to use new schedule data
+						if ( $shift['start'] == '00:00 am' ) {$shift['start'] = '12:00 am';}
+						if ( $shift['end'] == '11:59:59 pm' ) {$shift['end'] = '12:00 am';}
+						if ( (int) $atts['time'] == 24 ) {
+							$start = radio_station_convert_shift_time( $shift['start'], 24 );
+							$end = radio_station_convert_shift_time( $shift['end'], 24 );								
 						} else {
-
-							$panels .= date( 'H:i', strtotime( '1981-04-28 ' . $show['time']['start_hour'] . ':' . $show['time']['start_min'] . ':00 ' ) );
-							$panels .= ' - ';
-							$panels .= date( 'H:i', strtotime( '1981-04-28 ' . $show['time']['end_hour'] . ':' . $show['time']['end_min'] . ':00 ' ) );
-
+							$start = str_replace( 'am', $am, $shift['start'] );
+							$start = str_replace( 'pm', $pm, $shift['start'] );
+							$end = str_replace( 'am', $am, $shift['end'] );
+							$end = str_replace( 'pm', $pm, $shift['end'] );
 						}
 
-						$panels .= '</div>';
+						// 2.3.0: filter show time by show and context
+						$show_time =  '<span class="rs-time">' . $start . '</span>';
+						$show_time .= ' ' . __( 'to', 'radio-station' ) . ' ';
+						$show_time .= '<span class="rs-time">' . $end . '</span>';
+						$show_time = apply_filters( 'radio_station_schedule_show_time', $show_time, $show['id'], 'tabs' );
+						$panels .= '<div class="show-time">' . $show_time . '</div>';
 					}
 
-					if ( isset( $show['time']['encore'] ) && 'on' === $show['time']['encore'] ) {
-						$panels .= ' <div class="show-encore">' . __( 'encore airing', 'radio-station' ) . '</div>';
+					// --- encore ---
+					// 2.3.0: filter encore switch by show and context
+					if ( $atts['show_encore'] ) {
+						if ( isset( $shift['encore'] ) ) {$show_encore = $shift['encore'];} else {$show_encore = false;}
+						$show_encore = apply_filters( 'radio_station_schedule_show_encore', $show_encore, $show['id'], 'tabs' );
+						if ( $show_encore == 'on' ) {				
+							$panels .= ' <span class="show-encore">';
+								$panels .= esc_html( __( 'encore airing', 'radio-station' ) );
+							$panels .= '</span>';
+						}
 					}
 
-					$show_link = get_post_meta( $show['id'], 'show_file', true );
-					if ( $show_link && ! empty( $show_link ) ) {
-						$panels .= ' <div class="show-file"><a href="' . $show_link . '">' . __( 'Audio File', 'radio-station' ) . '</a></div>';
+					// --- show audio file ---
+					if ( $atts['show_file'] ) {
+						// 2.3.0: filter audio file by show and context
+						$show_file = get_post_meta( $show['id'], 'show_file', true );
+						$show_file = apply_filters( 'radio_station_schedule_show_link', $show_file, $show['id'], 'tabs' );
+						if ( $show_file && ! empty( $show_file ) ) {
+							$panels .= '<span class="show-file">';
+								$panels .= '<a href="' . esc_url( $show_file ). '">';
+									$panels .= esc_html( __( 'Audio File', 'radio-station' ) );
+								$panels .= '</a>';
+							$panels .= '</span>';
+						}
 					}
 
 				$panels .= '</div>';
@@ -124,8 +168,8 @@ foreach ( $flip as $day => $hours ) {
 						$genres = array();
 						if ( count( $terms ) > 0 ) {
 							foreach ( $terms as $term ) {$genres[] = '<a href="' . get_term_link( $term ) . '">' . $term->name . '</a>';}
-							$genredisplay = implode( ', ', $genres );
-							$panels .= __( 'Genres', 'radio-station' ) . ': ' . $genredisplay;
+							$genre_display = implode( ', ', $genres );
+							$panels .= __( 'Genres', 'radio-station' ) . ': ' . $genre_display;
 						}
 					$panels .= '</div>';
 				}
@@ -134,13 +178,17 @@ foreach ( $flip as $day => $hours ) {
 		}
 	}
 
-	if (!$foundshows) {
+	if ( !$foundshows ) {
 		$panels .= '<li class="master-schedule-tabs-show">';
-			$panels .= __('No Shows found for this day.','radio-station');
+			$panels .= esc_html( __( 'No Shows found for this day.' , 'radio-station' ) );
 		$panels .= '</li>';
 	}
 
 	$panels .= '</ul>';
 }
 
-$output .= '</ul>'.$panels;
+$output .= '</ul>';
+
+$output .= '<div id="master-schedule-tab-panels">';
+	$output .= $panels;
+$output .= '</div>';

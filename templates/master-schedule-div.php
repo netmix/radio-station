@@ -3,6 +3,12 @@
  * Template for master schedule shortcode div style.
  */
 
+// --- filter show avatar size ---
+$avatar_size = apply_filters( 'radio_station_schedule_show_avatar_size', 'thumbnail', 'div' );
+
+// --- output show selection buttons / javascript ---
+$output .= radio_station_master_schedule_selection_js();
+
 // output some dynamic styles
 $output .= '<style type="text/css">';
 for ( $i = 2; $i < 24; $i++ ) {
@@ -17,7 +23,6 @@ $output .= '#master-schedule-divs .rowspan { top: ' . $atts['divheight'] . 'px; 
 $output .= '</style>';
 
 // output the schedule
-$output  .= radio_station_master_fetch_js_filter();
 $output  .= '<div id="master-schedule-divs">';
 $weekdays = array_keys( $days_of_the_week );
 
@@ -27,7 +32,7 @@ foreach ( $weekdays as $weekday ) {
 	$translated = radio_station_translate_weekday( $weekday );
 	$output    .= '<div class="master-schedule-weekday-header master-schedule-weekday">' . $translated . '</div>';
 }
-		$output .= '</div>';
+$output .= '</div>';
 
 foreach ( $master_list as $hour => $days ) {
 
@@ -35,7 +40,7 @@ foreach ( $master_list as $hour => $days ) {
 
 	// output the hour labels
 	$output .= '<div class="master-schedule-hour-header">';
-	if ( 12 === (int) $timeformat ) {
+	if ( 12 === (int) $atts['time'] ) {
 		$output .= date( 'ga', strtotime( '1981-04-28 ' . $hour . ':00:00' ) ); //random date needed to convert time to 12-hour format
 	} else {
 		$output .= date( 'H:i', strtotime( '1981-04-28 ' . $hour . ':00:00' ) ); //random date needed to convert time to 24-hour format
@@ -45,32 +50,40 @@ foreach ( $master_list as $hour => $days ) {
 	foreach ( $weekdays as $weekday ) {
 		$output .= '<div class="master-schedule-' . strtolower( $weekday ) . ' master-schedule-weekday" style="height: ' . $atts['divheight'] . 'px;">';
 		if ( isset( $days[ $weekday ] ) ) {
-			foreach ( $days[ $weekday ] as $min => $showdata ) {
+			foreach ( $days[ $weekday ] as $min => $show ) {
 
-				$terms   = wp_get_post_terms( $showdata['id'], 'genres', array() );
-				$classes = ' show-id-' . $showdata['id'] . ' ' . sanitize_title_with_dashes( str_replace( '_', '-', get_the_title( $showdata['id'] ) ) ) . ' ';
+				// --- genres ---
+				// TODO: check output formatting
+				$terms   = wp_get_post_terms( $show['id'], 'genres', array() );
+				$classes = ' show-id-' . $show['id'] . ' ' . sanitize_title_with_dashes( str_replace( '_', '-', get_the_title( $show['id'] ) ) ) . ' ';
 				foreach ( $terms as $show_term ) {
 					$classes .= sanitize_title_with_dashes( $show_term->name ) . ' ';
 				}
 
 				$output .= '<div class="master-show-entry' . $classes . '">';
 
-				// featured image
+				// --- show avatar ---
 				if ( $atts['show_image'] ) {
-					$output .= '<span class="show-image">';
-					if ( has_post_thumbnail( $showdata['id'] ) ) {
-						$output .= get_the_post_thumbnail( $showdata['id'], 'thumbnail' );
+					// 2.3.0: filter show avatar by show and context
+					$show_avatar = radio_station_get_show_avatar( $show['id'], $avatar_size );
+					$show_avatar = apply_filters( 'radio_station_schedule_show_avatar', $show_avatar, $show['id'], 'tabs' );
+					if ( $show_avatar ) {
+						$output .= '<div class="show-image">' . $show_avatar . '</div>';
 					}
-					$output .= '</span>';
 				}
 
-				// title + link to page if requested
-				$output .= '<span class="show-title">';
+				// --- show title / link ---
+				$show_title = get_the_title( $show['id'] );
 				if ( $atts['show_link'] ) {
-					$output .= '<a href="' . get_permalink( $showdata['id'] ) . '">' . get_the_title( $showdata['id'] ) . '</a>';
-				} else {
-					$output .= get_the_title( $showdata['id'] );
+					// 2.3.0: filter show link by show and context
+					$show_link = get_permalink( $show['id'] );
+					$show_link = apply_filters( 'radio_station_schedule_show_link', $show_link, $show['id'], 'div' );
+					if ( $show_link ) {
+						$show_title .= '<a href="' . esc_url( $show_link ) . '">' . $show_title . '</a>';
+					}
 				}
+				$output .= '<span class="show-title">';
+					$output .= $show_title;
 				$output .= '</span>';
 
 				// list of DJs
@@ -78,7 +91,7 @@ foreach ( $master_list as $hour => $days ) {
 
 					$output .= '<span class="show-dj-names">';
 
-					$show_names = get_post_meta( $showdata['id'], 'show_user_list', true );
+					$show_names = get_post_meta( $show['id'], 'show_user_list', true );
 					$count      = 0;
 
 					if ( $show_names ) {
@@ -104,50 +117,58 @@ foreach ( $master_list as $hour => $days ) {
 					$output .= '</span>';
 				}
 
-				// show's schedule
+				// --- show time ---
 				if ( $atts['display_show_time'] ) {
 
 					$output .= '<span class="show-time">';
 
-					if ( 12 === (int) $timeformat ) {
-						// $output .= $weekday.' ';
-						$output .= date( 'g:i a', strtotime( '1981-04-28 ' . $showdata['time']['start_hour'] . ':' . $showdata['time']['start_min'] . ':00 ' ) );
-						$output .= ' - ';
-						$output .= date( 'g:i a', strtotime( '1981-04-28 ' . $showdata['time']['end_hour'] . ':' . $showdata['time']['end_min'] . ':00 ' ) );
+					if ( 12 === (int) $atts['time'] ) {
+						$show_time = date( 'g:i a', strtotime( '1981-04-28 ' . $show['time']['start_hour'] . ':' . $show['time']['start_min'] . ':00 ' ) );
+						$show_time .= ' - ';
+						$show_time .= date( 'g:i a', strtotime( '1981-04-28 ' . $show['time']['end_hour'] . ':' . $show['time']['end_min'] . ':00 ' ) );
 					} else {
-						$output .= date( 'H:i', strtotime( '1981-04-28 ' . $showdata['time']['start_hour'] . ':' . $showdata['time']['start_min'] . ':00 ' ) );
-						$output .= ' - ';
-						$output .= date( 'H:i', strtotime( '1981-04-28 ' . $showdata['time']['end_hour'] . ':' . $showdata['time']['end_min'] . ':00 ' ) );
+						$show_time = date( 'H:i', strtotime( '1981-04-28 ' . $show['time']['start_hour'] . ':' . $show['time']['start_min'] . ':00 ' ) );
+						$show_time .= ' - ';
+						$show_time .= date( 'H:i', strtotime( '1981-04-28 ' . $show['time']['end_hour'] . ':' . $show['time']['end_min'] . ':00 ' ) );
 					}
+					
+					// 2.3.0: filter show time by show and context
+					$show_time = apply_filters( 'radio_station_schedule_show_time', $show_time, $show['id'], 'div' );
+					$output .= $show_time;
 					$output .= '</span>';
 				}
 
-				// designate as encore
-				if ( isset( $showdata['time']['encore'] ) && 'on' === $showdata['time']['encore'] ) {
-					$output .= '<span class="show-encore">' . __( 'encore airing', 'radio-station' ) . '</span>';
+				// --- encore ---
+				// 2.3.0: filter encore by show and context ---
+				if ( isset( $show['time']['encore'] ) ) {$show_encore = $show['time']['encore'];} else {$show_encore = false;}
+				$show_encore = apply_filters( 'radio_station_schedule_show_encore', $show_encore, $show['id'], 'list' );
+				if ( $show_encore == 'on' ) {				
+					$output .= ' <span class="show-encore">' . __( 'encore airing', 'radio-station' ) . '</span>';
 				}
-
-				// link to media file
-				$show_link = get_post_meta( $showdata['id'], 'show_file', true );
-				if ( $show_link && ! empty( $show_link ) ) {
-					$output .= '<span class="show-file"><a href="' . $show_link . '">' . __( 'Audio File', 'radio-station' ) . '</a>';
+			
+				// --- show file ---
+				// 2.3.0: filter show file by show and context
+				$show_file = get_post_meta( $show['id'], 'show_file', true );
+				$show_file = apply_filters( 'radio_station_schedule_show_file', $show_file, $show['id'], 'div' );
+				if ( $show_file && ! empty( $show_file ) ) {
+					$output .= ' <span class="show-file"><a href="' . $show_file . '">' . __( 'Audio File', 'radio-station' ) . '</a>';
 				}
 
 				// calculate duration of show for rowspanning
-				if ( isset( $showdata['time']['rollover'] ) ) { //show started on the previous day
-					$duration = $showdata['time']['end_hour'];
+				if ( isset( $show['time']['rollover'] ) ) { //show started on the previous day
+					$duration = $show['time']['end_hour'];
 				} else {
-					if ( $showdata['time']['end_hour'] >= $showdata['time']['start_hour'] ) {
-						$duration = $showdata['time']['end_hour'] - $showdata['time']['start_hour'];
+					if ( $show['time']['end_hour'] >= $show['time']['start_hour'] ) {
+						$duration = $show['time']['end_hour'] - $show['time']['start_hour'];
 					} else {
-						$duration = 23 - $showdata['time']['start_hour'];
+						$duration = 23 - $show['time']['start_hour'];
 					}
 				}
 
 				if ( $duration >= 1 ) {
 					$output .= '<div class="rowspan rowspan' . $duration . '"></div>';
 
-					if ( '00' !== $showdata['time']['end_min'] ) {
+					if ( '00' !== $show['time']['end_min'] ) {
 						$output .= '<div class="rowspan rowspan-half"></div>';
 					}
 				}
