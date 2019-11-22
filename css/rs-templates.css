@@ -1,0 +1,136 @@
+/* Radio Station Template Styles */
+/* ----------------------------- */
+
+/* Show Page Styles */
+#show-content .show-tabs .show-tab {
+	display: inline-block; 
+	width: 100px; 
+	margin: 0px; 
+	cursor: pointer; 
+	text-align: center; 
+	background-color: #eeeeee; 
+	border-radius: 7px 7px 0 0;
+	border: 1px solid #000000;
+	font-size: 18px;
+	color: #444444;
+	padding: 6px 14px;
+}
+
+#show-content .show-tabs .show-tab-spacer {
+	display: inline-block;
+	width: 20px;
+	height: 100%;
+	border-bottom: 1px solid #000000;
+	border-top: 1px solid transparent;
+	padding: 8px 14px 6px 14px;
+	margin-right: -5px
+}
+
+#show-content .show-tabs .show-tab.tab-active {
+	font-weight: bold; 
+	background-color: transparent; 
+	color: #000000;
+	border-bottom: 0;
+}
+
+#show-content .show-tabs .show-tab.tab-inactive {
+
+}
+
+#show-content .show-tabs .show-tab.tab-inactive:hover {
+	background-color: #f5f5f5;	
+}
+
+#show-content .show-tabbed .show-tab.tab-inactive {
+	display:none;
+}
+
+#show-content .show-info {
+	float: left; 
+}
+
+#show-content .show-info .show-info-block {
+	vertical-align: top;
+	line-height: 1.8em;
+	max-width: 250px;
+	margin-bottom: 20px;
+}
+
+#show-content .show-avatar {
+	display: inline-block;
+	vertical-align: top;
+}
+
+#show-content .show-player {
+	display: none;
+	width: 95%;
+}
+
+#show-content .show-player .mejs-container,
+#show-content .show-player .mejs-controls,
+#show-content .show-player .mejs-embed,
+#show-content .show-player .mejs-embed body {
+	background-color: #888888;
+}
+
+#show-content .show-meta, #show-content .show-schedule {
+    margin-bottom: 20px;
+}
+
+#show-content .show-icons {
+	display: inline-block;
+	vertical-align: top;
+	margin-top: 10px;
+	margin-left: 25px;
+}
+
+#show-content .show-icons .show-icon {
+	margin-right: 10px;
+	margin-bottom: 10px;
+}
+
+#show-content .show-icons .show-icon span {
+	font-size: 28px;
+}
+
+#show-content .show-info .show-info-block h3 {
+	margin-top: 0;
+}
+
+#show-content .show-schedule .show-offset {
+	font-size: 14px;
+}
+
+#show-content .show-schedule .show-encore {
+	color: #CC0000;
+}
+
+#show-content .show-schedule .show-encore-label {
+	font-size: 14px;
+}
+
+#show-content .show-schedule table {
+	padding: 0;
+	margin: 0;
+}
+
+#show-content .show-schedule table td {
+	vertical-align: top;
+}
+
+#show-content.alt .show-info {
+	float: none;
+}
+
+#show-content.alt .show-info .show-info-block {
+	display: inline-block;
+	border-left: 1px solid #AAAAAA;
+	padding-left: 20px;
+	margin-left: 20px;
+}
+
+#show-content.alt .show-info .show-info-block.first {
+	border-left: none;
+	padding-left: 0;
+	margin-left: 0;
+}
