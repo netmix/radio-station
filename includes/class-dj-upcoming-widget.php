@@ -228,10 +228,12 @@ class DJ_Upcoming_Widget extends WP_Widget {
 
 								// --- show avatar ---
 								if ( $djavatar ) {
-									if ( has_post_thumbnail( $dj['post_id'] ) ) {
+									// 2.3.0: get show avatar (with thumbnail fallback)
+									$show_avatar = radio_station_get_show_avatar( $dj['post_id'] );
+									if ( $show_avatar ) {									
 										?>
 										<div class="on-air-dj-avatar'<?php echo esc_attr( $float_class ); ?>" <?php echo $width_style; ?>>
-											<?php echo get_the_post_thumbnail( $dj['post_id'], 'thumbnail' ); ?>
+											<?php echo $show_avatar; ?>
 										</div>
 										<?php
 									}
@@ -303,11 +305,15 @@ class DJ_Upcoming_Widget extends WP_Widget {
 
 								// --- show avatar ---
 								if ( $djavatar ) {
-									?>
-									<div class="on-air-dj-avatar<?php echo esc_attr( $float_class ); ?>" <?php echo $width_style; ?>>
-										<?php echo get_the_post_thumbnail( $dj->ID, 'thumbnail' ); ?>
-									</div>
-									<?php
+									// 2.3.0: get show avatar (with thumbnail fallback)
+									$show_avatar = radio_station_get_show_avatar( $dj->ID );
+									if ( $show_avatar ) {									
+										?>
+										<div class="on-air-dj-avatar'<?php echo esc_attr( $float_class ); ?>" <?php echo $width_style; ?>>
+											<?php echo $show_avatar; ?>
+										</div>
+										<?php
+									}
 								}
 
 								// --- show title ---
@@ -430,16 +436,10 @@ class DJ_Upcoming_Widget extends WP_Widget {
 
 		// --- enqueue widget stylesheet in footer ---
 		// (this means it will only load if widget is on page)
-		// 2.2.4: renamed djonair.css and load for all widgets
-		$dj_widget_css = get_stylesheet_directory() . '/widgets.css';
-		if ( file_exists( $dj_widget_css ) ) {
-			$version = filemtime( $dj_widget_css );
-			$url     = get_stylesheet_directory_uri() . '/widgets.css';
-		} else {
-			$version = filemtime( RADIO_STATION_DIR . '/css/widgets.css' );
-			$url     = plugins_url( 'css/widgets.css', RADIO_STATION_DIR . '/radio-station.php' );
-		}
-		wp_enqueue_style( 'dj-widget', $url, array(), $version, 'all' );
+		// 2.2.4: renamed djonair.css to widgets.css and load for all widgets
+		// 2.3.0: widgets.css prefixed to rs-widgets.css
+		// 2.3.0: use abstracted method for enqueueing widget styles
+		radio_station_enqueue_style( 'widgets');
 
 		echo $args['after_widget'];
 	}

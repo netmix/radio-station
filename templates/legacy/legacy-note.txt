@@ -1,0 +1,6 @@
+Since version 2.3.0, Radio Station uses content filters for page content instead of templates.
+This is because the existing templates were based on use with 20xx themes. So they were not fully
+compatible with other themes, nor was this in keeping the plugin theme-agnostic (independent of theme.)
+You can still use any of the legacy templates in this directory in your child theme and modify them to 
+suit your needs, and they will be used instead of the new content filtering method if they are found.
+Alternatively, you can unhook an existing content filter and replace it with your own custom function.
