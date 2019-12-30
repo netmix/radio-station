@@ -68,6 +68,7 @@ get_header();
 						?>
 					<div id="author-info">
 						<div id="author-avatar">
+                            <?php $avatar_size = apply_filters( 'radio_station_author_page_avatar_size', 'thumbnail', get_the_ID() ); ?>
 							<?php echo get_avatar( get_the_author_meta( 'user_email' ), $avatar_size ); ?>
 						</div><!-- #author-avatar -->
 						<div id="author-description">

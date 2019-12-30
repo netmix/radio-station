@@ -55,8 +55,8 @@ get_header(); ?>
 
 				<nav id="page-nav">
 					<h3 class="assistive-text"><?php esc_html_e( 'Post navigation', 'radio-station' ); ?></h3>
-					<div class="nav-previous"><?php next_posts_link( '<span class="meta-nav">&larr;</span> ' . __( 'Older posts', 'radio-station' ) ); ?></div>
-					<div class="nav-next"><?php previous_posts_link( __( 'Newer posts', 'radio-station' ) . ' <span class="meta-nav">&rarr;</span>' ); ?></div>
+					<div class="nav-previous"><?php next_posts_link( '<span class="meta-nav">&larr;</span> ' . esc_html( __( 'Older posts', 'radio-station' ) ) ); ?></div>
+					<div class="nav-next"><?php previous_posts_link( esc_html( __( 'Newer posts', 'radio-station' ) ) . ' <span class="meta-nav">&rarr;</span>' ); ?></div>
 				</nav>
 
 				<!-- end of custom output : This portion can be edited or inserted into your own theme files -->

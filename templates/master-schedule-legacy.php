@@ -3,19 +3,8 @@
  * Template for master schedule shortcode legacy (table) style.
  */
 
-// --- output show selection buttons / javascript ---
-$output .= radio_station_master_schedule_selection_js();
-
 // --- filter show avatar size ---
 $avatar_size = apply_filters( 'radio_station_schedule_show_avatar_size', 'thumbnail', 'legacy' );
-
-// --- radio station clock ---
-// 2.3.0: added user-server clock
-if ( $atts['clock'] ) {
-	$output .= '<div id="master-schedule-clock-wrapper">';
-		$output .= radio_station_clock_display();
-	$output .= '</div>';
-}
 
 // --- clear floats ---
 $output .= '<div style="clear:both;"></div>';
@@ -33,14 +22,14 @@ foreach ( $days_of_the_week as $weekday => $info ) {
 }
 $output .= '</tr>';
 
-if ( ! isset( $nextskip ) ) {
+if ( !isset( $nextskip ) ) {
 	$nextskip = array();
 }
 
 foreach ( $master_list as $hour => $days ) {
 
 	$output .= '<tr class="master-program-hour-row">';
-	
+
 	$output .= '<th class="master-program-hour"><div>';
 
 	// 2.2.7: added meridiem translations
@@ -50,7 +39,7 @@ foreach ( $master_list as $hour => $days ) {
 		} elseif ( (int) $hour < 12 ) {
 			$output .= $hour . radio_station_translate_meridiem( 'am' );
 		} elseif ( 12 === (int) $hour ) {
-				$output .= '12' . radio_station_translate_meridiem( 'pm' );
+			$output .= '12' . radio_station_translate_meridiem( 'pm' );
 		} else {
 			$output .= ( $hour - 12 ) . radio_station_translate_meridiem( 'pm' );
 		}
@@ -63,7 +52,7 @@ foreach ( $master_list as $hour => $days ) {
 
 	$output .= '</div></th>';
 
-	$curskip  = $nextskip;
+	$curskip = $nextskip;
 	$nextskip = array();
 
 	foreach ( $days as $day => $min ) {
@@ -74,10 +63,10 @@ foreach ( $master_list as $hour => $days ) {
 
 			if ( $skip['day'] === $day ) {
 				if ( $skip['span'] > 1 ) {
-					$continue              = 1;
-					$skip['span']          = $skip['span'] - 1;
-					$curskip[ $x ]['span'] = $skip['span'];
-					$nextskip              = $curskip;
+					$continue = 1;
+					$skip['span'] = $skip['span'] - 1;
+					$curskip[$x]['span'] = $skip['span'];
+					$nextskip = $curskip;
 				}
 			}
 		}
@@ -113,7 +102,7 @@ foreach ( $master_list as $hour => $days ) {
 		if ( $rowspan > 1 ) {
 			$span = ' rowspan="' . $rowspan . '"';
 			// add to both arrays
-			$curskip[]  = array(
+			$curskip[] = array(
 				'day'  => $day,
 				'span' => $rowspan,
 				'show' => get_the_title( $show['id'] ),
@@ -134,7 +123,7 @@ foreach ( $master_list as $hour => $days ) {
 
 		foreach ( $min as $show ) {
 
-			$terms   = wp_get_post_terms( $show['id'], 'genres', array() );
+			$terms = wp_get_post_terms( $show['id'], RADIO_STATION_GENRES_SLUG, array() );
 			$classes = ' show-id-' . $show['id'] . ' ' . sanitize_title_with_dashes( str_replace( '_', '-', get_the_title( $show['id'] ) ) ) . ' ';
 			foreach ( $terms as $show_term ) {
 				$classes .= sanitize_title_with_dashes( $show_term->name ) . ' ';
@@ -146,7 +135,7 @@ foreach ( $master_list as $hour => $days ) {
 				// 2.3.0: get show avatar filtered by show ID and context
 				$show_avatar = radio_station_get_show_avatar( $show['id'] );
 				$show_avatar = apply_filters( 'radio_station_schedule_show_avatar', $show_avatar, $show['id'], 'legacy' );
-				if ( $show_avatar ) {									
+				if ( $show_avatar ) {
 					$output .= '<span class="show-image">' . $show_avatar . '</span>';
 				}
 			}
@@ -171,11 +160,14 @@ foreach ( $master_list as $hour => $days ) {
 				$output .= '<span class="show-dj-names">';
 
 				$dj_names = get_post_meta( $show['id'], 'show_user_list', true );
-				$count    = 0;
+				$count = 0;
 
 				if ( $dj_names ) {
 
-					$output .= '<span class="show-dj-names-leader"> ' . __( 'with', 'radio-station' ) . ' </span>';
+					$output .= '<span class="show-dj-names-leader"> ';
+					$output .= esc_html( __( 'with', 'radio-station' ) );
+					$output .= ' </span>';
+
 					foreach ( $dj_names as $name ) {
 						$count ++;
 						$user_info = get_userdata( $name );
@@ -184,7 +176,7 @@ foreach ( $master_list as $hour => $days ) {
 
 						$names_count = count( $dj_names );
 						if ( ( 1 === $count && 2 === $names_count ) || ( $names_count > 2 && $count === $names_count - 1 ) ) {
-							$output .= ' ' . __( 'and', 'radio-station' ) . ' ';
+							$output .= ' ' . esc_html( __( 'and', 'radio-station' ) ) . ' ';
 						} elseif ( $count < $names_count && $names_count > 2 ) {
 							$output .= ', ';
 						}
@@ -198,43 +190,51 @@ foreach ( $master_list as $hour => $days ) {
 
 				$output .= '<span class="show-time">';
 
-					if ( 12 === (int) $atts['time'] ) {
+				if ( 12 === (int) $atts['time'] ) {
 
-						// 2.2.7: added meridiem translation
-						$starttime = strtotime( '1981-04-28 ' . $show['time']['start_hour'] . ':' . $show['time']['start_min'] . ':00 ' );
-						$endtime = strtotime( '1981-04-28 ' . $show['time']['end_hour'] . ':' . $show['time']['end_min'] . ':00 ' );
-						$time = date( 'g:i', $starttime ) . ' ' . radio_station_translate_meridiem( date( 'a', $starttime ) );
-						$time .= ' - ';
-						$time .= date( 'g:i', $endtime ) . ' ' . radio_station_translate_meridiem( date( 'a', $endtime ) );
+					// 2.2.7: added meridiem translation
+					$starttime = strtotime( '1981-04-28 ' . $show['time']['start_hour'] . ':' . $show['time']['start_min'] . ':00 ' );
+					$endtime = strtotime( '1981-04-28 ' . $show['time']['end_hour'] . ':' . $show['time']['end_min'] . ':00 ' );
+					$times = date( 'g:i', $starttime ) . ' ' . radio_station_translate_meridiem( date( 'a', $starttime ) );
+					$times .= ' - ';
+					$times .= date( 'g:i', $endtime ) . ' ' . radio_station_translate_meridiem( date( 'a', $endtime ) );
 
-					} else {
-						$time = date( 'H:i', strtotime( '1981-04-28 ' . $show['time']['start_hour'] . ':' . $show['time']['start_min'] . ':00 ' ) );
-						$time .= ' - ';
-						$time .= date( 'H:i', strtotime( '1981-04-28 ' . $show['time']['end_hour'] . ':' . $show['time']['end_min'] . ':00 ' ) );
-					}
-					$time = apply_filters( 'radio_station_schedule_show_time', $times, $show['id'], 'legacy' );
-					$output .= $time;
+				} else {
+					$times = date( 'H:i', strtotime( '1981-04-28 ' . $show['time']['start_hour'] . ':' . $show['time']['start_min'] . ':00 ' ) );
+					$times .= ' - ';
+					$times .= date( 'H:i', strtotime( '1981-04-28 ' . $show['time']['end_hour'] . ':' . $show['time']['end_min'] . ':00 ' ) );
+				}
+				$time = apply_filters( 'radio_station_schedule_show_time', $times, $show['id'], 'legacy' );
+				$output .= $time;
 				$output .= '</span>';
 			}
 
 			// --- encore airing ---
 			if ( $atts['show_encore'] ) {
 				// 2.3.0: filter encore switch by show ID and context
-				if ( isset( $show['time']['encore'] ) ) {$encore = $show['time']['encore'];} else {$encore = false;}
+				if ( isset( $show['time']['encore'] ) ) {
+					$encore = $show['time']['encore'];
+				} else {
+					$encore = false;
+				}
 				$encore = apply_filters( 'radio_station_schedule_show_encore', $encore, $show['id'], 'legacy' );
 				if ( 'on' == $encore ) {
-					$output .= '<span class="show-encore">' . __( 'encore airing', 'radio-station' ) . '</span>';
+					$output .= '<span class="show-encore">';
+					$output .= esc_html( __( 'encore airing', 'radio-station' ) );
+					$output .= '</span>';
 				}
 			}
 
 			// --- show file ---
 			if ( $atts['show_file'] ) {
 				// 2.3.0: filter show file by show ID and context
-				$show_file = get_post_meta( $show['id'], 'show_file', true );	
+				$show_file = get_post_meta( $show['id'], 'show_file', true );
 				$show_file = apply_filters( 'radio_station_schedule_show_file', $show_file, $show['id'], 'legacy' );
-				if ( $show_file && ! empty( $show_file ) ) {
+				if ( $show_file && !empty( $show_file ) ) {
 					// 2.3.0: added missing span close tag
-					$output .= '<span class="show-file"><a href="' . $show_file . '">' . __( 'Audio File', 'radio-station' ) . '</a></span>';
+					$output .= '<span class="show-file"><a href="' . esc_url( $show_file ) . '">';
+					$output .= esc_html( __( 'Audio File', 'radio-station' ) ) . '</a>';
+					$output .= '</span>';
 				}
 			}
 

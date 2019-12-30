@@ -7,7 +7,7 @@
 Plugin Name: Radio Station
 Plugin URI: https://netmix.com/radio-station
 Description: Adds Show pages, DJ role, playlist and on-air programming functionality to your site.
-Author: Tony Zeoli <tonyzeoli@netmix.com>
+Author: Tony Zeoli
 Version: 2.2.9
 Text Domain: radio-station
 Domain Path: /languages
@@ -31,6 +31,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 // === Setup ===
+// - Define Plugin Constants
+// - Define Plugin Data Slugs
 // - Include Plugin Files
 // - Plugin Options and Defaults
 // - Plugin Loader Settings
@@ -49,7 +51,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 // - Show Content Template Filter
 // - Playlist Content Template Filter
 // - Override Content Template Filter
-// - Playlist Archive Show Filtering
 // - DJ / Host / Author Template Fix
 // - Get DJ / Host Template
 // - Get Producer Template
@@ -59,19 +60,50 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 // x Archive Templates Loader
 // - Show Archive Page Content
 // - Show Playlist Page Content
+// === Query Filters ===
+// - Playlist Archive Query Filter
+// - Language Archive Query Filter
 // === User Roles ===
 // - Set Roles and Capabilities
 // - maybe Revoke Edit Show Capability
+// === Debuggging ===
+// - Debug Output and Logging
 
 
 // -------------
 // === Setup ===
 // -------------
 
+// -----------------------
+// Define Plugin Constants
+// -----------------------
+define( 'RADIO_STATION_FILE', __FILE__ );
 define( 'RADIO_STATION_DIR', dirname( __FILE__ ) );
 define( 'RADIO_STATION_HOME_URL', 'https://netmix.com/radio-station/' );
 define( 'RADIO_STATION_DOCS_URL', 'https://netmix.com/radio-station/docs/' );
 define( 'RADIO_STATION_API_DOCS_URL', 'https://netmix.com/radio-station/docs/api/' );
+
+// ------------------------
+// Define Plugin Data Slugs
+// ------------------------
+define( 'RADIO_STATION_LANGUAGES_SLUG', 'rs-languages' );
+define( 'RADIO_STATION_HOST_SLUG', 'rs-host' );
+define( 'RADIO_STATION_PRODUCER_SLUG', 'rs-producer' );
+// TODO: prefix existing slugs and update user data
+define( 'RADIO_STATION_GENRES_SLUG', 'genres' ); // will become rs-genres
+define( 'RADIO_STATION_SHOW_SLUG', 'show' ); // will become rs-show
+define( 'RADIO_STATION_PLAYLIST_SLUG', 'playlist' ); // will become rs-playlist
+define( 'RADIO_STATION_OVERRIDE_SLUG', 'override' ); // will become rs-override
+
+// --- set debug mode constant ---
+// 2.3.0: added debug mode constant
+if ( !defined( 'RADIO_STATION_DEBUG' ) ) {
+	$rs_debug = false;
+	if ( isset( $_REQUEST['rs-debug'] ) && ( '1' == $_REQUEST['rs-debug'] ) ) {
+		$rs_debug = true;
+	}
+	define( 'RADIO_STATION_DEBUG', $rs_debug );
+}
 
 // --------------------
 // Include Plugin Files
@@ -82,9 +114,10 @@ require RADIO_STATION_DIR . '/includes/master-schedule.php';
 require RADIO_STATION_DIR . '/includes/shortcodes.php';
 require RADIO_STATION_DIR . '/includes/support-functions.php';
 require RADIO_STATION_DIR . '/includes/data-feeds.php';
-require RADIO_STATION_DIR . '/includes/class-dj-upcoming-widget.php';
-require RADIO_STATION_DIR . '/includes/class-dj-widget.php';
-require RADIO_STATION_DIR . '/includes/class-playlist-widget.php';
+// 2.3.0: renamed files to match new widget naames
+require RADIO_STATION_DIR . '/includes/class-current-show-widget.php';
+require RADIO_STATION_DIR . '/includes/class-upcoming-shows-widget.php';
+require RADIO_STATION_DIR . '/includes/class-current-playlist-widget.php';
 
 // ---------------------------
 // Plugin Options and Defaults
@@ -94,49 +127,26 @@ $timezones = radio_station_get_timezone_options( true );
 $languages = radio_station_get_language_options( true );
 $options = array(
 
-	// --- Broadcast --- 
- 	'streaming_url'		=>	array(
-							'type' 		=> 'text',
-							'options'	=> 'URL',
-							'label'		=> __( 'Streaming URL', 'radio-station' ),
-							'default'	=> '',
-							'helper'	=> __( 'Enter the Streaming URL for your Radio Station.', 'radio-station'),
-							'tab'		=> 'general',
-							'section'	=> 'broadcast',
-						),
-	'radio_language'	=> array(
-							'type'		=> 'select',
-							'options'	=> $languages,
-							'label'		=> __( 'Main Broadcast Language', 'radio-station' ),
-							'default'	=> '',
-							'helper'	=> __( 'Select the main language used on your Radio Station.', 'radio-station' ),
-							'tab'		=> 'general',
-							'section'	=> 'broadcast',
-						),
-						
-	// --- Times ---
- 	'timezone_location'	=> array(
-							'type' 		=> 'select',
-							'options'	=> $timezones,
-							'label'		=> __( 'Location Timezone', 'radio-station' ),
-							'default'	=> '',
-							'helper'	=> __( 'Select your Broadcast Location for Timezone display.', 'radio-station'),
-							'tab'		=> 'general',
-							'section'	=> 'times',
-						),
-	'clock_time_format' => array(
-							'type'		=> 'select',
-							'options'	=> array(
-								'12'	=> __( '12 Hour Format', 'radio-station'),
-								'24'	=> __( '24 Hour Format', 'radio-station'),
-							),
-							'label'		=> __( 'Clock Time Format', 'radio-station'),
-							'default'	=> '12',
-							'helper'	=> __( 'Default Time Format Display for plugin output. Can be overridden in each shortcode or widget.', 'radio-station' ),
-							'tab'		=> 'general',
-							'section'	=> 'times',
-						),
-					
+	// --- Broadcast ---
+	'streaming_url' => array(
+		'type'    => 'text',
+		'options' => 'URL',
+		'label'   => __( 'Streaming URL', 'radio-station' ),
+		'default' => '',
+		'helper'  => __( 'Enter the Streaming URL for your Radio Station.', 'radio-station' ),
+		'tab'     => 'general',
+		'section' => 'broadcast',
+	),
+
+	'radio_language'    => array(
+		'type'    => 'select',
+		'options' => $languages,
+		'label'   => __( 'Main Broadcast Language', 'radio-station' ),
+		'default' => '',
+		'helper'  => __( 'Select the main language used on your Radio Station.', 'radio-station' ),
+		'tab'     => 'general',
+		'section' => 'broadcast',
+	),
 
 	// [Pro] Alternative Stream URL ?
 	// 'streaming_alt' => array(
@@ -149,105 +159,195 @@ $options = array(
 	//						'pro'		=> true,
 	// ),
 
-	'enable_data_routes'	=> array(
-							'type'		=> 'checkbox',
-							'label'		=> __( 'Enable Data Routes', 'radio-station' ),
-							'default'	=> 'yes',
-							'value'		=> 'yes',
-							'helper'	=> __( 'Enables Station Data Routes via WordPress REST API.', 'radio-station'),
-							'tab'		=> 'general',
-							'section'	=> 'feeds',
-						),
+	// --- Times ---
+	'timezone_location' => array(
+		'type'    => 'select',
+		'options' => $timezones,
+		'label'   => __( 'Location Timezone', 'radio-station' ),
+		'default' => '',
+		'helper'  => __( 'Select your Broadcast Location for Timezone display.', 'radio-station' ),
+		'tab'     => 'general',
+		'section' => 'times',
+	),
+
+	'clock_time_format' => array(
+		'type'    => 'select',
+		'options' => array(
+			'12' => __( '12 Hour Format', 'radio-station' ),
+			'24' => __( '24 Hour Format', 'radio-station' ),
+		),
+		'label'   => __( 'Clock Time Format', 'radio-station' ),
+		'default' => '12',
+		'helper'  => __( 'Default Time Format Display for plugin output. Can be overridden in each shortcode or widget.', 'radio-station' ),
+		'tab'     => 'general',
+		'section' => 'times',
+	),
+
+	'enable_data_routes' => array(
+		'type'    => 'checkbox',
+		'label'   => __( 'Enable Data Routes', 'radio-station' ),
+		'default' => 'yes',
+		'value'   => 'yes',
+		'helper'  => __( 'Enables Station Data Routes via WordPress REST API.', 'radio-station' ),
+		'tab'     => 'general',
+		'section' => 'feeds',
+	),
+
 	'enable_data_feeds' => array(
-							'type'		=> 'checkbox',
-							'label'		=> __( 'Enable Data Feeds', 'radio-station' ),
-							'default'	=> 'yes',
-							'value'		=> 'yes',
-							'helper'	=> __( 'Enable Station Data Feeds via WordPress feed links.', 'radio-station' ),
-							'tab'		=> 'general',
-							'section'	=> 'feeds',
-						),
+		'type'    => 'checkbox',
+		'label'   => __( 'Enable Data Feeds', 'radio-station' ),
+		'default' => 'yes',
+		'value'   => 'yes',
+		'helper'  => __( 'Enable Station Data Feeds via WordPress feed links.', 'radio-station' ),
+		'tab'     => 'general',
+		'section' => 'feeds',
+	),
+
 	'show_shift_feeds' => array(
-							'type'		=> 'checkbox',
-							'label'		=> __( 'Show Shift Feeds', 'radio-station' ),
-							'default'	=> 'yes',
-							'value'		=> 'yes',
-							'helper'	=> __( 'Convert RSS Feeds for a single Show to a Show shift feed, allowing a visitor to subscribe to a Show feed to be notified of Show shifts.', 'radio-station' ),
-							'tab'		=> 'general',
-							'section'	=> 'feeds',
-							'pro'		=> true,
-						),
-						
+		'type'    => 'checkbox',
+		'label'   => __( 'Show Shift Feeds', 'radio-station' ),
+		'default' => 'yes',
+		'value'   => 'yes',
+		'helper'  => __( 'Convert RSS Feeds for a single Show to a Show shift feed, allowing a visitor to subscribe to a Show feed to be notified of Show shifts.', 'radio-station' ),
+		'tab'     => 'general',
+		'section' => 'feeds',
+		'pro'     => true,
+	),
+
+	'transient_caching' => array(
+		'type'    => 'checkbox',
+		'label'   => __( 'Transient Caching', 'radio-station' ),
+		'default' => 'yes',
+		'value'   => 'yes',
+		'helper'  => __( 'Use Transient Caching to improve Schedule calculation performance.', 'radio-station' ),
+		'tab'     => 'general',
+		'section' => 'feeds',
+		'pro'     => true,
+	),
 
 	// --- Master Schedule Page ---
- 	'schedule_page'	=>	array(
-							'type' 		=> 'select',
-							'options'	=> 'PAGEID',
-							'label'		=> __( 'Master Schedule Page', 'radio-station' ),
-							'default'	=> '',
-							'helper'	=> __( 'Select the Page you are displaying the Master Schedule on.', 'radio-station'),
-							'tab'		=> 'pages',
-							'section'	=> 'schedule',
-						),
-	'schedule_auto'	=> array(
-							'type'		=> 'checkbox',
-							'label'		=> __( 'Automatic Display', 'radio-station' ),
-							'default'	=> 'yes',
-							'value'		=> 'yes',
-							'helper'	=> __( 'Replaces selected page content with Master Schedule. Alternatively customize with the shortcode: ', 'radio-station') . ' [master-schedule]',
-							'tab'		=> 'pages',
-							'section'	=> 'schedule',
-						),
-	'schedule_view'	=>	array(
-							'type' 		=> 'select',
-							'label'		=> __( 'Schedule View Default', 'radio-station' ),
-							'default'	=> 'table',
-							'options'	=> array(
-								'table' 	=> __( 'Table View', 'radio-station' ),
-								'list'		=> __( 'List View', 'radio-station' ),
-								'div'		=> __( 'Divs View', 'radio-station' ),
-								'tabs'		=> __( 'Tabbed View', 'radio-station' ),
-								'default'	=> __( 'Legacy Table', 'radio-station' ),
-							),
-							'helper'	=> __( 'View type to use for automatic display on Master Schedule Page.', 'radio-station' ),
-							'tab'		=> 'pages',
-							'section'	=> 'schedule',
-						),
+	'schedule_page'     => array(
+		'type'    => 'select',
+		'options' => 'PAGEID',
+		'label'   => __( 'Master Schedule Page', 'radio-station' ),
+		'default' => '',
+		'helper'  => __( 'Select the Page you are displaying the Master Schedule on.', 'radio-station' ),
+		'tab'     => 'pages',
+		'section' => 'schedule',
+	),
+
+	'schedule_auto' => array(
+		'type'    => 'checkbox',
+		'label'   => __( 'Automatic Display', 'radio-station' ),
+		'default' => 'yes',
+		'value'   => 'yes',
+		'helper'  => __( 'Replaces selected page content with Master Schedule. Alternatively customize with the shortcode: ', 'radio-station' ) . ' [master-schedule]',
+		'tab'     => 'pages',
+		'section' => 'schedule',
+	),
+
+	'schedule_view'       => array(
+		'type'    => 'select',
+		'label'   => __( 'Schedule View Default', 'radio-station' ),
+		'default' => 'table',
+		'options' => array(
+			'table'   => __( 'Table View', 'radio-station' ),
+			'list'    => __( 'List View', 'radio-station' ),
+			'div'     => __( 'Divs View', 'radio-station' ),
+			'tabs'    => __( 'Tabbed View', 'radio-station' ),
+			'default' => __( 'Legacy Table', 'radio-station' ),
+		),
+		'helper'  => __( 'View type to use for automatic display on Master Schedule Page.', 'radio-station' ),
+		'tab'     => 'pages',
+		'section' => 'schedule',
+	),
+
 	// [Pro] Schedule Switcher
-	'schedule_switcher'	=> array(
-							'type'		=> 'checkbox',
-							'label'		=> __( 'View Switching', 'radio-station' ),
-							'default'	=> '',
-							'value'		=> 'yes',
-							'helper'	=> __( 'Enable View Switching on the Master Schedule.', 'radio-station' ),
-							'tab'		=> 'pages',
-							'section'	=> 'schedule',
-							'pro'		=> true,
-						),
+	'schedule_switcher'   => array(
+		'type'    => 'checkbox',
+		'label'   => __( 'View Switching', 'radio-station' ),
+		'default' => '',
+		'value'   => 'yes',
+		'helper'  => __( 'Enable View Switching on the Master Schedule.', 'radio-station' ),
+		'tab'     => 'pages',
+		'section' => 'schedule',
+		'pro'     => true,
+	),
 
 	// --- Show Page ---
+	'show_block_position' => array(
+		'type'    => 'select',
+		'label'   => __( 'Info Blocks Position', 'radio-station' ),
+		'options' => array(
+			'left'  => __( 'Float Left', 'radio-station' ),
+			'right' => __( 'Float Right', 'radio-station' ),
+			'top'   => __( 'Float Top', 'radio-station' ),
+		),
+		'default' => 'left',
+		'helper'  => __( 'Where to position Show info blocks relative to Show Page content.', 'radio-station' ),
+		'tab'     => 'pages',
+		'section' => 'show',
+	),
+
+	'show_section_layout' => array(
+		'type'    => 'select',
+		'label'   => __( 'Extra Content Layout', 'radio-station' ),
+		'options' => array(
+			'tabbed'   => __( 'Tabbed', 'radio-station' ),
+			'standard' => __( 'Standard', 'radio-station' ),
+		),
+		'default' => 'tabbed',
+		'helper'  => __( 'How to display extra sections below Show description. In content tabs or standard layout down the page.', 'radio-station' ),
+		'tab'     => 'pages',
+		'section' => 'show',
+	),
+
+	'show_header_image' => array(
+		'type'    => 'checkbox',
+		'label'   => __( 'Content Header Image', 'radio-station' ),
+		'value'   => 'yes',
+		'default' => '',
+		'helper'  => __( 'If your template does not display the Featured Image, enable this and use the Content Header Image box on the Show edit screen instead.', 'radio-station' ),
+		'tab'     => 'pages',
+		'section' => 'show',
+	),
+
+	// 'show_latest_posts' => array(
+	//						'type'		=> 'numeric',
+	//						'label'		=> __( 'Latest Show Posts', 'radio-station' ),
+	//						'step'		=> 1,
+	//						'min'		=> 0,
+	//						'max'		=> 100,
+	//						'default'	=> 3,
+	//						'helper'	=> __( 'Number of Latest Blog Posts to Show above Show Page tabs.', 'radio-station' ),
+	//						'tab'		=> 'pages',
+	//						'section'	=> 'show',
+	// ),
+
 	'show_posts_per_page' => array(
-							'type'		=> 'numeric',
-							'label'		=> __( 'Posts per Page', 'radio-station' ),
-							'step'		=> 1,
-							'min'		=> 1,
-							'max'		=> 1000,
-							'default'	=> 10,
-							'helper'	=> __( 'Blog Posts per page on the Show Page tab.', 'radio-station'),
-							'tab'		=> 'pages',
-							'section'	=> 'show',
-						),
+		'type'    => 'numeric',
+		'label'   => __( 'Posts per Page', 'radio-station' ),
+		'step'    => 1,
+		'min'     => 0,
+		'max'     => 1000,
+		'default' => 10,
+		'helper'  => __( 'Blog Posts per page on the Show Page tab.', 'radio-station' ),
+		'tab'     => 'pages',
+		'section' => 'show',
+	),
+
 	'show_playlists_per_page' => array(
-							'type'		=> 'numeric',
-							'step'		=> 1,
-							'min'		=> 1,
-							'max'		=> 1000,
-							'label'		=> __( 'Playlists per Page', 'radio-station' ),
-							'default'	=> 10,
-							'helper'	=> __( 'Playlists per page on the Show Page tab.', 'radio-station'),
-							'tab'		=> 'pages',
-							'section'	=> 'show',
-						),
+		'type'    => 'numeric',
+		'step'    => 1,
+		'min'     => 0,
+		'max'     => 1000,
+		'label'   => __( 'Playlists per Page', 'radio-station' ),
+		'default' => 10,
+		'helper'  => __( 'Playlists per page on the Show Page tab.', 'radio-station' ),
+		'tab'     => 'pages',
+		'section' => 'show',
+	),
+
 	// [Pro] Episodes per page
 	// 'show_episodes_per_page' => array(
 	//						'type'		=> 'number',
@@ -260,27 +360,29 @@ $options = array(
 	//						'tab'		=> 'pages',
 	//						'section'	=> 'show',
 	//						'pro'		=> true,
-	//					),
+	// ),
 
 	// --- Archives ---
- 	'show_archive_page'	=> array(
- 							'label'		=> __( 'Show Archives Page', 'radio-station' ),
-							'type' 		=> 'select',
-							'options'	=> 'PAGEID',						
-							'default'	=> '',
-							'helper'	=> __( 'Select the Page for displaying the Show archive list.', 'radio-station' ),
-							'tab'		=> 'pages',
-							'section'	=> 'archives',
-						),
+	'show_archive_page'       => array(
+		'label'   => __( 'Show Archives Page', 'radio-station' ),
+		'type'    => 'select',
+		'options' => 'PAGEID',
+		'default' => '',
+		'helper'  => __( 'Select the Page for displaying the Show archive list.', 'radio-station' ),
+		'tab'     => 'pages',
+		'section' => 'archives',
+	),
+
 	'show_archive_auto' => array(
-							'label'		=> __( 'Automatic Display', 'radio-station' ),
-							'type' 		=> 'checkbox',
-							'value'		=> 'yes',
-							'default'	=> 'yes',						
-							'helper'	=> __( 'Replaces selected page content with default Show Archive. Alternatively customize display using the shortcode:', 'radio-station') . ' [shows-archive]',
-							'tab'		=> 'pages',
-							'section'	=> 'archives',	
-						),
+		'label'   => __( 'Automatic Display', 'radio-station' ),
+		'type'    => 'checkbox',
+		'value'   => 'yes',
+		'default' => 'yes',
+		'helper'  => __( 'Replaces selected page content with default Show Archive. Alternatively customize display using the shortcode:', 'radio-station' ) . ' [shows-archive]',
+		'tab'     => 'pages',
+		'section' => 'archives',
+	),
+
 	// removes / redirects from default show archive ?
 	// 'show_archive_override' => array(
 	//						'label'		=> __( 'Redirect Show Archive', 'radio-station' ),
@@ -290,25 +392,28 @@ $options = array(
 	//						'helper'	=> __( '', 'radio-station' );
 	//						'tab'		=> 'pages',
 	//						'section'	=> 'archives',
-	//					),
- 	'playlist_archive_page'	=> array(
- 							'label'		=> __( 'Playlist Archives Page', 'radio-station' ),
-							'type' 		=> 'select',
-							'options'	=> 'PAGEID',						
-							'default'	=> '',
-							'helper'	=> __( 'Select the Page for displaying the Playlist archive list.', 'radio-station' ),
-							'tab'		=> 'pages',
-							'section'	=> 'archives',
-						),
+	// ),
+
+	'playlist_archive_page' => array(
+		'label'   => __( 'Playlist Archives Page', 'radio-station' ),
+		'type'    => 'select',
+		'options' => 'PAGEID',
+		'default' => '',
+		'helper'  => __( 'Select the Page for displaying the Playlist archive list.', 'radio-station' ),
+		'tab'     => 'pages',
+		'section' => 'archives',
+	),
+
 	'playlist_archive_auto' => array(
-							'label'		=> __( 'Automatic Display', 'radio-station' ),
-							'type' 		=> 'checkbox',
-							'value'		=> 'yes',
-							'default'	=> 'yes',						
-							'helper'	=> __( 'Replaces selected page content with default Playlist Archive. Alternatively customize display using the shortcode:', 'radio-station') . ' [playlists-archive]',
-							'tab'		=> 'pages',
-							'section'	=> 'archives',	
-						),
+		'label'   => __( 'Automatic Display', 'radio-station' ),
+		'type'    => 'checkbox',
+		'value'   => 'yes',
+		'default' => 'yes',
+		'helper'  => __( 'Replaces selected page content with default Playlist Archive. Alternatively customize display using the shortcode:', 'radio-station' ) . ' [playlists-archive]',
+		'tab'     => 'pages',
+		'section' => 'archives',
+	),
+
 	// removes / redirects from default playlist archive ?
 	// 'playlist_archive_override' => array(
 	//						'label'		=> __( 'Redirect Playlist Archive', 'radio-station' ),
@@ -318,25 +423,28 @@ $options = array(
 	//						'helper'	=> __( '', 'radio-station' );
 	//						'tab'		=> 'pages',
 	//						'section'	=> 'archives',
-	//					),
- 	'genre_archive_page'	=> array(
- 							'label'		=> __( 'Genre Archives Page', 'radio-station' ),
-							'type' 		=> 'select',
-							'options'	=> 'PAGEID',						
-							'default'	=> '',
-							'helper'	=> __( 'Select the Page for displaying the Genre archive list.', 'radio-station' ),
-							'tab'		=> 'pages',
-							'section'	=> 'archives',
-						),
-	'genre_archive_auto' => array(
-							'label'		=> __( 'Automatic Display', 'radio-station' ),
-							'type' 		=> 'checkbox',
-							'value'		=> 'yes',
-							'default'	=> 'yes',						
-							'helper'	=> __( 'Replaces selected page content with default Genre Archive. Alternatively customize display using the shortcode:', 'radio-station') . ' [genres-archive]',
-							'tab'		=> 'pages',
-							'section'	=> 'archives',	
-						),
+	// ),
+
+	'genre_archive_page' => array(
+		'label'   => __( 'Genre Archives Page', 'radio-station' ),
+		'type'    => 'select',
+		'options' => 'PAGEID',
+		'default' => '',
+		'helper'  => __( 'Select the Page for displaying the Genre archive list.', 'radio-station' ),
+		'tab'     => 'pages',
+		'section' => 'archives',
+	),
+
+	'genre_archive_auto'         => array(
+		'label'   => __( 'Automatic Display', 'radio-station' ),
+		'type'    => 'checkbox',
+		'value'   => 'yes',
+		'default' => 'yes',
+		'helper'  => __( 'Replaces selected page content with default Genre Archive. Alternatively customize display using the shortcode:', 'radio-station' ) . ' [genres-archive]',
+		'tab'     => 'pages',
+		'section' => 'archives',
+	),
+
 	// removes / redirects from default genre archive ?
 	// 'genre_archive_override' => array(
 	//						'label'		=> __( 'Redirect Genres Archive', 'radio-station' ),
@@ -349,72 +457,73 @@ $options = array(
 	//					),
 
 	// --- Templates ---
-	'templates_change_note' => array(
-							'type'		=> 'note',
-							'label'		=> __( 'Templates Change Note', 'radio-station' ),
-							'helper'	=> __( 'Since 2.3.0, the way that Templates are implemented has changed.', 'radio-station' )
-										. ' ' . __( 'See the Documentation for more information:', 'radio-station' )
-										. ' ' . '<a href="' . RADIO_STATION_DOCS_URL . 'templates/" target="_blank">' . __( 'Templates Documentation', 'radio-station' ) . '</a>',
-							 'tab'		=> 'templates',
-							 'section'	=> 'single',
-						),
-	'show_template' => array(
-							'label'		=> __( 'Show Template', 'radio-station' ),
-							'type'		=> 'select',
-							'options'	=> array(
-								'page'		=> __( 'Theme Page Template (page.php)', 'radio-station' ),
-								'post'		=> __( 'Theme Post Template (single.php)', 'radio-station' ),
-								'singular'	=> __( 'Theme Singular Template (singular.php)', 'radio-station' ),
-								'legacy'	=> __( 'Legacy Plugin Template', 'radio-station' ),
-							),
-							'default'	=> 'page',
-							'helper'	=> __( 'Which template to use for displaying Show content.', 'radio-station' ),
-							'tab'		=> 'templates',
-							'section'	=> 'single',
-						),
-	'show_template_combined' => array(
-							'label'		=> __( 'Combined Method', 'radio-station' ),
-							'type'		=> 'checkbox',
-							'value'		=> 'yes',
-							'default'	=> '',
-							'helper'	=> __( 'Advanced usage. Use both a custom template AND content filtering for a Show. (Not compatible with Legacy templates.)', 'radio-station'),
-							'tab'		=> 'templates',
-							'section'	=> 'single',
-						),
-	'playlist_template' => array(
-							'label'		=> __( 'Playlist Template', 'radio-station' ),
-							'type'		=> 'select',
-							'options'	=> array(
-								'page'	=> __( 'Theme Page Template (page.php)', 'radio-station'),
-								'post'	=> __( 'Theme Post Template (single.php)', 'radio-station'),
-								'legacy' => __( 'Legacy Plugin Template', 'radio-station' ),
-							),
-							'default'	=> 'page',
-							'helper'	=> __( 'Which template to use for displaying Playlist content.', 'radio-station' ),
-							'tab'		=> 'templates',
-							'section'	=> 'single',
-						),
+	'templates_change_note'      => array(
+		'type'    => 'note',
+		'label'   => __( 'Templates Change Note', 'radio-station' ),
+		'helper'  => __( 'Since 2.3.0, the way that Templates are implemented has changed.', 'radio-station' )
+		             . ' ' . __( 'See the Documentation for more information:', 'radio-station' )
+		             . ' <a href="' . RADIO_STATION_DOCS_URL . 'templates/" target="_blank">' . __( 'Templates Documentation', 'radio-station' ) . '</a>',
+		'tab'     => 'templates',
+		'section' => 'single',
+	),
+	'show_template'              => array(
+		'label'   => __( 'Show Template', 'radio-station' ),
+		'type'    => 'select',
+		'options' => array(
+			'page'     => __( 'Theme Page Template (page.php)', 'radio-station' ),
+			'post'     => __( 'Theme Post Template (single.php)', 'radio-station' ),
+			'singular' => __( 'Theme Singular Template (singular.php)', 'radio-station' ),
+			'legacy'   => __( 'Legacy Plugin Template', 'radio-station' ),
+		),
+		'default' => 'page',
+		'helper'  => __( 'Which template to use for displaying Show content.', 'radio-station' ),
+		'tab'     => 'templates',
+		'section' => 'single',
+	),
+	'show_template_combined'     => array(
+		'label'   => __( 'Combined Method', 'radio-station' ),
+		'type'    => 'checkbox',
+		'value'   => 'yes',
+		'default' => '',
+		'helper'  => __( 'Advanced usage. Use both a custom template AND content filtering for a Show. (Not compatible with Legacy templates.)', 'radio-station' ),
+		'tab'     => 'templates',
+		'section' => 'single',
+	),
+	'playlist_template'          => array(
+		'label'   => __( 'Playlist Template', 'radio-station' ),
+		'type'    => 'select',
+		'options' => array(
+			'page'   => __( 'Theme Page Template (page.php)', 'radio-station' ),
+			'post'   => __( 'Theme Post Template (single.php)', 'radio-station' ),
+			'legacy' => __( 'Legacy Plugin Template', 'radio-station' ),
+		),
+		'default' => 'page',
+		'helper'  => __( 'Which template to use for displaying Playlist content.', 'radio-station' ),
+		'tab'     => 'templates',
+		'section' => 'single',
+	),
 	'playlist_template_combined' => array(
-							'label'		=> __( 'Combined Method', 'radio-station' ),
-							'type'		=> 'checkbox',
-							'value'		=> 'yes',
-							'default'	=> '',
-							'helper'	=> __( 'Advanced usage. Use both a custom template AND content filtering for a Playlist. (Not compatible with Legacy templates.)', 'radio-station'),
-							'tab'		=> 'templates',
-							'section'	=> 'single',
-						),
+		'label'   => __( 'Combined Method', 'radio-station' ),
+		'type'    => 'checkbox',
+		'value'   => 'yes',
+		'default' => '',
+		'helper'  => __( 'Advanced usage. Use both a custom template AND content filtering for a Playlist. (Not compatible with Legacy templates.)', 'radio-station' ),
+		'tab'     => 'templates',
+		'section' => 'single',
+	),
 
 
 	// --- Roles / Capabilities / Permissions  ---
 	// 2.3.0: added new capability and role options
-	'show_editor_role_note' => array(
-							'type'		=> 'note',
-							'label'		=> __( 'Show Editor Role', 'radio-station' ),
-							'helper'	=> __( 'Since 2.3.0, a new Show Editor role has been added with Publish and Edit capabilities for all Radio Station Post Types.', 'radio-station' )
-								. ' ' . __( 'You can assign this Role to any user to give them full Station Schedule updating permissions.', 'radio-station' ),
-							'tab'		=> 'roles',
-							'section'	=> 'permissions',
-						),
+	'show_editor_role_note'      => array(
+		'type'    => 'note',
+		'label'   => __( 'Show Editor Role', 'radio-station' ),
+		'helper'  => __( 'Since 2.3.0, a new Show Editor role has been added with Publish and Edit capabilities for all Radio Station Post Types.', 'radio-station' )
+		             . ' ' . __( 'You can assign this Role to any user to give them full Station Schedule updating permissions.', 'radio-station' ),
+		'tab'     => 'roles',
+		'section' => 'permissions',
+	),
+
 	// 'add_show_editor_role'	=> array(
 	//						'type'		=> 'checkbox',
 	//						'label'		=> __( 'Enable Show Editor Role', 'radio-station' ),
@@ -423,27 +532,27 @@ $options = array(
 	//						'helper'	=> __( 'Adds a separate role that can publish and edit all Radio Station post types.', 'radio-station' ),
 	//						'tab'		=> 'roles',
 	//						'section'	=> 'permissions',
-	//					),
+	// ),
 
 	'add_author_capabilities' => array(
-							'type'		=> 'checkbox',
-							'label'		=> __( 'Add to Author Capabilities', 'radio-station' ),
-							'default'	=> 'yes',
-							'value'		=> 'yes',
-							'helper'	=> __( 'Allow users with WordPress Author role to publish and edit their own Shows and Playlists.', 'radio-station' ),
-							'tab'		=> 'roles',
-							'section'	=> 'permissions',
-						),
+		'type'    => 'checkbox',
+		'label'   => __( 'Add to Author Capabilities', 'radio-station' ),
+		'default' => 'yes',
+		'value'   => 'yes',
+		'helper'  => __( 'Allow users with WordPress Author role to publish and edit their own Shows and Playlists.', 'radio-station' ),
+		'tab'     => 'roles',
+		'section' => 'permissions',
+	),
 	'add_editor_capabilities' => array(
-							'type'		=> 'checkbox',
-							'label'		=> __( 'Add to Editor Capabilities', 'radio-station' ),
-							'default'	=> 'yes',
-							'value'		=> 'yes',
-							'helper'	=> __( 'Allow users with WordPress Editor role to edit all Radio Station post types.', 'radio-station' ),
-							'tab'		=> 'roles',
-							'section'	=> 'permissions',
-						),
-						
+		'type'    => 'checkbox',
+		'label'   => __( 'Add to Editor Capabilities', 'radio-station' ),
+		'default' => 'yes',
+		'value'   => 'yes',
+		'helper'  => __( 'Allow users with WordPress Editor role to edit all Radio Station post types.', 'radio-station' ),
+		'tab'     => 'roles',
+		'section' => 'permissions',
+	),
+
 	// 'disallow_shift_changes' => array(
 	//						'type'		=> 'checkbox',
 	//						'label'		=> __( 'Disallow Shift Changes', 'radio-station' ),
@@ -458,28 +567,28 @@ $options = array(
 	//						'tab'		=> 'roles',
 	//						'section'	=> 'permissions',
 	//						'pro'		=> true,
-	//					),
+	// ),
 
 	// --- Tabs and Sections ---
-	'tabs'			=>	array(
-							'general'		=> __( 'General', 'radio-station' ),
-							'pages'			=> __( 'Pages', 'radio-station' ),
-							'templates'		=> __( 'Templates', 'radio-station' ),
-							'roles'			=> __( 'Roles', 'radio-station' ),
-						),
-	'sections'		=>	array(
-							'station'			=> __( 'Station', 'radio-station' ),
-							'broadcast'			=> __( 'Broadcast', 'radio-station' ),
-							'times'				=> __( 'Times', 'radio-station' ),
-							'feeds'				=> __( 'Feeds', 'radio-station' ),
-							'single'			=> __( 'Single Templates', 'radio-station' ),
-							'archive'			=> __( 'Archive Templates', 'radio-station' ),
-							'schedule'			=> __( 'Schedule Page', 'radio-station' ),
-							'show'				=> __( 'Show Pages', 'radio-station' ),
-							'archives'			=> __( 'Archives', 'radio-station' ),
-							'permissions'		=> __( 'Permissions', 'radio-station'),
-						),
-	);
+	'tabs'                    => array(
+		'general'   => __( 'General', 'radio-station' ),
+		'pages'     => __( 'Pages', 'radio-station' ),
+		'templates' => __( 'Templates', 'radio-station' ),
+		'roles'     => __( 'Roles', 'radio-station' ),
+	),
+	'sections'                => array(
+		'station'     => __( 'Station', 'radio-station' ),
+		'broadcast'   => __( 'Broadcast', 'radio-station' ),
+		'times'       => __( 'Times', 'radio-station' ),
+		'feeds'       => __( 'Feeds', 'radio-station' ),
+		'single'      => __( 'Single Templates', 'radio-station' ),
+		'archive'     => __( 'Archive Templates', 'radio-station' ),
+		'schedule'    => __( 'Schedule Page', 'radio-station' ),
+		'show'        => __( 'Show Pages', 'radio-station' ),
+		'archives'    => __( 'Archives', 'radio-station' ),
+		'permissions' => __( 'Permissions', 'radio-station' ),
+	),
+);
 
 // ----------------------
 // Plugin Loader Settings
@@ -488,41 +597,48 @@ $options = array(
 $slug = 'radio-station';
 $args = array(
 	// --- Plugin Info ---
-	'slug'			=> $slug,
-	'file'			=> __FILE__,
-	'version'		=> '0.0.1',
+	'slug'         => $slug,
+	'file'         => __FILE__,
+	'version'      => '0.0.1',
 
 	// --- Menus and Links ---
-	'title'			=> 'Radio Station',
-	'parentmenu'	=> 'radio-station',
-	'home'			=> 'https://netmix.com/radio-station/',
-	'support'		=> 'https://github.com/netmix/radio-station/issues/',
-	'ratetext'		=> __( 'Rate on WordPress.org', 'radio-station' ),
+	'title'        => 'Radio Station',
+	'parentmenu'   => 'radio-station',
+	'home'         => RADIO_STATION_HOME_URL,
+	'support'      => 'https://github.com/netmix/radio-station/issues/',
+	'ratetext'     => __( 'Rate on WordPress.org', 'radio-station' ),
 	// 'share'			=> 'https://netmix.com/radio-station/#share',
 	// 'sharetext'		=> __( 'Share the Plugin Love', 'radio-station' ),
-	'donate'		=> 'https://patreon.com/radiostation',
-	'donatetext'	=> __( 'Support this Plugin',  'radio-station' ),
-	'readme'		=> false,
-	'settingsmenu'	=> false,
+	'donate'       => 'https://patreon.com/radiostation',
+	'donatetext'   => __( 'Support this Plugin', 'radio-station' ),
+	'readme'       => false,
+	'settingsmenu' => false,
 
 	// --- Options ---
-	'namespace'		=> 'radio_station',
-	'settings'		=> 'rs',
-	'option'		=> 'radio_station',
-	'options'		=> $options,
+	'namespace'    => 'radio_station',
+	'settings'     => 'rs',
+	'option'       => 'radio_station',
+	'options'      => $options,
 
 	// --- WordPress.Org ---
-	'wporgslug'		=> 'radio-station',
-	'wporg'			=> true,
-	'textdomain'	=> 'radio-station',
+	'wporgslug'    => 'radio-station',
+	'wporg'        => true,
+	'textdomain'   => 'radio-station',
 
 	// --- Freemius ---
-	'freemius_id'	=> '4526',
-	'freemius_key'	=> 'pk_aaf375c4fb42e0b5b3831e0b8476b',
-	'hasplans'		=> false,
-	'hasaddons'		=> false,
-	'plan'			=> 'free',
+	'freemius_id'  => '4526',
+	'freemius_key' => 'pk_aaf375c4fb42e0b5b3831e0b8476b',
+	'hasplans'     => false,
+	'hasaddons'    => false,
+	'plan'         => 'free',
 );
+
+// -------------------------
+// Set Plugin Option Globals
+// -------------------------
+global $radio_station_data;
+$radio_station_data['options'] = $options;
+$radio_station_data['settings'] = $args;
 
 // ----------------------------
 // Start Plugin Loader Instance
@@ -562,16 +678,16 @@ function radio_station_check_version() {
 
 	// --- check current against stored version ---
 	if ( !$stored_version ) {
-	
+
 		// --- no stored plugin version, add it now ---
 		update_option( 'radio_station_version', $version );
-		
+
 		if ( version_compare( $version, '2.3.0', '>=' ) ) {
 			// --- flush rewrite rules (for new post type and rest route rewrites) ---
 			// (handled separately as 2.3.0 is first version with version checking)
 			add_option( 'radio_station_flush_rewrite_rules', true );
 		}
-		
+
 	} elseif ( version_compare( $version, $stored_version, '>' ) ) {
 
 		// --- updates from before to after x.x.x ---
@@ -606,38 +722,28 @@ function radio_station_flush_rewrite_flag() {
 // 2.3.0: added for enqueueing main Radio Station script
 add_action( 'wp_enqueue_scripts', 'radio_station_enqueue_scripts' );
 function radio_station_enqueue_scripts() {
-	radio_station_enqueue_script( 'radio-station' );
+	// 2.3.0: added jquery dependency for inline script fragments
+	radio_station_enqueue_script( 'radio-station', array( 'jquery' ), true );
 }
 
 // ---------------------
 // Enqueue Plugin Script
 // ---------------------
-function radio_station_enqueue_script( $scriptkey ) {
+function radio_station_enqueue_script( $scriptkey, $deps = array(), $infooter = false ) {
 
 	// --- set stylesheet filename and child theme path ---
 	$filename = $scriptkey . '.js';
-	$theme_path = get_stylesheet_directory();
 
-	if ( file_exists( $theme_path . '/js/' . $filename ) ) {
-		// --- child theme JS subdirectory ---
-		$version = filemtime( $theme_path  . '/js/' . $filename );
-		$url     = get_stylesheet_directory_uri() . '/js/' . $filename;
-	} elseif ( file_exists( $theme_path . '/' . $filename ) ) {
-		// --- child theme directory ---
-		$version = filemtime( $theme_path  . '/' . $filename );
-		$url     = get_stylesheet_directory_uri() . '/' . $filename;
-	} elseif ( file_exists( RADIO_STATION_DIR . '/js/' . $filename ) ) {
-		// --- plugin JS subdirectory (default) ---
-		$version = filemtime( RADIO_STATION_DIR . '/js/' . $filename );
-		$url     = plugins_url( 'js/' . $filename, __FILE__ );
-	} else {
-		// --- missing javascript file ---
-		// (could mean plugin is corrupt)
-		echo "<!-- Warning: missing file: ".$filename." -->";
+	// 2.3.0: check template hierarchy for file
+	$template = radio_station_get_template( 'both', $filename, 'js' );
+	if ( $template ) {
+
+		$version = filemtime( $template['file'] );
+		$url = $template['url'];
+
+		// --- enqueue script ---
+		wp_enqueue_script( $scriptkey, $url, $deps, $version, $infooter );
 	}
-
-	// --- enqueue script ---
-	wp_enqueue_script( $scriptkey, $url, array(), $version );
 }
 
 // -------------------------
@@ -650,134 +756,207 @@ function radio_station_enqueue_style( $stylekey ) {
 
 	// --- check style enqueued switch ---
 	global $radio_station_styles;
-	if ( !isset( $radio_station_styles ) ) {$radio_station_styles = array();}
+	if ( !isset( $radio_station_styles ) ) {
+		$radio_station_styles = array();
+	}
 	if ( !isset( $radio_station_styles[$stylekey] ) ) {
-	
+
 		// --- set stylesheet filename and child theme path ---
 		$filename = 'rs-' . $stylekey . '.css';
-		$theme_path = get_stylesheet_directory();
-		
-		if ( file_exists( $theme_path . '/css/' . $filename ) ) {
-			// --- child theme CSS subdirectory ---
-			$version = filemtime( $theme_path  . '/css/' . $filename );
-			$url     = get_stylesheet_directory_uri() . '/css/' . $filename;
-		} elseif ( file_exists( $theme_path . '/' . $filename ) ) {
-			// --- child theme directory ---
-			$version = filemtime( $theme_path  . '/' . $filename );
-			$url     = get_stylesheet_directory_uri() . '/' . $filename;
-		} elseif ( file_exists( RADIO_STATION_DIR . '/css/' . $filename ) ) {
-			// --- plugin CSS subdirectory (default) ---
-			$version = filemtime( RADIO_STATION_DIR . '/css/' . $filename );
-			$url     = plugins_url( 'css/' . $filename, __FILE__ );
-		} else {
-			// --- missing plugin file ---
-			// (could mean plugin is corrupt)		
-			echo "<!-- Warning: missing file: ".$filename." -->";
+
+		// 2.3.0: check template hierarchy for file
+		$template = radio_station_get_template( 'both', $filename, 'css' );
+		if ( $template ) {
+
+			// --- use found template values ---
+			$version = filemtime( $template['file'] );
+			$url = $template['url'];
+
+			// --- enqueue styles in footer ---
+			wp_enqueue_style( 'rs-' . $stylekey, $url, array(), $version, 'all' );
+
+			// --- set style enqueued switch ---
+			$radio_station_styles[$stylekey] = true;
 		}
-		
-		// --- enqueue styles in footer ---
-		wp_enqueue_style( 'rs-' . $stylekey, $url, array(), $version, 'all' );
-		
-		// --- set style enqueued switch ---
-		$radio_station_styles[$stylekey] = true;
 	}
 }
 
 // ---------------------
 // Localize Time Strings
 // ---------------------
-add_action( 'wp_footer', 'radio_station_localize_time_strings' );
+add_action( 'wp_enqueue_scripts', 'radio_station_localize_time_strings' );
 function radio_station_localize_time_strings() {
 
-	// --- output localized time variables ---
-	echo "<script>";
-	
-		// --- clock time format ---
-		$clock_time_format = radio_station_get_setting( 'clock_time_format' );
-		echo "var radio_clock_format = '" . $clock_time_format . "'; ";
-		echo "var radio_am = '" . radio_station_translate_meridiem( 'am' ) . "'; ";
-		echo "var radio_pm = '" . radio_station_translate_meridiem( 'pm' ) . "'; ";
-		
-		// --- radio timezone ---
-		$timezone = radio_station_get_setting( 'timezone_location' );
-		if ( !$timezone || ( $timezone == '' ) ) {
-			// --- fallback to WordPress timezone ---
-			$timezone = get_option( 'timezone_string' );
-			if ( false !== strpos($timezone,'Etc/GMT') ) {$timezone = '';}
-			if ( $timezone == '' ) {
-				$offset = get_option( 'gmt_offset' );
-			}
-		}		
-		if ( isset( $offset ) ) {
-			if ( !$offset ) {$offset = 0;}
-			// $offset = intval( $offset ) * 60 * 60 * 1000;
-			echo "var radio_timezone_offset = " . $offset. "; ";
-			if ( $offset == 0 ) {$offset = '';}
-			elseif ( $offset > 0 ) {$offset = '+' . $offset;}
-			echo "var radio_timezone_code = 'UTC" . $offset. "'; ";
-			echo "var radio_timezone_utc = '" . $offset ."'; ";
+	// --- clock time format ---
+	$clock_time_format = radio_station_get_setting( 'clock_time_format' );
+	$js = "var radio = {}; ";
+	$js .= "radio.clock_format = '" . esc_js( $clock_time_format ) . "'; ";
+	$js .= "radio.am = '" . esc_js( radio_station_translate_meridiem( 'am' ) ) . "'; ";
+	$js .= "radio.pm = '" . esc_js( radio_station_translate_meridiem( 'pm' ) ) . "'; ";
+
+	// --- radio timezone ---
+	$timezone = radio_station_get_setting( 'timezone_location' );
+	if ( !$timezone || ( '' == $timezone ) ) {
+		// --- fallback to WordPress timezone ---
+		$timezone = get_option( 'timezone_string' );
+		if ( false !== strpos( $timezone, 'Etc/GMT' ) ) {
+			$timezone = '';
+		}
+		if ( '' == $timezone ) {
+			$offset = get_option( 'gmt_offset' );
+		}
+	}
+	if ( isset( $offset ) ) {
+		if ( !$offset ) {
+			$offset = 0;
+		}
+		// $offset = intval( $offset ) * 60 * 60 * 1000;
+		$js .= "radio.timezone_offset = " . esc_js( $offset ) . "; ";
+		if ( 0 == $offset ) {
+			$offset = '';
+		} elseif ( $offset > 0 ) {
+			$offset = '+' . $offset;
+		}
+		$js .= "radio.timezone_code = 'UTC" . esc_js( $offset ) . "'; ";
+		$js .= "radio.timezone_utc = '" . esc_js( $offset ) . "'; ";
+	} else {
+		$datetimezone = new DateTimeZone( $timezone );
+		$offset = $datetimezone->getOffset( new DateTime() );
+		if ( 0 == $offset ) {
+			$utc_offset = '';
+		} elseif ( $offset > 0 ) {
+			$utc_offset = '+' . $offset;
 		} else {
-			$datetimezone = new DateTimeZone( $timezone );
-			$offset = $datetimezone->getOffset(new DateTime);
-			if ( $offset == 0 ) {$utc_offset = '';}
-			elseif ( $offset > 0 ) {$utc_offset = '+' . $offset;}
-			else {$utc_offset = $offset;}
-			$utc_offset = 'UTC' . $utc_offset;
-			$code = radio_station_get_timezone_code( $timezone );
-			echo "var radio_timezone_location = '" . $timezone. "'; ";
-			echo "var radio_timezone_offset = " . $offset. "; ";
-			echo "var radio_timezone_code = '" . $timezone. "'; ";
-			echo "var radio_timezone_utc = '" . $utc_offset . "'; ";
+			$utc_offset = $offset;
 		}
+		$utc_offset = 'UTC' . $utc_offset;
+		$code = radio_station_get_timezone_code( $timezone );
+		$js .= "radio.timezone_location = '" . esc_js( $timezone ) . "'; ";
+		$js .= "radio.timezone_offset = " . esc_js( $offset ) . "; ";
+		$js .= "radio.timezone_code = '" . esc_js( $timezone ) . "'; ";
+		$js .= "radio.timezone_utc = '" . esc_js( $utc_offset ) . "'; ";
+	}
 
-		// --- translated months array ---
-		echo "var radio_months = new Array(";
-		$months = array( 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' );
-		foreach ( $months as $i => $month ) {
-			$month = radio_station_translate_month( $month );
-			$month = str_replace( "'", "", $month );
-			echo "'" . $month ."'";
-			if ( $i < count( $months ) ) {echo ", ";}
+	// --- translated months array ---
+	$js .= "radio.months = new Array(";
+	$months = array( 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' );
+	foreach ( $months as $i => $month ) {
+		$month = radio_station_translate_month( $month );
+		$month = str_replace( "'", "", $month );
+		$js .= "'" . $month . "'";
+		if ( $i < count( $months ) ) {
+			$js .= ", ";
 		}
-		echo ");".PHP_EOL;
-		
-		// --- translated days array ---
-		echo "var radio_days = new Array(";
-		$days = array( 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' );
-		foreach ( $days as $i => $day ) {
-			$day = radio_station_translate_weekday( $day );
-			$day = str_replace( "'", "", $day );
-			echo "'" . $day ."'";
-			if ( $i < count( $days ) ) {echo ", ";}
+	}
+	$js .= ");" . PHP_EOL;
+
+	// --- translated days array ---
+	$js .= "radio.days = new Array(";
+	$days = array( 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' );
+	foreach ( $days as $i => $day ) {
+		$day = radio_station_translate_weekday( $day );
+		$day = str_replace( "'", "", $day );
+		$js .= "'" . $day . "'";
+		if ( $i < count( $days ) ) {
+			$js .= ", ";
 		}
-		echo ");".PHP_EOL;	
-		
-	echo "</script>";
+	}
+	$js .= ");" . PHP_EOL;
+
+	// --- add inline script ---
+	wp_add_inline_script( 'radio-station', $js );
+
 }
-	
-// ------------------------
-// === Template Filters ===
-// ------------------------
 
 // -----------------
-// Add Rewrite Rules
+// === Templates ===
 // -----------------
-// (not implemented as custom post types registered)
-// add_action( 'init', 'radio_station_add_rewrite_rules' );
-function radio_station_add_rewrite_rules() {
 
-	global $wp;
-	$wp->add_query_var( 'host' );
-	$wp->add_query_var( 'producer' );
-	
-	// --- Host Single Page ---
-	// $host_page = radio_station_get_setting( 'host_page' );
-	// add_rewrite_rule(
-	//	$basename . '/?([^/]*)',
-	//  	'index.php?page_id=' . $host_page . '&host=$matches[1]',
-	//  	'top'
-	// );
-	
+// ------------
+// Get Template
+// ------------
+// 2.3.0: added for template file hierarchy
+function radio_station_get_template( $type, $template, $paths = false ) {
+
+	global $radio_station_data;
+
+	// --- maybe set default paths ---
+	if ( !$paths ) {
+		if ( isset( $radio_station_data['template-dirs'] ) ) {
+			$dirs = $radio_station_data['template-dirs'];
+		}
+		$paths = array( 'templates', '' );
+	} elseif ( is_string( $paths ) ) {
+		if ( 'css' == $paths ) {
+			if ( isset( $radio_station_data['style-dirs'] ) ) {
+				$dirs = $radio_station_data['style-dirs'];
+			}
+			$paths = array( 'css', 'styles' );
+		} elseif ( 'js' == $paths ) {
+			if ( isset( $radio_station_data['script-dirs'] ) ) {
+				$dirs = $radio_station_data['script-dirs'];
+			}
+			$paths = array( 'js', 'scripts' );
+		}
+	}
+
+	if ( !isset( $dirs ) ) {
+		$dirs = array();
+		$styledir = get_stylesheet_directory();
+		$styledirurl = get_stylesheet_directory_uri();
+		$templatedir = get_template_directory();
+		$templatedirurl = get_template_directory_uri();
+
+		// --- maybe generate default hierarchies ---
+		foreach ( $paths as $path ) {
+			$dirs[] = array(
+				'path'    => $styledir . '/' . $path,
+				'urlpath' => $styledirurl . '/' . $path,
+			);
+		}
+		if ( $styledir != $templatedir ) {
+			foreach ( $paths as $path ) {
+				$dirs[] = array(
+					'path'    => $templatedir . '/' . $path,
+					'urlpath' => $templatedirurl . '/' . $path,
+				);
+			}
+		}
+		if ( defined( RADIO_STATION_PRO_DIR ) ) {
+			foreach ( $paths as $path ) {
+				$dirs[] = array(
+					'path'    => RADIO_STATION_PRO_DIR . '/' . $path,
+					'urlpath' => plugins_url( $path, RADIO_STATION_PRO_FILE ),
+				);
+			}
+		}
+		foreach ( $paths as $path ) {
+			$dirs[] = array(
+				'path'    => RADIO_STATION_DIR . '/' . $path,
+				'urlpath' => plugins_url( $path, RADIO_STATION_FILE ),
+			);
+		}
+	}
+	$dirs = apply_filters( 'radio_station_template_dir_hierarchy', $dirs, $template, $paths );
+
+	// --- loop directory hierarchy to find first template ---
+	foreach ( $dirs as $dir ) {
+
+		$template_path = $dir['path'] . '/' . $template;
+		$template_url = $dir['urlpath'] . '/' . $template;
+
+		if ( file_exists( $template_path ) ) {
+			if ( 'file' == (string) $type ) {
+				return $template_path;
+			} elseif ( 'url' === (string) $type ) {
+				return $template_url;
+			} else {
+				return array( 'file' => $template_path, 'url' => $template_url );
+			}
+		}
+	}
+
+	return false;
 }
 
 // ------------------------------
@@ -789,12 +968,13 @@ function radio_station_automatic_pages_content( $content ) {
 
 	// --- for automatic output on selected master schedule page ---
 	$schedule_page = radio_station_get_setting( 'schedule_page' );
-	if ( !is_null( $schedule_page ) && ( $schedule_page != '' ) ) {
+	if ( !is_null( $schedule_page ) && !empty( $schedule_page ) ) {
 		if ( is_page( $schedule_page ) ) {
 			$automatic = radio_station_get_setting( 'schedule_auto' );
-			if ( $automatic == 'yes' ) {
+			if ( 'yes' === (string) $automatic ) {
 				$view = radio_station_get_setting( 'schedule_view' );
-				return do_shortcode( '[master-schedule list="' . $view . '"]' );
+				$shortcode = '[master-schedule view="' . $view . '"]';
+				return do_shortcode( $shortcode );
 			}
 		}
 	}
@@ -802,13 +982,14 @@ function radio_station_automatic_pages_content( $content ) {
 	// --- show archive page ---
 	// 2.3.0: added automatic display of show archive page
 	$show_archive_page = radio_station_get_setting( 'show_archive_page' );
-	if ( !is_null( $show_archive_page ) && ( $show_archive_page != '' ) ) {
+	if ( !is_null( $show_archive_page ) && !empty( $show_archive_page ) ) {
 		if ( is_page( $show_archive_page ) ) {
 			$automatic = radio_station_get_setting( 'show_archive_auto' );
-			if ( $automatic == 'yes' ) {
+			if ( 'yes' === (string) $automatic ) {
 				// $view = radio_station_get_setting( 'show_archive_view' );
-				$view = '';
-				return do_shortcode( '[shows-archive view="' . $view . '"]' );
+				// $shortcode = '[shows-archive view="' . $view . '"]';
+				$shortcode = '[shows-archive]';
+				return do_shortcode( $shortcode );
 			}
 		}
 	}
@@ -816,27 +997,29 @@ function radio_station_automatic_pages_content( $content ) {
 	// --- playlist archive page ---
 	// 2.3.0: added automatic display of playlist archive page
 	$playlist_archive_page = radio_station_get_setting( 'playlist_archive_page' );
-	if ( !is_null( $playlist_archive_page ) && ( $playlist_archive_page != '' ) ) {
+	if ( !is_null( $playlist_archive_page ) && !empty( $playlist_archive_page ) ) {
 		if ( is_page( $playlist_archive_page ) ) {
 			$automatic = radio_station_get_setting( 'playlist_archive_auto' );
-			if ( $automatic == 'yes' ) {
+			if ( 'yes' == $automatic ) {
 				// $view = radio_station_get_setting( 'playlist_archive_view' );
-				$view = '';
-				return do_shortcode( '[playlists-archive view="' . $view . '"]' );
+				// $shortcode = '[playlists-archive view="' . $view . '"]'
+				$shortcode = '[playlists-archive]';
+				return do_shortcode( $shortcode );
 			}
 		}
 	}
-	
+
 	// --- genre archive page ---
 	// 2.3.0: added automatic display of genre archive page
 	$genre_archive_page = radio_station_get_setting( 'genre_archive_page' );
-	if ( !is_null( $genre_archive_page ) && ( $genre_archive_page != '' ) ) {
+	if ( !is_null( $genre_archive_page ) && !empty( $genre_archive_page ) ) {
 		if ( is_page( $genre_archive_page ) ) {
 			$automatic = radio_station_get_setting( 'genre_archive_auto' );
-			if ( $automatic == 'yes' ) {
+			if ( 'yes' === (string) $automatic ) {
 				// $view = radio_station_get_setting( 'genre_archive_view' );
-				$view = '';
-				return do_shortcode( '[genres-archive view="' . $view . '"]' );
+				// $shortcode = '[genres-archive view="' . $view . '"]';
+				$shortcode = '[genres-archive]';
+				return do_shortcode( $shortcode );
 			}
 		}
 	}
@@ -852,7 +1035,9 @@ function radio_station_automatic_pages_content( $content ) {
 function radio_station_single_content_template( $content, $post_type ) {
 
 	// --- check if single plugin post type ---
-	if ( !is_singular( $post_type ) ) {return $content;}
+	if ( !is_singular( $post_type ) ) {
+		return $content;
+	}
 
 	// --- check for user content templates ---
 	$theme_dir = get_stylesheet_directory();
@@ -863,12 +1048,14 @@ function radio_station_single_content_template( $content, $post_type ) {
 	);
 	$templates = apply_filters( 'radio_station_' . $post_type . '_content_templates', $templates, $post_type );
 	foreach ( $templates as $template ) {
-		if ( file_exists( $template ) ) {$content_template = $template; break;}
+		if ( file_exists( $template ) ) {
+			$content_template = $template;
+			break;
+		}
 	}
-	if ( !isset( $content_template ) ) {return $content;}
-
-	// --- start buffer and include content template ---
-	ob_start(); include( $content_template );
+	if ( !isset( $content_template ) ) {
+		return $content;
+	}
 
 	// --- enqueue template styles ---
 	radio_station_enqueue_style( 'templates' );
@@ -876,10 +1063,16 @@ function radio_station_single_content_template( $content, $post_type ) {
 	// --- enqueue dashicons for frontend ---
 	wp_enqueue_style( 'dashicons' );
 
+	// --- start buffer and include content template ---
+	ob_start();
+	include $content_template;
+
 	// --- filter and return buffered content ---
-	$output = ob_get_contents(); ob_end_clean();
+	$output = ob_get_contents();
+	ob_end_clean();
 	$output = str_replace( '<!-- the_content -->', $content, $output );
 	$output = apply_filters( 'radio_station_content_' . $post_type, $output, get_the_ID() );
+
 	return $output;
 }
 
@@ -890,7 +1083,8 @@ function radio_station_single_content_template( $content, $post_type ) {
 add_filter( 'the_content', 'radio_station_show_content_template', 11 );
 function radio_station_show_content_template( $content ) {
 	remove_filter( 'the_content', 'radio_station_show_content_template', 11 );
-	return radio_station_single_content_template( $content, 'show' );
+
+	return radio_station_single_content_template( $content, RADIO_STATION_SHOW_SLUG );
 }
 
 // --------------------------------
@@ -900,7 +1094,8 @@ function radio_station_show_content_template( $content ) {
 add_filter( 'the_content', 'radio_station_playlist_content_template', 11 );
 function radio_station_playlist_content_template( $content ) {
 	remove_filter( 'the_content', 'radio_station_playlist_content_template', 11 );
-	return radio_station_single_content_template( $content, 'playlist' );
+
+	return radio_station_single_content_template( $content, RADIO_STATION_PLAYLIST_SLUG );
 }
 
 // --------------------------------
@@ -910,47 +1105,8 @@ function radio_station_playlist_content_template( $content ) {
 add_filter( 'the_content', 'radio_station_override_content_template', 11 );
 function radio_station_override_content_template( $content ) {
 	remove_filter( 'the_content', 'radio_station_override_content_template', 11 );
-	return radio_station_single_content_template( $content, 'override' );
+	return radio_station_single_content_template( $content, RADIO_STATION_OVERRIDE_SLUG );
 }
-
-// -------------------------------
-// Playlist Archive Show Filtering
-// -------------------------------
-// 2.3.0: added to replace old archive template meta query
-add_filter( 'pre_get_posts', 'radio_station_show_playlist_query' );
-function radio_station_show_playlist_query( $query ) {
-
-	if ( $query->get( 'post_type' ) == 'playlist' ) {
-
-		// --- not needed if using legacy template ---
-		$theme_dir = get_stylesheet_directory();
-		if ( file_exists( $theme_dir . '/archive-playlist.php' ) 
-		  || file_exists( $theme_dir . '/templates/archive-playlist.php' ) ) {return;}
-
-		// --- check if show ID or slug is set --
-		if ( isset( $_GET['show_id'] ) ) {
-			$show_id = absint( $_GET['show_id'] );
-			if ( $show_id < 0 ) {unset( $show_id );}
-		} elseif ( isset( $_GET['show'] ) ) {
-			$show = sanitize_title( $_GET['show'] );
-			global $wpdb;
-			$show_query = "SELECT ID FROM ".$wpdb->prefix."posts WHERE post_type = 'show' AND post_name = %s";
-			$show_query = $wpdb->prepare( $show_query, $show );
-			$show_id = $wpdb->get_var( $show_query );
-			if ( !$show_id ) {unset( $show_id );}
-		}
-
-		// --- maybe add the playlist meta query ---
-		if ( isset( $show_id ) ) {
-			$meta_query = array(
-				'key'	=> 'playlist_show_id',
-				'value'	=> $show_id,
-			);
-			$query->set( $meta_query );
-		}
-	}
-}
-
 
 // -------------------------------
 // DJ / Host / Author Template Fix
@@ -967,52 +1123,63 @@ function radio_station_author_host_pages( $template ) {
 
 			// --- get user by ID or name ---
 			$host = get_query_var( 'host' );
-			if ( absint( $host ) > -1 ) {$user = get_user_by( 'ID', $host );}
-			else {$user = get_user_by( 'slug', $host );}
+			if ( absint( $host ) > - 1 ) {
+				$user = get_user_by( 'ID', $host );
+			} else {
+				$user = get_user_by( 'slug', $host );
+			}
 
 			// --- check if specified user has DJ role ---
 			if ( $user && in_array( 'dj', $user->roles ) ) {
 				$host_template = radio_station_get_host_template();
-				if ( $host_template ) {$template = $host_template;}
+				if ( $host_template ) {
+					$template = $host_template;
+				}
 			}
 
 		} elseif ( get_query_var( 'producer' ) ) {
 
 			// --- get user by ID or name ---
 			$producer = get_query_var( 'producer' );
-			if ( absint( $producer ) > -1 ) {$user = get_user_by( 'ID', $producer );}
-			else {$user = get_user_by( 'slug', $producer );}
+			if ( absint( $producer ) > - 1 ) {
+				$user = get_user_by( 'ID', $producer );
+			} else {
+				$user = get_user_by( 'slug', $producer );
+			}
 
 			// --- check if specified user has DJ role ---
 			if ( $user && in_array( 'producer', $user->roles ) ) {
 				$producer_template = radio_station_get_producer_template();
-				if ( $producer_template ) {$template = $producer_template;}
+				if ( $producer_template ) {
+					$template = $producer_template;
+				}
 			}
 
 		} elseif ( get_query_var( 'author' ) && ( 0 == $wp_query->posts->post ) ) {
 
 			// --- get the author user ---
 			if ( get_query_var( 'author_name' ) ) {
-				$author =  get_user_by( 'slug', get_query_var( 'author_name' ) );
+				$author = get_user_by( 'slug', get_query_var( 'author_name' ) );
 			} else {
 				$author = get_userdata( get_query_var( 'author' ) );
 			}
-			
+
 			if ( $author ) {
-			
+
 				// --- check if author has DJ, producer or administrator role ---
-				if ( in_array( 'dj', $author->roles ) 
-				  || in_array( 'producer', $author->roles ) 
-				  || in_array( 'administrator', $author->roles ) ) {
-				  
+				if ( in_array( 'dj', $author->roles )
+				     || in_array( 'producer', $author->roles )
+				     || in_array( 'administrator', $author->roles ) ) {
+
 					// TODO: maybe check if user is assigned to any shows ?
 					$template = get_author_template();
 				}
 			}
 
-		} 
+		}
 
 	}
+
 	return $template;
 }
 
@@ -1035,7 +1202,8 @@ function radio_station_get_host_template() {
 	$templates[] = 'single-host.php';
 
 	$templates = apply_filters( 'radio_station_host_templates', $templates );
-    return get_query_template( 'host', $templates );
+
+	return get_query_template( RADIO_STATION_HOST_SLUG, $templates );
 }
 
 // ---------------------
@@ -1055,9 +1223,10 @@ function radio_station_get_producer_template() {
 		$templates[] = 'producer-' . $producername . '.php';
 	}
 	$templates[] = 'single-producer.php';
-	
+
 	$templates = apply_filters( 'radio_station_producer_templates', $templates );
-    return get_query_template( 'producer', $templates );
+
+	return get_query_template( RADIO_STATION_PRODUCER_SLUG, $templates );
 }
 
 // -------------------------
@@ -1069,11 +1238,14 @@ function radio_station_single_template_hierarchy( $templates ) {
 
 	// --- remove single.php as the show / playlist fallback ---
 	// (allows for user selection of page.php or single.php later)
-	if ( ( $post->post_type == 'show') 
-	  || ( $post->post_type == 'playlist') ) {	
+	if ( ( RADIO_STATION_SHOW_SLUG === (string) $post->post_type )
+	     || ( RADIO_STATION_PLAYLIST_SLUG === (string) $post->post_type ) ) {
 		$i = array_search( 'single.php', $templates );
-		if ( $i !== false ) {unset( $templates[$i] );}
+		if ( false !== $i ) {
+			unset( $templates[$i] );
+		}
 	}
+
 	return $templates;
 }
 
@@ -1087,27 +1259,29 @@ function radio_station_load_template( $single_template, $type, $templates ) {
 
 	// --- handle single templates ---
 	$post_type = $post->post_type;
-	$post_types = array( 'show', 'playlist' ); // 'host', 'producer' );
+	$post_types = array( RADIO_STATION_SHOW_SLUG, RADIO_STATION_PLAYLIST_SLUG );
+	// ... RADIO_STATION_HOST_SLUG, RADIO_STATION_PRODUCER_SLUG
+	//
 	if ( in_array( $post_type, $post_types ) ) {
-		
+
 		// $user_template = get_stylesheet_directory() . '/single-' . $post_type . '.php';
-		
+
 		// --- check for existing template override ---
 		// note: single.php is removed from template hierarchy via filter
 		remove_filter( 'single_template', 'radio_station_load_template' );
 		add_filter( 'single_template_hierarchy', 'radio_station_single_template_hierarchy' );
 		$template = get_single_template();
 		remove_filter( 'single_template_hierarchy', 'radio_station_single_template_hierarchy' );
-		
+
 		// --- use legacy template ---
 		if ( $template ) {
-			
+
 			// --- use the found user template ---
 			$single_template = $template;
-			
+
 			// --- check for combined template and content filter ---
 			$combined = radio_station_get_setting( $post_type . '_template_combined' );
-			if ( $combined != 'yes' ) {
+			if ( 'yes' != $combined ) {
 				remove_filter( 'the_content', 'radio_station_' . $post_type . '_content_template', 11 );
 			}
 
@@ -1119,16 +1293,20 @@ function radio_station_load_template( $single_template, $type, $templates ) {
 			$show_template = radio_station_get_setting( $post_type . '_template' );
 
 			// --- maybe use legacy template ---
-			if ( $show_template == 'legacy' ) {
-				return RADIO_STATION_DIR . '/templates/legacy/single-' . $post_type .' .php';
+			if ( 'legacy' === (string) $show_template ) {
+				return RADIO_STATION_DIR . '/templates/legacy/single-' . $post_type . '.php';
 			}
-			
+
 			// --- use post or page template ---
-			if ( $show_template == 'post' ) {$templates = array( 'single.php' );}
-			elseif ( $show_template == 'page' ) {$templates = array ( 'page.php' );}
-			
+			if ( 'post' == $show_template ) {
+				$templates = array( 'single.php' );
+			} elseif ( 'page' == $show_template ) {
+				$templates = array( 'page.php' );
+			}
+
 			// --- add standard fallbacks to singular and index ---
-			$templates[] = 'singular.php'; $templates[] = 'index.php';
+			$templates[] = 'singular.php';
+			$templates[] = 'index.php';
 			$single_template = get_query_template( $post_type, $templates );
 		}
 	}
@@ -1143,14 +1321,14 @@ add_filter( 'archive_template_hierarchy', 'radio_station_archive_template_hierar
 function radio_station_archive_template_hierarchy( $templates ) {
 
 	// --- add extra template search path of /templates/ ---
-    $post_types = array_filter( (array) get_query_var( 'post_type' ) );
-    if ( count( $post_types ) == 1 ) {
-        $post_type = reset( $post_types );
-        $post_types = array( 'show', 'playlist', 'host', 'producer' );
-        if ( in_array( $post_type, $post_types ) ) {
-        	$templates = array_merge( 'templates/archive-' . $post_type . '.php', $templates );
+	$post_types = array_filter( (array) get_query_var( 'post_type' ) );
+	if ( count( $post_types ) == 1 ) {
+		$post_type = reset( $post_types );
+		$post_types = array( RADIO_STATION_SHOW_SLUG, RADIO_STATION_PLAYLIST_SLUG, RADIO_STATION_HOST_SLUG, RADIO_STATION_PRODUCER_SLUG );
+		if ( in_array( $post_type, $post_types ) ) {
+			$templates = array_merge( array( 'templates/archive-' . $post_type . '.php' ), $templates );
 		}
-    }
+	}
 
 	return $templates;
 }
@@ -1163,11 +1341,11 @@ function radio_station_load_custom_post_type_template( $archive_template, $type,
 	global $post;
 
 	// --- check for archive template override ---
-	$post_types = array( 'show', 'playlist', 'host', 'producer' );
+	$post_types = array( RADIO_STATION_SHOW_SLUG, RADIO_STATION_PLAYLIST_SLUG, RADIO_STATION_HOST_SLUG, RADIO_STATION_PRODUCER_SLUG );
 	foreach ( $post_types as $post_type ) {
 		if ( is_post_type_archive( $post_type ) ) {
 			$override = radio_station_get_setting( $post_type . '_archive_override' );
-			if ( $override == 'yes' ) {
+			if ( 'yes' !== (string) $override ) {
 				$archive_template = get_page_template();
 				add_filter( 'the_content', 'radio_station_' . $post_type . '_archive', 11 );
 			}
@@ -1182,12 +1360,15 @@ function radio_station_load_custom_post_type_template( $archive_template, $type,
 // -------------------------
 function radio_station_show_archive( $content ) {
 	$auto = radio_station_get_setting( 'show_archive_auto' );
-	if ( $auto != 'yes' ) {return $content;}
+	if ( 'yes' !== (string) $auto ) {
+		return $content;
+	}
 	$shortcode = '[show-archive';
 	// $view = radio_station_get_setting( 'show_archive_view' );
 	// if ( $view == 'grid' ) {$shortcode .= ' view="grid"';}
 	$shortcode .= ']';
 	$content = do_shortcode( $shortcode );
+
 	return $content;
 }
 
@@ -1196,13 +1377,96 @@ function radio_station_show_archive( $content ) {
 // -----------------------------
 function radio_station_playlist_archive( $content ) {
 	$auto = radio_station_get_setting( 'playlist_archive_auto' );
-	if ( $auto != 'yes' ) {return $content;}
+	if ( 'yes' !== (string) $auto ) {
+		return $content;
+	}
 	$shortcode = '[playlist-archive';
 	// $view = radio_station_get_setting( 'playlist_archive_view' );
 	// if ( $view == 'grid' ) {$shortcode .= ' view="grid"';}
 	$shortcode .= ']';
 	$content = do_shortcode( $shortcode );
+
 	return $content;
+}
+
+
+// =============
+// Query Filters
+// =============
+
+// -----------------------------
+// Playlist Archive Query Filter
+// -----------------------------
+// 2.3.0: added to replace old archive template meta query
+add_filter( 'pre_get_posts', 'radio_station_show_playlist_query' );
+function radio_station_show_playlist_query( $query ) {
+
+	if ( RADIO_STATION_PLAYLIST_SLUG == $query->get( 'post_type' ) ) {
+
+		// --- not needed if using legacy template ---
+		$styledir = get_stylesheet_directory();
+		if ( file_exists( $styledir . '/archive-playlist.php' )
+		     || file_exists( $styledir . '/templates/archive-playlist.php' ) ) {
+			return;
+		}
+		// 2.3.0: also check in parent theme directory
+		$templatedir = get_template_directory();
+		if ( $templatedir != $styledir ) {
+			if ( file_exists( $templatedir . '/archive-playlist.php' )
+			     || file_exists( $templatedir . '/templates/archive-playlist.php' ) ) {
+				return;
+			}
+		}
+
+		// --- check if show ID or slug is set --
+		// TODO: maybe use get_query_var here ?
+		if ( isset( $_GET['show_id'] ) ) {
+			$show_id = absint( $_GET['show_id'] );
+			if ( $show_id < 0 ) {
+				unset( $show_id );
+			}
+		} elseif ( isset( $_GET['show'] ) ) {
+			$show = sanitize_title( $_GET['show'] );
+			global $wpdb;
+			$show_query = "SELECT ID FROM " . $wpdb->prefix . "posts WHERE post_type = '" . RADIO_STATION_SHOW_SLUG . "' AND post_name = %s";
+			$show_query = $wpdb->prepare( $show_query, $show );
+			$show_id = $wpdb->get_var( $show_query );
+			if ( !$show_id ) {
+				unset( $show_id );
+			}
+		}
+
+		// --- maybe add the playlist meta query ---
+		if ( isset( $show_id ) ) {
+			$meta_query = array(
+				'key'   => 'playlist_show_id',
+				'value' => $show_id,
+			);
+			$query->set( $meta_query );
+		}
+	}
+}
+
+// -----------------------------
+// Language Archive Query Filter
+// -----------------------------
+add_action( 'pre_get_posts', 'radio_station_language_taxonomy_query' );
+function radio_station_language_taxonomy_query( $query ) {
+	if ( $query->is_main_query() && !is_admin() && $query->is_tax( RADIO_STATION_LANGUAGES_SLUG ) ) {
+		$post_types = array( RADIO_STATION_SHOW_SLUG, RADIO_STATION_OVERRIDE_SLUG );
+		$post_types = apply_filters( 'radio_station_languages_archive_post_types', $post_types );
+		$query->set( 'post_types', $post_types );
+		$tax_query = $query->get( 'tax_query' );
+		echo "<!--TAX QUERY: " . print_r( $tax_query ) . "-->";
+		// --- get posts where language is not assigned ---
+		// $tax_query = array(
+		//    array(
+		//        'taxonomy' => RADIO_STATION_LANGUAGES_SLUG,
+		//        'operator' => 'NOT EXISTS',
+		//     ),
+		// );
+		// $query->set( 'tax_query', $tax_query );
+	}
 }
 
 
@@ -1224,22 +1488,22 @@ function radio_station_set_roles() {
 
 	// --- set only necessary capabilities for DJs ---
 	$caps = array(
-		'edit_shows'				=> true,
-		'edit_published_shows'		=> true,
-		'edit_others_shows'			=> true,
-		'read_shows'				=> true,
-		'edit_playlists'			=> true,
-		'edit_published_playlists'	=> true,
+		'edit_shows'               => true,
+		'edit_published_shows'     => true,
+		'edit_others_shows'        => true,
+		'read_shows'               => true,
+		'edit_playlists'           => true,
+		'edit_published_playlists' => true,
 		// by default DJs cannot edit others playlists
-		// 'edit_others_playlists'	=> true,  
-		'read_playlists'			=> true,
-		'publish_playlists'			=> true,
-		'read'						=> true,
-		'upload_files'				=> true,
-		'edit_posts'				=> true,
-		'edit_published_posts'		=> true,
-		'publish_posts'				=> true,
-		'delete_posts'				=> true,
+		// 'edit_others_playlists'	=> true,
+		'read_playlists'           => true,
+		'publish_playlists'        => true,
+		'read'                     => true,
+		'upload_files'             => true,
+		'edit_posts'               => true,
+		'edit_published_posts'     => true,
+		'publish_posts'            => true,
+		'delete_posts'             => true,
 	);
 
 	// --- add the DJ role ---
@@ -1269,68 +1533,68 @@ function radio_station_set_roles() {
 	// --- check plugin setting for Show Editor role ---
 	// if ( radio_station_get_setting('add_show_editor_role') == 'yes' ) {
 
-		// --- grant all capabilities to Show Editors ---
-		// 2.3.0: set Show Editor role capabilities
-		$caps = array(
-			'edit_shows'				 => true,
-			'edit_published_shows'		 => true,
-			'edit_others_shows'			 => true,
-			'edit_private_shows'		 => true,
-			'delete_shows'				 => true,
-			'delete_published_shows'	 => true,
-			'delete_others_shows'		 => true,
-			'delete_private_shows'		 => true,
-			'read_shows'				 => true,
-			'publish_shows'				 => true,
-			
-			'edit_playlists'			 => true,
-			'edit_published_playlists'	 => true,
-			'edit_others_playlists'		 => true,
-			'edit_private_playlists'	 => true,
-			'delete_playlists'			 => true,
-			'delete_published_playlists' => true,
-			'delete_others_playlists'	 => true,
-			'delete_private_playlists'	 => true,
-			'read_playlists'			 => true,
-			'publish_playlists'			 => true,
+	// --- grant all capabilities to Show Editors ---
+	// 2.3.0: set Show Editor role capabilities
+	$caps = array(
+		'edit_shows'             => true,
+		'edit_published_shows'   => true,
+		'edit_others_shows'      => true,
+		'edit_private_shows'     => true,
+		'delete_shows'           => true,
+		'delete_published_shows' => true,
+		'delete_others_shows'    => true,
+		'delete_private_shows'   => true,
+		'read_shows'             => true,
+		'publish_shows'          => true,
 
-			'edit_overrides'			=> true,
-			'edit_overrides_playlists'	=> true,
-			'edit_others_overrides'		=> true,
-			'edit_private_overrides'	=> true,
-			'delete_overrides'			=> true,
-			'delete_published_overrides'=> true,
-			'delete_others_overrides'	=> true,
-			'delete_private_overrides'	=> true,
-			'read_overrides'			=> true,
-			'publish_overrides'			=> true,
+		'edit_playlists'             => true,
+		'edit_published_playlists'   => true,
+		'edit_others_playlists'      => true,
+		'edit_private_playlists'     => true,
+		'delete_playlists'           => true,
+		'delete_published_playlists' => true,
+		'delete_others_playlists'    => true,
+		'delete_private_playlists'   => true,
+		'read_playlists'             => true,
+		'publish_playlists'          => true,
 
-			'edit_hosts'				=> true,
-			'edit_published_hosts'		=> true,
-			'edit_others_hosts'			=> true,
-			'delete_hosts'				=> true,
-			'read_hosts'				=> true,
-			'publish_hosts'				=> true,
+		'edit_overrides'             => true,
+		'edit_overrides_playlists'   => true,
+		'edit_others_overrides'      => true,
+		'edit_private_overrides'     => true,
+		'delete_overrides'           => true,
+		'delete_published_overrides' => true,
+		'delete_others_overrides'    => true,
+		'delete_private_overrides'   => true,
+		'read_overrides'             => true,
+		'publish_overrides'          => true,
 
-			'edit_producers'			=> true,
-			'edit_published_producers'	=> true,
-			'edit_others_producers'		=> true,
-			'delete_producers'			=> true,
-			'read_producers'			=> true,
-			'publish_producers'			=> true,
-			
-			'read'						=> true,
-			'upload_files'				=> true,
-			'edit_posts'				=> true,
-			'edit_others_posts'			=> true,
-			'edit_published_posts'		=> true,
-			'publish_posts'				=> true,
-			'delete_posts'	            => true,
-		);
+		'edit_hosts'           => true,
+		'edit_published_hosts' => true,
+		'edit_others_hosts'    => true,
+		'delete_hosts'         => true,
+		'read_hosts'           => true,
+		'publish_hosts'        => true,
 
-		// --- add the Show Editor role ---
-		// 2.3.0: added Show Editor role
-		$wp_roles->add_role( 'show-editor', __('Show Editor', 'radio-station'), $caps );
+		'edit_producers'           => true,
+		'edit_published_producers' => true,
+		'edit_others_producers'    => true,
+		'delete_producers'         => true,
+		'read_producers'           => true,
+		'publish_producers'        => true,
+
+		'read'                 => true,
+		'upload_files'         => true,
+		'edit_posts'           => true,
+		'edit_others_posts'    => true,
+		'edit_published_posts' => true,
+		'publish_posts'        => true,
+		'delete_posts'         => true,
+	);
+
+	// --- add the Show Editor role ---
+	// 2.3.0: added Show Editor role
+	$wp_roles->add_role( 'show-editor', __( 'Show Editor', 'radio-station' ), $caps );
 	// }
 
 	// --- check plugin setting for authors ---
@@ -1339,37 +1603,74 @@ function radio_station_set_roles() {
 		// --- grant show edit capabilities to editor users ---
 		$author_caps = $wp_roles->roles['author']['capabilities'];
 		$extra_caps = array(
-			'edit_shows', 'edit_published_shows', 'read_shows', 'publish_shows',
-			'edit_playlists', 'edit_published_playlists', 'read_playlists', 'publish_playlists'
-			// 'edit_overrides', 'edit_published_overrides', 'read_overrides',  'publish_overrides'
+			'edit_shows',
+			'edit_published_shows',
+			'read_shows',
+			'publish_shows',
+			'edit_playlists',
+			'edit_published_playlists',
+			'read_playlists',
+			'publish_playlists',
+			// 'edit_overrides', 'edit_published_overrides', 'read_overrides',  'publish_overrides',
 		);
 		foreach ( $extra_caps as $cap ) {
 			if ( !array_key_exists( $cap, $author_caps ) || ( !$author_caps[$cap] ) ) {
 				$wp_roles->add_cap( 'author', $cap, true );
 			}
-		}	
+		}
 	}
 
 	// --- specify edit caps (for editors and admins) ---
 	// 2.3.0: added show override, host and producer capabilities
 	$edit_caps = array(
-		'edit_shows', 'edit_published_shows', 'edit_others_shows', 'edit_private_shows',
-		'delete_shows', 'delete_published_shows', 'delete_others_shows', 
-		'delete_private_shows', 'read_shows', 'publish_shows',
+		'edit_shows',
+		'edit_published_shows',
+		'edit_others_shows',
+		'edit_private_shows',
+		'delete_shows',
+		'delete_published_shows',
+		'delete_others_shows',
+		'delete_private_shows',
+		'read_shows',
+		'publish_shows',
 
-		'edit_playlists', 'edit_published_playlists', 'edit_others_playlists', 'edit_private_playlists', 
-		'delete_playlists', 'delete_published_playlists', 'delete_others_playlists', 
-		'delete_private_playlists', 'read_playlists', 'publish_playlists',
+		'edit_playlists',
+		'edit_published_playlists',
+		'edit_others_playlists',
+		'edit_private_playlists',
+		'delete_playlists',
+		'delete_published_playlists',
+		'delete_others_playlists',
+		'delete_private_playlists',
+		'read_playlists',
+		'publish_playlists',
 
-		'edit_overrides', 'edit_published_overrides', 'edit_others_overrides', 'edit_private_overrides',
-		'delete_overrides', 'delete_published_overrides', 'delete_others_overrides', 
-		'delete_private_overrides', 'read_overrides', 'publish_overrides',
+		'edit_overrides',
+		'edit_published_overrides',
+		'edit_others_overrides',
+		'edit_private_overrides',
+		'delete_overrides',
+		'delete_published_overrides',
+		'delete_others_overrides',
+		'delete_private_overrides',
+		'read_overrides',
+		'publish_overrides',
 
-		'edit_hosts', 'edit_published_hosts', 'edit_others_hosts', 
-		'delete_hosts', 'delete_others_hosts', 'read_hosts', 'publish_hosts', 
+		'edit_hosts',
+		'edit_published_hosts',
+		'edit_others_hosts',
+		'delete_hosts',
+		'delete_others_hosts',
+		'read_hosts',
+		'publish_hosts',
 
-		'edit_producers', 'edit_published_producers', 'edit_others_producers',
-		'delete_producers', 'delete_others_producers', 'read_producers', 'publish_producers', 
+		'edit_producers',
+		'edit_published_producers',
+		'edit_others_producers',
+		'delete_producers',
+		'delete_others_producers',
+		'read_producers',
+		'publish_producers',
 	);
 
 	// --- check plugin setting for editors ---
@@ -1422,30 +1723,36 @@ function radio_station_revoke_show_edit_cap( $allcaps, $caps, $args ) {
 	// 2.2.8: remove strict in_array checking
 	$found = false;
 	foreach ( $publish_show_roles as $role ) {
-		if ( in_array( $role, $user->roles ) ) {$found = true;}
+		if ( in_array( $role, $user->roles ) ) {
+			$found = true;
+		}
 	}
 
 	if ( !$found ) {
 
 		// --- limit this to published shows ---
 		// 2.3.0: added object and property_exists check to be safe
-		if ( is_object( $post) && property_exists( $post, 'post_type' ) && isset( $post->post_type ) ) {
+		if ( is_object( $post ) && property_exists( $post, 'post_type' ) && isset( $post->post_type ) ) {
 
 			// 2.3.0: removed is_admin check (so works with frontend edit show link)
 			// 2.3.0: moved check if show is published inside
-			if ( 'show' === $post->post_type ) {
+			if ( RADIO_STATION_SHOW_SLUG == $post->post_type ) {
 
 				// --- get show hosts and producers ---
 				$hosts = get_post_meta( $post->ID, 'show_user_list', true );
 				$producers = get_post_meta( $post->ID, 'show_producer_list', true );
 
-				if ( !$hosts  || empty( $hosts ) ) {$hosts = array();}
-				if ( !$producers || empty( $producers ) ) {$producers = array();}
+				if ( !$hosts || empty( $hosts ) ) {
+					$hosts = array();
+				}
+				if ( !$producers || empty( $producers ) ) {
+					$producers = array();
+				}
 
 				// ---- revoke editing capability if not assigned to this show ---
 				// 2.2.8: remove strict in_array checking
 				// 2.3.0: also check new Producer role
-				if ( !in_array( $user->ID, $hosts ) && !in_array($user->ID, $producers ) ) {
+				if ( !in_array( $user->ID, $hosts ) && !in_array( $user->ID, $producers ) ) {
 
 					// --- remove the edit_shows capability ---
 					$allcaps['edit_shows'] = false;
@@ -1458,6 +1765,37 @@ function radio_station_revoke_show_edit_cap( $allcaps, $caps, $args ) {
 			}
 		}
 	}
+
 	return $allcaps;
 }
 
+// =================
+// --- Debugging ---
+// =================
+
+// ------------------------
+// Debug Ourput and Logging
+// ------------------------
+// 2.3.0: added debugging function
+function radio_station_debug( $data, $echo = true, $file = false ) {
+
+	// --- maybe output debug info ---
+	if ( $echo ) {
+		echo $data; // phpcs:ignore WordPress.Security.OutputNotEscaped
+	}
+
+	// --- check for logging constant ---
+	if ( defined( 'RADIO_STATION_DEBUG_LOG' ) ) {
+		if ( !$file && RADIO_STATION_DEBUG_LOG ) {
+			$file = 'radio-station.log';
+		} elseif ( false === RADIO_STATION_DEBUG_LOG ) {
+			$file = false;
+		}
+	}
+
+	// --- write to debug file ---
+	if ( $file ) {
+		$file = RADIO_STATION_DIR . '/debug/' . $file;
+		error_log( $data, 3, $file );
+	}
+}

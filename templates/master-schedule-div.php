@@ -6,9 +6,6 @@
 // --- filter show avatar size ---
 $avatar_size = apply_filters( 'radio_station_schedule_show_avatar_size', 'thumbnail', 'div' );
 
-// --- output show selection buttons / javascript ---
-$output .= radio_station_master_schedule_selection_js();
-
 // output some dynamic styles
 $output .= '<style type="text/css">';
 for ( $i = 2; $i < 24; $i++ ) {
@@ -54,7 +51,7 @@ foreach ( $master_list as $hour => $days ) {
 
 				// --- genres ---
 				// TODO: check output formatting
-				$terms   = wp_get_post_terms( $show['id'], 'genres', array() );
+				$terms   = wp_get_post_terms( $show['id'], RADIO_STATION_GENRES_SLUG, array() );
 				$classes = ' show-id-' . $show['id'] . ' ' . sanitize_title_with_dashes( str_replace( '_', '-', get_the_title( $show['id'] ) ) ) . ' ';
 				foreach ( $terms as $show_term ) {
 					$classes .= sanitize_title_with_dashes( $show_term->name ) . ' ';
@@ -131,7 +128,7 @@ foreach ( $master_list as $hour => $days ) {
 						$show_time .= ' - ';
 						$show_time .= date( 'H:i', strtotime( '1981-04-28 ' . $show['time']['end_hour'] . ':' . $show['time']['end_min'] . ':00 ' ) );
 					}
-					
+
 					// 2.3.0: filter show time by show and context
 					$show_time = apply_filters( 'radio_station_schedule_show_time', $show_time, $show['id'], 'div' );
 					$output .= $show_time;
@@ -140,18 +137,22 @@ foreach ( $master_list as $hour => $days ) {
 
 				// --- encore ---
 				// 2.3.0: filter encore by show and context ---
-				if ( isset( $show['time']['encore'] ) ) {$show_encore = $show['time']['encore'];} else {$show_encore = false;}
-				$show_encore = apply_filters( 'radio_station_schedule_show_encore', $show_encore, $show['id'], 'list' );
-				if ( $show_encore == 'on' ) {				
-					$output .= ' <span class="show-encore">' . __( 'encore airing', 'radio-station' ) . '</span>';
+				if ( isset( $show['time']['encore'] ) ) {
+					$show_encore = $show['time']['encore'];
+				} else {
+					$show_encore = false;
 				}
-			
+				$show_encore = apply_filters( 'radio_station_schedule_show_encore', $show_encore, $show['id'], 'list' );
+				if ( 'on' == $show_encore ) {
+					$output .= ' <span class="show-encore">' . esc_html( __( 'encore airing', 'radio-station' ) ) . '</span>';
+				}
+
 				// --- show file ---
 				// 2.3.0: filter show file by show and context
 				$show_file = get_post_meta( $show['id'], 'show_file', true );
 				$show_file = apply_filters( 'radio_station_schedule_show_file', $show_file, $show['id'], 'div' );
 				if ( $show_file && ! empty( $show_file ) ) {
-					$output .= ' <span class="show-file"><a href="' . $show_file . '">' . __( 'Audio File', 'radio-station' ) . '</a>';
+					$output .= ' <span class="show-file"><a href="' . esc_url( $show_file ) . '">' . esc_html( __( 'Audio File', 'radio-station' ) ) . '</a>';
 				}
 
 				// calculate duration of show for rowspanning

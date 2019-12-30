@@ -2,17 +2,30 @@
 /* Radio Station ScriptS */
 /* --------------------- */
 
+/* Scrolling Function */
+function radio_scroll_to(elem) {
+	var jump = parseInt((elem.getBoundingClientRect().top - 50) * .2);
+	document.body.scrollTop += jump;
+	document.documentElement.scrollTop += jump;
+	if (!elem.lastjump || elem.lastjump > Math.abs(jump)) {
+		elem.lastjump = Math.abs(jump);
+		setTimeout(function() { radio_scroll_to(elem);}, 100);
+	} else {elem.lastjump = null;}
+}
+
 /* Convert Date Time to Time String */
 function radio_time_string(datetime) {
 
-	h = datetime.getHours(); m = datetime.getMinutes(); s = datetime.getSeconds();
+	h = datetime.getHours();
+	m = datetime.getMinutes();
+	s = datetime.getSeconds();
 	if (m < 10) {m = '0'+m;}
 	if (s < 10) {s = '0'+s;}
 
-	if (radio_clock_format == '12') {
-		if ( h < 12 ) {mer = radio_am;}
+	if (radio.clock_format == '12') {
+		if ( h < 12 ) {mer = radio.am;}
 		if ( h == 0 ) {h = '12';}	
-		if ( h > 11 ) {mer = radio_pm;}
+		if ( h > 11 ) {mer = radio.pm;}
 		if ( h > 12 ) {h = h - 12;}
 	} else {
 		mer = '';
@@ -27,7 +40,7 @@ function radio_time_string(datetime) {
 function radio_date_string(datetime) {
 
 	month = datetime.getMonth(); day = datetime.getDay(); d = datetime.getDate();
-	datestring = radio_days[day]+' '+d+' '+radio_months[month];
+	datestring = radio.days[day]+' '+d+' '+radio.months[month];
 	return datestring;
 }
 
@@ -41,7 +54,7 @@ function radio_clock_date_time(init) {
 	userdate = radio_date_string(userdatetime);
 
 	/* timezone offset */	
-	houroffset = parseInt(useroffset / 60);
+	houroffset = parseInt(useroffset) / 60;
 	if (houroffset == 0) {userzone = '[UTC]';}
 	else {
 		if (houroffset > 0) {userzone = '[UTC+'+houroffset+']';}
@@ -50,15 +63,15 @@ function radio_clock_date_time(init) {
 
 	/* server date time */
 	serverdatetime = new Date();
-	servertime = serverdatetime.getTime()
-	serveroffset = ( -(useroffset) + (radio_timezone_offset * 60) ) * 60;
+	servertime = serverdatetime.getTime();
+	serveroffset = ( -(useroffset) + (radio.timezone_offset * 60) ) * 60;
 	serverdatetime.setTime(userdatetime.getTime() + (serveroffset * 1000) );
 	servertime = radio_time_string(serverdatetime);
 	serverdate = radio_date_string(serverdatetime);
 
 	/* server timezone code */
-	if (typeof radio_timezone_code != 'undefined') {
-		serverzone = '['+radio_timezone_code+']';
+	if (typeof radio.timezone_code != 'undefined') {
+		serverzone = '['+radio.timezone_code+']';
 	} else {serverzone = '';}
 
 	/* update server clocks */
@@ -92,9 +105,19 @@ function radio_clock_date_time(init) {
 	}
 
 	/* clock loop */
-	setTimeout('radio_clock_date_time();', '1000');
+	setTimeout('radio_clock_date_time();', 1000);
 	return true;
 }
 
 /* Start the Clock */
-setTimeout('radio_clock_date_time(true);', '1000');
+setTimeout('radio_clock_date_time(true);', 1000);
+
+/* Debounce Delay Callback */
+var radio_resize_debounce = (function () {
+	var debounce_timers = {};
+	return function (callback, ms, uniqueId) {
+		if (!uniqueId) {uniqueId = "nonuniqueid";}
+		if (debounce_timers[uniqueId]) {clearTimeout (debounce_timers[uniqueId]);}
+		debounce_timers[uniqueId] = setTimeout(callback, ms);
+	};
+})();
