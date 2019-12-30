@@ -1,6 +1,15 @@
+/* ------------------------------ */
 /* Radio Station Shortcode Styles */
 /* ------------------------------ */
 
+/* Archive Shortcodes */
+/* ------------------ */
+.show-archive-list-item, .playlist-archive-list-item, .override-archive-list-item {
+    list-style: none;
+}
+
+/* Show Subarchive Shortcodes */
+/* -------------------------- */
 .show-post-thumbnail, .show-post-info,
 .show-playlist-thumbnail, .show-playlist-info,
 .show-episode-thumbnail, .show-episode-info {

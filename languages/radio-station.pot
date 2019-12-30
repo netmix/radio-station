@@ -1,544 +1,1791 @@
+# Copyright (C) 2019 Radio Station
+# This file is distributed under the same license as the Radio Station package.
 msgid ""
 msgstr ""
-"Project-Id-Version: radio station\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-11-08 08:27-0600\n"
-"PO-Revision-Date: 2013-11-08 08:27-0600\n"
-"Last-Translator: Nikki <nblight@nlb-creations.com>\n"
-"Language-Team: \n"
-"Language: es_ES\n"
+"Project-Id-Version: Radio Station 2.2.9\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/radio-station\n"
+"POT-Creation-Date: 2019-12-12 02:24:58+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-KeywordsList: _e;__;esc_attr_e\n"
-"X-Poedit-SourceCharset: UTF-8\n"
-"X-Generator: Poedit 1.5.7\n"
-"X-Poedit-Basepath: c:\\xampp\\htdocs\\wp352test\\wp-content\\plugins\\radio-"
-"station\n"
-"X-Poedit-SearchPath-0: includes\n"
-"X-Poedit-SearchPath-1: templates\n"
-"X-Poedit-SearchPath-2: .\n"
+"PO-Revision-Date: 2019-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 
-#: includes/dj-on-air.php:90 includes/dj-on-air.php:664
-#: includes/playlist.php:22 includes/playlist.php:359
-#: includes/playlist.php:546
-msgid "View Playlist"
+#: includes/class-dj-upcoming-widget.php:13
+msgid "Display the upcoming Shows."
 msgstr ""
 
-#: includes/dj-on-air.php:480
-msgid "None Upcoming"
+#: includes/class-dj-upcoming-widget.php:15
+msgid "(Radio Station) Upcoming Shows"
 msgstr ""
 
-#: includes/dj-on-air.php:495
-msgid "The current on-air DJ."
-msgstr ""
-
-#: includes/dj-on-air.php:496
-msgid "Radio Station: Show/DJ On-Air"
-msgstr ""
-
-#: includes/dj-on-air.php:511 includes/dj-on-air.php:738
-#: includes/playlist.php:436
+#: includes/class-dj-upcoming-widget.php:40 includes/class-dj-widget.php:41
+#: includes/class-playlist-widget.php:33
 msgid "Title"
 msgstr ""
 
-#: includes/dj-on-air.php:519 includes/dj-on-air.php:746
-msgid "Show Avatars"
+#: includes/class-dj-upcoming-widget.php:49 includes/class-dj-widget.php:50
+msgid "Link the title to the Show page"
 msgstr ""
 
-#: includes/dj-on-air.php:526
-msgid "Link to the Show/DJ's profile"
+#: includes/class-dj-upcoming-widget.php:58 includes/class-dj-widget.php:59
+msgid "Above"
 msgstr ""
 
-#: includes/dj-on-air.php:533 includes/dj-on-air.php:767
-msgid "Display schedule info for this show"
+#: includes/class-dj-upcoming-widget.php:59 includes/class-dj-widget.php:60
+msgid "Left"
 msgstr ""
 
-#: includes/dj-on-air.php:540
-msgid "Display link to show's playlist"
+#: includes/class-dj-upcoming-widget.php:60 includes/class-dj-widget.php:61
+msgid "Right"
 msgstr ""
 
-#: includes/dj-on-air.php:545
-msgid "Default DJ Name"
+#: includes/class-dj-upcoming-widget.php:61 includes/class-dj-widget.php:62
+msgid "Below"
 msgstr ""
 
-#: includes/dj-on-air.php:548 includes/dj-on-air.php:761
-msgid ""
-"If no Show/DJ is scheduled for the current hour, display this name/text."
+#: includes/class-dj-upcoming-widget.php:68 includes/class-dj-widget.php:70
+msgid "Show Title Position (relative to Avatar)"
 msgstr ""
 
-#: includes/dj-on-air.php:552 includes/dj-on-air.php:779
-msgid "Time Format"
+#: includes/class-dj-upcoming-widget.php:76
+msgid "Display Show Avatars"
 msgstr ""
 
-#: includes/dj-on-air.php:554 includes/dj-on-air.php:781
-msgid "12-hour"
+#: includes/class-dj-upcoming-widget.php:82 includes/class-dj-widget.php:84
+msgid "Avatar Width"
 msgstr ""
 
-#: includes/dj-on-air.php:555 includes/dj-on-air.php:782
-msgid "24-hour"
+#: includes/class-dj-upcoming-widget.php:85
+msgid "Width of Show Avatars (in pixels, default 75px)"
 msgstr ""
 
-#: includes/dj-on-air.php:558
-msgid "Choose time format for displayed schedules"
+#: includes/class-dj-upcoming-widget.php:92
+msgid "Display names of the DJs on the show"
 msgstr ""
 
-#: includes/dj-on-air.php:722
-msgid "The upcoming DJs/Shows."
+#: includes/class-dj-upcoming-widget.php:100 includes/class-dj-widget.php:102
+msgid "Link DJ names to author pages"
 msgstr ""
 
-#: includes/dj-on-air.php:723
-msgid "Radio Station: Upcoming DJ On-Air"
-msgstr ""
-
-#: includes/dj-on-air.php:753
-msgid "Link to Show/DJ's user profile"
-msgstr ""
-
-#: includes/dj-on-air.php:758
+#: includes/class-dj-upcoming-widget.php:106
 msgid "No Additional Schedules"
 msgstr ""
 
-#: includes/dj-on-air.php:772
+#: includes/class-dj-upcoming-widget.php:109 includes/class-dj-widget.php:143
+msgid "If no Show is scheduled for the current time, display this text."
+msgstr ""
+
+#: includes/class-dj-upcoming-widget.php:116 includes/class-dj-widget.php:110
+msgid "Display schedule info for this show"
+msgstr ""
+
+#: includes/class-dj-upcoming-widget.php:122
 msgid "Limit"
 msgstr ""
 
-#: includes/dj-on-air.php:775
-msgid "Number of upcoming DJs/Shows to display."
+#: includes/class-dj-upcoming-widget.php:125
+msgid "Number of upcoming Shows to display."
 msgstr ""
 
-#: includes/dj-on-air.php:785
+#: includes/class-dj-upcoming-widget.php:129 includes/class-dj-widget.php:147
+msgid "Time Format"
+msgstr ""
+
+#: includes/class-dj-upcoming-widget.php:132 includes/class-dj-widget.php:150
+msgid "12 Hour"
+msgstr ""
+
+#: includes/class-dj-upcoming-widget.php:134 includes/class-dj-widget.php:152
+msgid "24 Hour"
+msgstr ""
+
+#: includes/class-dj-upcoming-widget.php:138
 msgid "Choose time format for displayed schedules."
 msgstr ""
 
-#: includes/master_schedule.php:21 includes/master_schedule.php:22
-msgid "Schedule Override"
+#: includes/class-dj-widget.php:12
+msgid "The current on-air DJ."
 msgstr ""
 
-#: includes/master_schedule.php:23 includes/master_schedule.php:24
-msgid "Add Schedule Override"
+#: includes/class-dj-widget.php:14
+msgid "(Radio Station) Show/DJ On-Air"
 msgstr ""
 
-#: includes/master_schedule.php:25
-msgid "Edit Schedule Override"
+#: includes/class-dj-widget.php:78
+msgid "Display Show Avatar"
 msgstr ""
 
-#: includes/master_schedule.php:26
-msgid "New Schedule Override"
+#: includes/class-dj-widget.php:87
+msgid "Width of Show Avatar (in pixels, default full width)"
 msgstr ""
 
-#: includes/master_schedule.php:27
-msgid "View Schedule Override"
+#: includes/class-dj-widget.php:94
+msgid "Display names of the DJs on the Show"
 msgstr ""
 
-#: includes/master_schedule.php:30
-msgid "Post type for Schedule Override"
+#: includes/class-dj-widget.php:118
+msgid "Display multiple schedules (if show airs more than once per week)"
 msgstr ""
 
-#: includes/master_schedule.php:49
-msgid "Override Schedule"
+#: includes/class-dj-widget.php:126
+msgid "Display description of show"
 msgstr ""
 
-#: includes/master_schedule.php:79
-msgid "Date"
+#: includes/class-dj-widget.php:134
+msgid "Display link to show's playlist"
 msgstr ""
 
-#: includes/master_schedule.php:82 includes/playlist.php:756
-#: includes/playlist.php:835
-msgid "Start Time"
+#: includes/class-dj-widget.php:140
+msgid "No Show Display Text"
 msgstr ""
 
-#: includes/master_schedule.php:108 includes/playlist.php:782
-#: includes/playlist.php:861
-msgid "End Time"
+#: includes/class-dj-widget.php:156
+msgid "Choose time format for displayed schedules"
 msgstr ""
 
-#: includes/master_schedule.php:432 includes/master_schedule.php:595
-msgid "encore airing"
+#: includes/class-playlist-widget.php:12
+msgid "Display currently playling playlist."
 msgstr ""
 
-#: includes/master_schedule.php:437 includes/master_schedule.php:600
-msgid "Audio File"
+#: includes/class-playlist-widget.php:14
+msgid "(Radio Station) Now Playing List"
 msgstr ""
 
-#: includes/master_schedule.php:454
-msgid "Sun"
-msgstr ""
-
-#: includes/master_schedule.php:454
-msgid "Mon"
-msgstr ""
-
-#: includes/master_schedule.php:454
-msgid "Tue"
-msgstr ""
-
-#: includes/master_schedule.php:454
-msgid "Wed"
-msgstr ""
-
-#: includes/master_schedule.php:454
-msgid "Thu"
-msgstr ""
-
-#: includes/master_schedule.php:454
-msgid "Fri"
-msgstr ""
-
-#: includes/master_schedule.php:454
-msgid "Sat"
-msgstr ""
-
-#: includes/master_schedule.php:619 includes/playlist.php:572
-msgid "Genres"
-msgstr ""
-
-#: includes/playlist.php:16 templates/single-show.php:136
-msgid "Playlists"
-msgstr ""
-
-#: includes/playlist.php:17
-msgid "Playlist"
-msgstr ""
-
-#: includes/playlist.php:18 includes/playlist.php:19
-msgid "Add Playlist"
-msgstr ""
-
-#: includes/playlist.php:20
-msgid "Edit Playlist"
-msgstr ""
-
-#: includes/playlist.php:21
-msgid "New Playlist"
-msgstr ""
-
-#: includes/playlist.php:25
-msgid "Post type for Playlist descriptions"
-msgstr ""
-
-#: includes/playlist.php:42
-msgid "Shows"
-msgstr ""
-
-#: includes/playlist.php:43 includes/playlist.php:191
-msgid "Show"
-msgstr ""
-
-#: includes/playlist.php:44 includes/playlist.php:45
-msgid "Add Show"
-msgstr ""
-
-#: includes/playlist.php:46
-msgid "Edit Show"
-msgstr ""
-
-#: includes/playlist.php:47
-msgid "New Show"
-msgstr ""
-
-#: includes/playlist.php:48
-msgid "View Show"
-msgstr ""
-
-#: includes/playlist.php:51
-msgid "Post type for Show descriptions"
-msgstr ""
-
-#: includes/playlist.php:71
-msgid "Playlist Entries"
-msgstr ""
-
-#: includes/playlist.php:93 templates/single-playlist.php:43
-msgid "Artist"
-msgstr ""
-
-#: includes/playlist.php:93 templates/single-playlist.php:44
-msgid "Song"
-msgstr ""
-
-#: includes/playlist.php:93 templates/single-playlist.php:45
-msgid "Album"
-msgstr ""
-
-#: includes/playlist.php:93 templates/single-playlist.php:46
-msgid "Record Label"
-msgstr ""
-
-#: includes/playlist.php:93 templates/single-playlist.php:47
-msgid "DJ Comments"
-msgstr ""
-
-#: includes/playlist.php:93
-msgid "New"
-msgstr ""
-
-#: includes/playlist.php:93
-msgid "Status"
-msgstr ""
-
-#: includes/playlist.php:93 includes/playlist.php:127
-#: includes/playlist.php:144 includes/playlist.php:807
-#: includes/playlist.php:888
-msgid "Remove"
-msgstr ""
-
-#: includes/playlist.php:119 includes/playlist.php:144
-msgid "Queued"
-msgstr ""
-
-#: includes/playlist.php:123 includes/playlist.php:144
-msgid "Played"
-msgstr ""
-
-#: includes/playlist.php:136
-msgid "Add Entry"
-msgstr ""
-
-#: includes/playlist.php:163 includes/playlist.php:164
-#: templates/single-show.php:99
-msgid "Schedule"
-msgstr ""
-
-#: includes/playlist.php:166 includes/playlist.php:167
-msgid "Publish"
-msgstr ""
-
-#: includes/playlist.php:170
-msgid "Submit for Review"
-msgstr ""
-
-#: includes/playlist.php:171 includes/playlist.php:176
-msgid "Update Playlist"
-msgstr ""
-
-#: includes/playlist.php:175
-msgid "Update"
-msgstr ""
-
-#: includes/playlist.php:420
-msgid "Display the current song."
-msgstr ""
-
-#: includes/playlist.php:421
-msgid "Radio Station: Now Playing"
-msgstr ""
-
-#: includes/playlist.php:444
-msgid "Show Artist Name"
-msgstr ""
-
-#: includes/playlist.php:451
+#: includes/class-playlist-widget.php:42
 msgid "Show Song Title"
 msgstr ""
 
-#: includes/playlist.php:458
-msgid "Show Album Name"
+#: includes/class-playlist-widget.php:50
+msgid "Show Artist Name"
 msgstr ""
 
-#: includes/playlist.php:465
+#: includes/class-playlist-widget.php:58
+msgid " Show Album Name"
+msgstr ""
+
+#: includes/class-playlist-widget.php:66
 msgid "Show Record Label Name"
 msgstr ""
 
-#: includes/playlist.php:472
+#: includes/class-playlist-widget.php:74
 msgid "Show DJ Comments"
 msgstr ""
 
-#: includes/playlist.php:573 templates/single-show.php:60
-msgid "Genre"
+#: includes/data-feeds.php:769
+msgid "Requested Show was not found."
 msgstr ""
 
-#: includes/playlist.php:594
-msgid "Information"
+#: includes/data-feeds.php:770
+msgid "No Requested Shows were found."
 msgstr ""
 
-#: includes/playlist.php:612
+#: includes/data-feeds.php:771 includes/post-types-admin.php:535
+msgid "No Shows were found."
+msgstr ""
+
+#: includes/data-feeds.php:813
+msgid "Requested Genre was not found."
+msgstr ""
+
+#: includes/data-feeds.php:814
+msgid "No Requested Genres were found."
+msgstr ""
+
+#: includes/data-feeds.php:815
+msgid "No Genres were found."
+msgstr ""
+
+#: includes/data-feeds.php:858
+msgid "Requested Language was not found."
+msgstr ""
+
+#: includes/data-feeds.php:859
+msgid "No Requested Languages were found."
+msgstr ""
+
+#: includes/data-feeds.php:860
+msgid "No Languages were found."
+msgstr ""
+
+#: includes/data-feeds.php:896
+msgid "Error 404 Not Found"
+msgstr ""
+
+#: includes/data-feeds.php:897
+msgid "The requested data could not be found."
+msgstr ""
+
+#: includes/master-schedule.php:260 radio-station-admin.php:136
+#: templates/master-schedule-tabs.php:176
+msgid "Genres"
+msgstr ""
+
+#: includes/master-schedule.php:276
+msgid "Click to toggle Highlight of Shows with this Genre."
+msgstr ""
+
+#: includes/post-types-admin.php:90
+msgid "Show Language"
+msgstr ""
+
+#: includes/post-types-admin.php:126
+msgid "Main Radio Language"
+msgstr ""
+
+#: includes/post-types-admin.php:130
+msgid "Select below if Show language(s) differ."
+msgstr ""
+
+#: includes/post-types-admin.php:158
+msgid "Remove Language"
+msgstr ""
+
+#: includes/post-types-admin.php:166
+msgid "Select Language"
+msgstr ""
+
+#: includes/post-types-admin.php:180
+msgid "Click on a Language to Add it."
+msgstr ""
+
+#: includes/post-types-admin.php:258
+msgid "Playlist Entries"
+msgstr ""
+
+#: includes/post-types-admin.php:284 includes/post-types-admin.php:659
+#: includes/shortcodes.php:1304 templates/legacy/single-playlist.php:45
+#: templates/single-playlist-content.php:11
+msgid "Artist"
+msgstr ""
+
+#: includes/post-types-admin.php:285 includes/post-types-admin.php:658
+#: includes/shortcodes.php:1296 templates/legacy/single-playlist.php:46
+#: templates/single-playlist-content.php:12
+msgid "Song"
+msgstr ""
+
+#: includes/post-types-admin.php:286 includes/shortcodes.php:1311
+#: templates/legacy/single-playlist.php:47
+#: templates/single-playlist-content.php:13
+msgid "Album"
+msgstr ""
+
+#: includes/post-types-admin.php:287 templates/legacy/single-playlist.php:48
+#: templates/single-playlist-content.php:14
+msgid "Record Label"
+msgstr ""
+
+#: includes/post-types-admin.php:311 includes/post-types-admin.php:353
+#: includes/shortcodes.php:1325 templates/single-playlist-content.php:15
+msgid "Comments"
+msgstr ""
+
+#: includes/post-types-admin.php:314 includes/post-types-admin.php:354
+msgid "New"
+msgstr ""
+
+#: includes/post-types-admin.php:318 includes/post-types-admin.php:355
+#: includes/post-types-admin.php:660
+msgid "Status"
+msgstr ""
+
+#: includes/post-types-admin.php:321 includes/post-types-admin.php:356
+msgid "Queued"
+msgstr ""
+
+#: includes/post-types-admin.php:323 includes/post-types-admin.php:357
+msgid "Played"
+msgstr ""
+
+#: includes/post-types-admin.php:327 includes/post-types-admin.php:359
+#: includes/post-types-admin.php:1262 includes/post-types-admin.php:1389
+msgid "Remove"
+msgstr ""
+
+#: includes/post-types-admin.php:337
+msgid "Add Entry"
+msgstr ""
+
+#: includes/post-types-admin.php:392 includes/post-types-admin.php:395
+msgid "Schedule"
+msgstr ""
+
+#: includes/post-types-admin.php:406 includes/post-types-admin.php:409
+msgid "Publish"
+msgstr ""
+
+#: includes/post-types-admin.php:423
+msgid "Submit for Review"
+msgstr ""
+
+#: includes/post-types-admin.php:426 includes/post-types-admin.php:441
+msgid "Update Playlist"
+msgstr ""
+
+#: includes/post-types-admin.php:440
+msgid "Update"
+msgstr ""
+
+#: includes/post-types-admin.php:459
+msgid "Linked Show"
+msgstr ""
+
+#: includes/post-types-admin.php:538
+msgid "You are not assigned to any Shows."
+msgstr ""
+
+#: includes/post-types-admin.php:546
+msgid "Unassigned"
+msgstr ""
+
+#: includes/post-types-admin.php:630 includes/post-types.php:49
+msgid "Show"
+msgstr ""
+
+#: includes/post-types-admin.php:631
+msgid "Tracks"
+msgstr ""
+
+#: includes/post-types-admin.php:632
+msgid "Track List"
+msgstr ""
+
+#: includes/post-types-admin.php:654
+msgid "Show/Hide Tracklist"
+msgstr ""
+
+#: includes/post-types-admin.php:716
+msgid "Related to Show"
+msgstr ""
+
+#: includes/post-types-admin.php:758
+msgid "No Shows to Select."
+msgstr ""
+
+#: includes/post-types-admin.php:819
+msgid "Show Information"
+msgstr ""
+
+#: includes/post-types-admin.php:848
 msgid "Active"
 msgstr ""
 
-#: includes/playlist.php:614
-msgid ""
-"Check this box if show is currently active (Show will not appear on "
-"programming schedule if unchecked)"
+#: includes/post-types-admin.php:850
+msgid "Check this box if show is currently active (Show will not appear on programming schedule if unchecked.)"
 msgstr ""
 
-#: includes/playlist.php:616
-msgid "Current Audio File"
-msgstr ""
-
-#: includes/playlist.php:619
-msgid "DJ Email"
-msgstr ""
-
-#: includes/playlist.php:622
+#: includes/post-types-admin.php:852
 msgid "Website Link"
 msgstr ""
 
-#: includes/playlist.php:633
-msgid "DJs"
+#: includes/post-types-admin.php:855
+msgid "DJ / Host Email"
 msgstr ""
 
-#: includes/playlist.php:719
-msgid "Schedules"
+#: includes/post-types-admin.php:858
+msgid "Latest Audio File"
 msgstr ""
 
-#: includes/playlist.php:744 includes/playlist.php:824
+#: includes/post-types-admin.php:868
+msgid "Show DJ(s) / Host(s)"
+msgstr ""
+
+#: includes/post-types-admin.php:872 includes/post-types-admin.php:988
+msgid "Show Producer(s)"
+msgstr ""
+
+#: includes/post-types-admin.php:885
+msgid "Toggle panel: %s"
+msgstr ""
+
+#: includes/post-types-admin.php:912
+msgid "DJs / Hosts"
+msgstr ""
+
+#: includes/post-types-admin.php:975 includes/post-types-admin.php:1044
+msgid "Ctrl-Click selects multiple."
+msgstr ""
+
+#: includes/post-types-admin.php:1058
+msgid "Show Schedule"
+msgstr ""
+
+#: includes/post-types-admin.php:1162 includes/post-types-admin.php:1324
 msgid "Day"
 msgstr ""
 
-#: includes/playlist.php:747 includes/playlist.php:827
-msgid "Monday"
+#: includes/post-types-admin.php:1178 includes/post-types-admin.php:1337
+#: includes/post-types-admin.php:2168 includes/post-types-admin.php:2343
+msgid "Start Time"
 msgstr ""
 
-#: includes/playlist.php:748 includes/playlist.php:828
-msgid "Tuesday"
+#: includes/post-types-admin.php:1210 includes/post-types-admin.php:1359
+#: includes/post-types-admin.php:2198 includes/post-types-admin.php:2344
+msgid "End Time"
 msgstr ""
 
-#: includes/playlist.php:749 includes/playlist.php:829
-msgid "Wednesday"
+#: includes/post-types-admin.php:1246 includes/post-types-admin.php:1381
+msgid "Encore"
 msgstr ""
 
-#: includes/playlist.php:750 includes/playlist.php:830
-msgid "Thursday"
+#: includes/post-types-admin.php:1256 includes/post-types-admin.php:1385
+msgid "Disabled"
 msgstr ""
 
-#: includes/playlist.php:751 includes/playlist.php:831
-msgid "Friday"
+#: includes/post-types-admin.php:1271
+msgid "Shift Conflicts"
 msgstr ""
 
-#: includes/playlist.php:752 includes/playlist.php:832
-msgid "Saturday"
+#: includes/post-types-admin.php:1297
+msgid "Warning! Show Shift Conflicts were detected!"
 msgstr ""
 
-#: includes/playlist.php:753 includes/playlist.php:833
-msgid "Sunday"
+#: includes/post-types-admin.php:1298
+msgid "Please note that Shifts with conflicts are automatically disabled upon saving."
 msgstr ""
 
-#: includes/playlist.php:806 includes/playlist.php:886
-msgid "Encore Presentation"
+#: includes/post-types-admin.php:1299
+msgid "Fix the Shift and/or the Shift on the conflicting Show and Update them both."
 msgstr ""
 
-#: includes/playlist.php:817
+#: includes/post-types-admin.php:1300
+msgid "Then you can uncheck the shift Disable box and Update to re-enable the Shift."
+msgstr ""
+
+#: includes/post-types-admin.php:1312
 msgid "Add Shift"
 msgstr ""
 
-#: includes/playlist.php:980
+#: includes/post-types-admin.php:1316
+msgid "Are you sure you want to remove this shift?"
+msgstr ""
+
+#: includes/post-types-admin.php:1434
+msgid "Show Description"
+msgstr ""
+
+#: includes/post-types-admin.php:1451
+msgid "The text field below is for your Show Description. It will display in the About section of your Show page."
+msgstr ""
+
+#: includes/post-types-admin.php:1452
+msgid "It is not recommended to include your past show content or archives in this area, as it will affect the Show page layout your visitors see."
+msgstr ""
+
+#: includes/post-types-admin.php:1453
+msgid "It may also impact SEO, as archived content won't have their own pages and thus their own SEO and Social meta rules."
+msgstr ""
+
+#: includes/post-types-admin.php:1454
+msgid "We recommend using WordPress Posts to add new posts and assign them to your Show(s) using the Related Show metabox on the Post Edit screen so they display on the Show page."
+msgstr ""
+
+#: includes/post-types-admin.php:1455
+msgid "You can then assign them to a relevent Post Category for display on your site also."
+msgstr ""
+
+#: includes/post-types-admin.php:1476
+msgid "Show Logo"
+msgstr ""
+
+#: includes/post-types-admin.php:1487
+msgid "Show Images"
+msgstr ""
+
+#: includes/post-types-admin.php:1532
+msgid "Set Show Avatar Image"
+msgstr ""
+
+#: includes/post-types-admin.php:1536
+msgid "Remove Show Avatar Image"
+msgstr ""
+
+#: includes/post-types-admin.php:1568
+msgid "Set Show Header Image"
+msgstr ""
+
+#: includes/post-types-admin.php:1572
+msgid "Remove Show Header Image"
+msgstr ""
+
+#: includes/post-types-admin.php:1589
+msgid "Are you sure you want to remove this image?"
+msgstr ""
+
+#: includes/post-types-admin.php:1948
+msgid "Active?"
+msgstr ""
+
+#: includes/post-types-admin.php:1950
+msgid "About?"
+msgstr ""
+
+#: includes/post-types-admin.php:1951
+msgid "Shifts"
+msgstr ""
+
+#: includes/post-types-admin.php:1953
+msgid "Hosts"
+msgstr ""
+
+#: includes/post-types-admin.php:1954
+msgid "Show Avatar"
+msgstr ""
+
+#: includes/post-types-admin.php:1970 includes/post-types-admin.php:1981
+#: includes/post-types-admin.php:2443
+msgid "Yes"
+msgstr ""
+
+#: includes/post-types-admin.php:1971 includes/post-types-admin.php:1979
+#: includes/post-types-admin.php:2441
+msgid "No"
+msgstr ""
+
+#: includes/post-types-admin.php:1999
+msgid "This Shift is Disabled."
+msgstr ""
+
+#: includes/post-types-admin.php:2004
+msgid "This Shift has Schedule Conflicts and is Disabled."
+msgstr ""
+
+#: includes/post-types-admin.php:2005
+msgid "This Shift has Schedule Conflicts."
+msgstr ""
+
+#: includes/post-types-admin.php:2088
+msgid "Filter by show day"
+msgstr ""
+
+#: includes/post-types-admin.php:2090
+msgid "All show days"
+msgstr ""
+
+#: includes/post-types-admin.php:2117
+msgid "Override Schedule"
+msgstr ""
+
+#: includes/post-types-admin.php:2162
+msgid "Date"
+msgstr ""
+
+#: includes/post-types-admin.php:2342
+msgid "Override Date"
+msgstr ""
+
+#: includes/post-types-admin.php:2345
+msgid "Affected Show(s) on Date"
+msgstr ""
+
+#: includes/post-types-admin.php:2347
+msgid "Description"
+msgstr ""
+
+#: includes/post-types-admin.php:2348
+msgid "Override Image"
+msgstr ""
+
+#: includes/post-types-admin.php:2423
+msgid "Inactive Show"
+msgstr ""
+
+#: includes/post-types-admin.php:2425
+msgid "Disabled Shift"
+msgstr ""
+
+#: includes/post-types-admin.php:2506
+msgid "Filter by override date"
+msgstr ""
+
+#: includes/post-types-admin.php:2509
+msgid "All override dates"
+msgstr ""
+
+#: includes/post-types.php:48 includes/post-types.php:56
+#: radio-station-admin.php:131
+msgid "Shows"
+msgstr ""
+
+#: includes/post-types.php:50 includes/post-types.php:51
+#: radio-station-admin.php:132
+msgid "Add Show"
+msgstr ""
+
+#: includes/post-types.php:52
+msgid "Edit Show"
+msgstr ""
+
+#: includes/post-types.php:53
+msgid "New Show"
+msgstr ""
+
+#: includes/post-types.php:54
+msgid "View Show"
+msgstr ""
+
+#: includes/post-types.php:61
+msgid "Post type for Show descriptions"
+msgstr ""
+
+#: includes/post-types.php:89 includes/post-types.php:97
+#: radio-station-admin.php:134 templates/single-show-content.php:520
+msgid "Playlists"
+msgstr ""
+
+#: includes/post-types.php:90
+msgid "Playlist"
+msgstr ""
+
+#: includes/post-types.php:91 includes/post-types.php:92
+msgid "Add Playlist"
+msgstr ""
+
+#: includes/post-types.php:93
+msgid "Edit Playlist"
+msgstr ""
+
+#: includes/post-types.php:94
+msgid "New Playlist"
+msgstr ""
+
+#: includes/post-types.php:95 includes/shortcodes.php:1337
+msgid "View Playlist"
+msgstr ""
+
+#: includes/post-types.php:102
+msgid "Post type for Playlist descriptions"
+msgstr ""
+
+#: includes/post-types.php:129 radio-station-admin.php:137
+msgid "Schedule Overrides"
+msgstr ""
+
+#: includes/post-types.php:130
+msgid "Schedule Override"
+msgstr ""
+
+#: includes/post-types.php:131 includes/post-types.php:132
+msgid "Add Schedule Override"
+msgstr ""
+
+#: includes/post-types.php:133
+msgid "Edit Schedule Override"
+msgstr ""
+
+#: includes/post-types.php:134
+msgid "New Schedule Override"
+msgstr ""
+
+#: includes/post-types.php:135
+msgid "View Schedule Override"
+msgstr ""
+
+#: includes/post-types.php:140
+msgid "Post type for Schedule Override"
+msgstr ""
+
+#: includes/post-types.php:170
+msgid "Host Profiles"
+msgstr ""
+
+#: includes/post-types.php:171
+msgid "Host Profile"
+msgstr ""
+
+#: includes/post-types.php:172 includes/post-types.php:175
+msgid "New Host Profile"
+msgstr ""
+
+#: includes/post-types.php:173
+msgid "Add Host Profile"
+msgstr ""
+
+#: includes/post-types.php:174
+msgid "Edit Host Profile"
+msgstr ""
+
+#: includes/post-types.php:176
+msgid "View Host Profile"
+msgstr ""
+
+#: includes/post-types.php:177
+msgid "Show Hosts"
+msgstr ""
+
+#: includes/post-types.php:183
+msgid "Post type for DJ / Host Profiles"
+msgstr ""
+
+#: includes/post-types.php:212
+msgid "Producer Profiles"
+msgstr ""
+
+#: includes/post-types.php:213
+msgid "Producer Profile"
+msgstr ""
+
+#: includes/post-types.php:214 includes/post-types.php:217
+msgid "New Producer Profile"
+msgstr ""
+
+#: includes/post-types.php:215
+msgid "Add Producer Profile"
+msgstr ""
+
+#: includes/post-types.php:216
+msgid "Edit Producer Profile"
+msgstr ""
+
+#: includes/post-types.php:218
+msgid "View Producer Profile"
+msgstr ""
+
+#: includes/post-types.php:219
+msgid "Show Producers Profile"
+msgstr ""
+
+#: includes/post-types.php:225
+msgid "Post type for Producer Profiles"
+msgstr ""
+
+#: includes/post-types.php:332
+msgid "Edit"
+msgstr ""
+
+#: includes/post-types.php:357
+msgctxt "taxonomy general name"
+msgid "Genres"
+msgstr ""
+
+#: includes/post-types.php:358
+msgctxt "taxonomy singular name"
+msgid "Genre"
+msgstr ""
+
+#: includes/post-types.php:359
+msgid "Search Genres"
+msgstr ""
+
+#: includes/post-types.php:360
+msgid "All Genres"
+msgstr ""
+
+#: includes/post-types.php:361
+msgid "Parent Genre"
+msgstr ""
+
+#: includes/post-types.php:362
+msgid "Parent Genre:"
+msgstr ""
+
+#: includes/post-types.php:363
+msgid "Edit Genre"
+msgstr ""
+
+#: includes/post-types.php:364
+msgid "Update Genre"
+msgstr ""
+
+#: includes/post-types.php:365
+msgid "Add New Genre"
+msgstr ""
+
+#: includes/post-types.php:366
+msgid "New Genre Name"
+msgstr ""
+
+#: includes/post-types.php:367
+msgid "Genre"
+msgstr ""
+
+#: includes/post-types.php:401
+msgctxt "taxonomy general name"
+msgid "Languages"
+msgstr ""
+
+#: includes/post-types.php:402
+msgctxt "taxonomy singular name"
+msgid "Language"
+msgstr ""
+
+#: includes/post-types.php:403
+msgid "Search Languages"
+msgstr ""
+
+#: includes/post-types.php:404
+msgid "All Languages"
+msgstr ""
+
+#: includes/post-types.php:405
+msgid "Parent Language"
+msgstr ""
+
+#: includes/post-types.php:406
+msgid "Parent Language:"
+msgstr ""
+
+#: includes/post-types.php:407
+msgid "Edit Language"
+msgstr ""
+
+#: includes/post-types.php:408
+msgid "Update Language"
+msgstr ""
+
+#: includes/post-types.php:409
+msgid "Add New Language"
+msgstr ""
+
+#: includes/post-types.php:410
+msgid "New Language Name"
+msgstr ""
+
+#: includes/post-types.php:411
+msgid "Language"
+msgstr ""
+
+#: includes/shortcodes.php:51
+msgid "Radio Time"
+msgstr ""
+
+#: includes/shortcodes.php:61
+msgid "Your Time"
+msgstr ""
+
+#: includes/shortcodes.php:180
+msgid "No Shows in this Genre were found."
+msgstr ""
+
+#: includes/shortcodes.php:182
+msgid "No Shows were found to display."
+msgstr ""
+
+#: includes/shortcodes.php:185
+msgid "No Playlists were found to display."
+msgstr ""
+
+#: includes/shortcodes.php:187
+msgid "No Overrides were found to display."
+msgstr ""
+
+#: includes/shortcodes.php:354
+msgid "No Genres were found to display."
+msgstr ""
+
+#: includes/shortcodes.php:443
+msgid "No Shows in this Genre."
+msgstr ""
+
+#: includes/shortcodes.php:599
+msgid "Published on "
+msgstr ""
+
+#: includes/shortcodes.php:863 includes/shortcodes.php:1138
+#: templates/single-show-content.php:422
+msgid "Encore Presentation"
+msgstr ""
+
+#: includes/shortcodes.php:876 includes/shortcodes.php:1150
+#: radio-station-admin.php:500 templates/master-schedule-legacy.php:168
+#: templates/master-schedule-list.php:75
+#: templates/master-schedule-table.php:189
+#: templates/master-schedule-tabs.php:89
+msgid "with"
+msgstr ""
+
+#: includes/shortcodes.php:907 includes/shortcodes.php:1181
+#: templates/master-schedule-legacy.php:179
+#: templates/master-schedule-list.php:83
+#: templates/master-schedule-table.php:200
+#: templates/master-schedule-tabs.php:99 templates/single-show-content.php:229
+#: templates/single-show-content.php:256
+msgid "and"
+msgstr ""
+
+#: includes/shortcodes.php:1084
+msgid "No Shows Upcoming"
+msgstr ""
+
+#: includes/shortcodes.php:1318
+msgid "Label"
+msgstr ""
+
+#: includes/shortcodes.php:1346
+msgid "No Playlist available."
+msgstr ""
+
+#: includes/shortcodes.php:1411
 msgid "More Playlists"
 msgstr ""
 
-#: includes/playlist.php:1041
-msgid "More Blog Posts"
+#: includes/support-functions.php:1803
+msgid "Africa"
 msgstr ""
 
-#: templates/archive-playlist.php:15
-msgid "Playlist Archive for"
+#: includes/support-functions.php:1804
+msgid "America"
 msgstr ""
 
-#: templates/archive-playlist.php:50 templates/single-playlist.php:13
-#: templates/single-show.php:13
-msgid "Post navigation"
+#: includes/support-functions.php:1805
+msgid "Asia"
 msgstr ""
 
-#: templates/archive-playlist.php:51
-msgid "Older posts"
+#: includes/support-functions.php:1806
+msgid "Atlantic"
 msgstr ""
 
-#: templates/archive-playlist.php:52
-msgid "Newer posts"
+#: includes/support-functions.php:1807
+msgid "Australia"
 msgstr ""
 
-#: templates/archive-playlist.php:61 templates/author.php:93
-#: templates/playlist-archive-template.php:63
-#: templates/show-blog-archive-template.php:71
-msgid "Nothing Found"
+#: includes/support-functions.php:1808
+msgid "Europe"
 msgstr ""
 
-#: templates/archive-playlist.php:65 templates/author.php:97
-#: templates/playlist-archive-template.php:67
-#: templates/show-blog-archive-template.php:75
-msgid ""
-"Apologies, but no results were found for the requested archive. Perhaps "
-"searching will help find a related post."
+#: includes/support-functions.php:1809
+msgid "Indian"
 msgstr ""
 
-#: templates/author.php:51
-#, php-format
-msgid "Author Archives: %s"
+#: includes/support-functions.php:1810
+msgid "Pacific"
 msgstr ""
 
-#: templates/author.php:70
-#, php-format
-msgid "About %s"
+#: includes/support-functions.php:1811
+msgid "Antarctica"
 msgstr ""
 
-#: templates/playlist-archive-template.php:16
-msgid "Playlist Archive"
+#: includes/support-functions.php:1854
+msgid "WordPress Timezone"
 msgstr ""
 
-#: templates/show-blog-archive-template.php:16
-msgid "Blog Archive"
+#: includes/support-functions.php:1920
+msgid "WordPress Setting"
 msgstr ""
 
-#: templates/show-blog-archive-template.php:46
-msgid "Posted by"
+#: includes/support-functions.php:2853
+msgid "More Show Blog Posts"
 msgstr ""
 
-#: templates/single-playlist.php:14 templates/single-show.php:14
-msgid "Previous"
+#: loader.php:959
+msgid "Plugin Name"
 msgstr ""
 
-#: templates/single-playlist.php:15 templates/single-show.php:15
-msgid "Next"
+#: loader.php:961
+msgid "Requires at least"
 msgstr ""
 
-#: templates/single-playlist.php:32 templates/single-show.php:144
-msgid "Pages:"
+#: loader.php:961 loader.php:962
+msgid "WordPress"
 msgstr ""
 
-#: templates/single-playlist.php:65
-msgid "No entries for this playlist"
+#: loader.php:962
+msgid "Tested up to"
 msgstr ""
 
-#: templates/single-show.php:32
-msgid "Hosted by"
+#: loader.php:963
+msgid "Stable Tag"
 msgstr ""
 
-#: templates/single-show.php:84
-msgid "Email the DJ"
+#: loader.php:964
+msgid "Contributors"
 msgstr ""
 
-#: templates/single-show.php:88
-msgid "Show Website"
+#: loader.php:984
+msgid "Extra Notes"
 msgstr ""
 
-#: templates/single-show.php:95
-msgid "Most recent broadcast"
+#: loader.php:1139
+msgid "If you want to more easily access support and feedback for this plugins features and functionality, %s can connect your user, %s at %s, to %s"
 msgstr ""
 
-#: templates/single-show.php:140
-msgid "Blog Posts"
+#: loader.php:1204 radio-station-admin.php:121 radio-station-admin.php:125
+#: radio-station-admin.php:143
+msgid "Settings"
 msgstr ""
 
-#: radio-station.php:244 radio-station.php:330
+#: loader.php:1323
+msgid "by"
+msgstr ""
+
+#: loader.php:1332
+msgid "Readme"
+msgstr ""
+
+#: loader.php:1334
+msgid "Docs"
+msgstr ""
+
+#: loader.php:1335
+msgid "Support"
+msgstr ""
+
+#: loader.php:1336
+msgid "Dev"
+msgstr ""
+
+#: loader.php:1374 radio-station-admin.php:432
+msgid "Rate on WordPress.Org"
+msgstr ""
+
+#: loader.php:1385
+msgid "Share the Plugin Love"
+msgstr ""
+
+#: loader.php:1396 radio-station.php:581
+msgid "Support this Plugin"
+msgstr ""
+
+#: loader.php:1409
+msgid "Settings Updated."
+msgstr ""
+
+#: loader.php:1411
+msgid "Error! Settings NOT Updated."
+msgstr ""
+
+#: loader.php:1413
+msgid "Settings Reset!"
+msgstr ""
+
+#: loader.php:1531 radio-station.php:542
+msgid "General"
+msgstr ""
+
+#: loader.php:1536
+msgid "Are you sure you want to reset to default settings?"
+msgstr ""
+
+#: loader.php:1628
+msgid "Reset Settings"
+msgstr ""
+
+#: loader.php:1630
+msgid "Save Settings"
+msgstr ""
+
+#: loader.php:1710
+msgid "Use Ctrl and Click to Select"
+msgstr ""
+
+#: loader.php:1737
+msgid "Available in Pro Version."
+msgstr ""
+
+#: loader.php:1738
+msgid "Click Here to Upgrade!"
+msgstr ""
+
+#: loader.php:1740
+msgid "Coming soon in Pro version!"
+msgstr ""
+
+#: radio-station-admin.php:103
+msgid "You do not have permissions to access that page."
+msgstr ""
+
+#: radio-station-admin.php:116 radio-station-admin.php:121
+#: radio-station-admin.php:419 radio-station-admin.php:480
+#: radio-station-admin.php:594 radio-station-admin.php:661
+msgid "Radio Station"
+msgstr ""
+
+#: radio-station-admin.php:142 templates/admin-export.php:2
 msgid "Export Playlists"
 msgstr ""
 
-#: radio-station.php:244 radio-station.php:451
-msgid "Export"
+#: radio-station-admin.php:144
+msgid "Help"
 msgstr ""
 
-#: radio-station.php:323
+#: radio-station-admin.php:236
+msgid "Role Assignments"
+msgstr ""
+
+#: radio-station-admin.php:237
+msgid "You can assign a Radio Station role to users through the WordPress User editor."
+msgstr ""
+
+#: radio-station-admin.php:358
 msgid "Right-click and download this file to save your export"
 msgstr ""
 
-#: radio-station.php:340
+#: radio-station-admin.php:416
+msgid "Help support us to make improvements, modifications and introduce new features!"
+msgstr ""
+
+#: radio-station-admin.php:417
+msgid "With over a thousand radio station users thanks to the original plugin author Nikki Blight"
+msgstr ""
+
+#: radio-station-admin.php:418
+msgid "since June 2019"
+msgstr ""
+
+#: radio-station-admin.php:420
+msgid " plugin development has been actively taken over by"
+msgstr ""
+
+#: radio-station-admin.php:422
+msgid "We invite you to"
+msgstr ""
+
+#: radio-station-admin.php:424
+msgid "Become a Radio Station Patreon Supporter"
+msgstr ""
+
+#: radio-station-admin.php:425
+msgid "to make it better for everyone"
+msgstr ""
+
+#: radio-station-admin.php:441 radio-station-admin.php:619
+#: radio-station-admin.php:690
+msgid "Dismiss this Notice"
+msgstr ""
+
+#: radio-station-admin.php:481
+msgid "has detected"
+msgstr ""
+
+#: radio-station-admin.php:482
+msgid "Schedule conflicts!"
+msgstr ""
+
+#: radio-station-admin.php:486
+msgid "The following Shows have conflicting Shift times"
+msgstr ""
+
+#: radio-station-admin.php:518
+msgid "Go to Show List"
+msgstr ""
+
+#: radio-station-admin.php:519
+msgid "Conflicts are highlighted"
+msgstr ""
+
+#: radio-station-admin.php:520
+msgid "in Show Shift column."
+msgstr ""
+
+#: radio-station-admin.php:525
+msgid "This notice will persist"
+msgstr ""
+
+#: radio-station-admin.php:526
+msgid "until conflicts are resolved."
+msgstr ""
+
+#: radio-station-admin.php:593
+msgid "A new version of"
+msgstr ""
+
+#: radio-station-admin.php:595
+msgid "is available."
+msgstr ""
+
+#: radio-station-admin.php:599
+msgid "Take a moment to Upgrade for a better experience. In this update..."
+msgstr ""
+
+#: radio-station-admin.php:605 radio-station-admin.php:674
+msgid "Update Details"
+msgstr ""
+
+#: radio-station-admin.php:610
+msgid "Update Now"
+msgstr ""
+
+#: radio-station-admin.php:662
+msgid "Update Notice"
+msgstr ""
+
+#: radio-station-admin.php:667
+msgid "Thanks for Upgrading! You can enjoy these improvements now"
+msgstr ""
+
+#: radio-station-admin.php:680
+msgid "Plugin Settings"
+msgstr ""
+
+#: radio-station-admin.php:856
+msgid "Stay tuned! Subscribe to Radio Station's"
+msgstr ""
+
+#: radio-station-admin.php:857
+msgid "Plugin Updates and Announcements List"
+msgstr ""
+
+#: radio-station.php:115
+msgid "Streaming URL"
+msgstr ""
+
+#: radio-station.php:117
+msgid "Enter the Streaming URL for your Radio Station."
+msgstr ""
+
+#: radio-station.php:125
+msgid "Main Broadcast Language"
+msgstr ""
+
+#: radio-station.php:127
+msgid "Select the main language used on your Radio Station."
+msgstr ""
+
+#: radio-station.php:147
+msgid "Location Timezone"
+msgstr ""
+
+#: radio-station.php:149
+msgid "Select your Broadcast Location for Timezone display."
+msgstr ""
+
+#: radio-station.php:157
+msgid "12 Hour Format"
+msgstr ""
+
+#: radio-station.php:158
+msgid "24 Hour Format"
+msgstr ""
+
+#: radio-station.php:160
+msgid "Clock Time Format"
+msgstr ""
+
+#: radio-station.php:162
+msgid "Default Time Format Display for plugin output. Can be overridden in each shortcode or widget."
+msgstr ""
+
+#: radio-station.php:169
+msgid "Enable Data Routes"
+msgstr ""
+
+#: radio-station.php:172
+msgid "Enables Station Data Routes via WordPress REST API."
+msgstr ""
+
+#: radio-station.php:179
+msgid "Enable Data Feeds"
+msgstr ""
+
+#: radio-station.php:182
+msgid "Enable Station Data Feeds via WordPress feed links."
+msgstr ""
+
+#: radio-station.php:189
+msgid "Show Shift Feeds"
+msgstr ""
+
+#: radio-station.php:192
+msgid "Convert RSS Feeds for a single Show to a Show shift feed, allowing a visitor to subscribe to a Show feed to be notified of Show shifts."
+msgstr ""
+
+#: radio-station.php:200
+msgid "Transient Caching"
+msgstr ""
+
+#: radio-station.php:203
+msgid "Use Transient Caching to improve Schedule calculation performance."
+msgstr ""
+
+#: radio-station.php:213
+msgid "Master Schedule Page"
+msgstr ""
+
+#: radio-station.php:215
+msgid "Select the Page you are displaying the Master Schedule on."
+msgstr ""
+
+#: radio-station.php:222 radio-station.php:345 radio-station.php:376
+#: radio-station.php:407
+msgid "Automatic Display"
+msgstr ""
+
+#: radio-station.php:225
+msgid "Replaces selected page content with Master Schedule. Alternatively customize with the shortcode: "
+msgstr ""
+
+#: radio-station.php:232
+msgid "Schedule View Default"
+msgstr ""
+
+#: radio-station.php:235
+msgid "Table View"
+msgstr ""
+
+#: radio-station.php:236
+msgid "List View"
+msgstr ""
+
+#: radio-station.php:237
+msgid "Divs View"
+msgstr ""
+
+#: radio-station.php:238
+msgid "Tabbed View"
+msgstr ""
+
+#: radio-station.php:239
+msgid "Legacy Table"
+msgstr ""
+
+#: radio-station.php:241
+msgid "View type to use for automatic display on Master Schedule Page."
+msgstr ""
+
+#: radio-station.php:249
+msgid "View Switching"
+msgstr ""
+
+#: radio-station.php:252
+msgid "Enable View Switching on the Master Schedule."
+msgstr ""
+
+#: radio-station.php:261
+msgid "Info Blocks Position"
+msgstr ""
+
+#: radio-station.php:263
+msgid "Float Left"
+msgstr ""
+
+#: radio-station.php:264
+msgid "Float Right"
+msgstr ""
+
+#: radio-station.php:265
+msgid "Float Top"
+msgstr ""
+
+#: radio-station.php:268
+msgid "Where to position Show info blocks relative to Show Page content."
+msgstr ""
+
+#: radio-station.php:275
+msgid "Content Header Image"
+msgstr ""
+
+#: radio-station.php:278
+msgid "If your template does not display the Featured Image, enable this and use the Content Header Image box on the Show edit screen instead."
+msgstr ""
+
+#: radio-station.php:285 templates/single-show-content.php:617
+msgid "Latest Show Posts"
+msgstr ""
+
+#: radio-station.php:290
+msgid "Number of Latest Blog Posts to Show above Show Page tabs."
+msgstr ""
+
+#: radio-station.php:297
+msgid "Posts per Page"
+msgstr ""
+
+#: radio-station.php:302
+msgid "Blog Posts per page on the Show Page tab."
+msgstr ""
+
+#: radio-station.php:312
+msgid "Playlists per Page"
+msgstr ""
+
+#: radio-station.php:314
+msgid "Playlists per page on the Show Page tab."
+msgstr ""
+
+#: radio-station.php:335
+msgid "Show Archives Page"
+msgstr ""
+
+#: radio-station.php:339
+msgid "Select the Page for displaying the Show archive list."
+msgstr ""
+
+#: radio-station.php:349
+msgid "Replaces selected page content with default Show Archive. Alternatively customize display using the shortcode:"
+msgstr ""
+
+#: radio-station.php:366
+msgid "Playlist Archives Page"
+msgstr ""
+
+#: radio-station.php:370
+msgid "Select the Page for displaying the Playlist archive list."
+msgstr ""
+
+#: radio-station.php:380
+msgid "Replaces selected page content with default Playlist Archive. Alternatively customize display using the shortcode:"
+msgstr ""
+
+#: radio-station.php:397
+msgid "Genre Archives Page"
+msgstr ""
+
+#: radio-station.php:401
+msgid "Select the Page for displaying the Genre archive list."
+msgstr ""
+
+#: radio-station.php:411
+msgid "Replaces selected page content with default Genre Archive. Alternatively customize display using the shortcode:"
+msgstr ""
+
+#: radio-station.php:430
+msgid "Templates Change Note"
+msgstr ""
+
+#: radio-station.php:431
+msgid "Since 2.3.0, the way that Templates are implemented has changed."
+msgstr ""
+
+#: radio-station.php:432
+msgid "See the Documentation for more information:"
+msgstr ""
+
+#: radio-station.php:433
+msgid "Templates Documentation"
+msgstr ""
+
+#: radio-station.php:438
+msgid "Show Template"
+msgstr ""
+
+#: radio-station.php:441 radio-station.php:464
+msgid "Theme Page Template (page.php)"
+msgstr ""
+
+#: radio-station.php:442 radio-station.php:465
+msgid "Theme Post Template (single.php)"
+msgstr ""
+
+#: radio-station.php:443
+msgid "Theme Singular Template (singular.php)"
+msgstr ""
+
+#: radio-station.php:444 radio-station.php:466
+msgid "Legacy Plugin Template"
+msgstr ""
+
+#: radio-station.php:447
+msgid "Which template to use for displaying Show content."
+msgstr ""
+
+#: radio-station.php:452 radio-station.php:474
+msgid "Combined Method"
+msgstr ""
+
+#: radio-station.php:456
+msgid "Advanced usage. Use both a custom template AND content filtering for a Show. (Not compatible with Legacy templates.)"
+msgstr ""
+
+#: radio-station.php:461
+msgid "Playlist Template"
+msgstr ""
+
+#: radio-station.php:469
+msgid "Which template to use for displaying Playlist content."
+msgstr ""
+
+#: radio-station.php:478
+msgid "Advanced usage. Use both a custom template AND content filtering for a Playlist. (Not compatible with Legacy templates.)"
+msgstr ""
+
+#: radio-station.php:488
+msgid "Show Editor Role"
+msgstr ""
+
+#: radio-station.php:489
+msgid "Since 2.3.0, a new Show Editor role has been added with Publish and Edit capabilities for all Radio Station Post Types."
+msgstr ""
+
+#: radio-station.php:490
+msgid "You can assign this Role to any user to give them full Station Schedule updating permissions."
+msgstr ""
+
+#: radio-station.php:507
+msgid "Add to Author Capabilities"
+msgstr ""
+
+#: radio-station.php:510
+msgid "Allow users with WordPress Author role to publish and edit their own Shows and Playlists."
+msgstr ""
+
+#: radio-station.php:516
+msgid "Add to Editor Capabilities"
+msgstr ""
+
+#: radio-station.php:519
+msgid "Allow users with WordPress Editor role to edit all Radio Station post types."
+msgstr ""
+
+#: radio-station.php:543
+msgid "Pages"
+msgstr ""
+
+#: radio-station.php:544
+msgid "Templates"
+msgstr ""
+
+#: radio-station.php:545
+msgid "Roles"
+msgstr ""
+
+#: radio-station.php:548
+msgid "Station"
+msgstr ""
+
+#: radio-station.php:549
+msgid "Broadcast"
+msgstr ""
+
+#: radio-station.php:550
+msgid "Times"
+msgstr ""
+
+#: radio-station.php:551
+msgid "Feeds"
+msgstr ""
+
+#: radio-station.php:552
+msgid "Single Templates"
+msgstr ""
+
+#: radio-station.php:553
+msgid "Archive Templates"
+msgstr ""
+
+#: radio-station.php:554
+msgid "Schedule Page"
+msgstr ""
+
+#: radio-station.php:555
+msgid "Show Pages"
+msgstr ""
+
+#: radio-station.php:556
+msgid "Archives"
+msgstr ""
+
+#: radio-station.php:557
+msgid "Permissions"
+msgstr ""
+
+#: radio-station.php:577
+msgid "Rate on WordPress.org"
+msgstr ""
+
+#: radio-station.php:1406
+msgid "DJ / Host"
+msgstr ""
+
+#: radio-station.php:1418
+msgid "Show Producer"
+msgstr ""
+
+#: radio-station.php:1491
+msgid "Show Editor"
+msgstr ""
+
+#: templates/admin-export.php:14
 msgid "Start Date"
 msgstr ""
 
-#: radio-station.php:394
+#: templates/admin-export.php:84
 msgid "End Date"
 msgstr ""
 
-#: radio-station.php:466
-msgid "Related to Show"
+#: templates/admin-export.php:156
+msgid "Export"
+msgstr ""
+
+#: templates/legacy/archive-playlist.php:19
+msgid "Playlist Archive for"
+msgstr ""
+
+#: templates/legacy/archive-playlist.php:57
+msgid "Post navigation"
+msgstr ""
+
+#: templates/legacy/archive-playlist.php:58
+msgid "Older posts"
+msgstr ""
+
+#: templates/legacy/archive-playlist.php:59
+msgid "Newer posts"
+msgstr ""
+
+#: templates/legacy/archive-playlist.php:68 templates/legacy/author.php:100
+#: templates/legacy/playlist-archive-template.php:66
+#: templates/legacy/show-blog-archive-template.php:76
+msgid "Nothing Found"
+msgstr ""
+
+#: templates/legacy/archive-playlist.php:72 templates/legacy/author.php:104
+#: templates/legacy/playlist-archive-template.php:70
+#: templates/legacy/show-blog-archive-template.php:80
+msgid "Apologies, but no results were found for the requested archive. Perhaps searching will help find a related post."
+msgstr ""
+
+#: templates/legacy/author.php:54
+msgid "Author Archives: %s"
+msgstr ""
+
+#: templates/legacy/author.php:74
+msgid "About %s"
+msgstr ""
+
+#: templates/legacy/playlist-archive-template.php:16
+msgid "Playlist Archive"
+msgstr ""
+
+#: templates/legacy/show-blog-archive-template.php:20
+msgid "Blog Archive"
+msgstr ""
+
+#: templates/legacy/show-blog-archive-template.php:53
+msgid "Posted by"
+msgstr ""
+
+#: templates/legacy/single-playlist.php:30 templates/legacy/single-show.php:35
+msgid "Pages:"
+msgstr ""
+
+#: templates/legacy/single-playlist.php:49
+msgid "DJ Comments"
+msgstr ""
+
+#: templates/legacy/single-playlist.php:71
+msgid "No entries for this playlist"
+msgstr ""
+
+#: templates/master-schedule-div.php:143
+#: templates/master-schedule-legacy.php:219
+#: templates/master-schedule-list.php:131
+#: templates/master-schedule-table.php:242
+#: templates/master-schedule-tabs.php:146
+msgid "encore airing"
+msgstr ""
+
+#: templates/master-schedule-div.php:151
+#: templates/master-schedule-legacy.php:232
+#: templates/master-schedule-list.php:144
+#: templates/master-schedule-table.php:254
+#: templates/master-schedule-tabs.php:159
+msgid "Audio File"
+msgstr ""
+
+#: templates/master-schedule-list.php:117
+#: templates/master-schedule-tabs.php:133
+msgid "to"
+msgstr ""
+
+#: templates/master-schedule-tabs.php:187
+msgid "No Shows found for this day."
+msgstr ""
+
+#: templates/single-playlist-content.php:38
+msgid "No entries for this Playlist"
+msgstr ""
+
+#: templates/single-show-content.php:63
+msgid "Show Website"
+msgstr ""
+
+#: templates/single-show-content.php:75
+msgid "Email Show Host"
+msgstr ""
+
+#: templates/single-show-content.php:88
+msgid "Show RSS Feed"
+msgstr ""
+
+#: templates/single-show-content.php:191
+msgid "Download Latest Broadcast"
+msgstr ""
+
+#: templates/single-show-content.php:209
+msgid "Show Info"
+msgstr ""
+
+#: templates/single-show-content.php:214
+msgid "Hosted by"
+msgstr ""
+
+#: templates/single-show-content.php:241
+msgid "Produced by"
+msgstr ""
+
+#: templates/single-show-content.php:325
+msgid "Show Times"
+msgstr ""
+
+#: templates/single-show-content.php:330
+msgid "Not Currently Scheduled."
+msgstr ""
+
+#: templates/single-show-content.php:360
+msgid "Timezone"
+msgstr ""
+
+#: templates/single-show-content.php:362 templates/single-show-content.php:366
+msgid "UTC"
+msgstr ""
+
+#: templates/single-show-content.php:444
+msgid "Show More"
+msgstr ""
+
+#: templates/single-show-content.php:445
+msgid "Show Less"
+msgstr ""
+
+#: templates/single-show-content.php:459 templates/single-show-content.php:716
+msgid "About the Show"
+msgstr ""
+
+#: templates/single-show-content.php:460
+msgid "About"
+msgstr ""
+
+#: templates/single-show-content.php:478
+msgid "Show Episodes"
+msgstr ""
+
+#: templates/single-show-content.php:479
+msgid "Episodes"
+msgstr ""
+
+#: templates/single-show-content.php:499
+msgid "Show Posts"
+msgstr ""
+
+#: templates/single-show-content.php:500
+msgid "Posts"
+msgstr ""
+
+#: templates/single-show-content.php:519
+msgid "Show Playlists"
+msgstr ""
+
+#: templates/single-show-content.php:681
+msgid "Jump to"
+msgstr ""
+#. Plugin Name of the plugin/theme
+msgid "Radio Station"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "https://netmix.com/radio-station"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid "Adds Show pages, DJ role, playlist and on-air programming functionality to your site."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Tony Zeoli <tonyzeoli@netmix.com>"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "https://netmix.com/radio-station"
 msgstr ""

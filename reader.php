@@ -1327,7 +1327,7 @@ if (!class_exists('Markdown_Parser')) {
 			# Ampersand-encoding based entirely on Nat Irons's Amputator
 			# MT plugin: <http://bumppo.net/projects/amputator/>
 			$text = preg_replace('/&(?!#?[xX]?(?:[0-9a-fA-F]+|\w+);)/',
-								'&amp;', $text);;
+								'&amp;', $text);
 		}
 		# Encode remaining <'s
 		$text = str_replace('<', '&lt;', $text);
@@ -3411,7 +3411,7 @@ if (!class_exists('WordPress_Readme_Parser')) {
 		// All done!
 		// $r['tags'] and $r['contributors'] are simple arrays
 		// $r['sections'] is an array with named elements
-		$r = array(
+	$r = array(
 			'name' => $name,
 			'tags' => $tags,
 			'requires_at_least' => $requires_at_least,
