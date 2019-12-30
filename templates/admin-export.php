@@ -4,7 +4,7 @@
 
 		<?php wp_nonce_field( 'station_export_valid' ); ?>
 
-		<input type="hidden" name="export_action" value="station_playlist_export" />
+		<input type="hidden" name="export_action" value="station_playlist_export"/>
 		<table class="form-table">
 
 			<tr valign="top">
@@ -16,26 +16,20 @@
 					<select name="station_export_start_month" id="station_export_start_month">
 						<?php
 						$selected = 'selected="selected"';
-						for ( $i = 1; $i <= 12; $i++ ) {
+						for ( $i = 1; $i <= 12; $i ++ ) {
 							$month_num = $i;
 							if ( $month_num < 10 ) {
 								$month_num = '0' . $i;
 							}
 							$date_format = DateTime::createFromFormat( '!m', $i );
-							$month_name  = $date_format->format( 'M' );
+							$month_name = $date_format->format( 'M' );
 							?>
-							<option 
-								value="<?php echo esc_attr( $month_num ); ?>"
-								<?php
-								if ( $i === $smonth ) {
-									echo $selected;
-								}
-								?>
-							>
+							<option	value="<?php echo esc_attr( $month_num ); ?>" <?php selected( $i, $smonth ); ?>>
 								<?php
 								echo esc_html( $month_num );
 								echo ' (';
-								echo esc_html__( $month_name, 'radio-station' );
+								// TODO: translate month name ?
+								echo esc_html( $month_name );
 								echo ')';
 								?>
 							</option>
@@ -47,7 +41,7 @@
 					<?php $sday = isset( $_POST['station_export_start_day'] ) ? (int) $_POST['station_export_start_day'] : ''; ?>
 					<select name="station_export_start_day" id="station_export_start_day">
 						<?php
-						for ( $i = 1; $i <= 31; $i++ ) {
+						for ( $i = 1; $i <= 31; $i ++ ) {
 							$day = $i;
 							if ( $i < 10 ) {
 								$day = '0' . $day;
@@ -57,7 +51,7 @@
 							} else {
 								$selected = '';
 							}
-							echo '<option value="' . esc_attr( $day ) . '"' . $selected . '>' . esc_html( $i ) . '</option>';
+							echo '<option value="' . esc_attr( $day ) . '"' . selected( $sday, $day, false ) . '>' . esc_html( $i ) . '</option>';
 						}
 						?>
 					</select>
@@ -66,7 +60,7 @@
 					<select name="station_export_start_year" id="station_export_start_year">
 						<?php
 						$year = date( 'Y' );
-						for ( $i = $year - 5; $i <= ( $year + 5 ); $i++ ) {
+						for ( $i = $year - 5; $i <= ( $year + 5 ); $i ++ ) {
 							$selected = '';
 							if ( $i == $syear ) {
 								$selected = ' selected="selected"';
@@ -87,26 +81,20 @@
 					<select name="station_export_end_month" id="station_export_end_month">
 						<?php
 						$selected = 'selected="selected"';
-						for ( $i = 1; $i <= 12; $i++ ) {
+						for ( $i = 1; $i <= 12; $i ++ ) {
 							$month_num = $i;
 							if ( $month_num < 10 ) {
 								$month_num = '0' . $i;
 							}
 							$date_format = DateTime::createFromFormat( '!m', $i );
-							$month_name  = $date_format->format( 'M' );
+							$month_name = $date_format->format( 'M' );
 							?>
-							<option 
-								value="<?php echo esc_attr( $month_num ); ?>"
-								<?php
-								if ( $i === $emonth ) {
-									echo $selected;
-								}
-								?>
-								>
+							<option	value="<?php echo esc_attr( $month_num ); ?>" <?php selected( $i, $emonth ); ?>>
 								<?php
 								echo esc_html( $month_num );
 								echo ' (';
-								echo esc_html__( $month_name, 'radio-station' );
+								// TODO: translate month name ?
+								echo esc_html( $month_name );
 								echo ')';
 								?>
 							</option>
@@ -118,16 +106,12 @@
 					<?php $eday = isset( $_POST['station_export_end_day'] ) ? (int) $_POST['station_export_end_day'] : ''; ?>
 					<select name="station_export_end_day" id="station_export_end_day">
 						<?php
-						for ( $i = 1; $i <= 31; $i++ ) {
+						for ( $i = 1; $i <= 31; $i ++ ) {
 							$day = $i;
 							if ( $i < 10 ) {
-								$day = '0' . $day;}
-							if ( $eday === $day ) {
-								$selected = ' selected="selected"';
-							} else {
-								$selected = '';
+								$day = '0' . $day;
 							}
-							echo '<option value="' . esc_attr( $day ) . '"' . $selected . '>' . esc_html( $i ) . '</option>';
+							echo '<option value="' . esc_attr( $day ) . '"' . selected( $eday, $day, false ) . '>' . esc_html( $i ) . '</option>';
 						}
 						?>
 					</select>
@@ -136,14 +120,14 @@
 					<select name="station_export_end_year" id="station_export_end_year">
 						<?php
 						$year = date( 'Y' );
-						for ( $i = $year - 5; $i <= ( $year + 5 ); $i++ ) {
+						for ( $i = $year - 5; $i <= ( $year + 5 ); $i ++ ) {
 							$selected = '';
 							if ( $i === $eyear ) {
 								$selected = ' selected="selected"';
 							} elseif ( $i === $year && empty( $eyear ) ) {
 								$selected = ' selected="selected"';
 							}
-								echo '<option value="' . esc_attr( $i ) . '"' . $selected . '>' . esc_html( $i ) . '</option>';
+							echo '<option value="' . esc_attr( $i ) . '"' . $selected . '>' . esc_html( $i ) . '</option>';
 						}
 						?>
 					</select>

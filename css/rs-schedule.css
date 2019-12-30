@@ -1,10 +1,28 @@
+/* ----------------------------- */
 /* Radio Station Schedule Styles */
 /* ----------------------------- */
 
-/* Station Clock */
+/* Schedule Controls */
+/* ----------------- */
+#master-schedule-controls-wrapper {
+	width: 100%;
+}
+
+#master-schedule-controls-wrapper #master-schedule-selector-wrapper,
+#master-schedule-controls-wrapper #master-schedule-clock-wrapper {
+	width: 50%;
+	display: inline-block;
+}
+
+#master-schedule-selector-wrapper {
+	vertical-align: top;
+	text-align: left;
+}
+
 #master-schedule-clock-wrapper {
 	font-size: 12px;
-	float: right;
+	vertical-align: top;
+	text-align: right;
 }
 
 #master-schedule-clock-wrapper .clock-title {
@@ -12,6 +30,7 @@
 }
 
 /* Table Style Grid */
+/* ---------------- */
 #master-genre-list {
 	font-size: 12px;
 	float: left;
@@ -91,24 +110,26 @@
 	height: 100%;
 }
 
-#master-program-schedule .show-info .master-show-entry.nowplaying {
-    border: 1px solid #F00000;
-    outline: 2px solid #F00000;
-}
-
 #master-program-schedule .show-info .master-show-entry.finished {
 	height: 99%;
 }
 
-#master-program-schedule .show-info .master-show-entry.overflow {
+#master-program-schedule .show-info .master-show-entry.nowplaying {
+    border: 3px solid #F00000;
+}
+
+#master-program-schedule .show-info .master-show-entry.overflow,
+#master-program-schedule .show-info .master-show-entry.nowplaying.overflow {
 	border-bottom: 1px solid transparent;
 }
 
-#master-program-schedule .show-info .master-show-entry.continued {
+#master-program-schedule .show-info .master-show-entry.continued,
+#master-program-schedule .show-info .master-show-entry.nowplaying.continued {
 	border-top: 1px solid transparent;
 }
 
-#master-program-schedule .show-info .master-show-entry.continued.overflow {
+#master-program-schedule .show-info .master-show-entry.continued.overflow,
+#master-program-schedule .show-info .master-show-entry.nowplaying.continued.overflow {
 	border-bottom: 1px solid transparent;
 }
 
@@ -116,7 +137,7 @@
 	border: 1px dashed orange;
 	background-color: rgba(235,235,0,0.4);
 }
-   
+  
 #master-program-schedule span.show-title,
 #master-program-schedule span.show-file,
 #master-program-schedule span.show-time,
@@ -158,6 +179,7 @@
 }
 
 /* Div Style Grid */
+/* -------------- */
 #master-schedule-divs {
 	width: 100%;
 }
@@ -215,6 +237,7 @@
 }
 
 /* Tabbed Styled List */
+/* ------------------ */
 #master-schedule-tabs {
 	border: none; 
 	padding: 0;

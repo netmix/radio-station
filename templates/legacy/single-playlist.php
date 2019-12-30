@@ -27,7 +27,7 @@ get_header();
 						<?php
 						wp_link_pages(
 							array(
-								'before' => '<div class="page-link"><span>' . __( 'Pages:', 'radio-station' ) . '</span>',
+								'before' => '<div class="page-link"><span>' . esc_html( __( 'Pages:', 'radio-station' ) ) . '</span>',
 								'after'  => '</div>',
 							)
 						);
