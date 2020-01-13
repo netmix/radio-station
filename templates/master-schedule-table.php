@@ -8,6 +8,7 @@ $weekdays = radio_station_get_schedule_weekdays();
 $schedule = radio_station_get_current_schedule();
 $hours = radio_station_get_hours();
 $now = strtotime( current_time( 'mysql' ) );
+$today =  strtolower( date( 'j', $now ) );
 $am = str_replace( ' ', '', radio_station_translate_meridiem( 'am' ) );
 $pm = str_replace( ' ', '', radio_station_translate_meridiem( 'pm' ) );
 
@@ -21,11 +22,15 @@ $output .= '<div style="clear:both;"></div>';
 $output .= '<table id="master-program-schedule" cellspacing="0" cellpadding="0" class="grid">';
 
 // --- weekday table headings row ---
-$output .= '<tr class="master-program-day-row"> <th></th>';
+$output .= '<tr class="master-program-day-row">';
+$output .= '<th></th>';
 foreach ( $weekdays as $weekday ) {
 	$heading = substr( $weekday, 0, 3 );
 	$heading = radio_station_translate_weekday( $heading, true );
-	$output .= '<th>' . $heading . '</th>';
+	$classes = array( 'master-program-day', strtolower( $weekday ) );
+	if ( strtolower( $weekday ) == $today ) {$classes[] = 'current-day';}
+	$class = implode( ' ', $classes );
+	$output .= '<th class="' . esc_attr( $class ) . '">' . esc_html( $heading ) . '</th>';
 }
 $output .= '</tr>';
 
@@ -40,11 +45,19 @@ foreach ( $hours as $hour ) {
 	// --- start hour row ---
 	$output .= '<tr class="master-program-hour-row hour-row-' . esc_attr( $raw_hour ) . '">';
 
+	// --- set data format for timezone conversions ---
+	if ( 24 == (int) $atts['time'] ) {
+		$data_format = "G:i";
+	} else {
+		$data_format = "H a";
+	}
+
 	// --- hour heading ---
 	$output .= '<th class="master-program-hour">';
 	$output .= '<div>';
 	$output .= esc_html( $hour );
-	$output .= '<br><div class="master-program-user-hour rs-time" data="' . esc_attr( $raw_hour ) . '" data-format="H" data-type="' . esc_attr( $atts['time'] ) . '"></div>';
+	$output .= '<br>';
+	$output .= '<div class="master-program-user-hour rs-time" data="' . esc_attr( $raw_hour ) . '" data-format="' . esc_attr( $data_format ) . '"></div>';
 	$output .= '</div>';
 	$output .= '</th>';
 
@@ -264,16 +277,16 @@ foreach ( $hours as $hour ) {
 							if ( 24 == (int) $atts['time'] ) {
 								$start = radio_station_convert_shift_time( $shift['start'], 24 );
 								$end = radio_station_convert_shift_time( $shift['end'], 24 );
+								$data_format = 'G:i';
 							} else {
-								$start = str_replace( ' am', $am, $shift['start'] );
-								$start = str_replace( ' pm', $pm, $shift['start'] );
-								$end = str_replace( ' am', $am, $shift['end'] );
-								$end = str_replace( ' pm', $pm, $shift['end'] );
+								$start = str_replace( array( 'am', 'pm'), array( ' ' . $am, ' ' . $pm ), $shift['start'] );
+								$end = str_replace( array( 'am', 'pm'), array( ' ' . $am, ' ' . $pm ), $shift['end'] );
+								$data_format = 'H:i a';
 							}
 
-							$show_time = '<span class="rs-time" data="' . esc_attr( $shift_start_time ) . '" data-format="H:i" data-type="' . $atts['time'] . '">' . $start . '</span>';
+							$show_time = '<span class="rs-time" data="' . esc_attr( $shift_start_time ) . '" data-format="' . esc_attr( $data_format ) . '">' . $start . '</span>';
 							$show_time .= ' ' . esc_html( __( 'to', 'radio-station' ) ) . ' ';
-							$show_time .= '<span class="rs-time" data="' . esc_attr( $shift_end_time ) . '" data-format="H:i" data-type="' . $atts['time'] . '">' . $end . '</span>';
+							$show_time .= '<span class="rs-time" data="' . esc_attr( $shift_end_time ) . '" data-format="' . esc_attr( $data_format ) . '">' . $end . '</span>';
 							$show_time = apply_filters( 'radio_station_schedule_show_time', $show_time, $show['id'], 'table' );
 							$cell .= '<div class="show-time" id="show-time-' . esc_attr( $tcount ) . '">' . $show_time . '</div>';
 							$cell .= '<div class="show-user-time" id="show-user-time-' . esc_attr( $tcount ) . '"></div>';
@@ -311,7 +324,7 @@ foreach ( $hours as $hour ) {
 		}
 
 		// --- add cell to hour row - weekday column ---
-		$cellclasses = array( 'show-info' );
+		$cellclasses = array( 'show-info', $weekday );
 		if ( $cellcontinued ) {
 			$cellclasses[] = 'continued';
 		}

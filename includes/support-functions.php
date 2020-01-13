@@ -763,16 +763,20 @@ function radio_station_get_current_schedule() {
 	if ( count( $show_shifts ) > 0 ) {
 
 		// --- get show overrides ---
-		// (from 12am this morning, for one week)
-		$start_time = strtotime( date( 'l 12am' ) );
-		$end_time = $start_time + ( 7 * 24 * 60 * 60 ) - 1;
+		// (from 12am this morning, for one week ahead and back)
+		$now = strtotime( current_time( 'mysql' ) );
+		$date = date( 'd-m-Y', $now );
+		$start_time = strtotime( '12am ' . $date );
+		$end_time = $start_time + ( 7 * 24 * 60 * 60 ) + 1;
+		$start_time = $start_time - ( 7 * 24 * 60 * 60 ) - 1;
 		$start_date = date( 'd-m-Y', $start_time );
 		$end_date = date( 'd-m-Y', $end_time );
 		$override_list = radio_station_get_overrides( $start_date, $end_date );
 
 		// --- debug point ---
 		if ( RADIO_STATION_DEBUG ) {
-			$debug = "Start Date: " . $start_date . " - End Date: " . $end_date . PHP_EOL;
+			$debug = "Now: " . $now . " - Today: " . $date . PHP_EOL;
+			$debug .= "Start Date: " . $start_date . " - End Date: " . $end_date . PHP_EOL;
 			$debug .= "Schedule Overrides: " . print_r( $override_list, true ) . PHP_EOL;
 			radio_station_debug( $debug );
 		}
@@ -1397,7 +1401,7 @@ function radio_station_check_shifts( $all_shifts ) {
 				}
 
 				// --- account for midnight times ---
-				if ( ( '11:59:59 pm' == $shift['start'] ) || ( '12:00 am' == $shift['end'] ) ) {
+				if ( ( '11:59:59 pm' == $shift['start'] ) || ( '12:00 am' == $shift['start'] ) ) {
 					$start_time = strtotime( $nextday . ' 12:00 am' );
 				} else {
 					$start_time = strtotime( $thisday . ' ' . $shift['start'] );

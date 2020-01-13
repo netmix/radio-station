@@ -54,6 +54,12 @@ function radio_station_master_schedule( $atts ) {
 	// --- set initial empty output string ---
 	$output = '';
 
+	// --- disable clock if feature is not present ---
+	// (temporarily while clock is in development)
+	if ( !function_exists( 'radio_station_clock_shortcode' ) ) {
+		$atts['clock'] = 0;
+	}
+
 	// --- get show selection links and clock display ---
 	// 2.3.0: added server/user clock display
 	if ( $atts['selector'] ) {
@@ -65,20 +71,24 @@ function radio_station_master_schedule( $atts ) {
 
 	// --- table for selector and clock  ---
 	// 2.3.0: moved out from templates to apply to all views
-	if ( $atts['selector'] && $atts['clock'] ) {
-		$output .= '<div id="master-schedule-controls-wrapper">';
-		$output .= '<div id="master-schedule-selector-wrapper">';
-		$output .= $selector;
-		$output .= '</div>';
-		$output .= '<div id="master-schedule-clock-wrapper">';
+	$output .= '<div id="master-schedule-controls-wrapper">';
+
+	$output .= '<div id="master-schedule-clock-wrapper">';
+	if ( $atts['clock'] ) {
 		$output .= $clock;
-		$output .= '</div>';
-		$output .= '</div>';
-	} elseif ( $atts['selector'] ) {
-		$output .= $selector;
-	} elseif ( $atts['clock'] ) {
-		$output .= $clock;
+	} else {
+		// --- display radio timezone ---
+		$output .= radio_station_timezone_shortcode();
 	}
+	$output .= '</div>';
+
+	$output .= '<div id="master-schedule-selector-wrapper">';
+	if ( $atts['selector'] ) {
+		$output .= $selector;
+	}
+	$output .= '</div>';
+
+	$output .= '</div><br>';
 
 	// -------------------------
 	// New Master Schedule Views
@@ -244,12 +254,13 @@ function radio_station_master_schedule( $atts ) {
 	}
 
 	// --- check for schedule overrides ---
-	// ? TODO ? check/include schedule overrides in legacy template views
+	// ? TODO - check/include schedule overrides in legacy template views
 	// $overrides = radio_station_master_get_overrides( true );
 
 	// --- include the specified master schedule output template ---
 	// 2.3.0: check for user theme templates
 	if ( 'divs' == $atts['view'] ) {
+		$output = ''; // no selector / clock support yet
 		$template = radio_station_get_template( 'file', 'master-schedule-div.php' );
 		require $template;
 	} elseif ( 'legacy' == $atts['view'] ) {

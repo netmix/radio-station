@@ -148,7 +148,7 @@ function radio_station_show_language_metabox() {
 	// --- get main language ---
 	$main_language = radio_station_get_language();
 	foreach ( $languages as $i => $language ) {
-		if ( $main_language['slug'] == $language['language'] ) {
+		if ( strtolower( $main_language['slug'] ) == strtolower( $language['language'] ) ) {
 			$label = $language['native_name'];
 			if ( $language['native_name'] != $language['english_name'] ) {
 				$label .= ' (' . $language['english_name'] . ')';
@@ -166,7 +166,7 @@ function radio_station_show_language_metabox() {
 	echo '<ul id="' . esc_attr( RADIO_STATION_LANGUAGES_SLUG ) . '_taxradiolist" data-wp-lists="list:' . esc_attr( RADIO_STATION_LANGUAGES_SLUG ) . '_tax" class="categorychecklist form-no-clear">';
 
 	// --- loop existing terms ---
-	$term_names = array();
+	$term_slugs = array();
 	foreach ( $terms as $term ) {
 
 		$slug = $term->slug;
@@ -198,7 +198,7 @@ function radio_station_show_language_metabox() {
 	foreach ( $languages as $i => $language ) {
 		$code = $language['language'];
 		echo '<option value="' . esc_attr( $code ) . '"';
-		if ( in_array( $code, $term_slugs ) ) {
+		if ( in_array( strtolower( $code ), $term_slugs ) ) {
 			echo ' disabled="disabled"';
 		}
 		echo '>' . esc_html( $language['native_name'] );
@@ -296,7 +296,7 @@ function radio_station_language_term_filter( $post_id ) {
 
 			foreach ( $languages as $j => $language ) {
 
-				if ( $language['language'] == $term_slug ) {
+				if ( strtolower( $language['language'] ) == strtolower( $term_slug ) ) {
 
 					// --- get existing term ---
 					$term = get_term_by( 'slug', $term_slug, RADIO_STATION_LANGUAGES_SLUG );
@@ -940,7 +940,7 @@ function radio_station_show_info_metabox() {
 	// added max-width to prevent metabox overflows
 	// 2.3.0: removed new lines between labels and fields and changed widths
 	echo '<div id="meta_inner">';
-		echo '<p><div style="width:100px; display:inline-block;"><label><' . esc_html( __( 'Active', 'radio-station' ) ) . '</label></div> 
+		echo '<p><div style="width:100px; display:inline-block;"><label>' . esc_html( __( 'Active', 'radio-station' ) ) . '?</label></div> 
 		<input type="checkbox" name="show_active" ' . checked( $active, 'on', false ) . '/> 
 		<em>' . esc_html( __( 'Check this box if show is currently active (Show will not appear on programming schedule if unchecked.)', 'radio-station' ) ) . '</em></p>
 
@@ -978,24 +978,39 @@ function radio_station_show_info_metabox() {
 
 	// --- display inside metaboxes ---
 	echo '<div id="show-inside-metaboxes">';
+	$i = 1;
 	foreach ( $inside_metaboxes as $key => $metabox ) {
-		echo '<div id="' . esc_attr( $key ) . '" class="postbox">' . "\n";
+
+		$classes = array( 'postbox' );
+		if ( 1 == $i ) {
+			$classes[] = 'first';
+		} elseif ( count( $inside_metaboxes ) == $i ) {
+			$classes[] = 'last';
+		}
+		$class = implode( ' ', $classes );
+		
+		echo '<div id="' . esc_attr( $key ) . '" class="' . esc_attr( $class ) . '">' . "\n";
 		$widget_title = $metabox['title'];
-		echo '<button type="button" class="handlediv" aria-expanded="true">';
-		echo '<span class="screen-reader-text">' . esc_html( sprintf( __( 'Toggle panel: %s' ), $metabox['title'] ) ) . '</span>';
-		echo '<span class="toggle-indicator" aria-hidden="true"></span>';
-		echo '</button>';
+
+		// echo '<button type="button" class="handlediv" aria-expanded="true">';
+		// echo '<span class="screen-reader-text">' . esc_html( sprintf( __( 'Toggle panel: %s' ), $metabox['title'] ) ) . '</span>';
+		// echo '<span class="toggle-indicator" aria-hidden="true"></span>';
+		// echo '</button>';
 
 		echo '<h2 class="hndle"><span>' . esc_html( $metabox['title'] ) . '</span></h2>';
 		echo '<div class="inside">';
 			call_user_func( $metabox['callback'] );
 		echo "</div>";
 		echo "</div>";
+
+		$i ++;
 	}
 	echo '</div>';
 
 	// --- output inside metabox styles ---
-	echo "<style>#show-inside-metaboxes .postbox {display: inline-block !important; max-width: 200px; vertical-align: top;}
+	echo "<style>#show-inside-metaboxes .postbox {display: inline-block !important; min-width: 230px; max-width: 250px; vertical-align: top;}
+	#show-inside-metaboxes .postbox.first {margin-right: 20px;}
+	#show-inside-metaboxes .postbox.last {margin-left: 20px;}
 	#show-inside-metaboxes .postbox select {max-width: 200px;}</style>";
 }
 
@@ -1137,7 +1152,7 @@ function radio_station_show_producers_metabox() {
 				}
 				echo '<option value="' . esc_attr( $producer->ID ) . '"';
 				if ( in_array( $producer->ID, $current ) ) {
-					$selected = ' selected="selected"';
+					echo ' selected="selected"';
 				}
 				echo '>' . esc_html( $display_name ) . '</option>';
 			}
@@ -2209,6 +2224,10 @@ function radio_station_show_column_data( $column, $post_id ) {
 			echo esc_html( __( 'Yes', 'radio-station' ) );
 		}
 	} elseif ( 'shifts' == $column ) {
+		$active = get_post_meta( $post_id, 'show_active', true );
+		if ( 'on' == $active ) {
+			$active = true;
+		}
 		$shifts = get_post_meta( $post_id, 'show_sched', true );
 		if ( $shifts && ( count( $shifts ) > 0 ) ) {
 			foreach ( $shifts as $shift ) {
@@ -2219,7 +2238,7 @@ function radio_station_show_column_data( $column, $post_id ) {
 
 			foreach ( $sortedshifts as $shift ) {
 
-				// 2.3.0: highlight disabled and conflicting shifts
+				// 2.3.0: highlight disabled shifts
 				$classes = array( 'show-shift' );
 				$disabled = false;
 				$title = '';
@@ -2228,6 +2247,9 @@ function radio_station_show_column_data( $column, $post_id ) {
 					$classes[] = 'disabled';
 					$title = __( 'This Shift is Disabled.', 'radio-station' );
 				}
+
+				// --- check and highlight conflicts ---
+				// 2.3.0: added shift conflict checking
 				$conflicts = radio_station_check_shift( $post_id, $shift );
 				if ( $conflicts ) {
 					$classes[] = 'conflict';
@@ -2236,6 +2258,13 @@ function radio_station_show_column_data( $column, $post_id ) {
 					} else {
 						$title = __( 'This Shift has Schedule Conflicts.', 'radio-station' );
 					}
+				}
+				// 2.3.0: also highlight if the show is not active
+				if ( !$active ) {
+					if ( !in_array( 'disabled', $classes ) ) {
+						$classes[] = 'disabled';
+					}
+					$title = __( 'This Show is not currently active.', 'radio-station' );
 				}
 				$classlist = implode( ' ', $classes );
 
@@ -2462,6 +2491,10 @@ function radio_station_master_override_schedule_metabox() {
 	echo '</li>';
 	echo '</ul>';
 	echo '</div>';
+
+	// --- datepicker z-index style fix ---
+	// 2.3.0: added for display conflict with editor buttons
+	echo "<style>body.post-type-override #ui-datepicker-div {z-index: 1001 !important;}</style>";
 
 	// --- enqueue inline script ---
 	// 2.3.0: enqeue instead of echoing
@@ -2698,7 +2731,7 @@ function radio_station_override_column_data( $column, $post_id ) {
 			echo esc_html( __( 'Yes', 'radio-station' ) );
 		}
 	} elseif ( 'override_image' == $column ) {
-		$thumbnail_url = radio_station_get_show_avatar( $post_id );
+		$thumbnail_url = radio_station_get_show_avatar_url( $post_id );
 		if ( $thumbnail_url ) {
 			echo "<div class='override_image'><img src='" . esc_url( $thumbnail_url ) . "' alt='" . esc_attr( __( 'Override Logo', 'radio-station' ) ) . "'></div>";
 		}

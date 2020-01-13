@@ -10,6 +10,9 @@
     min-width: 250px;
 }
 
+#show-content .show-sections h3, #show-content .show-sections h4, #show-content .show-sections h5 {
+	clear: none;
+}
 
 /* Show Info */
 /* --------- */
@@ -71,6 +74,10 @@
 	background-color: #AAAAAA;
 }
 
+#show-content .show-embed .mejs-horizontal-volume-total {
+	width: 100%;
+}
+
 #show-content .show-icons {
 	vertical-align: top;
 	margin-top: 10px;
@@ -93,7 +100,7 @@
 
 /* Show Schedule */
 /* ------------- */
-#show-content .show-info .show-block h3 {
+#show-content .show-info .show-block h3, #show-content .show-info .show-block h4 {
 	margin-top: 0;
 }
 
@@ -116,6 +123,15 @@
 
 #show-content .show-times table td {
 	vertical-align: top;
+}
+
+#show-content .show-times .show-schedule-link {
+	width: 100%;
+	text-align: right;
+}
+
+#show-content .show-times .show-day-time, #show-content .show-times .show-time {
+	font-size: 18px;
 }
 
 #show-content .show-latest-title {
@@ -142,7 +158,6 @@
 #show-content #show-desc-buttons {
 	width: 100%;
 	text-align: right;
-	margin-top: -20px;
 	padding-bottom: 20px;
 }
 
@@ -150,9 +165,9 @@
 	display: none;
 }
 
-#show-content .show-more-overlay {
+#show-content #show-more-overlay {
     position: absolute; 
-    bottom: 0em;
+    bottom: 0;
     width: 100%;
     height: 6em;
     background: -webkit-linear-gradient(rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%); 
@@ -162,7 +177,7 @@
     background-image: -ms-linear-gradient(rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%);
 } 
 
-#show-content .show-description.expanded .show-more-overlay {
+#show-content .show-description.expanded #show-more-overlay {
 	display: none;
 }
 
@@ -175,24 +190,27 @@
 /* --------- */
 #show-content .show-tabs .show-tab {
 	display: inline-block; 
-	width: 100px; 
-	margin: 0px; 
+	width: 100px;
+	line-height: 40px;
+	font-size: 18px;
+	color: #444444;
+	margin: 0px;
 	cursor: pointer; 
 	text-align: center; 
 	background-color: #eeeeee; 
 	border-radius: 7px 7px 0 0;
 	border: 1px solid #000000;
-	font-size: 18px;
-	color: #444444;
 	padding: 6px 14px;
 }
 
 #show-content .show-tabs .show-tab-spacer {
 	display: inline-block;
 	width: 50px;
-	height: 29px;
+	line-height: 40px;
+	font-size: 18px;
 	border-bottom: 1px solid #000000;
 	border-top: 1px solid transparent;
+	padding: 6px 0;
 }
 
 #show-content .show-tabs .show-tab.tab-active {
@@ -216,6 +234,10 @@
 
 /* Alternative Layouts */
 /* ------------------- */
+#show-content.left-blocks .show-info {
+	margin-right: 30px;
+}
+
 #show-content.right-blocks .show-info {
 	float: right; 
 	margin-left: 30px;
@@ -230,6 +252,7 @@
 	border-left: 1px solid #AAAAAA;
 	padding-left: 20px;
 	margin-left: 20px;
+	margin-top: 0;
 }
 
 #show-content.top-blocks .show-info .show-block.first-block {
