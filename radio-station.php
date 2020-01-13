@@ -104,20 +104,31 @@ if ( !defined( 'RADIO_STATION_DEBUG' ) ) {
 	}
 	define( 'RADIO_STATION_DEBUG', $rs_debug );
 }
+// 2.3.0: clear show transients if debugging
+if ( RADIO_STATION_DEBUG ) {
+	delete_transient( 'radio_station_current_schedule' );
+	delete_transient( 'radio_station_current_show' );
+	delete_transient( 'radio_station_next_show' );
+}
 
 // --------------------
 // Include Plugin Files
 // --------------------
 // 2.3.0: include new data feeds file
+// 2.3.0: renamed widget files to match new widget names
 require RADIO_STATION_DIR . '/includes/post-types.php';
+require RADIO_STATION_DIR . '/includes/support-functions.php';
 require RADIO_STATION_DIR . '/includes/master-schedule.php';
 require RADIO_STATION_DIR . '/includes/shortcodes.php';
-require RADIO_STATION_DIR . '/includes/support-functions.php';
 require RADIO_STATION_DIR . '/includes/data-feeds.php';
-// 2.3.0: renamed files to match new widget naames
 require RADIO_STATION_DIR . '/includes/class-current-show-widget.php';
 require RADIO_STATION_DIR . '/includes/class-upcoming-shows-widget.php';
 require RADIO_STATION_DIR . '/includes/class-current-playlist-widget.php';
+
+// 2.3.0: add feature branch development includes
+if ( file_exists ( RADIO_STATION_DIR . '/includes/class-radio-clock-widget.php') ) {
+	include RADIO_STATION_DIR . '/includes/class-radio-clock-widget.php';
+}
 
 // ---------------------------
 // Plugin Options and Defaults
@@ -787,12 +798,16 @@ function radio_station_enqueue_style( $stylekey ) {
 add_action( 'wp_enqueue_scripts', 'radio_station_localize_time_strings' );
 function radio_station_localize_time_strings() {
 
-	// --- clock time format ---
-	$clock_time_format = radio_station_get_setting( 'clock_time_format' );
+	// --- create settings object ---
 	$js = "var radio = {}; ";
-	$js .= "radio.clock_format = '" . esc_js( $clock_time_format ) . "'; ";
-	$js .= "radio.am = '" . esc_js( radio_station_translate_meridiem( 'am' ) ) . "'; ";
-	$js .= "radio.pm = '" . esc_js( radio_station_translate_meridiem( 'pm' ) ) . "'; ";
+
+	// --- clock time format ---
+	$clock_format = radio_station_get_setting( 'clock_time_format' );
+	$js .= "radio.clock_format = '" . esc_js( $clock_format ) . "'; " . PHP_EOL;
+
+	// --- detect touchscreens ---
+	// ref: https://stackoverflow.com/a/52855084/5240159
+	$js .= "if (window.matchMedia('(pointer: coarse)').matches) {radio.touchscreen = true;} else {radio.touchscreen = false;} " . PHP_EOL;
 
 	// --- radio timezone ---
 	$timezone = radio_station_get_setting( 'timezone_location' );
@@ -820,6 +835,7 @@ function radio_station_localize_time_strings() {
 		$js .= "radio.timezone_code = 'UTC" . esc_js( $offset ) . "'; ";
 		$js .= "radio.timezone_utc = '" . esc_js( $offset ) . "'; ";
 	} else {
+		// --- get offset and code from timezone location ---
 		$datetimezone = new DateTimeZone( $timezone );
 		$offset = $datetimezone->getOffset( new DateTime() );
 		if ( 0 == $offset ) {
@@ -843,7 +859,7 @@ function radio_station_localize_time_strings() {
 	foreach ( $months as $i => $month ) {
 		$month = radio_station_translate_month( $month );
 		$month = str_replace( "'", "", $month );
-		$js .= "'" . $month . "'";
+		$js .= "'" . esc_js( $month ) . "'";
 		if ( $i < count( $months ) ) {
 			$js .= ", ";
 		}
@@ -856,17 +872,28 @@ function radio_station_localize_time_strings() {
 	foreach ( $days as $i => $day ) {
 		$day = radio_station_translate_weekday( $day );
 		$day = str_replace( "'", "", $day );
-		$js .= "'" . $day . "'";
+		$js .= "'" . esc_js( $day ) . "'";
 		if ( $i < count( $days ) ) {
 			$js .= ", ";
 		}
 	}
 	$js .= ");" . PHP_EOL;
 
+	// --- translated time unit strings ---
+	$js .= "radio.units_am = '" . esc_js( radio_station_translate_meridiem( 'am' ) ) . "'; " . PHP_EOL;
+	$js .= "radio.units_pm = '" . esc_js( radio_station_translate_meridiem( 'pm' ) ) . "'; " . PHP_EOL;
+	$js .= "radio.units_second = '" . esc_js( __( 'Second', 'radio-station' ) ) . "'; " . PHP_EOL;
+	$js .= "radio.units_seconds = '" . esc_js( __( 'Seconds', 'radio-station' ) ) . "';" . PHP_EOL;
+	$js .= "radio.units_minute = '" . esc_js( __( 'Minute', 'radio-station' ) ) . "';" . PHP_EOL;
+	$js .= "radio.units_minutes = '" . esc_js( __( 'Minutes', 'radio-station' ) ) . "';" . PHP_EOL;
+	$js .= "radio.units_day = '" . esc_js( __( 'Day', 'radio-station' ) ) . "';" . PHP_EOL;
+	$js .= "radio.units_days = '" . esc_js( __( 'Days', 'radio-station' ) ) . "';" . PHP_EOL;
+
 	// --- add inline script ---
 	wp_add_inline_script( 'radio-station', $js );
 
 }
+
 
 // -----------------
 // === Templates ===
@@ -1799,3 +1826,4 @@ function radio_station_debug( $data, $echo = true, $file = false ) {
 		error_log( $data, 3, $file );
 	}
 }
+

@@ -60,6 +60,7 @@ function radio_station_enqueue_admin_scripts() {
 // -----------------
 // Admin Style Fixes
 // -----------------
+add_action( 'admin_print_styles', 'radio_station_admin_styles' );
 function radio_station_admin_styles() {
 
 	global $post;
@@ -80,8 +81,6 @@ function radio_station_admin_styles() {
 	echo '</style>';
 
 }
-
-add_action( 'admin_print_styles', 'radio_station_admin_styles' );
 
 
 // ------------------
@@ -105,6 +104,7 @@ function radio_station_settings_cap_check() {
 // --------------------------------
 // Add Admin Menu and Submenu Items
 // --------------------------------
+add_action( 'admin_menu', 'radio_station_add_admin_menus' );
 function radio_station_add_admin_menus() {
 
 	$icon = plugins_url( 'images/radio-station-icon.png', RADIO_STATION_FILE );
@@ -185,8 +185,6 @@ function radio_station_add_admin_menus() {
 		}
 	}
 }
-
-add_action( 'admin_menu', 'radio_station_add_admin_menus' );
 
 // -----------------------------------------
 // Fix to Expand Main Menu for Submenu Items
@@ -395,6 +393,7 @@ function radio_station_admin_export() {
 // Plugin Takeover Announcement Notice
 // -----------------------------------
 // 2.2.2: added plugin announcement notice
+add_action( 'admin_notices', 'radio_station_announcement_notice' );
 function radio_station_announcement_notice() {
 
 	// --- bug out if already dismissed ---
@@ -422,8 +421,6 @@ function radio_station_announcement_notice() {
 	}
 
 }
-
-add_action( 'admin_notices', 'radio_station_announcement_notice' );
 
 // ------------------------------------
 // Plugin Takeover Announcement Content
@@ -476,6 +473,7 @@ function radio_station_announcement_content( $dismissable = true ) {
 // Dismiss Plugin Takeover Announcement
 // ------------------------------------
 // 2.2.2: AJAX for takeover announcement notice dismissal
+add_action( 'wp_ajax_radio_station_announcement_dismiss', 'radio_station_announcement_dismiss' );
 function radio_station_announcement_dismiss() {
 	if ( current_user_can( 'manage_options' ) || current_user_can( 'update_plugins' ) ) {
 		update_option( 'radio_station_announcement_dismissed', true );
@@ -484,14 +482,13 @@ function radio_station_announcement_dismiss() {
 	}
 }
 
-add_action( 'wp_ajax_radio_station_announcement_dismiss', 'radio_station_announcement_dismiss' );
-
 // --------------------------
 // Show Shift Conflict Notice
 // --------------------------
+add_action( 'admin_notices', 'radio_station_shift_conflict_notice' );
 function radio_station_shift_conflict_notice() {
 
-	if ( ! current_user_can( 'edit_shows' ) ) {
+	if ( !current_user_can( 'edit_shows' ) ) {
 		return;
 	}
 
@@ -519,7 +516,7 @@ function radio_station_shift_conflict_notice() {
 		$edit_link = add_query_arg( 'action', 'edit', admin_url( 'post.php' ) );
 		foreach ( $conflicts as $show => $show_conflicts ) {
 			foreach ( $show_conflicts as $conflict ) {
-				if ( ! $conflict['duplicate'] ) {
+				if ( !$conflict['duplicate'] ) {
 					echo '<li>';
 					$show_edit_link = add_query_arg( 'post', $conflict['show'], $edit_link );
 					$show_title = get_the_title( $conflict['show'] );
@@ -571,15 +568,14 @@ function radio_station_shift_conflict_notice() {
 	}
 }
 
-add_action( 'admin_notices', 'radio_station_shift_conflict_notice' );
-
 // ----------------------
 // Display Upgrade Notice
 // ----------------------
+add_action( 'admin_notices', 'radio_station_upgrade_notice' );
 function radio_station_upgrade_notice() {
 
 	// --- bug out if not update plugins capability ---
-	if ( ! current_user_can( 'update_plugins' ) ) {
+	if ( !current_user_can( 'update_plugins' ) ) {
 		return;
 	}
 
@@ -670,18 +666,17 @@ function radio_station_upgrade_notice() {
 
 	// --- notice dismissal iframe (once only) ---
 	global $radio_station_notice_iframe;
-	if ( ! isset( $radio_station_notice_iframe ) ) {
+	if ( !isset( $radio_station_notice_iframe ) ) {
 		echo '<iframe src="javascript:void(0);" name="radio-station-notice-iframe" style="display:none;"></iframe>';
 		$radio_station_notice_iframe = true;
 	}
 }
 
-add_action( 'admin_notices', 'radio_station_upgrade_notice' );
-
 // ---------------------
 // Display Plugin Notice
 // ---------------------
 // 2.3.0: added 2.3.0 template update announcement notice
+add_action( 'admin_notices', 'radio_station_notice' );
 function radio_station_notice() {
 
 	// --- bug out on plugin admin pages ---
@@ -726,13 +721,11 @@ function radio_station_notice() {
 	if ( isset( $notice['url'] ) && ( '' != $notice['url'] ) ) {
 		echo '<li style="display:inline-block; text-align:center; vertical-align:top; margin-left:40px;">';
 		echo '<a class="button" href="' . esc_url( $notice['url'] ) . '">' . esc_html( __( 'Update Details', 'radio-station' ) ) . ' &rarr;</a>';
+		echo '<br><br>';
+		$settings_url = add_query_arg( 'page', 'radio-station', admin_url( 'admin.php' ) );
+		echo '<a class="button button-primary" href="' . esc_url( $settings_url ) . '">' . esc_html( __( 'Plugin Settings', 'radio-station' ) ) . '</a>';
 		echo '</li>';
 	}
-
-	$settings_url = add_query_arg( 'page', 'radio-station', admin_url( 'admin.php' ) );
-	echo '<li style="display:inline-block; text-align:center; vertical-align:top; margin-left:40px;">';
-	echo '<a class="button button-primary" href="' . esc_url( $settings_url ) . '">' . esc_html( __( 'Plugin Settings', 'radio-station' ) ) . '</a>';
-	echo '</li>';
 
 	echo '</ul>';
 
@@ -752,8 +745,6 @@ function radio_station_notice() {
 		$radio_station_notice_iframe = true;
 	}
 }
-
-add_action( 'admin_notices', 'radio_station_notice' );
 
 // ------------------
 // Get Plugin Notices
@@ -858,6 +849,7 @@ function radio_station_parse_upgrade_notice( $notice ) {
 // AJAX Mark Notice Read
 // ---------------------
 // 2.3.0: added for plugin notice dismissal
+add_action( 'wp_ajax_radio_station_notice_dismiss', 'radio_station_notice_dismiss' );
 function radio_station_notice_dismiss() {
 	if ( current_user_can( 'manage_options' ) || current_user_can( 'update_plugins' ) ) {
 		if ( isset( $_GET['notice'] ) ) {
@@ -888,8 +880,6 @@ function radio_station_notice_dismiss() {
 	}
 	exit;
 }
-
-add_action( 'wp_ajax_radio_station_notice_dismiss', 'radio_station_notice_dismiss' );
 
 // -------------------------
 // MailChimp Subscriber Form

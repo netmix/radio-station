@@ -118,18 +118,19 @@ foreach ( $weekdays as $day ) {
 				if ( 24 == (int) $atts['time'] ) {
 					$start = radio_station_convert_shift_time( $shift['start'], 24 );
 					$end = radio_station_convert_shift_time( $shift['end'], 24 );
+					$data_format = "G:i";
 				} else {
-					$start = str_replace( 'am', $am, $shift['start'] );
-					$start = str_replace( 'pm', $pm, $shift['start'] );
-					$end = str_replace( 'am', $am, $shift['end'] );
-					$end = str_replace( 'pm', $pm, $shift['end'] );
+					$start = str_replace( array( 'am', 'pm'), array( ' ' . $am, ' ' . $pm), $shift['start'] );
+					$end = str_replace( array( 'am', 'pm'), array( '  ' . $am, ' ' . $pm), $shift['end'] );
+					$data_format = "H:i a";
 				}
 
 				// 2.3.0: filter show time by show and context
-				$show_time = '<span class="rs-time" data="' . esc_attr( $shift_start_time ) . '" data-format="H:i" data-type="' . $atts['time'] . '">' . $start . '</span>';
+				$show_time = '<span class="rs-time" data="' . esc_attr( $shift_start_time ) . '" data-format="' . esc_attr( $data_format ) . '">' . $start . '</span>';
 				$show_time .= ' ' . esc_html( __( 'to', 'radio-station' ) ) . ' ';
-				$show_time .= '<span class="rs-time" data="' . esc_attr( $shift_end_time ) . '" data-format="H:i" data-type="' . $atts['time'] . '">' . $end . '</span>';
+				$show_time .= '<span class="rs-time" data="' . esc_attr( $shift_end_time ) . '" data-format="' . esc_attr( $data_format ) . '">' . $end . '</span>';
 				$show_time = apply_filters( 'radio_station_schedule_show_time', $show_time, $show['id'], 'list' );
+
 				$output .= '<div class="show-time" id="show-time-' . esc_attr( $tcount ) . '">' . $show_time . '</div>';
 				$output .= '<div class="show-user-time" id="show-user-time-' . esc_attr( $tcount ) . '"></div>';
 				$tcount ++;

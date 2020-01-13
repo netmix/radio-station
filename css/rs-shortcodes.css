@@ -10,15 +10,25 @@
 
 /* Show Subarchive Shortcodes */
 /* -------------------------- */
+#show-posts, #show-playlists, #show-episodes {
+	overflow: hidden;
+}
+
+.show-post {
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
 .show-post-thumbnail, .show-post-info,
 .show-playlist-thumbnail, .show-playlist-info,
 .show-episode-thumbnail, .show-episode-info {
-    display: inline-block;
+    display: table-cell;
     vertical-align: top;
 }
 
 .show-post-thumbnail, .show-playlist-thumbnail, .show-episode-thumbnail {
-	margin-right: 30px;
+	padding-right: 30px;
+	margin-top: 10px;
 }
 
 .show-post-info, .show-playlist-info, .show-episode-info {
