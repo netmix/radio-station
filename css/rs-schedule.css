@@ -8,24 +8,13 @@
 	width: 100%;
 }
 
-#master-schedule-controls-wrapper #master-schedule-selector-wrapper,
-#master-schedule-controls-wrapper #master-schedule-clock-wrapper {
-	width: 50%;
-	display: inline-block;
-}
-
-#master-schedule-selector-wrapper {
+#master-schedule-clock-wrapper, #master-schedule-selector-wrapper {
+	font-size: 13px;
 	vertical-align: top;
 	text-align: left;
 }
 
-#master-schedule-clock-wrapper {
-	font-size: 12px;
-	vertical-align: top;
-	text-align: right;
-}
-
-#master-schedule-clock-wrapper .clock-title {
+#master-schedule-clock-wrapper .radio-clock-title, #master-schedule-clock-wrapper .radio-timezone-title {
 	font-weight: bold;
 }
 
@@ -55,6 +44,7 @@
 
 #master-program-schedule th {
 	width: 12%;
+	min-width: 100px;
 	text-align: center;
 	vertical-align: top;
 }
@@ -251,6 +241,8 @@
 	text-align: center; 
 	background-color: #eeeeee; 
     color: #444444;
+	font-size: 16px;
+	font-weight: bold;
     border-radius: 7px 7px 0 0;
     border: 1px solid #000000;
 }

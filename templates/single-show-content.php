@@ -5,7 +5,6 @@
 // Author: Tony Hayes
 // @since 2.3.0
 
-
 // -----------------
 // Set Template Data
 // -----------------
@@ -24,6 +23,9 @@ $avatar_id = get_post_meta( $post_id, 'show_avatar', true );
 $thumbnail_id = get_post_meta( $post_id, '_thumbnail_id', true );
 $genres = wp_get_post_terms( $post_id, RADIO_STATION_GENRES_SLUG );
 $languages = wp_get_post_terms( $post_id, RADIO_STATION_LANGUAGES_SLUG );
+// if ( $languages && !is_array( $languages ) ) {
+//	$languages = array( $languages );
+// }
 $hosts = get_post_meta( $post_id, 'show_user_list', true );
 $producers = get_post_meta( $post_id, 'show_producer_list', true );
 $active = get_post_meta( $post_id, 'show_active', true );
@@ -66,7 +68,7 @@ if ( $show_link ) {
 	$icon = '<span style="color:#A44B73;" class="dashicons dashicons-admin-links"></span>';
 	$icon = apply_filters( 'radio_station_show_home_icon', $icon, $post_id );
 	$show_icons['home'] = '<div class="show-icon show-website">';
-	$show_icons['home'] .= '<a href="' . esc_url( $show_link ) . '" title="' . $title . '">';
+	$show_icons['home'] .= '<a href="' . esc_url( $show_link ) . '" title="' . $title . '" target="_blank">';
 	$show_icons['home'] .= $icon;
 	$show_icons['home'] .= '</a>';
 	$show_icons['home'] .= '</div>';
@@ -190,7 +192,8 @@ if ( ( $avatar_id || $thumbnail_id ) || ( count( $show_icons ) > 0 ) || ( $show_
 		// 2.3.0: embed latest broadcast audio player
 		if ( $show_file ) {
 			$blocks['show_images'] .= '<div class="show-player">';
-			$player_embed = do_shortcode( '[audio src="' . $show_file . '" preload="metadata"]' );
+			$shortcode = '[audio src="' . $show_file . '" preload="metadata"]';
+			$player_embed = do_shortcode( $shortcode );
 			$blocks['show_images'] .= '<div class="show-embed">';
 			$blocks['show_images'] .= $player_embed;
 			$blocks['show_images'] .= '</div>';
@@ -281,10 +284,10 @@ if ( $hosts || $producers || $genres || $languages ) {
 	// 2.3.0: only display if genre assigned
 	if ( $genres ) {
 		$tax_object = get_taxonomy( RADIO_STATION_GENRES_SLUG );
-		if ( count( $languages ) == 1 ) {
-			$label = $tax_object->labels->name;
-		} else {
+		if ( count( $genres ) == 1 ) {
 			$label = $tax_object->labels->singular_name;
+		} else {
+			$label = $tax_object->labels->name;
 		}
 		$blocks['show_meta'] .= '<div class="show-genres">';
 		$blocks['show_meta'] .= '<b>' . esc_html( $label ) . '</b>: ';
@@ -302,27 +305,21 @@ if ( $hosts || $producers || $genres || $languages ) {
 	if ( $languages ) {
 		$tax_object = get_taxonomy( RADIO_STATION_LANGUAGES_SLUG );
 		if ( count( $languages ) == 1 ) {
-			$label = $tax_object->labels->name;
-		} else {
 			$label = $tax_object->labels->singular_name;
+		} else {
+			$label = $tax_object->labels->name;
 		}
 
 		$blocks['show_meta'] .= '<div class="show-languages">';
 		$blocks['show_meta'] .= '<b>' . esc_html( $label ) . '</b>: ';
-		$language_list = radio_station_get_languages();
 		$language_links = array();
 		foreach ( $languages as $language ) {
-			// --- get the language name label ---
-			foreach ( $language_list as $lang ) {
-				if ( $language->name == $lang['language'] ) {
-					$label = $lang['native_name'];
-					if ( $lang['native_name'] != $lang['english_name'] ) {
-						$label .= ' (' . $lang['english_name'] . ')';
-					}
-				}
+			$lang_label = $language->name;
+			if ( !empty( $language->description ) ) {
+				$lang_label .= ' (' . $language->description . ')';
 			}
 			$language_link = get_term_link( $language );
-			$language_links[] = '<a href="' . esc_url( $language_link ) . '">' . esc_html( $label ) . '</a>';
+			$language_links[] = '<a href="' . esc_url( $language_link ) . '">' . esc_html( $lang_label ) . '</a>';
 		}
 		$blocks['show_meta'] .= implode( ', ', $language_links );
 		$blocks['show_meta'] .= '</div>';
@@ -401,53 +398,71 @@ if ( !$active || !$shifts ) {
 		$blocks['show_times'] .= '</span>';
 	}
 
-	// --- display user timezone ---
-	// TODO: ...
+	// TODO: --- display user timezone ---
+	// $block['show_times'] .= ...
 
 	$blocks['show_times'] .= '<table class="show-times" cellpadding="0" cellspacing="0">';
 
-	// TODO: check for now playing show ?
 	$found_encore = false;
 	$am = radio_station_translate_meridiem( 'am' );
 	$pm = radio_station_translate_meridiem( 'pm' );
 	$weekdays = radio_station_get_schedule_weekdays();
+	$current_time = strtotime( current_time( 'mysql' ) );
 	foreach ( $weekdays as $day ) {
 		$show_times = array();
 		foreach ( $shifts as $shift ) {
 			if ( $day == $shift['day'] ) {
 
+				// --- convert shift info ---
 				$start = $shift['start_hour'] . ':' . $shift['start_min'] . ' ' . $shift['start_meridian'];
 				$end = $shift['end_hour'] . ':' . $shift['end_min'] . ' ' . $shift['end_meridian'];
+				$shift_start_time = strtotime( $start );
+				$shift_end_time = strtotime( $end );
+				if ( $shift_end_time < $shift_start_time ) {
+					$shift_end_time = $shift_end_time + ( 7 * 60 * 60 );
+				}
 
 				// --- maybe convert to 24 hour format ---
 				if ( 24 == (int) $time_format ) {
 					$start = radio_station_convert_shift_time( $start, 24 );
 					$end = radio_station_convert_shift_time( $end, 24 );
+					$data_format = 'G:i';
 				} else {
-					$start = str_replace( array( ' am', ' pm' ), array( $am, $pm ), $start );
-					$end = str_replace( array( ' am', ' pm' ), array( $am, $pm ), $end );
+					$start = str_replace( array( 'am', 'pm' ), array( $am, $pm ), $start );
+					$end = str_replace( array( 'am', 'pm' ), array( $am, $pm ), $end );
+					$data_format = 'H:i a';
 				}
 
-				$show_time = '<span class="rs-time">' . esc_html( $start ) . '</span>';
-				$show_time .= '-<span class="rs-time">' . esc_html( $end ) . '</span>';
+				// --- check if current shift ---
+				$classes = array( 'show-shift-time' );
+				if ( ( $current_time > $shift_start_time ) && ( $current_time < $shift_end_time ) ) {
+					$classes[] = 'current-shift';
+				}
+				$class = implode( ' ', $classes );
+
+				// --- set show time output ---
+				$show_time = '<div class="' . esc_attr( $class ) . '">';
+				$show_time .= '<span class="rs-time" data-format="' . esc_attr( $data_format ) . '">' . esc_html( $start ) . '</span>';
+				$show_time .= ' - <span class="rs-time" data-format="' . esc_attr( $data_format ) . '">' . esc_html( $end ) . '</span>';
 				if ( isset( $shift['encore'] ) && ( 'on' == $shift['encore'] ) ) {
 					$found_encore = true;
 					$show_time .= '<span class="show-encore">*</span>';
 				}
+				$show_time .= '</div>';
 				$show_times[] = $show_time;
 			}
 		}
 		$show_times_count = count( $show_times );
 		if ( $show_times_count > 0 ) {
-			$blocks['show_times'] .= '<td class="show-day-times ' . strtolower( $day ) . '">';
+			$blocks['show_times'] .= '<td class="show-day-time ' . strtolower( $day ) . '">';
 			$weekday = radio_station_translate_weekday( $day, true );
 			$blocks['show_times'] .= '<b>' . esc_html( $weekday ) . '</b>: ';
 			$blocks['show_times'] .= '</td><td>';
 			foreach ( $show_times as $i => $show_time ) {
 				$blocks['show_times'] .= '<span class="show-time">' . $show_time . '</span>';
-				if ( $i < ( $show_times_count - 1 ) ) {
-					$blocks['show_times'] .= ',<br>';
-				}
+				// if ( $i < ( $show_times_count - 1 ) ) {
+				//	$blocks['show_times'] .= '<br>';
+				// }
 			}
 			$blocks['show_times'] .= '</td></tr>';
 		}
@@ -465,7 +480,19 @@ if ( !$active || !$shifts ) {
 
 	$blocks['show_times'] .= '</table>';
 }
-$blocks = apply_filters( 'radio_station_show_page_blockss', $blocks, $post_id );
+
+// --- maybe add link to full schedule page ---
+$schedule_page = radio_station_get_setting( 'schedule_page' );
+if ( $schedule_page && !empty( $schedule_page ) ) {
+	$schedule_link = get_permalink( $schedule_page );
+	$blocks['show_times'] .= '<div class="show-schedule-link">';
+	$blocks['show_times'] .= '<a href="' . esc_url( $schedule_link ) . '" title="' . esc_attr( __( 'Go to Full Station Schedule Page', 'radio-station' ) ) . '">';
+	$blocks['show_times'] .= esc_html( __( 'Full Station Schedule', 'radio-station' ) ) . ' &rarr;</a>';
+	$blocks['show_times'] .= '</div>';
+}
+
+// --- filter show info blocks ---
+$blocks = apply_filters( 'radio_station_show_page_blocks', $blocks, $post_id );
 
 
 // -----------------
@@ -478,7 +505,7 @@ $blocks = apply_filters( 'radio_station_show_page_blockss', $blocks, $post_id );
 $show_description = false;
 if ( strlen( trim( $content ) ) > 0 ) {
 	$show_description = '<div class="show-desc-content">' . $content . '</div>';
-	$show_description .= '<div class="show-more-overlay"></div>';
+	$show_description .= '<div id="show-more-overlay"></div>';
 	$show_desc_buttons = '<div id="show-desc-buttons">';
 	$show_desc_buttons .= '	<input type="button" id="show-desc-more" onclick="radio_show_desc(\'more\');" value="' . esc_html( __( 'Show More', 'radio-station' ) ) . '">';
 	$show_desc_buttons .= '	<input type="button" id="show-desc-less" onclick="radio_show_desc(\'less\');" value="' . esc_html( __( 'Show Less', 'radio-station' ) ) . '">';
@@ -640,7 +667,7 @@ $class = implode( ' ', $classes );
 
 						// --- output blocks ---
 						echo '<div class="' . esc_attr( $class ) . '">';
-						echo wp_kses_post( $blocks[$block] );
+						echo $blocks[$block]; // phpcs:ignore WordPress.Security.OutputNotEscaped
 						echo '</div>';
 
 						$first = '';
@@ -686,7 +713,7 @@ $class = implode( ' ', $classes );
 				// --- tabs for tabbed layout ---
 				if ( 'tabbed' == $section_layout ) {
 
-					// --- output first non-tabbed first section ---
+					// --- output first section as non-tabbed ---
 					if ( isset( $sections[$section_order[0]] ) ) {
 						echo wp_kses_post( $sections[$section_order[0]]['heading'] );
 						echo $sections[$section_order[0]]['content'];
@@ -770,16 +797,9 @@ $class = implode( ' ', $classes );
 						}
 					}
 					?>
+
                 </div>
 
-			<?php } elseif ( $show_description ) { ?>
-                <div id="show-description" class="show-description">
-                    <h3><?php echo esc_html( __( 'About the Show', 'radio-station' ) ); ?></h3>
-					<?php
-					echo $show_description; // phpcs:ignore WordPress.Security.OutputNotEscaped
-					echo $show_desc_buttons; // phpcs:ignore WordPress.Security.OutputNotEscaped
-					?>
-                </div>
 			<?php } ?>
 
         </div>
@@ -824,9 +844,7 @@ function radio_show_responsive() {
 		else {showcontent.removeClass('narrow');}
 		
 	} else {
-		/* TODO: retest vanilla js version */
 		showcontent = document.getElementById('show-content');
-		console.log(showcontent.offsetWidth);
 		if (showcontent.offsetWidth < 500) {showcontent.classList.add('narrow');}
 		else {showcontent.classList.remove('narrow');}
 	}
@@ -836,7 +854,13 @@ function radio_show_responsive() {
 	if ( descstate && (descstate.value != 'expanded') ) {
 		showdesc = document.getElementsByClassName('show-description')[0];
 		if (showdesc.offsetHeight < showdesc.scrollHeight) {
+			document.getElementById('show-more-overlay').style.display = 'block';
 			document.getElementById('show-desc-buttons').style.display = 'block';
+			showdesc.style.paddingBottom = '0';
+		} else {
+			document.getElementById('show-more-overlay').style.display = 'none';
+			document.getElementById('show-desc-buttons').style.display = 'none';
+			showdesc.style.paddingBottom = '30px';
 		}
 	}
 }
@@ -845,15 +869,18 @@ function radio_show_responsive() {
 function radio_show_desc(moreless) {
 	if (moreless == 'more') {
 		if (typeof jQuery == 'function') {jQuery('#show-description').addClass('expanded');}
-		else {document.getElementById('show-description').classList.add('expanded');}		
+		else {document.getElementById('show-description').classList.add('expanded');}
+		document.getElementById('show-more-overlay').style.display = 'none';		
 		document.getElementById('show-desc-more').style.display = 'none';
 		document.getElementById('show-desc-less').style.display = 'inline-block';
 	}
 	if (moreless == 'less') {
 		if (typeof jQuery == 'function') {jQuery('.show-description').removeClass('expanded');}
 		else {document.getElementById('show-description').classList.remove('expanded');}
+		document.getElementById('show-more-overlay').style.display = 'block';
 		document.getElementById('show-desc-less').style.display = 'none';
 		document.getElementById('show-desc-more').style.display = '';
+		radio_scroll_to('show-section-about');
 	}
 }
 
@@ -864,7 +891,7 @@ function radio_scroll_link(id) {
 		scrolltop = section.offset().top - section.height() - 40;
 		jQuery('html, body').animate({ 'scrollTop': scrolltop }, 1000);
 	} else {
-		radio_scroll_to(document.getElementById('show-section-'+id));
+		radio_scroll_to('show-section-'+id);
 	}
 }
 
