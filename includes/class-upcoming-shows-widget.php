@@ -206,18 +206,18 @@ class DJ_Upcoming_Widget extends WP_Widget {
 		}
 		echo $args['after_title']; // phpcs:ignore WordPress.Security.OutputNotEscaped
 
-		// --- check for widget output override ---
-		// 2.3.0: added this override filter
-		$output = apply_filters( 'radio_station_upcoming_shows_widget_override', false, $args, $atts );
-
 		// --- get default display output ---
 		// 2.3.0: use shortcode to generate default widget output
-		if ( !$output ) {
-			$output = radio_station_upcoming_shows_shortcode( $atts );
-		}
+		$output = radio_station_upcoming_shows_shortcode( $atts );
+
+		// --- check for widget output override ---
+		// 2.3.0: added this override filter
+		$output = apply_filters( 'radio_station_upcoming_shows_widget_override', $output, $args, $atts );
 
 		// --- output widget display ---
-		echo $output; // phpcs:ignore WordPress.Security.OutputNotEscaped
+		if ( $output ) {
+			echo $output; // phpcs:ignore WordPress.Security.OutputNotEscaped
+		}
 
 		// --- close widget container ---
 		echo '</div>';

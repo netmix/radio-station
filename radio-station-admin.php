@@ -731,7 +731,7 @@ function radio_station_notice() {
 
 	// --- notice dismissal button ---
 	echo '<div style="position:absolute; top:20px; right: 20px;">';
-	$dismiss_url = add_query_arg( 'action', 'radio_station_notice_dismiss', admin_url( 'admin-ajax.php ' ) );
+	$dismiss_url = add_query_arg( 'action', 'radio_station_notice_dismiss', admin_url( 'admin-ajax.php' ) );
 	$dismiss_url = add_query_arg( 'notice', $notice['id'], $dismiss_url );
 	echo '<a href="' . esc_url( $dismiss_url ) . '" target="radio-station-notice-iframe" style="text-decoration:none;">';
 	echo '<span class="dashicons dashicons-dismiss" title="' . esc_attr( __( 'Dismiss this Notice', 'radio-station' ) ) . '"></span></a>';

@@ -238,7 +238,9 @@ class DJ_Widget extends WP_Widget {
 		$output = apply_filters( 'radio_station_current_show_widget_override', $output, $args, $atts );
 
 		// --- output widget display ---
-		echo wp_kses_post( $output );
+		if ( $output ) {
+			echo $output; // phpcs:ignore WordPress.Security.OutputNotEscaped
+		}
 
 		echo '</div>';
 
