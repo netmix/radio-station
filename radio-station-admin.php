@@ -14,6 +14,7 @@
 // - Taxonomy Submenu Item Fix
 // - Output Help Page
 // - Output Export Page
+// - Output Show Import/Export Page (YAML)
 // === Admin Notices ===
 // - Plugin Takeover Announcement Notice
 // - Plugin Takeover Announcement Content
@@ -136,6 +137,15 @@ function radio_station_add_admin_menus() {
 	do_action( 'radio_station_admin_submenu_middle' );
 	// add_submenu_page( 'radio-station', $rs . ' ' .  __( 'Hosts', 'radio-station' ), __( 'Hosts', 'radio-station' ), 'edit_hosts', 'hosts' );
 	// add_submenu_page( 'radio-station', $rs . ' ' .  __( 'Producers', 'radio-station' ), __( 'Producers', 'radio-station' ), 'edit_producers', 'producers' );
+
+	add_submenu_page( 'radio-station',
+										$rs . ' ' . __( 'Import/Export Show Data', 'radio-station' ), #page title
+										__( 'Import/Export Shows', 'radio-station' ), 								#menu title
+										'manage_options', 																						#capability (role that can view/use this submenu page)
+										'import-export-shows', 																				#this submenu's slug
+										'show_data_import_export'	  																	#callback function
+									);
+
 	add_submenu_page( 'radio-station', $rs . ' ' . __( 'Export Playlists', 'radio-station' ), __( 'Export Playlists', 'radio-station' ), $settingscap, 'playlist-export', 'radio_station_admin_export' );
 	add_submenu_page( 'radio-station', $rs . ' ' . __( 'Settings', 'radio-station' ), __( 'Settings', 'radio-station' ), $settingscap, 'radio-station', 'radio_station_settings_page' );
 	add_submenu_page( 'radio-station', $rs . ' ' . __( 'Help', 'radio-station' ), __( 'Help', 'radio-station' ), 'publish_playlists', 'radio-station-help', 'radio_station_plugin_help' );
@@ -383,6 +393,18 @@ function radio_station_admin_export() {
 	include RADIO_STATION_DIR . '/templates/admin-export.php';
 
 }
+
+// ---------------------------
+// Output Show Import/Export Page (YAML)
+// ---------------------------
+function show_data_import_export() {
+	//set up the variables and other data used in the include file below
+
+	// display the export page
+	include RADIO_STATION_DIR . '/templates/import-export-shows.php';
+
+} //show_data_import_export()
+
 
 
 // ---------------------

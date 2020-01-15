@@ -43,6 +43,10 @@
 // - Add Show List Columns
 // - Show List Column Data
 // - Show List Column Styles
+// - Import (and replace) all show data (YAML)
+// - Display success admin message (YAML import)
+// - Display failure admin message (YAML import)
+// - Capture YAML parse errors for user display
 // === Schedule Overrides ===
 // - Add Schedule Override Metabox
 // - Schedule Override Metabox
@@ -218,7 +222,7 @@ function radio_station_show_language_metabox() {
 	$js = "function radio_add_language() {
 		/* get and disable selected language item */
 		select = document.getElementById('rs-add-language-selection');
-		options = select.options; 
+		options = select.options;
 		for (i = 0; i < options.length; i++) {
 			if (options[i].selected) {
 				optionvalue = options[i].value;
@@ -226,7 +230,7 @@ function radio_station_show_language_metabox() {
 				options[i].setAttribute('disabled', 'disabled');
 			}
 		}
-		select.selectedIndex = 0;		
+		select.selectedIndex = 0;
 
 		/* add item to term list */
 		listitem = document.createElement('li');
@@ -255,7 +259,7 @@ function radio_station_show_language_metabox() {
 
 		/* re-enable language select option */
 		select = document.getElementById('rs-add-language-selection');
-		options = select.options; 
+		options = select.options;
 		for (i = 0; i < options.length; i++) {
 			if (options[i].value == term) {
 				options[i].removeAttribute('disabled');
@@ -574,7 +578,7 @@ function radio_station_playlist_show_metabox() {
 
 		// --- get the user lists for all shows ---
 		$allowed_shows = array();
-		$query = "SELECT pm.meta_value, pm.post_id FROM " . $wpdb->prefix . "postmeta pm 
+		$query = "SELECT pm.meta_value, pm.post_id FROM " . $wpdb->prefix . "postmeta pm
 			WHERE pm.meta_key = 'show_user_list'";
 		$show_user_lists = $wpdb->get_results( $query );
 
@@ -940,21 +944,21 @@ function radio_station_show_info_metabox() {
 	// added max-width to prevent metabox overflows
 	// 2.3.0: removed new lines between labels and fields and changed widths
 	echo '<div id="meta_inner">';
-		echo '<p><div style="width:100px; display:inline-block;"><label>' . esc_html( __( 'Active', 'radio-station' ) ) . '?</label></div> 
-		<input type="checkbox" name="show_active" ' . checked( $active, 'on', false ) . '/> 
+		echo '<p><div style="width:100px; display:inline-block;"><label>' . esc_html( __( 'Active', 'radio-station' ) ) . '?</label></div>
+		<input type="checkbox" name="show_active" ' . checked( $active, 'on', false ) . '/>
 		<em>' . esc_html( __( 'Check this box if show is currently active (Show will not appear on programming schedule if unchecked.)', 'radio-station' ) ) . '</em></p>
 
-		<p><div style="width:100px; display:inline-block;"><label>' . esc_html( __( 'Website Link', 'radio-station' ) ) . ':</label></div> 
+		<p><div style="width:100px; display:inline-block;"><label>' . esc_html( __( 'Website Link', 'radio-station' ) ) . ':</label></div>
 		<input type="text" name="show_link" size="100" style="max-width:80%;" value="' . esc_url( $link ) . '" /></p>
 
-		<p><div style="width:100px; display:inline-block;"><label>' . esc_html( __( 'DJ / Host Email', 'radio-station' ) ) . ':</label></div> 
+		<p><div style="width:100px; display:inline-block;"><label>' . esc_html( __( 'DJ / Host Email', 'radio-station' ) ) . ':</label></div>
 		<input type="text" name="show_email" size="100" style="max-width:80%;" value="' . esc_attr( $email ) . '" /></p>
 
-		<p><div style="width:100px; display:inline-block;"><label>' . esc_html( __( 'Latest Audio File', 'radio-station' ) ) . ':</label></div> 
+		<p><div style="width:100px; display:inline-block;"><label>' . esc_html( __( 'Latest Audio File', 'radio-station' ) ) . ':</label></div>
 		<input type="text" name="show_file" size="100" style="max-width:80%;" value="' . esc_attr( $file ) . '" /></p>';
 
 	// 2.3.0: added patreon page field
-	echo '<p><div style="width:100px; display:inline-block;"><label>' . esc_html( __( 'Patreon Page ID', 'radio-station' ) ) . ':</label></div> 
+	echo '<p><div style="width:100px; display:inline-block;"><label>' . esc_html( __( 'Patreon Page ID', 'radio-station' ) ) . ':</label></div>
 		https://patreon.com/<input type="text" name="show_patreon" size="80" style="max-width:50%;" value="' . esc_attr( $patreon_id ) . '" /></p>
 
 	</div>';
@@ -988,7 +992,7 @@ function radio_station_show_info_metabox() {
 			$classes[] = 'last';
 		}
 		$class = implode( ' ', $classes );
-		
+
 		echo '<div id="' . esc_attr( $key ) . '" class="' . esc_attr( $class ) . '">' . "\n";
 		$widget_title = $metabox['title'];
 
@@ -1544,7 +1548,7 @@ function radio_station_show_shifts_metabox() {
             margin-bottom: 10px;
             border: 2px solid green;
         }
-        
+
         .show-shift li {
             display: inline-block;
             vertical-align: middle;
@@ -1552,28 +1556,28 @@ function radio_station_show_shifts_metabox() {
             margin-top: 10px;
             margin-bottom: 10px;
         }
-        
+
         .show-shift li.first {
             margin-left: 10px;
         }
-        
+
         .show-shift li.last {
             margin-right: 10px;
         }
-        
+
         .show-shift.disabled {
             border: 2px dashed orange;
         }
-        
+
         .show-shift.conflicts {
             outline: 2px solid red;
         }
-        
+
         .show-shift.disabled.conflicts {
             border: 2px dashed red;
             outline: none;
         }
-        
+
         .show-shift select.incomplete {
             border: 2px solid orange;
         }</style>';
@@ -1784,7 +1788,7 @@ function radio_station_show_images_metabox() {
 				multiple: false
 			});
 
-			mediaframe.on( 'select', function() {     
+			mediaframe.on( 'select', function() {
 				var attachment = mediaframe.state().get('selection').first().toJSON();
 				image = '<img src=\"'+attachment.url+'\" alt=\"\" style=\"max-width:100%;\"/>';
 				parentdiv.find('.custom-image-container').append(image);
@@ -2336,7 +2340,7 @@ function radio_station_show_column_styles() {
 
 	echo "<style>#shifts {width: 200px;} #active, #description, #comments {width: 50px;}
 	.show-image {width: 100px;} .show-image img {width: 100%; height: auto;}
-	.show-shift.disabled {border: 1px dashed orange;} 
+	.show-shift.disabled {border: 1px dashed orange;}
 	.show-shift.conflict {border: 1px solid red;}
 	.show-shift.disabled.conflict {border: 1px dashed red;}</style>";
 }
@@ -2368,6 +2372,112 @@ function radio_station_show_day_filter( $post_type, $which ) {
 	}
 	echo '</select>';
 }
+
+//FIXME ---- adding code here (ACD)
+// -------------------------
+// - Import (and replace) all show data (YAML)
+// -------------------------
+add_action( 'admin_init', 'process_show_data_import' );
+function process_show_data_import() {
+	//using a global variable since that seems to be the only easy way to
+	//get a parameter to an add_action() callback function
+	global $yaml_import_message;
+	global $yaml_parse_errors;
+	$yaml_parse_errors = '';
+
+	if( empty( $_POST['action'] ) || 'radio_station_yaml_import_action' != $_POST['action'] )
+		return;
+	if( ! wp_verify_nonce( $_POST['yaml_import_nonce'], 'yaml_import_nonce' ) )
+		return;
+	if( ! current_user_can( 'manage_options' ) )
+		return;
+	$extension = end( explode( '.', $_FILES['import_file']['name'] ) );
+	if( $extension != 'yaml' ) {
+		//call __failure if we have a problem
+		$yaml_import_message = __('Please upload a valid YAML file.', 'radio-station');
+		add_action('admin_notices', 'yaml_import__failure');
+		// wp_die( __( 'Please upload a valid YAML file' ) );
+	}
+	$import_file = $_FILES['import_file']['tmp_name'];
+	if( empty( $import_file ) ) {
+		//call __failure if we have a problem
+		$yaml_import_message = __('Please upload a file to import.', 'radio-station');
+		add_action('admin_notices', 'yaml_import__failure');
+		// wp_die( __( 'Please upload a file to import' ) );
+	}
+
+	//FIXME add YAML parsing and importing code here
+	#parse the file
+  $yaml_data = file_get_contents($import_file);
+  set_error_handler("yaml_parse_error_handler", E_WARNING);
+  $yaml_object = yaml_parse($yaml_data);
+  restore_error_handler();	// update_option( 'vop_event_plugin_settings', $settings );
+
+	if ($yaml_parse_errors === ''){
+	//call __success if import is successful
+		$yaml_import_message = __('Successfully parsed and imported YAML file.', 'radio-station');
+		add_action('admin_notices', 'yaml_import__success');
+	}//(else clause) errors are handled in the error_handler callback referenced above
+
+  error_log("YAML file uploaded but not parsed.\n", 3, "/tmp/my-errors.log"); //FIXME debugging code to write a line to wp-content/debug.log (works)
+
+
+	//call __success if import is successful
+		// $yaml_import_message = __('this is a success message', 'radio-station');
+		// add_action('admin_notices', 'yaml_import__success');
+
+	//call __failure if we have a problem
+		// $yaml_import_message = __('this is a failure message', 'radio-station');
+		// add_action('admin_notices', 'yaml_import__failure');
+
+	// wp_safe_redirect( admin_url( 'admin.php?page=import-export-shows' ) ); exit;
+
+}//process_show_data_import()
+
+//------------------------------
+// - Display success admin message
+//------------------------------
+function yaml_import__success(){
+	global $yaml_import_message;
+	?>
+	<div class="notice notice-success is-dismissible">
+		<p><?php echo $yaml_import_message; ?></p>
+	</div>
+	<?php
+}
+
+//------------------------------
+// - Display failure admin message
+//------------------------------
+function yaml_import__failure($msg){
+	global $yaml_import_message;
+	?>
+	<div class="notice notice-error is-dismissible">
+		<p><?php echo $yaml_import_message; ?></p>
+	</div>
+	<?php
+}
+
+//------------------------------
+// - Capture YAML parse errors for user display
+//------------------------------
+
+//Function handles warnings that show up from parsing the YAML
+function yaml_parse_error_handler($errno, $errstr) {
+	global $yaml_parse_errors;
+	global $yaml_import_message;
+	$yaml_parse_errors = $errstr; //push the parse errors to the global variable so they can be displayed on the page
+	//call __failure since we have a problem
+	$yaml_import_message = __('YAML parse produced errors. Please see below for details.', 'radio-station');
+	add_action('admin_notices', 'yaml_import__failure');
+  // error_log("Warning: ". $errstr . "\n", 3, "/tmp/yaml-parse-warnings.log"); //code to write a line to wp-content/debug.log (works)
+	// wp_die( __( 'Import failed due to parse errors. See /tmp/yaml-parse-warnings.log for details.' ) );
+}
+
+// -------------------------
+// - Export all show data (YAML)
+// -------------------------
+
 
 
 // --------------------------
@@ -2940,4 +3050,3 @@ function radio_station_columns_query_filter( $query ) {
 		}
 	}
 }
-
