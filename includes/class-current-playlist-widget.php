@@ -147,7 +147,7 @@ class Playlist_Widget extends WP_Widget {
 			echo $args['after_title']; // phpcs:ignore WordPress.Security.OutputNotEscaped
 
 			// --- output widget display ---
-			echo wp_kses_post( $output );
+			echo $output; // phpcs:ignore WordPress.Security.OutputNotEscaped
 
 			// --- close widget container ---
 			echo '</div>';
