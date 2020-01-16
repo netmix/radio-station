@@ -2406,7 +2406,6 @@ function process_show_data_import() {
 		// wp_die( __( 'Please upload a file to import' ) );
 	}
 
-	//FIXME add YAML parsing and importing code here
 	#parse the file
   $yaml_data = file_get_contents($import_file);
   set_error_handler("yaml_parse_error_handler", E_WARNING);
@@ -2417,11 +2416,12 @@ function process_show_data_import() {
 	//call __success if import is successful
 		$yaml_import_message = __('Successfully parsed and imported YAML file.', 'radio-station');
 		add_action('admin_notices', 'yaml_import__success');
-	}//(else clause) errors are handled in the error_handler callback referenced above
+		save_yaml_import_data($yaml_object); //see includes/import-export-shows.php
+	}//(else clause) errors are handled in the yaml_parse_error_handler callback referenced above
 
-  error_log("YAML file uploaded but not parsed.\n", 3, "/tmp/my-errors.log"); //FIXME debugging code to write a line to wp-content/debug.log (works)
 
 
+	//collection of useful template code.
 	//call __success if import is successful
 		// $yaml_import_message = __('this is a success message', 'radio-station');
 		// add_action('admin_notices', 'yaml_import__success');
@@ -2431,6 +2431,7 @@ function process_show_data_import() {
 		// add_action('admin_notices', 'yaml_import__failure');
 
 	// wp_safe_redirect( admin_url( 'admin.php?page=import-export-shows' ) ); exit;
+  // error_log("YAML file uploaded but not parsed.\n", 3, "/tmp/my-errors.log"); //FIXME debugging code to write a line to wp-content/debug.log (works)
 
 }//process_show_data_import()
 
@@ -2470,14 +2471,13 @@ function yaml_parse_error_handler($errno, $errstr) {
 	//call __failure since we have a problem
 	$yaml_import_message = __('YAML parse produced errors. Please see below for details.', 'radio-station');
 	add_action('admin_notices', 'yaml_import__failure');
-  // error_log("Warning: ". $errstr . "\n", 3, "/tmp/yaml-parse-warnings.log"); //code to write a line to wp-content/debug.log (works)
-	// wp_die( __( 'Import failed due to parse errors. See /tmp/yaml-parse-warnings.log for details.' ) );
 }
 
 // -------------------------
 // - Export all show data (YAML)
 // -------------------------
 
+//FIXME write YAML export function
 
 
 // --------------------------

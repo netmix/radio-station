@@ -1,0 +1,22 @@
+---
+#create one stanza as shown per show
+  - #Your Story Hour
+    #the following is part of the post itself (show custom post type)
+    show-title: "Your Story Hour"
+    show-description: >-
+     Dramatized half-hour stories taken from sacred and secular history and true-life
+     situations, build character and equip today’s youth for life’s challenges and
+     good decision-making. Your Story Hour provides wholesome character-building
+     entertainment for the whole family.
+    show-image: "https://lifetalk.net/wp-content/uploads/2019/12/your-story-hour.jpg"
+
+    #the following is metadata stored in the wp_postmeta table
+    show-byline: "with Aunt Carole and Uncle Dan"
+    #show-day and show-times are stored in the DB as a single metadata field (show_sched)
+    show-day: mon #one of [sun, mon, tue, wed, thu, fri, sat]. Spelling out days ("Monday" or "monday") is also supported
+    show-times:
+     - ["05:30", "06:00"] #all times in 24h format
+     - ["17:00", "17:30"]
+    show-url: "https://lifetalk.net/programs/your-story-hour/"
+    show-podcast: ~
+...

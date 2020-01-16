@@ -132,6 +132,7 @@ require RADIO_STATION_DIR . '/includes/data-feeds.php';
 require RADIO_STATION_DIR . '/includes/class-current-show-widget.php';
 require RADIO_STATION_DIR . '/includes/class-upcoming-shows-widget.php';
 require RADIO_STATION_DIR . '/includes/class-current-playlist-widget.php';
+require RADIO_STATION_DIR . '/includes/import-export-shows.php';
 
 // 2.3.0: add feature branch development includes
 if ( file_exists ( RADIO_STATION_DIR . '/includes/class-radio-clock-widget.php') ) {
@@ -1833,4 +1834,3 @@ function radio_station_debug( $data, $echo = true, $file = false ) {
 		error_log( $data, 3, $file );
 	}
 }
-
