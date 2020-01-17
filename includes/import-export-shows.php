@@ -11,7 +11,7 @@
  //expects an array of shows passed as $yaml_object, in the following format:
  /*
        array (
-         0 => array (
+         [0] => array (
            'show-title' => 'Your Story Hour',
            'show-description' => 'Dramatized half-hour stories taken from sacred and secular history...',
            'show-image' => 'https://lifetalk.net/wp-content/uploads/2019/12/your-story-hour.jpg',
@@ -19,19 +19,19 @@
            'show-byline' => 'with Aunt Carole and Uncle Dan',
            'show-day' => 'monday',
            'show-times' => array(
-              0 => array(
-                0 => "05:30",
-                1 => "06:00"
+              [0] => array(
+                [0] => "05:30",
+                [1] => "06:00"
               ),
-              1 => array(
-                0 => "17:00",
-                1 => "17:30"
+              [1] => array(
+                [0] => "17:00",
+                [1] => "17:30"
               )
            )
            'show-url' => 'https://lifetalk.net/programs/your-story-hour/',
            'show-podcast: ''
          ),
-         1 => array (
+         [1] => array (
            'show-title' => 'the next show...',
          ),
        )
@@ -60,13 +60,62 @@
 
  //this function handles processing data from a YAML file and writing it to the DB
  function save_yaml_import_data($yaml_object = array()) {
-   //We assume the YAML file is expressed in the US Pacific Timezone
-   date_default_timezone_set('America/Los_Angeles');
    //loop through each day of the week
    foreach ($yaml_object as $show){
-     //loop through each program on a given day
+     //loop through each show/program expressed in the import file
+     if show_is_valid($show) {
+       error_log("Apparently we have a valid show...\n", 3, "/tmp/my-errors.log"); //code to write a line to wp-content/debug.log (works)
+     }
+     error_log(print_r($show, true)."\n", 3, "/tmp/my-errors.log"); //code to write a line to wp-content/debug.log (works)
    }
 
 
-   error_log("YAML file uploaded and parsed.\n", 3, "/tmp/my-errors.log"); //code to write a line to wp-content/debug.log (works)
- }
+   error_log("Done with YAML import.\n", 3, "/tmp/my-errors.log"); //code to write a line to wp-content/debug.log (works)
+ }//function save_yaml_import_data()
+
+ //this function validates the datastructure for a show and display's any error messages
+ function show_is_valid(&$show = null){
+   $errors = '';
+   //validate title (make sure it's a string)
+   $show['show-title'] = trim(htmlspecialchars($show['show-title']));
+   //validate description (FIXME allow limited HTML markup)
+   $show['show-description'] = trim(htmlspecialchars($show['show-description']));
+   //validate image (make sure it's a URL)
+   if !(filter_var($show['show-image'], FILTER_VALIDATE_URL)){
+     $errors .= '<li>' . __('Show image must be a URL.','radio-station') . '</li>';
+   }
+   //validate byline (FIXME allow limited HTML markup)
+   $show['show-byline'] = trim(htmlspecialchars($show['show-byline']));
+   //validate show-day (make sure it's one of [sun..sat] or [sunday..saturday] or [Sunday..Saturday])
+   $days = array("sun", "mon", "tue", "wed", "thu", "fri", "sat", "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday");
+   $show['show-day'] = strtolower($show['show-day']);
+   if !(in_array($show['show-day'], $days)){
+     $errors .= '<li>' . __('Show day must be one of the days of the week expressed as ["sun".."sat"], ["Sunday".."Saturday"], or ["sunday", "saturday"].','radio-station') . '</li>';
+   }
+   //validate show-times
+             /*
+             'show-times' => array(
+                [0] => array(
+                  [0] => "05:30",
+                  [1] => "06:00"
+                ),
+                [1] => array(
+                  [0] => "17:00",
+                  [1] => "17:30"
+                )
+             )
+             */
+   //validate show-url (make sure it's a URL)
+   //validate show-podcast (make sure it's a URL)
+
+   if ($errors === ''){
+     return true;
+   }else {
+     $errors = '<h2>'.$shows['show-title'].'</h2><ul>' . $errors . '</ul>';
+     global $yaml_import_message;
+     $errors = __('YAML data parsed successfully, but contains formatting errors as follows:', 'radio-station') . $errors;
+ 		 $yaml_import_message = $errors;
+ 		 add_action('admin_notices', 'yaml_import__failure');
+     return false;
+   }
+ }//function show_is_valid()
