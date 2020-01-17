@@ -7,6 +7,10 @@
  * Licence: GPL3
  */
 
+ require_once __DIR__.'/../vendor/autoload.php';
+ use Symfony\Component\Yaml\Yaml;
+ use Symfony\Component\Yaml\Exception\ParseException;
+
  //this function handles processing data from a YAML file. Assumes it is already parsed and
  //expects an array of shows passed as $yaml_object, in the following format:
  /*
@@ -58,20 +62,26 @@
      show-podcast: ~
   */
 
- //this function handles processing data from a YAML file and writing it to the DB
- function save_yaml_import_data($yaml_object = array()) {
-   //loop through each day of the week
-   foreach ($yaml_object as $show){
-     //loop through each show/program expressed in the import file
-     if show_is_valid($show) {
-       error_log("Apparently we have a valid show...\n", 3, "/tmp/my-errors.log"); //code to write a line to wp-content/debug.log (works)
-     }
-     error_log(print_r($show, true)."\n", 3, "/tmp/my-errors.log"); //code to write a line to wp-content/debug.log (works)
-   }
+// this function handles processing data from a YAML file and writing it to the DB
+function yaml_import_ok($file_name = ''){
+  global $yaml_import_message;
+  global $yaml_parse_errors;
 
+  try {
+    $value = Yaml::parseFile($file_name);
+    error_log(print_r($value, true)."\n", 3, "/tmp/my-errors.log"); //code to write a line to wp-content/debug.log (works)
+  } catch (ParseException $exception) {
+    $yaml_parse_errors = $exception->getMessage();
+    $yaml_import_message = __('YAML import error. See below for details.', 'radio-station');
+    return false;
+  }
 
-   error_log("Done with YAML import.\n", 3, "/tmp/my-errors.log"); //code to write a line to wp-content/debug.log (works)
- }//function save_yaml_import_data()
+  //FIXME YAML data validation code goes here
+  //FIXME database update code goes here
+
+  return true;
+}
+
 
  //this function validates the datastructure for a show and display's any error messages
  function show_is_valid(&$show = null){
@@ -81,7 +91,10 @@
    //validate description (FIXME allow limited HTML markup)
    $show['show-description'] = trim(htmlspecialchars($show['show-description']));
    //validate image (make sure it's a URL)
-   if !(filter_var($show['show-image'], FILTER_VALIDATE_URL)){
+   $tmp_var = filter_var($show['show-image'], FILTER_VALIDATE_URL);
+   if ($tmp_var){
+     $show['show-image'] = $tmp_var;
+   }else{
      $errors .= '<li>' . __('Show image must be a URL.','radio-station') . '</li>';
    }
    //validate byline (FIXME allow limited HTML markup)
@@ -89,7 +102,7 @@
    //validate show-day (make sure it's one of [sun..sat] or [sunday..saturday] or [Sunday..Saturday])
    $days = array("sun", "mon", "tue", "wed", "thu", "fri", "sat", "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday");
    $show['show-day'] = strtolower($show['show-day']);
-   if !(in_array($show['show-day'], $days)){
+   if (!in_array($show['show-day'], $days)){
      $errors .= '<li>' . __('Show day must be one of the days of the week expressed as ["sun".."sat"], ["Sunday".."Saturday"], or ["sunday", "saturday"].','radio-station') . '</li>';
    }
    //validate show-times

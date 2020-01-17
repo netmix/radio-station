@@ -46,7 +46,7 @@
 // - Import (and replace) all show data (YAML)
 // - Display success admin message (YAML import)
 // - Display failure admin message (YAML import)
-// - Capture YAML parse errors for user display
+// - Export all show data (YAML)
 // === Schedule Overrides ===
 // - Add Schedule Override Metabox
 // - Schedule Override Metabox
@@ -2373,7 +2373,6 @@ function radio_station_show_day_filter( $post_type, $which ) {
 	echo '</select>';
 }
 
-//FIXME ---- adding code here (ACD)
 // -------------------------
 // - Import (and replace) all show data (YAML)
 // -------------------------
@@ -2384,6 +2383,7 @@ function process_show_data_import() {
 	global $yaml_import_message;
 	global $yaml_parse_errors;
 	$yaml_parse_errors = '';
+	$yaml_import_message = '';
 
 	if( empty( $_POST['action'] ) || 'radio_station_yaml_import_action' != $_POST['action'] )
 		return;
@@ -2406,19 +2406,16 @@ function process_show_data_import() {
 		// wp_die( __( 'Please upload a file to import' ) );
 	}
 
-	#parse the file
-  $yaml_data = file_get_contents($import_file);
-  set_error_handler("yaml_parse_error_handler", E_WARNING);
-  $yaml_object = yaml_parse($yaml_data);
-  restore_error_handler();	// update_option( 'vop_event_plugin_settings', $settings );
-
-	if ($yaml_parse_errors === ''){
-	//call __success if import is successful
+	//parse and save the yaml file if possible, returning success or failure messages to the user as appropriate
+	if (yaml_import_ok($import_file)){
+		//$globals $yaml_import_message, and $yaml_parse_errors are empty
 		$yaml_import_message = __('Successfully parsed and imported YAML file.', 'radio-station');
 		add_action('admin_notices', 'yaml_import__success');
-		save_yaml_import_data($yaml_object); //see includes/import-export-shows.php
-	}//(else clause) errors are handled in the yaml_parse_error_handler callback referenced above
-
+	}else{
+		//global $yaml_import_message contins message to display to the user
+		//global $yaml_parse_errors contains the detail for display by import-export-shows.php
+		add_action('admin_notices', 'yaml_import__failure');
+	}
 
 
 	//collection of useful template code.
@@ -2431,7 +2428,7 @@ function process_show_data_import() {
 		// add_action('admin_notices', 'yaml_import__failure');
 
 	// wp_safe_redirect( admin_url( 'admin.php?page=import-export-shows' ) ); exit;
-  // error_log("YAML file uploaded but not parsed.\n", 3, "/tmp/my-errors.log"); //FIXME debugging code to write a line to wp-content/debug.log (works)
+  // error_log("YAML file uploaded but not parsed.\n", 3, "/tmp/my-errors.log"); //FIXME debugging code
 
 }//process_show_data_import()
 
@@ -2457,20 +2454,6 @@ function yaml_import__failure($msg){
 		<p><?php echo $yaml_import_message; ?></p>
 	</div>
 	<?php
-}
-
-//------------------------------
-// - Capture YAML parse errors for user display
-//------------------------------
-
-//Function handles warnings that show up from parsing the YAML
-function yaml_parse_error_handler($errno, $errstr) {
-	global $yaml_parse_errors;
-	global $yaml_import_message;
-	$yaml_parse_errors = $errstr; //push the parse errors to the global variable so they can be displayed on the page
-	//call __failure since we have a problem
-	$yaml_import_message = __('YAML parse produced errors. Please see below for details.', 'radio-station');
-	add_action('admin_notices', 'yaml_import__failure');
 }
 
 // -------------------------

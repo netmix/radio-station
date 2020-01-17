@@ -1,6 +1,7 @@
 ---
 #create one stanza as shown per show
-  - #Your Story Hour
+
+- #Your Story Hour
     #the following is part of the post itself (show custom post type)
     show-title: "Your Story Hour"
     show-description: >-
