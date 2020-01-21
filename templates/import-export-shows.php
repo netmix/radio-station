@@ -1,3 +1,12 @@
+<?php
+/*
+ * Import/Export Show admin screen template
+ * Author: Andrew DePaula
+ * (c) Copyright 2020
+ * Licence: GPL3
+ */
+ ?>
+
 <div style="width: 620px; padding: 10px">
 
 	<h2><?php esc_html_e( 'Import/Export All Show Data', 'radio-station' ); ?></h2>
@@ -34,13 +43,15 @@
 		</div>
 	</div><!-- first .metabox-holder -->
 
-	<div id="error-log-div">
+	<div id="error-log-div" style="width:100%;">
 		<?php
 		//pull in any parsing error details for display to the user
 		global $yaml_parse_errors;
-		echo '<pre>';
-		echo wordwrap($yaml_parse_errors, 85);
-		echo '</pre>';
+		// echo '<pre>';
+		// echo wordwrap($yaml_parse_errors, 85);
+		echo $yaml_parse_errors;
+		// echo '</pre>';
+
 		?>
 	</div>
 

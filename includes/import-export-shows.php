@@ -2,7 +2,6 @@
 /*
  * Import/Export Show data from/to YAML file
  * Author: Andrew DePaula
- * @Since: 2.3.1 (unsure about this... assumed, since that's the release this feature is tagged to)
  * (c) Copyright 2020
  * Licence: GPL3
  */
@@ -11,56 +10,11 @@
  use Symfony\Component\Yaml\Yaml;
  use Symfony\Component\Yaml\Exception\ParseException;
 
- //this function handles processing data from a YAML file. Assumes it is already parsed and
- //expects an array of shows passed as $yaml_object, in the following format:
- /*
-       array (
-         [0] => array (
-           'show-title' => 'Your Story Hour',
-           'show-description' => 'Dramatized half-hour stories taken from sacred and secular history...',
-           'show-image' => 'https://lifetalk.net/wp-content/uploads/2019/12/your-story-hour.jpg',
 
-           'show-byline' => 'with Aunt Carole and Uncle Dan',
-           'show-day' => 'monday',
-           'show-times' => array(
-              [0] => array(
-                [0] => "05:30",
-                [1] => "06:00"
-              ),
-              [1] => array(
-                [0] => "17:00",
-                [1] => "17:30"
-              )
-           )
-           'show-url' => 'https://lifetalk.net/programs/your-story-hour/',
-           'show-podcast: ''
-         ),
-         [1] => array (
-           'show-title' => 'the next show...',
-         ),
-       )
+ define('WITH_PARAGRAPH_TAGS', true);
+ define('NULL_OK', true);
+ define('WEEKDAYS', array("sun", "mon", "tue", "wed", "thu", "fri", "sat", "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"));
 
-     // Here's what the YAML file for the above might look like
-
-     #the following is part of the custom post type itself
-     show-title: "Your Story Hour"
-     show-description: >-
-       Dramatized half-hour stories taken from sacred and secular history and true-life
-       situations, build character and equip today’s youth for life’s challenges and
-       good decision-making. Your Story Hour provides wholesome character-building
-       entertainment for the whole family.
-     show-image: "https://lifetalk.net/wp-content/uploads/2019/12/your-story-hour.jpg"
-
-     #the following is metadata
-     show-byline: "with Aunt Carole and Uncle Dan"
-     #show-day and show-times are stored in the DB as a single metadata field (show_sched)
-     show-day: mon #one of [sun, mon, tue, wed, thu, fri, sat]. Spelling out days ("Monday" or "monday") is also supported
-     show-times:
-       - ["05:30", "06:00"] #all times in 24h format
-       - ["17:00", "17:30"]
-     show-url: "https://lifetalk.net/programs/your-story-hour/"
-     show-podcast: ~
-  */
 
 // this function handles processing data from a YAML file and writing it to the DB
 function yaml_import_ok($file_name = ''){
@@ -68,67 +22,265 @@ function yaml_import_ok($file_name = ''){
   global $yaml_parse_errors;
 
   try {
-    $value = Yaml::parseFile($file_name);
-    error_log(print_r($value, true)."\n", 3, "/tmp/my-errors.log"); //code to write a line to wp-content/debug.log (works)
+    $shows = Yaml::parseFile($file_name);
+    // error_log(print_r($shows, true)."\n", 3, "/tmp/my-errors.log"); //code to write a line to wp-content/debug.log (works)
   } catch (ParseException $exception) {
     $yaml_parse_errors = $exception->getMessage();
     $yaml_import_message = __('YAML import error. See below for details.', 'radio-station');
     return false;
   }
 
-  //FIXME YAML data validation code goes here
-  //FIXME database update code goes here
+  //YAML data validation code follows
+  $return_value = true;
+  foreach ($shows as $show){
+    $sanitized_show = array();
+    if (show_is_valid($show, $sanitized_show)){
+      //FIXME database update code goes here
+      error_log($sanitized_show['show-title']." checked out (YAML).\n", 3, "/tmp/my-errors.log"); //code to write a line to wp-content/debug.log (works)
+    } else {
+      $return_value = false;
+      //errors are accumulated in the global $yaml_import_message, for display to the user
+    }
+  }
 
-  return true;
+  return $return_value;
 }
 
 
  //this function validates the datastructure for a show and display's any error messages
- function show_is_valid(&$show = null){
+ function show_is_valid($show, &$sanitized_show = array()){
    $errors = '';
+
    //validate title (make sure it's a string)
-   $show['show-title'] = trim(htmlspecialchars($show['show-title']));
-   //validate description (FIXME allow limited HTML markup)
-   $show['show-description'] = trim(htmlspecialchars($show['show-description']));
-   //validate image (make sure it's a URL)
-   $tmp_var = filter_var($show['show-image'], FILTER_VALIDATE_URL);
-   if ($tmp_var){
-     $show['show-image'] = $tmp_var;
-   }else{
-     $errors .= '<li>' . __('Show image must be a URL.','radio-station') . '</li>';
+   $sanitized_show['show-title'] = keep_basic_html_only($show['show-title']);
+
+   //validate description
+   $sanitized_show['show-description'] = keep_basic_html_only($show['show-description'],WITH_PARAGRAPH_TAGS);
+   //validate excerpt
+   $sanitized_show['show-excerpt'] = keep_basic_html_only($show['show-excerpt'],WITH_PARAGRAPH_TAGS);
+
+   //validate image (make sure it's a URL or an integer)
+   if (!is_url_or_ID($show['show-image'])){
+     $errors .= '<li>' . __('show-image: must be a URL or an integer (ID) reference to an existing image.','radio-station') . '</li>';
+   }else {
+     $sanitized_show['show-image'] = $show['show-image'];
    }
-   //validate byline (FIXME allow limited HTML markup)
-   $show['show-byline'] = trim(htmlspecialchars($show['show-byline']));
-   //validate show-day (make sure it's one of [sun..sat] or [sunday..saturday] or [Sunday..Saturday])
-   $days = array("sun", "mon", "tue", "wed", "thu", "fri", "sat", "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday");
-   $show['show-day'] = strtolower($show['show-day']);
-   if (!in_array($show['show-day'], $days)){
-     $errors .= '<li>' . __('Show day must be one of the days of the week expressed as ["sun".."sat"], ["Sunday".."Saturday"], or ["sunday", "saturday"].','radio-station') . '</li>';
+
+   //validate show-avatar
+   if (!is_url_or_ID($show['show-avatar'], NULL_OK)){
+     $errors .= '<li>' . __('show-avatar: (image) must be a URL or an integer (ID) reference to an existing image.', 'radio-station') . '</li>';
+   }else {
+     $sanitized_show['show-avatar'] = $show['show-avatar'];
    }
-   //validate show-times
-             /*
-             'show-times' => array(
-                [0] => array(
-                  [0] => "05:30",
-                  [1] => "06:00"
-                ),
-                [1] => array(
-                  [0] => "17:00",
-                  [1] => "17:30"
-                )
-             )
-             */
+
+   //validate show-header
+   if (!is_url_or_ID($show['show-header'], NULL_OK)){
+     $errors .= '<li>' . __('show-header: (image) must be a URL or an integer (ID) reference to an existing image.', 'radio-station') . '</li>';
+   }else {
+     $sanitized_show['show-header'] = $show['show-header'];
+   }
+
+   //validate byline
+   $sanitized_show['show-byline'] = keep_basic_html_only($show['show-byline']);
+
+   //validate show-schedule
+   if (schedule_is_valid($show['show-schedule'], $errors)){
+     $sanitized_show['show-schedule'] = $show['show-schedule'];
+   }
+
    //validate show-url (make sure it's a URL)
+   $tmp_var = filter_var($show['show-url'], FILTER_VALIDATE_URL);
+       // error_log(">".print_r($tmp_var, TRUE)."< (".print_r($tmp_var, TRUE).")\n", 3, "/tmp/my-errors.log"); //code to write a line to wp-content/debug.log (works)
+   if ($tmp_var){
+     $sanitized_show['show-url'] = $tmp_var;
+   }else{
+     $errors .= '<li>' . __('show-url: must be a valid web address.', 'radio-station') . '</li>';
+   }
+
    //validate show-podcast (make sure it's a URL)
+   $tmp_var = filter_var($show['show-podcast'], FILTER_VALIDATE_URL);
+   if ($tmp_var){
+     $sanitized_show['show-podcast'] = $tmp_var;
+   }else{
+     //allow null values
+     if (defined($show['show-podcast'])){
+       $errors .= '<li>' . __('show-podcast: must be a valid web address.', 'radio-station') . '</li>';
+     }
+   }
+
+   //FIXME show-user-list should be valid json and contain a user list in the right format
+   //the json_decode sufficiently validates for security, but there's nothing currently to prevent random data from being passed
+   //validate show-user-list
+   $sanitized_show['show-producer-list'] = json_decode($show['show-user-list']);
+
+   //FIXME show-producer-list should be valid json and contain a user list in the right format
+   //the json_decode sufficiently validates for security, but there's nothing currently to prevent random data from being passed
+   //validate show-producer-list
+   $sanitized_show['show-user-list'] = json_decode($show['show-user-list']);
+
+   //validate show-email
+   $tmp_var = filter_var($show['show-email'], FILTER_VALIDATE_EMAIL);
+   if ($tmp_var){
+     $sanitized_show['show-email'] = $tmp_var;
+   }else{
+     //allow null values
+     if (defined($show['show-podcast'])){
+       $errors .= '<li>' . __('show-email: must be a valid email address.', 'radio-station') . '</li>';
+     }
+   }
+
+   //validate show-active... true for "1", "true", "on", and "yes", false otherwise
+   $sanitized_show['show-active'] = filter_var($field, FILTER_VALIDATE_BOOLEAN);
+
+   //validate show-patreon
+   //FIXME
 
    if ($errors === ''){
      return true;
    }else {
-     $errors = '<h2>'.$shows['show-title'].'</h2><ul>' . $errors . '</ul>';
      global $yaml_import_message;
-     $errors = __('YAML data parsed successfully, but contains formatting errors as follows:', 'radio-station') . $errors;
- 		 $yaml_import_message = $errors;
+     global $yaml_parse_errors;
+     $yaml_import_message = __('YAML data parsed successfully, but contains formatting errors. See below for details.', 'radio-station');
+     $errors = '<h2>'.$sanitized_show['show-title'].'</h2>'.__('Data file errors noted as follows:', 'radio-station').
+               '<ul style="padding-left: 20px; list-style: disc;">' . $errors . '</ul>';
+ 		 $yaml_parse_errors = $errors;
  		 add_action('admin_notices', 'yaml_import__failure');
      return false;
    }
  }//function show_is_valid()
+
+ //validates the schedule portion of an imported YAML file. returns true if valid, false otherwise, with any error messages appended to $error_buffer
+ function schedule_is_valid($schedule, &$error_buffer){
+   /*
+   show-schedule:
+     mon: #expressed as one of [sun, mon, tue, wed, thu, fri, sat]. Spelling out days ("Monday" or "monday") is also supported
+      - ["05:30", "06:00", "disabled", "encore"] #optional 3rd and 4th parameters supported as indicated. Present only if true.
+      - ["05:00", "17:30", ] #all time expressed in 24h format. First time is start-time, last time is end-time.
+     wednesday:
+      - ["05:30", "06:00"]
+      - ["17:00", "17:30"]
+     Friday:
+      - ["05:30", "06:00"]
+      - ["17:00", "17:30"]
+   */
+   $errors = '';
+
+   $tmp_weekdays = array_keys($schedule);
+   if (count($tmp_weekdays) > 0){ #at least one weekday is defined
+     foreach ($tmp_weekdays as $day){
+       if (in_array(strtolower($day), WEEKDAYS)){ #weekday format is valid
+         if (count($schedule[$day]) > 0){ #at least one time pair is defined
+          foreach($schedule[$day] as $time_pair){
+            $tmp_first_part = array_slice($time_pair, 0, 2); #pull off the time pair itself
+            //validate the time pair proper
+            if (!(preg_match("/\d\d:\d\d/", $time_pair[0]) && preg_match("/\d\d:\d\d/", $time_pair[1]))){
+              $errors .= '<li>' . __('show-schedule[<weekday>] time blocks must be in 24h format and have the form "04:55" (note 0 padding).', 'radio-station') . '</li>';
+            }
+            $tmp_2nd_part = array_slice($time_pair, 2); #the rest will be flags if present
+            //validate flags if present
+            if (defined($tmp_2nd_part[0])){
+              switch ($tmp_2nd_part[0]){
+                case 'disabled':
+                      if (defined($tmp_2nd_part[1])){
+                        if ($tmp_2nd_part[1] != 'encore'){
+                         $errors .= '<li>' . __('Error, for show-schedule[<weekday>], only "disabled" and "encore" flags are allowed', 'radio-station') . '</li>';
+                        }
+                      }
+                      break;
+                case 'encore':
+                      if (defined($tmp_2nd_part[1])){
+                        if ($tmp_2nd_part[1] != 'disabled'){
+                         $errors .= '<li>' . __('Error, for show-schedule[<weekday>], only "disabled" and "encore" flags are allowed', 'radio-station') . '</li>';
+                        }
+                      }
+                      break;
+                default:
+                     $errors .= '<li>' . __('Error, for show-schedule[<weekday>], only "disabled" and "encore" flags are allowed', 'radio-station') . '</li>';
+              }//switch
+            }//if (count($tmp_2nd_part) > 0 && count($tmp_2nd_part) < 3)
+          }//foreach($schedule[$day] as $time_pair)
+         }else{
+           $errors .= '<li>' . __('show-schedule[<weekday>] must reference an array of time blocks containing at least one element.', 'radio-station') . '</li>';
+         }//if (count($schedule[$day]) > 0){
+       }else{
+         $errors .= '<li>' . __('Invalid weekday. show-schedule[<weekday>] must be one of "sun".."sat", or "sunday".."saturday" (case insensitive).', 'radio-station') . '</li>';
+       }//if (in_array(strtolower($day), WEEKDAYS)){
+     }//foreach ($tmp_weekdays as $day){
+   }else{
+     $errors .= '<li>' . __('show-schedule: must define at least one weekday.', 'radio-station') . '</li>';
+   }//(count($tmp_weekdays) > 0){
+
+   if ($errors == ''){
+     return true;
+   }else{
+     $error_buffer .= $errors;
+     return false;
+   }
+ }//function schedule_is_valid()
+
+ //this function removes all html tags except for those explicitly defined below
+ function keep_basic_html_only($string, $with_paragraph = false){
+   #paragraph
+   $tmp = $string;
+   if ($with_paragraph) {
+     $tmp = str_replace('<p>', '&lt;p&gt;', $tmp);
+     $tmp = str_replace('</p>', '&lt;/p&gt;', $tmp);
+   }
+   #bold
+   $tmp = str_replace('<b>', '&lt;b&gt;', $tmp);
+   $tmp = str_replace('</b>', '&lt;/b&gt;', $tmp);
+   #stron
+   $tmp = str_replace('<strong>', '&lt;strong&gt;', $tmp);
+   $tmp = str_replace('</strong>', '&lt;/strong&gt;', $tmp);
+   #italic
+   $tmp = str_replace('<i>', '&lt;i&gt;', $tmp);
+   $tmp = str_replace('</i>', '&lt;/i&gt;', $tmp);
+   #emphesis
+   $tmp = str_replace('<em>', '&lt;em&gt;', $tmp);
+   $tmp = str_replace('</em>', '&lt;/em&gt;', $tmp);
+   #mark
+   $tmp = str_replace('<mark>', '&lt;mark&gt;', $tmp);
+   $tmp = str_replace('</mark>', '&lt;/mark&gt;', $tmp);
+   #small
+   $tmp = str_replace('<small>', '&lt;small&gt;', $tmp);
+   $tmp = str_replace('</small>', '&lt;/small&gt;', $tmp);
+   #deleted text
+   $tmp = str_replace('<del>', '&lt;del&gt;', $tmp);
+   $tmp = str_replace('</del>', '&lt;/del&gt;', $tmp);
+   #inserted text
+   $tmp = str_replace('<ins>', '&lt;ins&gt;', $tmp);
+   $tmp = str_replace('</ins>', '&lt;/ins&gt;', $tmp);
+   #subscript
+   $tmp = str_replace('<sub>', '&lt;sub&gt;', $tmp);
+   $tmp = str_replace('</sub>', '&lt;/sub&gt;', $tmp);
+   #superscript
+   $tmp = str_replace('<sup>', '&lt;sup&gt;', $tmp);
+   $tmp = str_replace('</sup>', '&lt;/sup&gt;', $tmp);
+
+   #cleanup and return
+   $tmp = strip_tags($tmp);
+   $tmp = wp_strip_all_tags($tmp);
+   return htmlspecialchars_decode(trim($tmp));
+ }//function keep_basic_html_only()
+
+
+ //function parses whether or not field passed is a valid URL or ID
+ function is_url_or_ID(&$field, $nullOK = false){
+   $tmp_var = filter_var($field, FILTER_VALIDATE_URL);
+   if ($tmp_var){
+     $field = $tmp_var;
+     return true;
+   }else{ //show-image is not a URL so let's see if it's an integer
+     $tmp_var = filter_var($field, FILTER_VALIDATE_INT);
+     if ($tmp_var){
+       $field = $tmp_var;
+       return true;
+     }else{
+       if ($nullOK){
+         return true;
+       }else {
+         return false;
+       }
+     }
+   }
+ }//function is_url_or_ID()
