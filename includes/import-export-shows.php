@@ -36,7 +36,7 @@ function yaml_import_ok($file_name = ''){
     $sanitized_show = array();
     if (show_is_valid($show, $sanitized_show)){
       //FIXME database update code goes here
-      error_log($sanitized_show['show-title']." checked out (YAML).\n", 3, "/tmp/my-errors.log"); //code to write a line to wp-content/debug.log (works)
+      error_log(">".$sanitized_show['show-user-list']."<\n", 3, "/tmp/my-errors.log"); //code to write a line to wp-content/debug.log (works)
     } else {
       $return_value = false;
       //errors are accumulated in the global $yaml_import_message, for display to the user
@@ -49,13 +49,41 @@ function yaml_import_ok($file_name = ''){
 
  //this function validates the datastructure for a show and display's any error messages
  function show_is_valid($show, &$sanitized_show = array()){
+   //validation proceeds field by field as noted below, until all have been checked. Errors are accumulated in
+   //$errors. Successfully validating fields are copied into $sanitized_show as we go along
+   //success is returned at the end if there are no errors. In case of failure, $sanitized_show
+   //will still contain the fields that validated properly, but no bad data. This is intended to be failsafe.
+   //The goal is to make it impossible for any bad data to be injected into the program/website via a
+   //corrupt or maliciously crafted YAML file.
    $errors = '';
 
-   //validate title (make sure it's a string)
-   $sanitized_show['show-title'] = keep_basic_html_only($show['show-title']);
+   //check for a minimum field set and return error message if any required fields are missing.
+   $show_keys = array_keys($show);
+   if (!(in_array('show-title', $show_keys) &&
+       in_array('show-schedule', $show_keys) &&
+       in_array('show-active', $show_keys) &&
+       in_array('show-description', $show_keys))) {
 
+     $errors .= '<li>' . __('Each show in the YAML file must define at minimum the following keys: '.
+                            'show-title, '.
+                            'show-description, '.
+                            'show-schedule, '.
+                            'show-active.'
+             ,'radio-station') . '</li>';
+   }
+
+   //validate title (make sure it's a string)
+   if (!is_null($show['show-title'])){
+     $sanitized_show['show-title'] = keep_basic_html_only($show['show-title']);
+   }else{
+     $errors .= '<li>' . __('show-title: may not be null.','radio-station') . '</li>';
+   }
    //validate description
-   $sanitized_show['show-description'] = keep_basic_html_only($show['show-description'],WITH_PARAGRAPH_TAGS);
+   if (!is_null($show['show-description'])){
+     $sanitized_show['show-description'] = keep_basic_html_only($show['show-description'],WITH_PARAGRAPH_TAGS);
+   }else{
+     $errors .= '<li>' . __('show-description: may not be null.','radio-station') . '</li>';
+   }
    //validate excerpt
    $sanitized_show['show-excerpt'] = keep_basic_html_only($show['show-excerpt'],WITH_PARAGRAPH_TAGS);
 
@@ -90,7 +118,6 @@ function yaml_import_ok($file_name = ''){
 
    //validate show-url (make sure it's a URL)
    $tmp_var = filter_var($show['show-url'], FILTER_VALIDATE_URL);
-       // error_log(">".print_r($tmp_var, TRUE)."< (".print_r($tmp_var, TRUE).")\n", 3, "/tmp/my-errors.log"); //code to write a line to wp-content/debug.log (works)
    if ($tmp_var){
      $sanitized_show['show-url'] = $tmp_var;
    }else{
@@ -103,20 +130,28 @@ function yaml_import_ok($file_name = ''){
      $sanitized_show['show-podcast'] = $tmp_var;
    }else{
      //allow null values
-     if (defined($show['show-podcast'])){
+     if (!is_null($show['show-podcast'])){
        $errors .= '<li>' . __('show-podcast: must be a valid web address.', 'radio-station') . '</li>';
      }
    }
 
+   //The following two validations are not working. The issue is that I only have an example of serialized data
+   //from the database, not JSON encoded data. There are security risks associated with storing serialized data
+   //in external files and re-importing it. These fields need to wait until I write the export function and
+   //can let the libraries generate a proper representation of the datastructure I need to validate against
+
    //FIXME show-user-list should be valid json and contain a user list in the right format
    //the json_decode sufficiently validates for security, but there's nothing currently to prevent random data from being passed
    //validate show-user-list
-   $sanitized_show['show-producer-list'] = json_decode($show['show-user-list']);
+   //example json for 2 users 'a:2:{i:0;s:1:"2";i:1;s:1:"4";}'
+   $sanitized_show['show-producer-list'] = json_decode($show['show-user-list'],TRUE);
 
    //FIXME show-producer-list should be valid json and contain a user list in the right format
    //the json_decode sufficiently validates for security, but there's nothing currently to prevent random data from being passed
    //validate show-producer-list
-   $sanitized_show['show-user-list'] = json_decode($show['show-user-list']);
+   //example json for 1 producer 'a:1:{i:0;s:1:"3";}'
+   error_log(">".$show['show-user-list']."<\n", 3, "/tmp/my-errors.log"); //code to write a line to wp-content/debug.log (works)
+   $sanitized_show['show-user-list'] = json_decode($show['show-user-list'],TRUE);
 
    //validate show-email
    $tmp_var = filter_var($show['show-email'], FILTER_VALIDATE_EMAIL);
@@ -124,13 +159,17 @@ function yaml_import_ok($file_name = ''){
      $sanitized_show['show-email'] = $tmp_var;
    }else{
      //allow null values
-     if (defined($show['show-podcast'])){
+     if (!is_null($show['show-podcast'])){
        $errors .= '<li>' . __('show-email: must be a valid email address.', 'radio-station') . '</li>';
      }
    }
 
    //validate show-active... true for "1", "true", "on", and "yes", false otherwise
-   $sanitized_show['show-active'] = filter_var($field, FILTER_VALIDATE_BOOLEAN);
+   if (!is_null($show['show-active'])){
+     $sanitized_show['show-active'] = filter_var($field, FILTER_VALIDATE_BOOLEAN);
+   }else{
+     $errors .= '<li>' . __('show-active: may not be null.','radio-station') . '</li>';
+   }
 
    //validate show-patreon
    //FIXME
@@ -149,9 +188,11 @@ function yaml_import_ok($file_name = ''){
    }
  }//function show_is_valid()
 
+ //Validation helper function
  //validates the schedule portion of an imported YAML file. returns true if valid, false otherwise, with any error messages appended to $error_buffer
  function schedule_is_valid($schedule, &$error_buffer){
-   /*
+   /* expected format for $schedule data passed in. the presence of at least one day/time-block is enforced
+
    show-schedule:
      mon: #expressed as one of [sun, mon, tue, wed, thu, fri, sat]. Spelling out days ("Monday" or "monday") is also supported
       - ["05:30", "06:00", "disabled", "encore"] #optional 3rd and 4th parameters supported as indicated. Present only if true.
@@ -162,6 +203,7 @@ function yaml_import_ok($file_name = ''){
      Friday:
       - ["05:30", "06:00"]
       - ["17:00", "17:30"]
+
    */
    $errors = '';
 
@@ -178,17 +220,17 @@ function yaml_import_ok($file_name = ''){
             }
             $tmp_2nd_part = array_slice($time_pair, 2); #the rest will be flags if present
             //validate flags if present
-            if (defined($tmp_2nd_part[0])){
+            if (!is_null($tmp_2nd_part[0])){
               switch ($tmp_2nd_part[0]){
                 case 'disabled':
-                      if (defined($tmp_2nd_part[1])){
+                      if (!is_null($tmp_2nd_part[1])){
                         if ($tmp_2nd_part[1] != 'encore'){
                          $errors .= '<li>' . __('Error, for show-schedule[<weekday>], only "disabled" and "encore" flags are allowed', 'radio-station') . '</li>';
                         }
                       }
                       break;
                 case 'encore':
-                      if (defined($tmp_2nd_part[1])){
+                      if (!is_null($tmp_2nd_part[1])){
                         if ($tmp_2nd_part[1] != 'disabled'){
                          $errors .= '<li>' . __('Error, for show-schedule[<weekday>], only "disabled" and "encore" flags are allowed', 'radio-station') . '</li>';
                         }
@@ -218,7 +260,8 @@ function yaml_import_ok($file_name = ''){
    }
  }//function schedule_is_valid()
 
- //this function removes all html tags except for those explicitly defined below
+ //Validation helper function
+ //removes all html tags except for those explicitly defined below
  function keep_basic_html_only($string, $with_paragraph = false){
    #paragraph
    $tmp = $string;
@@ -264,7 +307,8 @@ function yaml_import_ok($file_name = ''){
  }//function keep_basic_html_only()
 
 
- //function parses whether or not field passed is a valid URL or ID
+ //Validation helper function
+ //parses whether or not field passed is a valid URL or ID
  function is_url_or_ID(&$field, $nullOK = false){
    $tmp_var = filter_var($field, FILTER_VALIDATE_URL);
    if ($tmp_var){
@@ -276,7 +320,8 @@ function yaml_import_ok($file_name = ''){
        $field = $tmp_var;
        return true;
      }else{
-       if ($nullOK){
+       error_log(">".print_r($field, TRUE)."< (".print_r($tmp_var, TRUE).")\n", 3, "/tmp/my-errors.log"); //code to write a line to wp-content/debug.log (works)
+       if ($nullOK && is_null($field)){
          return true;
        }else {
          return false;

@@ -34,9 +34,11 @@
        - ["17:00", "17:30"]
     show-url: "https://lifetalk.net/programs/your-story-hour/"
     show-podcast: ~ #podcast URL
-    show-user-list: ~ #stored as "a:0:{}" if null, otherwise simply a string containing the serialized wordpress data
-    show-producer-list: ~ #stored as "a:0:{}" if null, otherwise simply a string containing the serialized wordpress data
+    #show-user-list: ~ #stored as "a:0:{}" if null, otherwise simply a string containing the serialized wordpress data
+    show-user-list: 'a:2:{i:0;s:1:"2";i:1;s:1:"4";}'
+    # show-producer-list: ~ #stored as "a:0:{}" if null, otherwise simply a string containing the serialized wordpress data
+    show-producer-list: 'a:1:{i:0;s:1:"3";}'
     show-email: ~ #email address string
-    show-active: yes #allowed values: 'yes', 'no', '0', '1'
+    show-active: yes #allowed values: 'yes', 'no', '0', '1', may not be null.
     show-patreon: ~ #optional Patreon ID (integer) for if the Show has a Patreon page set up to take subscription donations.
 ...
