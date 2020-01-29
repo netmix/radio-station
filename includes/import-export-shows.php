@@ -59,17 +59,18 @@ function yaml_import_ok($file_name = ''){
 
    //check for a minimum field set and return error message if any required fields are missing.
    $show_keys = array_keys($show);
-   if (!(in_array('show-title', $show_keys) &&
-       in_array('show-schedule', $show_keys) &&
-       in_array('show-active', $show_keys) &&
-       in_array('show-description', $show_keys))) {
+   if (!(in_array('show-title', $show_keys)
+       // && in_array('show-description', $show_keys))
+       && in_array('show-schedule', $show_keys)
+       && in_array('show-active', $show_keys)
+      )){
 
-     $errors .= '<li>' . __('Each show in the YAML file must define at minimum the following keys: '.
-                            'show-title, '.
-                            'show-description, '.
-                            'show-schedule, '.
-                            'show-active.'
-             ,'radio-station') . '</li>';
+     $errors .= '<li>' . __('Each show in the YAML file must define at minimum the following keys: '
+                              .'show-title, '
+                              // .'show-description, '
+                              .'show-schedule, '
+                              .'show-active.'
+                            ,'radio-station') . '</li>';
    }
 
    //validate title (make sure it's a string)
@@ -108,8 +109,8 @@ function yaml_import_ok($file_name = ''){
      $sanitized_show['show-header'] = $show['show-header'];
    }
 
-   //validate byline
-   $sanitized_show['show-byline'] = keep_basic_html_only($show['show-byline']);
+   //validate tagline
+   $sanitized_show['show-tagline'] = keep_basic_html_only($show['show-tagline']);
 
    //validate show-schedule
    if (schedule_is_valid($show['show-schedule'], $errors)){
@@ -135,23 +136,40 @@ function yaml_import_ok($file_name = ''){
      }
    }
 
-   //The following two validations are not working. The issue is that I only have an example of serialized data
-   //from the database, not JSON encoded data. There are security risks associated with storing serialized data
-   //in external files and re-importing it. These fields need to wait until I write the export function and
-   //can let the libraries generate a proper representation of the datastructure I need to validate against
-
-   //FIXME show-user-list should be valid json and contain a user list in the right format
-   //the json_decode sufficiently validates for security, but there's nothing currently to prevent random data from being passed
    //validate show-user-list
-   //example json for 2 users 'a:2:{i:0;s:1:"2";i:1;s:1:"4";}'
-   $sanitized_show['show-producer-list'] = json_decode($show['show-user-list'],TRUE);
+   // error_log(">".print_r($show['show-user-list'],true)."<\n", 3, "/tmp/my-errors.log"); //code to write a line to wp-content/debug.log (works)
+   $tmp_var = $show['show-user-list'];
+   $sanitized_show['show-user-list'] = array();
+   if (is_array($tmp_var) && !isAssoc($tmp_var)){
+     foreach ($tmp_var as $email_address){
+        $tmp_var2 = filter_var($email_address, FILTER_VALIDATE_EMAIL);
+        if ($tmp_var2){ //push the email onto our output array if valid
+          array_push($sanitized_show['show-user-list'], $tmp_var2);
+        }
+     }
+   }else{
+     //allow null values
+     if (!is_null($show['show-user-list'])){
+       $errors .= '<li>' . __('show-user-list: must be a simple array of valid email addresses.', 'radio-station') . '</li>';
+     }
+   }
 
-   //FIXME show-producer-list should be valid json and contain a user list in the right format
-   //the json_decode sufficiently validates for security, but there's nothing currently to prevent random data from being passed
    //validate show-producer-list
-   //example json for 1 producer 'a:1:{i:0;s:1:"3";}'
-   error_log(">".$show['show-user-list']."<\n", 3, "/tmp/my-errors.log"); //code to write a line to wp-content/debug.log (works)
-   $sanitized_show['show-user-list'] = json_decode($show['show-user-list'],TRUE);
+   $tmp_var = $show['show-producer-list'];
+   $sanitized_show['show-producer-list'] = array();
+   if (is_array($tmp_var) && !isAssoc($tmj_var)){
+     foreach ($tmp_var as $email_address){
+        $tmp_var2 = filter_var($email_address, FILTER_VALIDATE_EMAIL);
+        if ($tmp_var2){ //push the email onto our output array if valid
+          array_push($sanitized_show['show-producer-list'], $tmp_var2);
+        }
+     }
+   }else{
+     //allow null values
+     if (!is_null($show['show-producer-list'])){
+       $errors .= '<li>' . __('show-producer-list: must be a simple array of valid email addresses.', 'radio-station') . '</li>';
+     }
+   }
 
    //validate show-email
    $tmp_var = filter_var($show['show-email'], FILTER_VALIDATE_EMAIL);
@@ -172,7 +190,7 @@ function yaml_import_ok($file_name = ''){
    }
 
    //validate show-patreon
-   //FIXME
+   $sanitized_show['show-patreon']= sanitize_title($show['show-patreon']);
 
    if ($errors === ''){
      return true;
@@ -307,7 +325,7 @@ function yaml_import_ok($file_name = ''){
  }//function keep_basic_html_only()
 
 
- //Validation helper function
+ //Validation helper functions
  //parses whether or not field passed is a valid URL or ID
  function is_url_or_ID(&$field, $nullOK = false){
    $tmp_var = filter_var($field, FILTER_VALIDATE_URL);
@@ -329,3 +347,10 @@ function yaml_import_ok($file_name = ''){
      }
    }
  }//function is_url_or_ID()
+
+ //function returns true if associative array
+ function isAssoc(array $arr)
+ {
+    if (array() === $arr) return false;
+    return array_keys($arr) !== range(0, count($arr) - 1);
+ }

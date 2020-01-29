@@ -21,7 +21,7 @@
     #the following is metadata stored in the wp_postmeta table
     show-avatar: ~ #image URL or ID
     show-header: ~ #image URL or ID
-    show-byline: "with Aunt Carole and Uncle Dan"
+    show-tagline: "with Aunt Carole and Uncle Dan"
     show-schedule:
       mon: #expressed as one of [sun, mon, tue, wed, thu, fri, sat]. Spelling out days ("Monday" or "monday") is also supported
        - ["05:30", "06:00", "disabled", "encore"] #optional 3rd and 4th parameters supported as indicated. Present only if true.
@@ -34,10 +34,11 @@
        - ["17:00", "17:30"]
     show-url: "https://lifetalk.net/programs/your-story-hour/"
     show-podcast: ~ #podcast URL
-    #show-user-list: ~ #stored as "a:0:{}" if null, otherwise simply a string containing the serialized wordpress data
-    show-user-list: 'a:2:{i:0;s:1:"2";i:1;s:1:"4";}'
-    # show-producer-list: ~ #stored as "a:0:{}" if null, otherwise simply a string containing the serialized wordpress data
-    show-producer-list: 'a:1:{i:0;s:1:"3";}'
+    show-user-list: #if matched to current wordpress users, they will be associated with the show. may be null "~"
+      - "tom@gmail.com"
+      - "bob@usa.net"
+      - "testuser@mailinator.com"
+    show-producer-list: ~ #supply as array of email addresses. May be null
     show-email: ~ #email address string
     show-active: yes #allowed values: 'yes', 'no', '0', '1', may not be null.
     show-patreon: ~ #optional Patreon ID (integer) for if the Show has a Patreon page set up to take subscription donations.
