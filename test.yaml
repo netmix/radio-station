@@ -1,5 +1,10 @@
 ---
+#radio-station import/export show data format
+#
+# Version 0.8
+#
 #create one stanza as shown per show
+#minimum required fields to validate & import a show are: show-title, show-schedule, and show-active
 
 - #Your Story Hour
     #the following is part of the post itself (show custom post type)

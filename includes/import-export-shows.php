@@ -57,19 +57,20 @@ function yaml_import_ok($file_name = ''){
    //corrupt or maliciously crafted YAML file.
    $errors = '';
 
-   //check for a minimum field set and return error message if any required fields are missing.
+   //check for a minimum field set and return an error message if any required fields are missing.
+   //if no fields are to be required, comment out the whole if statement and $show_keys variable assignment.
    $show_keys = array_keys($show);
    if (!(in_array('show-title', $show_keys)
        // && in_array('show-description', $show_keys))
-       && in_array('show-schedule', $show_keys)
-       && in_array('show-active', $show_keys)
+       // && in_array('show-schedule', $show_keys)
+       // && in_array('show-active', $show_keys)
       )){
 
      $errors .= '<li>' . __('Each show in the YAML file must define at minimum the following keys: '
-                              .'show-title, '
+                              .'show-title.'
                               // .'show-description, '
-                              .'show-schedule, '
-                              .'show-active.'
+                              // .'show-schedule, '
+                              // .'show-active.'
                             ,'radio-station') . '</li>';
    }
 
@@ -82,31 +83,43 @@ function yaml_import_ok($file_name = ''){
    //validate description
    if (!is_null($show['show-description'])){
      $sanitized_show['show-description'] = keep_basic_html_only($show['show-description'],WITH_PARAGRAPH_TAGS);
-   }else{
-     $errors .= '<li>' . __('show-description: may not be null.','radio-station') . '</li>';
    }
+   //Uncomment if requiring show-description
+   // else{
+   //   $errors .= '<li>' . __('show-description: may not be null.','radio-station') . '</li>';
+   // }
+
    //validate excerpt
    $sanitized_show['show-excerpt'] = keep_basic_html_only($show['show-excerpt'],WITH_PARAGRAPH_TAGS);
 
    //validate image (make sure it's a URL or an integer)
-   if (!is_url_or_ID($show['show-image'])){
-     $errors .= '<li>' . __('show-image: must be a URL or an integer (ID) reference to an existing image.','radio-station') . '</li>';
-   }else {
-     $sanitized_show['show-image'] = $show['show-image'];
+   $tmp_var = filter_var($show['show-image'], FILTER_VALIDATE_URL);
+   if ($tmp_var){
+     $sanitized_show['show-image'] = $tmp_var;
+   }else{
+     if (!is_null($show['show-podcast'])){ //allow null
+       $errors .= '<li>' . __('show-image: must be a URL reference to an existing image.','radio-station') . '</li>';
+     }
    }
 
    //validate show-avatar
-   if (!is_url_or_ID($show['show-avatar'], NULL_OK)){
-     $errors .= '<li>' . __('show-avatar: (image) must be a URL or an integer (ID) reference to an existing image.', 'radio-station') . '</li>';
-   }else {
-     $sanitized_show['show-avatar'] = $show['show-avatar'];
+   $tmp_var = filter_var($show['show-avatar'], FILTER_VALIDATE_URL);
+   if ($tmp_var){
+     $sanitized_show['show-avatar'] = $tmp_var;
+   }else{
+     if (!is_null($show['show-podcast'])){ //allow null
+       $errors .= '<li>' . __('show-avatar: must be a URL reference to an existing image.','radio-station') . '</li>';
+     }
    }
 
    //validate show-header
-   if (!is_url_or_ID($show['show-header'], NULL_OK)){
-     $errors .= '<li>' . __('show-header: (image) must be a URL or an integer (ID) reference to an existing image.', 'radio-station') . '</li>';
-   }else {
-     $sanitized_show['show-header'] = $show['show-header'];
+   $tmp_var = filter_var($show['show-header'], FILTER_VALIDATE_URL);
+   if ($tmp_var){
+     $sanitized_show['show-header'] = $tmp_var;
+   }else{
+     if (!is_null($show['show-header'])){ //allow null
+       $errors .= '<li>' . __('show-header: must be a URL reference to an existing image.','radio-station') . '</li>';
+     }
    }
 
    //validate tagline
@@ -122,7 +135,9 @@ function yaml_import_ok($file_name = ''){
    if ($tmp_var){
      $sanitized_show['show-url'] = $tmp_var;
    }else{
-     $errors .= '<li>' . __('show-url: must be a valid web address.', 'radio-station') . '</li>';
+     if (!is_null($show['show-url'])){ //allow null
+       $errors .= '<li>' . __('show-url: must be a valid web address.', 'radio-station') . '</li>';
+     }
    }
 
    //validate show-podcast (make sure it's a URL)
@@ -130,14 +145,12 @@ function yaml_import_ok($file_name = ''){
    if ($tmp_var){
      $sanitized_show['show-podcast'] = $tmp_var;
    }else{
-     //allow null values
-     if (!is_null($show['show-podcast'])){
+     if (!is_null($show['show-podcast'])){ //allow null
        $errors .= '<li>' . __('show-podcast: must be a valid web address.', 'radio-station') . '</li>';
      }
    }
 
    //validate show-user-list
-   // error_log(">".print_r($show['show-user-list'],true)."<\n", 3, "/tmp/my-errors.log"); //code to write a line to wp-content/debug.log (works)
    $tmp_var = $show['show-user-list'];
    $sanitized_show['show-user-list'] = array();
    if (is_array($tmp_var) && !isAssoc($tmp_var)){
@@ -186,7 +199,8 @@ function yaml_import_ok($file_name = ''){
    if (!is_null($show['show-active'])){
      $sanitized_show['show-active'] = filter_var($field, FILTER_VALIDATE_BOOLEAN);
    }else{
-     $errors .= '<li>' . __('show-active: may not be null.','radio-station') . '</li>';
+     $sanitized_show['show-active'] = false; #null defaults to inactive
+     // $errors .= '<li>' . __('show-active: may not be null.','radio-station') . '</li>';
    }
 
    //validate show-patreon
