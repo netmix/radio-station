@@ -57,7 +57,7 @@
 
 <h2>Introduction</h2>
 <p>
-YAML files are used to import and export show data. You can read more about the yaml specification Radio Station uses
+YAML files are used to import and export show data. You can read more about the YAML specification Radio Station uses
 <a href="https://symfony.com/doc/current/components/yaml/yaml_format.html#collections">here</a>.
 Each show is expressed in the YAML data file as a nameless array element at the root level. Within that element, all a
 show's properties are expressed as key->value pairs. All fields are simple values (text, strings, boolean, etc.) except for
@@ -82,11 +82,11 @@ description of each of the fields supported in the definition of shows. Only <st
     </tr>
     <tr>
       <td class="tg-zt7h left-column">show-description:</td>
-      <td class="tg-cly1">A multi-line text block describing the show in detail.</td>
+      <td class="tg-cly1">A multi-line text block describing the show in detail. Limited HTML is supported</td>
     </tr>
     <tr>
       <td class="tg-89io left-column">show-excerpt:</td>
-      <td class="tg-hb2y">A multi-line text block with a short summary of the show.</td>
+      <td class="tg-hb2y">A multi-line text block with a short summary of the show. Limited HTML is supported</td>
     </tr>
     <tr>
       <td class="tg-zt7h left-column">show-image:</td>
