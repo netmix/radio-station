@@ -311,7 +311,12 @@ function show_is_valid($show, &$sanitized_show = array()){
 
    //validate show-active... true for "1", "true", "on", and "yes", false otherwise
    if (!is_null($show['show-active'])){
-     $sanitized_show['show-active'] = filter_var($show['show-active'], FILTER_VALIDATE_BOOLEAN);
+     $tmp_var = filter_var($show['show-active'], FILTER_VALIDATE_BOOLEAN);
+     if($tmp_var){
+       $sanitized_show['show-active'] = "on";
+     }else{
+       $sanitized_show['show-active'] = null;
+     }
    }else{
      $sanitized_show['show-active'] = false; #null defaults to inactive
      // $errors .= '<li>' . __('show-active: may not be null.','radio-station') . '</li>';

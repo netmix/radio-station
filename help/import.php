@@ -24,7 +24,7 @@
 </p>
 <p>
   <mark class="warning w-red">
-  WARNING! </mark><mark class="warning">Importing will erase everything you currently have in your show database and 
+  WARNING! </mark><mark class="warning">Importing will erase everything you currently have in your show database and
     replace it with whatever is in the file you import.
   </mark>
 </p>
