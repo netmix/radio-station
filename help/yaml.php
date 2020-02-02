@@ -101,41 +101,52 @@ description of each of the fields supported in the definition of shows. Only <st
       <td class="tg-cly1">A valid URL reference to an existing image</td>
     </tr>
     <tr>
-      <td class="tg-89io left-column">show-tagline</td>
-      <td class="tg-hb2y">A short sentence or string about the show. May contain basic HTML.</td>
+      <td class="tg-89io left-column">upload-images:</td>
+      <td class="tg-hb2y">Boolean value. "1", "true", "on", and "yes" equate to TRUE. Anything else including null is FALSE.</td>
     </tr>
     <tr>
-      <td class="tg-zt7h left-column">show-schedule:</td>
-      <td class="tg-cly1">An associative array of days and time-slots when the program runs (see separate help tab on left).</td>
+      <td class="tg-zt7h left-column">show-tagline</td>
+      <td class="tg-cly1">A short sentence or string about the show. May contain basic HTML.</td>
     </tr>
     <tr>
-      <td class="tg-89io left-column">show-url:</td>
-      <td class="tg-hb2y">A valid URL link to a separate web page about the show</td>
+      <td class="tg-89io left-column">show-schedule:</td>
+      <td class="tg-hb2y">An associative array of days and time-slots when the program runs (see separate help tab on left).</td>
     </tr>
     <tr>
-      <td class="tg-zt7h left-column">show-podcast:</td>
+      <td class="tg-zt7h left-column">show-url:</td>
       <td class="tg-cly1">A valid URL link to a separate web page about the show</td>
     </tr>
     <tr>
-      <td class="tg-89io left-column">show-user-list:</td>
-      <td class="tg-hb2y">An array of email addresses corresponding to existing WordPress users. Non-matching entries are ignored.</td>
+      <td class="tg-89io left-column">show-podcast:</td>
+      <td class="tg-hb2y">A valid URL link to a separate web page about the show</td>
     </tr>
     <tr>
-      <td class="tg-zt7h left-column">show-producer-list:</td>
+      <td class="tg-zt7h left-column">show-user-list:</td>
       <td class="tg-cly1">An array of email addresses corresponding to existing WordPress users. Non-matching entries are ignored.</td>
     </tr>
     <tr>
-      <td class="tg-89io left-column">show-email:</td>
-      <td class="tg-hb2y">Email address for the show.</td>
+      <td class="tg-89io left-column">show-producer-list:</td>
+      <td class="tg-hb2y">An array of email addresses corresponding to existing WordPress users. Non-matching entries are ignored.</td>
     </tr>
     <tr>
-      <td class="tg-l2oz left-column">show-active:</td>
-      <td class="tg-0lax">Boolean value. "1", "true", "on", and "yes" equate to TRUE. Anything else including null is FALSE.</td>
+      <td class="tg-zt7h left-column">show-email:</td>
+      <td class="tg-cly1">Email address for the show.</td>
     </tr>
     <tr>
-      <td class="tg-axdc left-column">show-patreon:</td>
-      <td class="tg-dg7a">A show's patreon ID (see https://www.patreon.com)</td>
+      <td class="tg-89io left-column">show-active:</td>
+      <td class="tg-hb2y">Boolean value. "1", "true", "on", and "yes" equate to TRUE. Anything else including null is FALSE.</td>
+    </tr>
+    <tr>
+      <td class="tg-zt7h left-column">show-patreon:</td>
+      <td class="tg-cly1">A show's patreon ID (see https://www.patreon.com)</td>
     </tr>
   </table>
 </div>
 &nbsp;<small>(Scroll to see all fields)</small>
+
+<p>
+  <small>
+  <strong>Note:</strong> source URLs for show-image, avatar-image, and show-header, are stored in the show's metadata as show_image_url,
+  avatar_image_url, and header_image_url.
+  </small>
+</p>

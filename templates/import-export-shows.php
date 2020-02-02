@@ -5,7 +5,6 @@
  * (c) Copyright 2020
  * Licence: GPL3
  */
-   error_log(">".print_r(get_current_screen(),true)."<\n", 3, "/tmp/my-errors.log"); //code to write a line to wp-content/debug.log (works)
  ?>
 
 <div style="width: 620px; padding: 10px">
