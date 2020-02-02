@@ -59,6 +59,7 @@ function yaml_import_ok($file_name = ''){
         'post_type'    => 'show',
         'meta_input' => array(
          //all the post meta data that doesn't require special handling
+          'imported_on'        => date("D M d, Y G:i ") . "UTC",
           'show_tagline'       => $sanitized_show['show-tagline'],
           'show_link'          => $sanitized_show['show-url'],
           'show_podcast'       => $sanitized_show['show-podcast'],
