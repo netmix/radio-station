@@ -43,10 +43,6 @@
 // - Add Show List Columns
 // - Show List Column Data
 // - Show List Column Styles
-// - Import (and replace) all show data (YAML)
-// - Display success admin message (YAML import)
-// - Display failure admin message (YAML import)
-// - Export all show data (YAML)
 // === Schedule Overrides ===
 // - Add Schedule Override Metabox
 // - Schedule Override Metabox
@@ -2373,94 +2369,6 @@ function radio_station_show_day_filter( $post_type, $which ) {
 	echo '</select>';
 }
 
-// -------------------------
-// - Import (and replace) all show data (YAML)
-// -------------------------
-add_action( 'admin_init', 'process_show_data_import' );
-function process_show_data_import() {
-	//using a global variable since that seems to be the only easy way to
-	//get a parameter to an add_action() callback function
-	global $yaml_import_message;
-	global $yaml_parse_errors;
-	$yaml_parse_errors = '';
-	$yaml_import_message = '';
-
-	if( empty( $_POST['action'] ) || 'radio_station_yaml_import_action' != $_POST['action'] )
-		return;
-	if( ! wp_verify_nonce( $_POST['yaml_import_nonce'], 'yaml_import_nonce' ) )
-		return;
-	if( ! current_user_can( 'manage_options' ) )
-		return;
-	$extension = end( explode( '.', $_FILES['import_file']['name'] ) );
-	if( $extension != 'yaml' ) {
-		//call __failure if we have a problem
-		$yaml_import_message = __('Please upload a valid YAML file.', 'radio-station');
-		add_action('admin_notices', 'yaml_import__failure');
-		// wp_die( __( 'Please upload a valid YAML file' ) );
-	}
-	$import_file = $_FILES['import_file']['tmp_name'];
-	if( empty( $import_file ) ) {
-		//call __failure if we have a problem
-		$yaml_import_message = __('Please upload a file to import.', 'radio-station');
-		add_action('admin_notices', 'yaml_import__failure');
-		// wp_die( __( 'Please upload a file to import' ) );
-	}
-
-	//parse and save the yaml file if possible, returning success or failure messages to the user as appropriate
-	if (yaml_import_ok($import_file)){
-		//$globals $yaml_import_message, and $yaml_parse_errors are empty
-		$yaml_import_message = __('Successfully parsed and imported YAML file.', 'radio-station');
-		add_action('admin_notices', 'yaml_import__success');
-	}else{
-		//global $yaml_import_message contins message to display to the user
-		//global $yaml_parse_errors contains the detail for display by import-export-shows.php
-		add_action('admin_notices', 'yaml_import__failure');
-	}
-
-
-	//collection of useful template code.
-	//call __success if import is successful
-		// $yaml_import_message = __('this is a success message', 'radio-station');
-		// add_action('admin_notices', 'yaml_import__success');
-
-	//call __failure if we have a problem
-		// $yaml_import_message = __('this is a failure message', 'radio-station');
-		// add_action('admin_notices', 'yaml_import__failure');
-
-	// wp_safe_redirect( admin_url( 'admin.php?page=import-export-shows' ) ); exit;
-  // error_log("YAML file uploaded but not parsed.\n", 3, "/tmp/my-errors.log"); //FIXME debugging code
-
-}//process_show_data_import()
-
-//------------------------------
-// - Display success admin message
-//------------------------------
-function yaml_import__success(){
-	global $yaml_import_message;
-	?>
-	<div class="notice notice-success is-dismissible">
-		<p><?php echo $yaml_import_message; ?></p>
-	</div>
-	<?php
-}
-
-//------------------------------
-// - Display failure admin message
-//------------------------------
-function yaml_import__failure($msg){
-	global $yaml_import_message;
-	?>
-	<div class="notice notice-error is-dismissible">
-		<p><?php echo $yaml_import_message; ?></p>
-	</div>
-	<?php
-}
-
-// -------------------------
-// - Export all show data (YAML)
-// -------------------------
-
-//FIXME write YAML export function
 
 
 // --------------------------

@@ -18,6 +18,158 @@
  //FIXME debug code
  // error_log("t ". print_r($post_id,true)."\n", 3, "/tmp/my-errors.log"); //code to write a line to wp-content/debug.log (works)
 
+  	//collection of useful template code.
+  	//call __success if import is successful
+  		// $yaml_import_message = __('this is a success message', 'radio-station');
+  		// add_action('admin_notices', 'yaml_import__success');
+
+  	//call __failure if we have a problem
+  		// $yaml_import_message = __('this is a failure message', 'radio-station');
+  		// add_action('admin_notices', 'yaml_import__failure');
+
+  	// wp_safe_redirect( admin_url( 'admin.php?page=import-export-shows' ) ); exit;
+    // error_log("YAML file uploaded but not parsed.\n", 3, "/tmp/my-errors.log"); //FIXME debugging code
+
+
+ // -------------------------
+ // - Import (and replace) all show data (YAML)
+ // -------------------------
+ //this function handles the response to the post requests from the page's form submissions
+ add_action( 'admin_init', 'process_show_data_import' );
+ function process_show_data_import() {
+ 	//using a global variable since that seems to be the only easy way to
+ 	//get a parameter to an add_action() callback function
+ 	global $yaml_import_message;
+ 	global $yaml_parse_errors;
+ 	$yaml_parse_errors = '';
+ 	$yaml_import_message = '';
+
+  switch ($_POST['action']) {
+    case 'radio_station_yaml_import_action':
+      import_helper();
+      break;
+    case 'radio_station_yaml_export_action':
+      export_helper();
+      break;
+    default:
+      //do nothing.
+      return;
+  }
+ }//process_show_data_import()
+
+ //import helper function
+ function import_helper(){
+   	global $yaml_import_message;
+   	global $yaml_parse_errors;
+    if( ! wp_verify_nonce( $_POST['yaml_import_nonce'], 'yaml_import_nonce' ) )
+  		return;
+  	if( ! current_user_can( 'manage_options' ) )
+  		return;
+  	$extension = end( explode( '.', $_FILES['import_file']['name'] ) );
+  	if( $extension != 'yaml' ) {
+  		//call __failure if we have a problem
+  		$yaml_import_message = __('Please upload a valid YAML file.', 'radio-station');
+  		add_action('admin_notices', 'yaml_import__failure');
+  		// wp_die( __( 'Please upload a valid YAML file' ) );
+  	}
+  	$import_file = $_FILES['import_file']['tmp_name'];
+  	if( empty( $import_file ) ) {
+  		//call __failure if we have a problem
+  		$yaml_import_message = __('Please upload a file to import.', 'radio-station');
+  		add_action('admin_notices', 'yaml_import__failure');
+  		// wp_die( __( 'Please upload a file to import' ) );
+  	}
+
+  	//parse and save the yaml file if possible, returning success or failure messages to the user as appropriate
+  	if (yaml_import_ok($import_file)){
+  		//$globals $yaml_import_message, and $yaml_parse_errors are empty
+  		$yaml_import_message = __('Successfully parsed and imported YAML file.', 'radio-station');
+  		add_action('admin_notices', 'yaml_import__success');
+  	}else{
+  		//global $yaml_import_message contins message to display to the user
+  		//global $yaml_parse_errors contains the detail for display by import-export-shows.php
+  		add_action('admin_notices', 'yaml_import__failure');
+  	}
+ }//import_helper()
+
+ //export helper function
+ function export_helper(){
+ 	 global $yaml_import_message;
+   global $yaml_parse_errors;
+   if( ! wp_verify_nonce( $_POST['yaml_export_nonce'], 'yaml_export_nonce' ) )
+     return;
+   if( ! current_user_can( 'manage_options' ) )
+     return;
+
+   error_log("". print_r($_POST['export_file_name'],true)."\n", 3, "/tmp/my-errors.log"); //code to write a line to wp-content/debug.log (works)
+
+   //export all the show data to a yaml file
+ }//export_helper()
+
+ //helper function
+ //returns an array of all published shows
+ function get_published_shows(){
+   $parameters = array(
+     'posts_per_page'     => -1,
+     'post_type'          => 'show',
+   );
+   $shows = get_posts($parameters);
+   $yaml_shows = array();
+   foreach ($shows as $show){
+      //build an array matching the YAML structure we wish to have
+      //FIXME assign values to all the keys below
+      $yaml_show = array();
+      $yaml_show['show-title'] = '';
+      $yaml_show['show-description'] = '';
+      $yaml_show['show-excerpt'] = '';
+      $yaml_show['show-image'] = '';
+      $yaml_show['show-avatar'] = '';
+      $yaml_show['show-header'] = '';
+      $yaml_show['upload-images'] = '';
+      $yaml_show['show-tagline'] = '';
+      $yaml_show['show-schedule'] = '';
+      $yaml_show['show-url'] = '';
+      $yaml_show['show-podcast'] = '';
+      $yaml_show['show-user-list'] = '';
+      $yaml_show['show-producer-list'] = '';
+      $yaml_show['show-email'] = '';
+      $yaml_show['show-active'] = '';
+      $yaml_show['show-patreon'] = '';
+      $yaml_show['avatar_id'] = '';
+      // $avatar_id = get_post_meta($show->ID, 'show_avatar', true);
+      // $thumbnail_id = get_post_meta($show->ID, '_thumbnail_id', true);
+      // $header_id = get_post_meta($show->ID, 'show_header', true);
+
+      array_push($yaml_shows, $yaml_show);
+      //FIXME save all images to a temporary folder, give them unique names, and
+      //populate those names above where images are called for. The image file
+      //name only should be specified. Thus if we provide an optional prefix URL
+      
+
+   }
+ }//get_published_shows()
+
+ //helper function
+ //Display success admin message
+ function yaml_import__success(){
+ 	global $yaml_import_message;
+ 	?>
+ 	<div class="notice notice-success is-dismissible">
+ 		<p><?php echo $yaml_import_message; ?></p>
+ 	</div>
+ 	<?php
+ }
+
+ //helper function
+ //Display failure admin message
+ function yaml_import__failure($msg){
+ 	global $yaml_import_message;
+ 	?>
+ 	<div class="notice notice-error is-dismissible">
+ 		<p><?php echo $yaml_import_message; ?></p>
+ 	</div>
+ 	<?php
+ }
 
 // this function handles processing data from a YAML file and writing it to the DB
 function yaml_import_ok($file_name = ''){
