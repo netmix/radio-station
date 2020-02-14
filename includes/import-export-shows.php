@@ -15,6 +15,9 @@
  define('NULL_OK', true);
  define('WEEKDAYS', array("sun", "mon", "tue", "wed", "thu", "fri", "sat", "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"));
 
+ //FIXME debug code
+ // error_log("t ". print_r($post_id,true)."\n", 3, "/tmp/my-errors.log"); //code to write a line to wp-content/debug.log (works)
+
 
 // this function handles processing data from a YAML file and writing it to the DB
 function yaml_import_ok($file_name = ''){
@@ -36,6 +39,10 @@ function yaml_import_ok($file_name = ''){
     $sanitized_show = array();
     if (show_is_valid($show, $sanitized_show)){
       //FIXME re-factor the code to insert an "are you sure" dialogue step prior to actually doing the import
+
+      //remove all existing show data prior to import
+      delete_show_data();
+
       //convert the show schedule metadata to the legacy format
       $converted_show_schedule = convert_show_schedule($sanitized_show['show-schedule']);
       //retrieve the show's producer and user IDs from the DB
@@ -48,6 +55,7 @@ function yaml_import_ok($file_name = ''){
         $image_urls['avatar_image_url'] = $sanitized_show['show-avatar'];
         if ($sanitized_show['upload-images']){ #upload avatar image here so we have its ID for the metadata below
           $image_urls['show_avatar'] = upload_image($sanitized_show['show-avatar'], null);
+          $image_urls['show_header'] = upload_image($sanitized_show['show-header'], null);
         }
       }
       if (!is_null($sanitized_show['show-header'])){ $image_urls['header_image_url'] = $sanitized_show['show-header']; }
@@ -77,7 +85,7 @@ function yaml_import_ok($file_name = ''){
       //upload show-image & show-header if show inserted correctly and upload of images is called for
       if ($sanitized_show['upload-images'] && is_int($new_show) && $new_show > 0){
         upload_image($sanitized_show['show-image'], $new_show);
-        upload_image($sanitized_show['show-header'], null);
+        // upload_image($sanitized_show['show-header'], null);
       }
     } else {
       $return_value = false;
@@ -131,15 +139,10 @@ function upload_image($image_url, $post_id = null){
 
   // And finally assign featured image to the post if id has been supplied
   if ($post_id){
-    //FIXME remove debugging code
-    // error_log("2associating image with post ". print_r($post_id,true)."\n", 3, "/tmp/my-errors.log"); //code to write a line to wp-content/debug.log (works)
     set_post_thumbnail( $post_id, $attach_id );
   }
   return $attach_id;
 }//function add_featured_image()
-
-
-
 
 //this function takes an array of email addresses, and returns, if possible, an array of matching WordPress user ID's.
 function convert_user_list($users_email_array){
@@ -387,6 +390,28 @@ function convert_show_schedule($show_schedule){
   return $converted_schedule;
 }//convert_show_schedule()
 
+//this function deletes all shows and associated data from the database
+function delete_show_data(){
+  //get an array of all show CPT ids
+  $parameters = array(
+    'posts_per_page'     => -1,
+    'post_type'          => 'show',
+  );
+  $shows = get_posts($parameters);
+  foreach ($shows as $show){
+     //delete the images associated with the given show
+     $avatar_id = get_post_meta($show->ID, 'show_avatar', true);
+     wp_delete_attachment($avatar_id);
+     $thumbnail_id = get_post_meta($show->ID, '_thumbnail_id', true);
+     wp_delete_attachment($thumbnail_id);
+     $header_id = get_post_meta($show->ID, 'show_header', true);
+     wp_delete_attachment($header_id);
+
+     //now we delete the show itself (deletes metadata too)
+     wp_delete_post($show->ID, true);
+  }
+}//delete_show_data()
+
 //convert_show_schedule helper function
 //converts the various day formats to full-length capitalized form
 function canonicalize_day($day){
@@ -519,7 +544,6 @@ function keep_basic_html_only($string, $with_paragraph = false){
  $tmp = wp_strip_all_tags($tmp);
  return htmlspecialchars_decode(trim($tmp));
 }//function keep_basic_html_only()
-
 
 //Validation helper function
 //parses whether or not field passed is a valid URL or ID
