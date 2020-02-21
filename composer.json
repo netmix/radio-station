@@ -1,5 +1,6 @@
 {
     "require": {
-        "symfony/yaml": "^5.0"
+        "symfony/yaml": "^5.0",
+        "semantic/ui": "^2.4"
     }
 }
