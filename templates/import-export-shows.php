@@ -37,9 +37,10 @@
   					&nbsp;
 	          <input type="hidden" name="action" value="radio_station_yaml_import_action" />
 	          <?php wp_nonce_field( 'yaml_import_nonce', 'yaml_import_nonce' ); ?>
-	          <?php submit_button( __( 'Import' ), 'secondary', 'submit', false ); ?>
+	          <?php submit_button( __( 'Import' ), 'secondary', 'submit', false, 'onclick=enable_spinner(\'import\')' ); ?>
 	      </form>
 	    </div><!-- .inside -->
+      <div id="import-spinner" class="ui large centered floating loader" style="top:50%;"></div>
 	  </div><!-- .postbox -->
 	  <!-- <div class="postbox" style="padding: 10px; flex-grow:1; margin-left: 10px;"> -->
 	  <div class="postbox" style="padding: 10px; width: 50%; margin-left: 10px;">
@@ -61,10 +62,11 @@
 	          <input type="hidden" name="action" value="radio_station_yaml_export_action" />
 	          <?php wp_nonce_field( 'yaml_export_nonce', 'yaml_export_nonce' ); ?>
           </div>
-	          <?php submit_button( __( 'Export' ), 'secondary', 'submit', false ); ?>
+	          <?php submit_button( __( 'Export' ), 'secondary', 'submit', false, 'onclick=enable_spinner(\'export\')' ); ?>
 	      </form>
-			</div>
-		</div>
+	    </div><!-- .inside -->
+      <div id="export-spinner" class="ui large centered floating loader" style="top:50%;"></div>
+	  </div><!-- .postbox -->
 	</div><!-- first .metabox-holder -->
 
 	<div id="error-log-div" style="width:100%;">
@@ -78,5 +80,4 @@
 
 		?>
 	</div>
-
 </div>

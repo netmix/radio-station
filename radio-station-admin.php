@@ -57,7 +57,10 @@ function radio_station_enqueue_admin_scripts() {
 	wp_enqueue_script( 'radio-station-admin', $script['url'], $deps, $version, true );
 
 	// --- enqueue semantic/ui css
-	wp_enqueue_style( 'semantic-ui-style', 'vendor/semantic/ui/dist/semantic.min.css', array(), '2.4.1');
+	wp_enqueue_style( 'semantic-ui-style', RADIO_STATION_PLUGIN_DIR . '/vendor/semantic/ui/dist/semantic.min.css', array(), '2.4.1');
+
+	// --- enqueue admin css
+	wp_enqueue_style( 'rs-admin-style', RADIO_STATION_PLUGIN_DIR . '/css/rs-admin_styles.css', array(), '1.0.0');
 }
 
 
