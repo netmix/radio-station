@@ -16,18 +16,20 @@
 			<h2><?php esc_html_e( 'Import Show Data', 'radio-station' ); ?></h2>
 	    <div class="inside">
 	      <form method="post" enctype="multipart/form-data">
-          <div style="height:250px;">
+          <div style="height:175px;">
     	     <p>
            <?php
-				   _e( 'Import and replace all shows and show metadata from a YAML file.', 'radio-station' );
+				   _e( 'Import shows and show metadata from a YAML file.', 'radio-station' );
 					 ?>
            &nbsp;</p>
-           <input type="checkbox" name="delete_show_data"> Delete existing show data
-           <p>
+           <input type="hidden" value="0" name="delete_show_data" onclick=check()>
+           <input id="delete-data-checkbox" type="checkbox" value="1" name="delete_show_data" onclick=check()> Delete existing show data </input>
+           <p id="delete-data-warning" style="display: none;">
            <?php
 					 _e( '<span style="color: red;"><strong>WARNING</strong></span>, this will delete everything you have currently configured. We strongly suggest exporting a backup first.');
 					 ?>
            </p>
+          </div>
   					&nbsp;
   	        <p>
   	          <input type="file" name="import_file"/>
@@ -35,7 +37,6 @@
   					&nbsp;
 	          <input type="hidden" name="action" value="radio_station_yaml_import_action" />
 	          <?php wp_nonce_field( 'yaml_import_nonce', 'yaml_import_nonce' ); ?>
-          </div>
 	          <?php submit_button( __( 'Import' ), 'secondary', 'submit', false ); ?>
 	      </form>
 	    </div><!-- .inside -->
@@ -45,7 +46,7 @@
 			<h2><?php esc_html_e( 'Export Show Data', 'radio-station' ); ?></h2>
 			<div class="inside">
 	      <form method="post" enctype="multipart/form-data">
-          <div style="height:250px;">
+          <div style="height: 247px;">
            <p><?php
 				   _e( 'Export all show data to a downloadable file.', 'radio-station' );
 					 echo '&nbsp;</p><p>';

@@ -80,10 +80,17 @@
   		// wp_die( __( 'Please upload a file to import' ) );
   	}
 
+    //fetch the fate of the existing show data (delete existing show data checkbox state)
+    $existing_data_fate = filter_var($_POST['delete_show_data'], FILTER_VALIDATE_BOOLEAN);
+
   	//parse and save the yaml file if possible, returning success or failure messages to the user as appropriate
-  	if (yaml_import_ok($import_file)){
+  	if (yaml_import_ok($import_file, $existing_data_fate)){
   		//$globals $yaml_import_message, and $yaml_parse_errors are empty
-  		$yaml_import_message = __('Successfully parsed and imported YAML file.', 'radio-station');
+      if ($existing_data_fate){
+    		$yaml_import_message = __('Successfully parsed and imported YAML file, deleting pre-existing show data.', 'radio-station');
+      }else{
+    		$yaml_import_message = __('Successfully parsed and imported YAML file. Pre-existing show data remains unchanged.', 'radio-station');
+      }
   		add_action('admin_notices', 'yaml_import__success');
   	}else{
   		//global $yaml_import_message contins message to display to the user
@@ -144,7 +151,7 @@
       //FIXME save all images to a temporary folder, give them unique names, and
       //populate those names above where images are called for. The image file
       //name only should be specified. Thus if we provide an optional prefix URL
-      
+
 
    }
  }//get_published_shows()
@@ -172,7 +179,7 @@
  }
 
 // this function handles processing data from a YAML file and writing it to the DB
-function yaml_import_ok($file_name = ''){
+function yaml_import_ok($file_name = '', $delete_existing = false){
   global $yaml_import_message;
   global $yaml_parse_errors;
 
@@ -192,8 +199,10 @@ function yaml_import_ok($file_name = ''){
     if (show_is_valid($show, $sanitized_show)){
       //FIXME re-factor the code to insert an "are you sure" dialogue step prior to actually doing the import
 
-      //remove all existing show data prior to import
-      delete_show_data();
+      if ($delete_existing){
+        //remove all existing show data prior to import if requested
+        delete_show_data();
+      }
 
       //convert the show schedule metadata to the legacy format
       $converted_show_schedule = convert_show_schedule($sanitized_show['show-schedule']);
