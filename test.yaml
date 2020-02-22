@@ -1,0 +1,51 @@
+---
+#radio-station import/export show data format
+#
+# Version 0.8
+#
+#create one stanza as shown per show
+#minimum required fields to validate & import a show are: show-title, show-schedule, and show-active
+
+- #Your Story Hour
+    #the following is part of the post itself (show custom post type)
+    show-title: "Your Story Hour"
+    show-description: >- #HTML is supported in this field
+     <p>
+     Dramatized half-hour stories taken from sacred and secular history and true-life
+     situations, build character and equip today’s youth for life’s challenges and
+     good decision-making. Your Story Hour provides wholesome character-building
+     entertainment for the whole family.
+     </p>
+     <b>bold text</b> <strong>strong text</strong> <i>this is italic</i>
+     <em>emphesis</em> <mark>marked</mark> <small>very small</small>
+     <del>deleted</del> <ins>inserted</ins> and finally <sup>superscript</sup>
+     and <sub>subscript</sub>. Phew!
+    show-excerpt: ~ #this is either null (no excerpt) or a multiline field like show-description:
+    show-image: "https://i1.sndcdn.com/avatars-000377849189-ycjqkk-t500x500.jpg"
+
+    #the following is metadata stored in the wp_postmeta table
+    show-avatar: "https://images.earthtouchnews.com/media/734894/Baby_bear_in_grass_portrait_2014-11-25.jpg"
+    show-header: "https://media.sciencephoto.com/image/b5700300/800wm/B5700300-Flame_lily_Gloriosa_superba_.jpg"
+    upload-images: yes #boolean indicating whether or not we want images uploaded to the WP image library
+    show-tagline: "with Aunt Carole and Uncle Dan"
+    show-schedule:
+      mon: #expressed as one of [sun, mon, tue, wed, thu, fri, sat]. Spelling out days ("Monday" or "monday") is also supported
+       - ["05:30", "06:00", "disabled", "encore"] #optional 3rd and 4th parameters supported as indicated. Present only if true.
+       - ["17:00", "17:30", ] #all time expressed in 24h format. First time is start-time, second time is end-time.
+      wednesday:
+       - ["05:30", "06:00"]
+       - ["17:00", "17:30"]
+      Friday:
+       - ["05:30", "06:00"]
+       - ["17:00", "17:30"]
+    show-url: "https://lifetalk.net/programs/your-story-hour/"
+    show-podcast: ~ #podcast URL
+    show-user-list: #if matched to current wordpress users, they will be associated with the show. may be null "~"
+      - "jsmith@gmail.com"
+      - "sride@mailinator.com"
+    show-producer-list:  #supply as array of email addresses. May be null
+      - "jgeli@usa.net"
+    show-email: ~ #email address string
+    show-active: yes #allowed values: 'yes', 'no', '0', '1', may not be null.
+    show-patreon: ~ #optional Patreon ID (integer) for if the Show has a Patreon page set up to take subscription donations.
+...
