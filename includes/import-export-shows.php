@@ -108,52 +108,109 @@
    if( ! current_user_can( 'manage_options' ) )
      return;
 
-   error_log("". print_r($_POST['export_file_name'],true)."\n", 3, "/tmp/my-errors.log"); //code to write a line to wp-content/debug.log (works)
 
-   //export all the show data to a yaml file
+   $image_url = filter_var($_POST['image_prefix_url'], FILTER_VALIDATE_URL);
+   $upload_dir = wp_upload_dir();
+   $base_url = $upload_dir['baseurl'];
+   $base_dir = $upload_dir['basedir'];
+
+   if ($_POST['export_file_name']){
+     $export_filename = sanitize_file_name($_POST['export_file_name']);
+   }else{ //create file name based on date/time
+     $file_date = new DateTime();
+     // $result = $date->format('Y-m-d H:i:s');
+     $export_filename = $file_date->format('Y-m-d-'). time(). '_show_data.yaml';
+   }
+
+   //create the zip files that the user can download
+   $image_index = create_show_image_archive();
+   if (! $image_index){
+     //something went wrong, abort
+     return;
+   }
+
+   //create show_data.yaml
+   $yaml_data = get_published_shows($image_url, $image_index);
+   $yaml = Yaml::dump($yaml_data);
+   $yaml = "---\n#Show data file (YAML format)\n\n" . $yaml . "...\n";
+   file_put_contents($base_dir . '/show_data.yaml', $yaml);
+
+   //set up links for user to download the files
+   $yaml_import_message = __('Export successful. Use the following link(s) to download your data.', 'radio-station');
+   if ($_POST['image_prefix_url']){
+     $yaml_import_message .= "
+          <ul style=\"padding-left: 10px;\">
+            <li><a href=\"$base_url/show_images.zip\" download>Image zip file</a> $zip_size (bytes)</li>
+            <li><a href=\"$base_url/show_images.tgz\" download>Image tgz file</a></li>
+            <li><a href=\"$base_url/show_data.yaml\" download=\"$export_filename\">Show data file (YAML)</a></li>
+          </ul>
+     ";
+     $yaml_import_message .= __('Download one of the image files and the data file. See help for details on how to stage an import including images.', 'radio-station');
+   }else{
+     $yaml_import_message .= "
+          <ul style=\"padding-left: 10px;\">
+            <li><a href=\"$base_url/show_data.yaml\" download=\"$export_filename\">Show data file (YAML)</a></li>
+          </ul>
+     ";
+     $yaml_import_message .= __('Images <strong>not</strong> exported. See help for details on how to include images.', 'radio-station');
+   }
+
+   //queue up messaging and return
+   add_action('admin_notices', 'yaml_import__success');
  }//export_helper()
 
  //helper function
  //returns an array of all published shows
- function get_published_shows(){
+ function get_published_shows($image_location = false, $image_index){
    $parameters = array(
      'posts_per_page'     => -1,
      'post_type'          => 'show',
+     'post_status'        => 'publish'
    );
    $shows = get_posts($parameters);
    $yaml_shows = array();
    foreach ($shows as $show){
+      //fetch all the metadata for this show
+      $metadata = get_post_meta($show->ID);
+      // error_log("POST METADATA---------\n". print_r($metadata,true)."\n", 3, "/tmp/my-errors.log"); //code to write a line to wp-content/debug.log (works)
       //build an array matching the YAML structure we wish to have
-      //FIXME assign values to all the keys below
+      //these fields are core post fields
       $yaml_show = array();
-      $yaml_show['show-title'] = '';
-      $yaml_show['show-description'] = '';
-      $yaml_show['show-excerpt'] = '';
-      $yaml_show['show-image'] = '';
-      $yaml_show['show-avatar'] = '';
-      $yaml_show['show-header'] = '';
-      $yaml_show['upload-images'] = '';
-      $yaml_show['show-tagline'] = '';
-      $yaml_show['show-schedule'] = '';
-      $yaml_show['show-url'] = '';
-      $yaml_show['show-podcast'] = '';
-      $yaml_show['show-user-list'] = '';
-      $yaml_show['show-producer-list'] = '';
-      $yaml_show['show-email'] = '';
-      $yaml_show['show-active'] = '';
-      $yaml_show['show-patreon'] = '';
-      $yaml_show['avatar_id'] = '';
-      // $avatar_id = get_post_meta($show->ID, 'show_avatar', true);
-      // $thumbnail_id = get_post_meta($show->ID, '_thumbnail_id', true);
-      // $header_id = get_post_meta($show->ID, 'show_header', true);
+      $yaml_show['show-title'] = $show->post_title;
+      $yaml_show['show-description'] = $show->post_content;
+      $yaml_show['show-excerpt'] = $show->post_excerpt;
+      $yaml_show['show-schedule'] = get_show_schedule($show->ID);
+      $yaml_show['show-user-list'] = get_show_users($show->ID);
+      $yaml_show['show-producer-list'] = get_show_producers($show->ID);
+
+      //these fields are metadata
+      $yaml_show['show-tagline'] = $metadata['show_tagline'][0];
+      $yaml_show['show-url'] = $metadata['show_link'][0];
+      if ($metadata['show_podcast'][0] == ''){
+        $yaml_show['show-podcast'] = null;
+      }else{
+        $yaml_show['show-podcast'] = $metadata['show_podcast'][0];
+      }
+      $yaml_show['show-email'] = $metadata['show_email'][0];
+      $yaml_show['show-active'] = $metadata['show_active'][0];
+      $yaml_show['show-patreon'] = $metadata['show_patreon'][0];
+
+      //these fields are image related. Populate according to 'upload-images' setting
+      if ($image_location){
+        $yaml_show['show-image'] = "$image_location/" . $image_index{$metadata['show_image_id'][0]}['file'];
+        $yaml_show['show-avatar'] = "$image_location/" . $image_index{$metadata['show_avatar'][0]}['file'];
+        $yaml_show['show-header'] = "$image_location/" . $image_index{$metadata['show_header'][0]}['file'];
+        $yaml_show['upload-images'] = 'yes';
+      }else{
+        $yaml_show['show-image'] = null;
+        $yaml_show['show-avatar'] = null;
+        $yaml_show['show-header'] = null;
+        $yaml_show['upload-images'] = 'no';
+      }
 
       array_push($yaml_shows, $yaml_show);
-      //FIXME save all images to a temporary folder, give them unique names, and
-      //populate those names above where images are called for. The image file
-      //name only should be specified. Thus if we provide an optional prefix URL
-
-
-   }
+   }//foreach ($shows...
+   return $yaml_shows;
  }//get_published_shows()
 
  //helper function
@@ -237,7 +294,8 @@ function yaml_import_ok($file_name = '', $delete_existing = false){
           'show_patreon'       => $sanitized_show['show-patreon'],
           'show_sched'         => $converted_show_schedule,
           'show_user_list'     => $show_users,
-          'show_producer_list' => $show_producers
+          'show_producer_list' => $show_producers,
+          'show_image_id'      => ''
         ) + $image_urls
       );
       //insert the new show into the database
@@ -245,8 +303,8 @@ function yaml_import_ok($file_name = '', $delete_existing = false){
 
       //upload show-image & show-header if show inserted correctly and upload of images is called for
       if ($sanitized_show['upload-images'] && is_int($new_show) && $new_show > 0){
-        upload_image($sanitized_show['show-image'], $new_show);
-        // upload_image($sanitized_show['show-header'], null);
+        $image_id = upload_image($sanitized_show['show-image'], $new_show);
+        update_post_meta($new_show, 'show_image_id', $image_id); //store the image ID so we can use it later
       }
     } else {
       $return_value = false;
@@ -304,6 +362,144 @@ function upload_image($image_url, $post_id = null){
   }
   return $attach_id;
 }//function add_featured_image()
+
+//this function creates an archive of all the images associated with all published shows defined in the system.
+function create_show_image_archive(){
+  //Three files are created in the WP uploads directory: show_images.tgz, show_images.zip, and show_images.yaml
+  //The images .tgz and .zip files contain the actual image files. The .yaml file contains the file names, and size
+  //information needed to render the data to the user. If previous files are found, they are replaced.
+  global $yaml_parse_errors;
+  global $yaml_import_message;
+  $parameters = array(
+    'posts_per_page'     => -1,
+    'post_type'          => 'show',
+    'post_status'        => 'publish'
+  );
+  $shows = get_posts($parameters);
+  $upload_dir = wp_upload_dir();
+  $base_dir = $upload_dir['basedir'];
+  $image_index = array();
+
+  //remove the previous files if they exit
+  delete_folder($base_dir . '/export');
+  unlink($base_dir . '/show_images.yaml');
+  unlink($base_dir . '/show_images.tgz');
+  unlink($base_dir . '/show_images.zip');
+
+  //create the export directory that will hold our image files raising suitable errors on failure
+  if (! mkdir($base_dir . '/export')){
+    $yaml_parse_errors = '';
+    $yaml_import_message = __('Failed to create export folder', 'radio-station') . ' ' . $base_dir . '/export';
+	  add_action('admin_notices', 'yaml_import__failure');
+    return false;
+  }
+
+  //populate $image_index with all the show image data, indexed by image_ID
+  foreach ($shows as $show){
+    //fetch all the metadata for this show
+    $metadata = get_post_meta($show->ID);
+
+      foreach (['show_image_id', 'show_avatar', 'show_header'] as $image_ref){
+        if (! array_key_exists($image_ref, $metadata)){
+          break;
+        }
+        $src = get_image_path($metadata[$image_ref][0]);
+        $dst = $base_dir . '/export/' . basename($src);
+        if (! copy($src, $dst)) {
+          $yaml_parse_errors = "src: $src</br> dst: $dst</br>";
+          $yaml_import_message = __('Failed to copy file. See below for details', 'radio-station');
+    		  add_action('admin_notices', 'yaml_import__failure');
+          return false;
+        }
+        $image_index[$metadata[$image_ref][0]] = ['path' => $dst, 'file' => basename($src)];
+      }
+      //create the YAML index file
+  }//foreach ($shows...)
+
+  //create the zip file
+  $zip = new ZipArchive;
+  if ($zip->open($base_dir . '/show_images.zip', ZipArchive::CREATE) === true){
+    if ($handle = opendir($base_dir . '/export')){
+      while (false !== ($entry = readdir($handle))){
+        if ($entry != "." && $entry != ".." && !is_dir("$base_dir/" . $entry)){
+          $zip->addFile("$base_dir/export/" . $entry, $entry);
+        }
+      }
+      closedir($handle);
+    }
+    $zip->close();
+  }else{
+    $yaml_parse_errors = "";
+    $yaml_import_message = __('Failed to create show_images.zip', 'radio-station');
+	  add_action('admin_notices', 'yaml_import__failure');
+    return false;
+  }
+
+  //create the tgz file
+  $tgz = new PharData($base_dir . '/show_images.tar');
+  $tgz->buildFromDirectory($base_dir . '/export');
+  $tgz->compress(Phar::GZ);
+  unset($tgz);
+  unlink($base_dir . '/show_images.tar');
+  rename($base_dir . '/show_images.tar.gz', $base_dir . '/show_images.tgz');
+  return $image_index;
+}//create_show_image_archive()
+
+//helper function
+//deletes a folder containing files
+function delete_folder($path) {
+    if (is_dir($path) === true) {
+        $files = array_diff(scandir($path), array('.', '..'));
+        foreach ($files as $file) {
+            delete_folder(realpath($path) . '/' . $file);
+        }
+        return rmdir($path);
+    }else if (is_file($path) === true) {
+        return unlink($path);
+    }
+    return false;
+}//function delete_folder()
+
+//helper function
+//retrieves the absolute filesystem path of the passed image_id if available. Can be used to retrieve intermediate sizes also.
+function get_image_path($image_id, $size = 'full') {
+    $file = get_attached_file($image_id, true);
+    if (empty($size) || $size === 'full') {
+        // for the original size get_attached_file is fine
+        return realpath($file);
+    }
+    if (! wp_attachment_is_image($image_id) ) {
+        return false; // the id is not referring to a media
+    }
+    $info = image_get_intermediate_size($image_id, $size);
+    if (!is_array($info) || ! isset($info['file'])) {
+        return false; // probably a bad size argument
+    }
+
+    return realpath(str_replace(wp_basename($file), $info['file'], $file));
+}
+
+//this function returns an array of email addresses of show users for the given show ID
+function get_show_users($show_id){
+  $users = get_post_meta($show_id, 'show_user_list', true);
+  $email_list = array();
+  foreach ($users as $user){
+    $user_obj = get_user_by('ID', $user);
+    array_push($email_list, $user_obj->user_email);
+  }
+  return $email_list;
+}
+
+//this function returns an array of email addresses of show producers for the given show ID
+function get_show_producers($show_id){
+  $producers = get_post_meta($show_id, 'show_producer_list', true);
+  $email_list = array();
+  foreach ($producers as $producer){
+    $user_obj = get_user_by('ID', $producer);
+    array_push($email_list, $user_obj->user_email);
+  }
+  return $email_list;
+}
 
 //this function takes an array of email addresses, and returns, if possible, an array of matching WordPress user ID's.
 function convert_user_list($users_email_array){
@@ -551,6 +747,35 @@ function convert_show_schedule($show_schedule){
   return $converted_schedule;
 }//convert_show_schedule()
 
+//this function returns a datastructure describing a show's schedule (used by export_helper() function via get_published_shows())
+function get_show_schedule($show_id){
+  $schedule = get_post_meta($show_id, 'show_sched', true);
+  $converted_schedule = array();
+  foreach ($schedule as $tb){ //loop through all time blocks
+    $accumulator = array(); //convert time block array to internal 24h format
+    if ($tb['start_meridian'] == 'pm'){
+      $start_time = sprintf('%02u:%02u', $tb['start_hour'] + 12, $tb['start_min']);
+    }else{
+      $start_time = sprintf('%02u:%02u', $tb['start_hour'], $tb['start_min']);
+    }
+    if ($tb['end_meridian'] == 'pm'){
+      $end_time   = sprintf('%02u:%02u', $tb['end_hour'] + 12, $tb['end_min']);
+    }else{
+      $end_time   = sprintf('%02u:%02u', $tb['end_hour'], $tb['end_min']);
+    }
+    array_push($accumulator, $start_time, $end_time);
+    if ($tb['disabled'] == 'yes') array_push($accumulator, 'disabled');
+    if ($tb['encore'] == 'on') array_push($accumulator, 'encore');
+
+    //add finished array to the $converted_schedule array under the correct day of the week
+    if (array_key_exists($tb['day'], $converted_schedule)){
+      array_push($converted_schedule[$tb['day']], $accumulator);
+    }else{
+      $converted_schedule[$tb['day']][0] = $accumulator;
+    }
+  }
+  return $converted_schedule;
+}
 //this function deletes all shows and associated data from the database
 function delete_show_data(){
   //get an array of all show CPT ids
@@ -733,4 +958,45 @@ function is_url_or_ID(&$field, $nullOK = false){
 function isAssoc(array $arr){
   if (array() === $arr) return false;
   return array_keys($arr) !== range(0, count($arr) - 1);
+}
+
+// Returns a file size limit in bytes based on the PHP upload_max_filesize and post_max_size
+function file_upload_max_size() {
+  static $max_size = -1;
+
+  if ($max_size < 0) {
+    // Start with post_max_size.
+    $post_max_size = parse_size(ini_get('post_max_size'));
+    if ($post_max_size > 0) {
+      $max_size = $post_max_size;
+    }
+
+    // If upload_max_size is less, then reduce. Except if upload_max_size is
+    // zero, which indicates no limit.
+    $upload_max = parse_size(ini_get('upload_max_filesize'));
+    if ($upload_max > 0 && $upload_max < $max_size) {
+      $max_size = $upload_max;
+    }
+  }
+  return $max_size;
+}
+
+//helper function
+function parse_size($size) {
+  $unit = preg_replace('/[^bkmgtpezy]/i', '', $size); // Remove the non-unit characters from the size.
+  $size = preg_replace('/[^0-9\.]/', '', $size); // Remove the non-numeric characters from the size.
+  if ($unit) {
+    // Find the position of the unit in the ordered string which is the power of magnitude to multiply a kilobyte by.
+    return round($size * pow(1024, stripos('bkmgtpezy', $unit[0])));
+  }
+  else {
+    return round($size);
+  }
+}
+
+//returns human readable file size string
+function convert_filesize($bytes, $decimals = 2){
+    $size = array('B','kB','MB','GB','TB','PB','EB','ZB','YB');
+    $factor = floor((strlen($bytes) - 1) / 3);
+    return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . @$size[$factor];
 }
