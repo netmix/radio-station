@@ -16,7 +16,7 @@
 
 
   //uncomment line below and view log file to id a particular screen
-  error_log("Displaying screen ". print_r($screen->id,true)."\n", 3, "/tmp/my-errors.log"); //code to write a line to wp-content/debug.log (works)
+  // error_log("Displaying screen '". print_r($screen->id,true)."'\n", 3, "/tmp/my-errors.log"); //code to write a line to wp-content/debug.log (works)
   if ('edit-show' == $screen->id ) {
     //import feature documentation tab
     $help_file = RADIO_STATION_DIR . '/help/edit-show.php';
