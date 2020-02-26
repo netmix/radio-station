@@ -19,8 +19,9 @@
 
 <h1>Import Show Data via YAML file</h1>
 <p>
-  To import and optionally replace all your show data with whatever is contained in a data file. Click the browse button below and
-  select the file you wish to import. Check the box to delete existing data if desired, then click the import button.
+  To import and optionally replace all your show data with whatever is contained in a data file. Click the
+  <strong>Select file</strong> button below and select the file you wish to import. Check the box to delete
+  existing data if desired, then click the import button.
 </p>
 <p>
   <mark class="warning w-red">

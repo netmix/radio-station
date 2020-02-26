@@ -44,6 +44,9 @@
  	$yaml_parse_errors = '';
  	$yaml_import_message = '';
 
+  // error_log("POST DATA\n". print_r($_POST, true) . "\n", 3, "/tmp/my-errors.log"); //FIXME debugging code
+  // return;
+
   switch ($_POST['action']) {
     case 'radio_station_yaml_import_action':
       import_helper();
@@ -103,6 +106,8 @@
  function export_helper(){
  	 global $yaml_import_message;
    global $yaml_parse_errors;
+  // error_log("POST DATA\n". print_r($_POST, true) . "\n", 3, "/tmp/my-errors.log"); //FIXME debugging code
+  // return;
    if( ! wp_verify_nonce( $_POST['yaml_export_nonce'], 'yaml_export_nonce' ) )
      return;
    if( ! current_user_can( 'manage_options' ) )
@@ -135,14 +140,17 @@
    $yaml = "---\n#Show data file (YAML format)\n\n" . $yaml . "...\n";
    file_put_contents($base_dir . '/show_data.yaml', $yaml);
 
+   $zip_size = convert_filesize(filesize("$base_dir/show_images.zip"), 1);
+   $tgz_size = convert_filesize(filesize("$base_dir/show_images.tgz"), 1);
+
    //set up links for user to download the files
    $yaml_import_message = __('Export successful. Use the following link(s) to download your data.', 'radio-station');
    if ($_POST['image_prefix_url']){
      $yaml_import_message .= "
           <ul style=\"padding-left: 10px;\">
-            <li><a href=\"$base_url/show_images.zip\" download>Image zip file</a> $zip_size (bytes)</li>
-            <li><a href=\"$base_url/show_images.tgz\" download>Image tgz file</a></li>
-            <li><a href=\"$base_url/show_data.yaml\" download=\"$export_filename\">Show data file (YAML)</a></li>
+            <li><a href=\"$base_url/show_data.yaml\" download=\"$export_filename\">Data file</a></li>
+            <li><a href=\"$base_url/show_images.zip\" download>Image zip file</a> <small>($zip_size)</small></li>
+            <li><a href=\"$base_url/show_images.tgz\" download>Image tgz file</a> <small>($tgz_size)</small></li>
           </ul>
      ";
      $yaml_import_message .= __('Download one of the image files and the data file. See help for details on how to stage an import including images.', 'radio-station');
@@ -996,7 +1004,7 @@ function parse_size($size) {
 
 //returns human readable file size string
 function convert_filesize($bytes, $decimals = 2){
-    $size = array('B','kB','MB','GB','TB','PB','EB','ZB','YB');
+    $size = array(' b',' Kb',' Mb',' Gb',' Tb',' Pb',' Eb',' Zb',' Yb');
     $factor = floor((strlen($bytes) - 1) / 3);
     return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . @$size[$factor];
 }

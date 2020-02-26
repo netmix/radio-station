@@ -1,2 +1,21 @@
 /* Radio Station Styles used on admin pages */
 /* ---------------------------------------- */
+
+.form-text {
+  font-size: 1em;
+}
+
+.inputfile{
+  opacity: 0;
+}
+#advanced-options{
+  display: none;
+}
+
+#upload-file-name{
+  display: inline;
+}
+
+#delete-data-warning{
+  display: none;
+}
