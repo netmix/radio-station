@@ -1082,7 +1082,8 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 				}
 				echo "<b>" . esc_html( __( 'Contributors' ) ) . "</b>: " . esc_html( implode( ', ', $parsed['contributors'] ) ) . "<br>";
 				// echo "<b>Donate Link</b>: <a href='".$parsed['donate_link']."' target=_blank>".$parsed['donate_link']."</a><br>";
-				echo "<br>" . $parsed['short_description'] . "<br><br>"; // phpcs:ignore WordPress.Security.OutputNotEscaped
+				// phpcs:ignore WordPress.Security.OutputNotEscaped
+				echo "<br>" . $parsed['short_description'] . "<br><br>";
 
 				// --- output sections ---
 				// possible sections: 'description', 'installation', 'frequently_asked_questions',
@@ -1100,18 +1101,21 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 						}
 						$title = implode( ' ', $parts );
 						echo "<h3>" . esc_html( $title ) . "</h3>";
-						echo $section; // phpcs:ignore WordPress.Security.OutputNotEscaped
+						// phpcs:ignore WordPress.Security.OutputNotEscaped
+						echo $section;
 					}
 				}
 				if ( isset( $parsed['remaining_content'] ) && !empty( $remaining_content ) ) {
 					echo "<h3>" . esc_html( __( 'Extra Notes' ) ) . "</h3>";
-					echo $parsed['remaining_content']; // phpcs:ignore WordPress.Security.OutputNotEscaped
+					// phpcs:ignore WordPress.Security.OutputNotEscaped
+					echo $parsed['remaining_content'];
 				}
 
 			} else {
 				// --- fallback text-only display ---
 				$contents = str_replace( "\n", "<br>", $contents );
-				echo $contents; // phpcs:ignore WordPress.Security.OutputNotEscaped
+				// phpcs:ignore WordPress.Security.OutputNotEscaped
+				echo $contents;
 			}
 
 			echo "</body></html>";
@@ -1389,7 +1393,8 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 			$box .= "</td></tr>";
 			$box .= "</table>";
 			if ( $echo ) {
-				echo $box; // phpcs:ignore WordPress.Security.OutputNotEscaped
+				// phpcs:ignore WordPress.Security.OutputNotEscaped
+				echo $box;
 			} else {
 				return $box;
 			}
@@ -1504,7 +1509,8 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 			// 1.0.9: change filter from _plugin_links to disambiguate
 			$links = apply_filters( $args['namespace'] . '_plugin_admin_links', $links );
 			if ( count( $links ) > 0 ) {
-				echo implode( ' | ', $links ); // phpcs:ignore WordPress.Security.OutputNotEscaped
+				// phpcs:ignore WordPress.Security.OutputNotEscaped
+				echo implode( ' | ', $links );
 			}
 
 			// --- author icon ---
@@ -1551,7 +1557,8 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 				$rate_link .= esc_html( $rate_text ) . "</a><br><br>";
 				$rate_link = apply_filters( $args['namespace'] . '_rate_link', $rate_link, $args );
 				if ( $rate_link ) {
-					echo $rate_link; // phpcs:ignore WordPress.Security.OutputNotEscaped
+					// phpcs:ignore WordPress.Security.OutputNotEscaped
+					echo $rate_link;
 				}
 			}
 
@@ -1567,7 +1574,8 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 				$share_link .= esc_html( $share_text ) . "</a><br><br>";
 				$share_link = apply_filters( $args['namespace'] . '_share_link', $share_link, $args );
 				if ( $share_link ) {
-					echo $share_link; // phpcs:ignore WordPress.Security.OutputNotEscaped
+					// phpcs:ignore WordPress.Security.OutputNotEscaped
+					echo $share_link;
 				}
 			}
 
@@ -1583,7 +1591,8 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 				$donate_link .= "<b>" . esc_html( $donate_text ) . "</b></a><br><br>";
 				$donate_link = apply_filters( $args['namespace'] . '_donate_link', $donate_link, $args );
 				if ( $donate_link ) {
-					echo $donate_link; // phpcs:ignore WordPress.Security.OutputNotEscaped
+					// phpcs:ignore WordPress.Security.OutputNotEscaped
+					echo $donate_link;
 				}
 			}
 
@@ -1600,7 +1609,8 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 				}
 				if ( isset( $message ) ) {
 					echo "<tr><td></td><td></td><td align='center'>";
-					echo $this->message_box( $message, false ); // phpcs:ignore WordPress.Security.OutputNotEscaped
+					// phpcs:ignore WordPress.Security.OutputNotEscaped
+					echo $this->message_box( $message, false );
 					echo "</td></tr>";
 				}
 			} else {
@@ -1781,7 +1791,8 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 							$output = ob_get_clean();
 							if ( $output ) {
 								echo "<tr class='setting-section-bottom'><td colspan='5'>";
-								echo $output; // phpcs:ignore WordPress.Security.OutputNotEscaped
+								// phpcs:ignore WordPress.Security.OutputNotEscaped
+								echo $output;
 								echo "</td></tr>";
 							}
 
@@ -1796,7 +1807,8 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 							// --- section setting rows ---
 							foreach ( $taboptions[$tab][$section] as $key => $option ) {
 								$option['key'] = $key;
-								echo $this->setting_row( $option ); // phpcs:ignore WordPress.Security.OutputNotEscaped
+								// phpcs:ignore WordPress.Security.OutputNotEscaped
+								echo $this->setting_row( $option );
 							}
 							echo "<tr height='25'><td> </td></tr>";
 
@@ -1806,6 +1818,7 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 							$output = ob_get_clean();
 							if ( $output ) {
 								echo "<tr class='setting-section-bottom'><td colspan='5'>";
+								// phpcs:ignore WordPress.Security.OutputNotEscaped
 								echo $output;
 								echo "</td></tr>";
 							}
@@ -1817,7 +1830,8 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 					foreach ( $taboptions[$tab]['general'] as $key => $option ) {
 						$option['key'] = $key;
 						echo "<tr height='25'><td> </td></tr>";
-						echo $this->setting_row( $option ); // phpcs:ignore WordPress.Security.OutputNotEscaped
+						// phpcs:ignore WordPress.Security.OutputNotEscaped
+						echo $this->setting_row( $option );
 						echo "<tr height='25'><td> </td></tr>";
 					}
 				}
@@ -1833,7 +1847,8 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 				$buttons .= "<tr height='25'><td></td></tr>";
 				$buttons = apply_filters( $namespace . '_admin_save_buttons', $buttons, $tab );
 				if ( $buttons ) {
-					echo $buttons; // phpcs:ignore WordPress.Security.OutputNotEscaped
+					// phpcs:ignore WordPress.Security.OutputNotEscaped
+					echo $buttons;
 				}
 
 				// --- close table ---
@@ -2296,7 +2311,8 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 			if ( count( $scripts ) > 0 ) {
 				echo "<script>";
 				foreach ( $scripts as $script ) {
-					echo $script . PHP_EOL; // phpcs:ignore WordPress.Security.OutputNotEscaped
+					// phpcs:ignore WordPress.Security.OutputNotEscaped
+					echo $script . PHP_EOL;
 				}
 				echo "</script>";
 			}
@@ -2361,7 +2377,8 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 			$namespace = $this->namespace;
 			$styles = apply_filters( $namespace . '_admin_page_styles', $styles );
 			echo "<style>";
-			echo implode( "\n", $styles ); // phpcs:ignore WordPress.Security.OutputNotEscaped
+			// phpcs:ignore WordPress.Security.OutputNotEscaped
+			echo implode( "\n", $styles );
 			echo "</style>";
 
 		}

@@ -399,7 +399,8 @@ function create_show_image_archive(){
     //fetch all the metadata for this show
     $metadata = get_post_meta($show->ID);
 
-      foreach (['show_image_id', 'show_avatar', 'show_header'] as $image_ref){
+		$image_keys = array( 'show_image_id', 'show_avatar', 'show_header' );
+      foreach ( $image_keys as $image_ref) {
         if (! array_key_exists($image_ref, $metadata)){
           break;
         }
@@ -411,7 +412,7 @@ function create_show_image_archive(){
     		  add_action('admin_notices', 'yaml_import__failure');
           return false;
         }
-        $image_index[$metadata[$image_ref][0]] = ['path' => $dst, 'file' => basename($src)];
+        $image_index[$metadata[$image_ref][0]] = array( 'path' => $dst, 'file' => basename($src) );
       }
       //create the YAML index file
   }//foreach ($shows...)
@@ -801,7 +802,7 @@ function delete_show_data(){
 //convert_show_schedule helper function
 //converts the various day formats to full-length capitalized form
 function canonicalize_day($day){
-  define('DAYS_LOOKUP', array(
+  $days_lookup = array(
     'sun' => 'Sunday',
     'mon' => 'Monday',
     'tue' => 'Tuesday',
@@ -809,8 +810,8 @@ function canonicalize_day($day){
     'thu' => 'Thursday',
     'fri' => 'Friday',
     'sat' => 'Saturday'
-  ));
-  return DAYS_LOOKUP[substr(strtolower($day),0,3)];
+  );
+  return $days_lookup[substr(strtolower($day),0,3)];
 }//canonicalize_day()
 
 //Validation helper function

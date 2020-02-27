@@ -254,18 +254,20 @@ You may translate the plugin into another language. Please visit our WordPress T
 * Feature: added REST/Feed endpoints (broadcast, schedule, shows, genres)
 * Feature: options to set Page and default View for Master Schedule
 * Feature: post type Archive Shortcodes and Show-related Shortcodes
-* Feature: server and user time clock on Master Schedule table view
+* Feature: display Radio Timezone on Master Schedule table view
 * Feature: added Show Header image to Shows for single Show display
 * Feature: add Show Language Taxonomy to Shows (and Overrides)
 * Improved: new Data Model and Schedule (with Override) Calculation
 * Improved: new Show Content Template layout display method
 * Improved: new Playlist Content Template layout display method
-* Improved: Genre highlight selection on Master Schedule table view
+* Improved: added multiple Genre highlight selection on Master Schedule
 * Improved: added Custom Field and Revision support to post types
 * Improved: missing output sanitization throughout the plugin
 * Improved: added file hierarchy fallbacks for CSS, JS and Templates
 * Improved: enqueue conditional scripts inline instead of echoing
-* Improved: add View link for when editing custom post types
+* Improved: Master Schedule displays enhancements and styling
+* Improved: add View/Edit links for editing custom post types
+* Improved: load Datepicker styles locally instead of via Google
 * Improved: add debug function for debug display and logging
 * Roles: new Show Producer role (same capabilities as DJ / Host)
 * Roles: new Show Editor role (edit permissions but not Admin)

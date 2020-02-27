@@ -6,9 +6,29 @@
  * Licence: GPL3
  */
 
+// --- enqueue import export scripts ---
+$js = "function radio_delete_check() {
+  if (document.getElementById('delete-data-checkbox').checked === true) {
+	jQuery('#delete-data-warning').attr('style', 'display: block;');
+  } else {
+	jQuery('#delete-data-warning').attr('style', 'display: none;');
+  }
+}
 
- $max_upload_size = convert_filesize(file_upload_max_size());
- ?>
+function radio_enable_spinner(spinner) {
+  if (spinner == 'import'){
+	jQuery('#import-spinner').addClass('active');
+  }
+  if (spinner == 'export'){
+	jQuery('#export-spinner').addClass('active');
+  }
+}";
+wp_add_inline_script( 'radio-station-admin', $js );
+
+// --- set maximum upload size ---
+$max_upload_size = convert_filesize( file_upload_max_size() );
+
+?>
 
 <div style="width: 620px; padding: 10px">
 
@@ -25,8 +45,8 @@
 				   _e( 'Import shows and show metadata from a YAML file.', 'radio-station' );
 					 ?>
            &nbsp;</p>
-           <input type="hidden" value="0" name="delete_show_data" onclick=check()>
-           <input id="delete-data-checkbox" type="checkbox" value="1" name="delete_show_data" onclick=check()>
+           <input type="hidden" value="0" name="delete_show_data" onclick="radio_delete_check();">
+           <input id="delete-data-checkbox" type="checkbox" value="1" name="delete_show_data" onclick="radio_delete_check();">
             <?php _e('Delete existing show data', 'radio-station')?> </input>
            <p> &nbsp;</p>
            <p id="delete-data-warning" style="display: none;">
@@ -41,7 +61,7 @@
   					&nbsp;
 	          <input type="hidden" name="action" value="radio_station_yaml_import_action" />
 	          <?php wp_nonce_field( 'yaml_import_nonce', 'yaml_import_nonce' ); ?>
-	          <?php submit_button( __( 'Import', 'radio-station' ), 'secondary', 'submit', false, 'onclick=enable_spinner(\'import\')' ); ?>
+	          <?php submit_button( __( 'Import', 'radio-station' ), 'secondary', 'submit', false, 'onclick=radio_enable_spinner(\'import\')' ); ?>
 	      </form>
         </br>
         <small>*Maximum upload file size is <?php echo $max_upload_size; ?>.</small>
@@ -68,7 +88,7 @@
 	          <input type="hidden" name="action" value="radio_station_yaml_export_action" />
 	          <?php wp_nonce_field( 'yaml_export_nonce', 'yaml_export_nonce' ); ?>
           </div>
-	          <?php submit_button( __( 'Export', 'radio-station' ), 'secondary', 'submit', false, 'onclick=enable_spinner(\'export\')' ); ?>
+	          <?php submit_button( __( 'Export', 'radio-station' ), 'secondary', 'submit', false, 'onclick=radio_enable_spinner(\'export\')' ); ?>
 	      </form>
 	    </div><!-- .inside -->
       <div id="export-spinner" class="ui large centered floating loader" style="top:50%;"></div>
@@ -77,7 +97,7 @@
 
 	<div id="error-log-div" style="width:100%;">
 		<?php
-		//pull in any parsing error details for display to the user
+		// pull in any parsing error details for display to the user
 		global $yaml_parse_errors;
 		// echo '<pre>';
 		// echo wordwrap($yaml_parse_errors, 85);

@@ -1,19 +1,36 @@
-/* ------------------------------ */
+/* ============================== */
 /* Radio Station Shortcode Styles */
-/* ------------------------------ */
+/* ============================== */
+
+.radio-clear {
+	display: block;
+	clear: both;
+}
+
+.rs-countdown {
+	font-size: 0.8em;
+}
 
 /* Archive Shortcodes */
 /* ------------------ */
-.show-archive-list-item, .playlist-archive-list-item, .override-archive-list-item {
+.show-archive-item, .playlist-archive-item, .override-archive-item {
     list-style: none;
+	clear: both;
+	padding-top: 10px;
+}
+
+.show-archive-item-thumbnail, .playlist-archive-item-thumbnail, .override-archive-item-thumbnail {
+	float: left;
+	padding-right: 20px;
+}
+
+.show-archive-item-title, .playlist-archive-item-title, .override-archive-item-title {
+	font-size: 1.25em;
+	margin-bottom: 15px;
 }
 
 /* Show Subarchive Shortcodes */
 /* -------------------------- */
-#show-posts, #show-playlists, #show-episodes {
-	overflow: hidden;
-}
-
 .show-post {
 	padding-top: 5px;
 	padding-bottom: 5px;
@@ -49,7 +66,7 @@
 	background-color: #eeeeee; 
 	border-radius: 7px;
 	border: 1px solid #777777;
-	font-size: 16px;
+	font-size: 1em;
 	color: #444444;
 	padding: 5px;
 }
@@ -61,4 +78,68 @@
 
 .show-pagination-button:hover {
 	background-color: #f5f5f5;
+}
+
+/* Widget/Shortcode Styles */
+/* ----------------------- */
+
+.current-show-avatar, .upcoming-show-avatar, .on-air-dj-avatar {
+	padding-bottom: 5px;
+	display: block;
+	max-width: 90%;
+}
+
+.current-show-avatar img, .upcoming-show-avatar img, .on-air-dj-avatar img {
+	width: 100%;
+	height: auto;
+}
+
+.current-show-avatar.float-left, .upcoming-show-avatar.float-left, .on-air-dj-avatar.float-left {
+	float: left;
+	padding-right: 15px;
+}
+
+.current-show-avatar.float-right, .upcoming-show-avatar.float-right, .on-air-dj-avatar.float-right {
+	float: right;
+	padding-left: 15px;
+}
+
+.current-show-list .current-show-title, .on-air-list .on-air-dj-title {
+	font-size: 1.25em;
+}
+
+.upcoming-shows-list .upcoming-show-title, .on-air-upcoming-list .on-air-dj-title {
+	font-size: 1.1em;
+}
+
+.current-show-encore, .upcoming-show-encore, .on-air-dj-encore {
+	font-style: italic;
+}
+
+.current-show-encore, .current-show-hosts, .on-air-dj-encore, .on-air-dj-names {
+	font-size: 1em;
+}
+
+.upcoming-shows-list .upcoming-show-encore, .upcoming-shows-list .upcoming-show-hosts,
+.on-air-upcoming-list .on-air-dj-encore, .on-air-upcoming-list .on-air-dj-names {
+	font-size: 0.9em;
+}
+
+.current-show-list, .upcoming-shows-list,
+.on-air-list, .widget .on-air-list, .on-air-upcoming-list, .widget .on-air-upcoming-list {
+	list-style: none;
+}
+
+.current-show-desc, .current-show-schedule, .upcoming-show-schedule, .on-air-dj-desc, .on-air-dj-sched {
+	font-size: 0.8em;
+}
+
+/* Current Playlist Widget */
+.show-playlist-tracks {
+	line-height: 1.6em;
+}
+
+.show-playlist-track {
+	margin-bottom: 10px;
+	font-size: 0.75em;
 }

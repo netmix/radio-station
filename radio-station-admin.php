@@ -12,9 +12,9 @@
 // - Add Admin Menu and Submenu Items
 // - Fix to Expand Main Menu for Submenu Items
 // - Taxonomy Submenu Item Fix
-// - Output Help Page
-// - Output Export Page
-// - Output Show Import/Export Page (YAML)
+// - Output Import/Export Show Page
+// - Output Plugin Help Page
+// - Output Playlist Export Page
 // === Admin Notices ===
 // - Plugin Takeover Announcement Notice
 // - Plugin Takeover Announcement Content
@@ -37,30 +37,36 @@
 add_action( 'admin_enqueue_scripts', 'radio_station_enqueue_admin_scripts' );
 function radio_station_enqueue_admin_scripts() {
 
-	// --- enqueue jquery and jquery datepicker ---
-	wp_enqueue_script( 'jquery' );
-	wp_enqueue_script( 'jquery-ui-datepicker' );
-
-	// TODO: include jQuery UI CSS in plugin ?
-	// (relative resources would also need to be copied?)
-	// $url = plugins_url( 'css/jquery-ui.css', RADIO_STATION-FILE );
-	// wp_enqueue_style( 'jquery-style', $url, array(), '1.8.2' );
-	$protocol = 'http';
-	if ( is_ssl() ) {$protocol .= 's';}
-	$url = $protocol . '://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css';
-	wp_enqueue_style( 'jquery-ui-style', $url, array(), '1.8.2' );
-
 	// --- enqueue admin js file ---
 	$script = radio_station_get_template( 'both', 'radio-station-admin.js', 'js' );
 	$version = filemtime( $script['file'] );
-	$deps = array( 'jquery', 'jquery-ui-datepicker' );
+	$deps = array( 'jquery' );
 	wp_enqueue_script( 'radio-station-admin', $script['url'], $deps, $version, true );
 
-	// --- enqueue semantic/ui css
-	wp_enqueue_style( 'semantic-ui-style', RADIO_STATION_PLUGIN_DIR . '/vendor/semantic/ui/dist/semantic.min.css', array(), '2.4.1');
+	// --- enqueue admin styles ---
+	radio_station_enqueue_style( 'admin' );
 
-	// --- enqueue admin css
-	wp_enqueue_style( 'rs-admin-style', RADIO_STATION_PLUGIN_DIR . '/css/rs-admin_styles.css', array(), '1.0.0');
+}
+
+// ------------------
+// Enqueue Datepicker
+// ------------------
+// 2.3.0: enqueued separately by override post type only
+function radio_station_enqueue_datepicker() {
+
+	// --- enqueue jquery datepicker ---
+	wp_enqueue_script( 'jquery-ui-datepicker' );
+
+	// --- enqueue jquery datepicker styles ---
+	// 2.3.0: update theme styles from 1.8.2 to 1.12.1
+	// 2.3.0: use local datepicker styles instead of via Google
+	// $protocol = 'http';
+	// if ( is_ssl() ) {$protocol .= 's';}
+	// $url = $protocol . '://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css';
+	// wp_enqueue_style( 'jquery-ui-style', $url, array(), '1.12.1' );
+	$style = radio_station_get_template( 'both', 'jquery-ui.css', 'css' );
+	wp_enqueue_style( 'jquery-ui-smoothness', $style['url'], array(), '1.12.1', 'all' );
+
 }
 
 
@@ -141,20 +147,16 @@ function radio_station_add_admin_menus() {
 	add_submenu_page( 'radio-station', $rs . ' ' . __( 'Schedule Overrides', 'radio-station' ), __( 'Schedule Overrides', 'radio-station' ), 'edit_shows', 'schedule-overrides' );
 	// add_submenu_page( 'radio-station', $rs . ' ' .  __( 'Add Override', 'radio-station' ), __( 'Add Override', 'radio-station' ), 'publish_shows', 'add-override' );
 	do_action( 'radio_station_admin_submenu_middle' );
-	// add_submenu_page( 'radio-station', $rs . ' ' .  __( 'Hosts', 'radio-station' ), __( 'Hosts', 'radio-station' ), 'edit_hosts', 'hosts' );
-	// add_submenu_page( 'radio-station', $rs . ' ' .  __( 'Producers', 'radio-station' ), __( 'Producers', 'radio-station' ), 'edit_producers', 'producers' );
+	// add_submenu_page( 'radio-station', $rs . ' ' . __( 'Hosts', 'radio-station' ), __( 'Hosts', 'radio-station' ), 'edit_hosts', 'hosts' );
+	// add_submenu_page( 'radio-station', $rs . ' ' . __( 'Producers', 'radio-station' ), __( 'Producers', 'radio-station' ), 'edit_producers', 'producers' );
+	// add_submenu_page( 'radio-station', $rs . ' ' . __( 'Export Playlists', 'radio-station' ), __( 'Export Playlists', 'radio-station' ), $settingscap, 'playlist-export', 'radio_station_playlist_export_page' );
 
-	add_submenu_page( 'radio-station',
-										$rs . ' ' . __( 'Import/Export Show Data', 'radio-station' ), #page title
-										__( 'Import/Export Shows', 'radio-station' ), 								#menu title
-										'manage_options', 																						#capability (role that can view/use this submenu page)
-										'import-export-shows', 																				#this submenu's slug
-										'show_data_import_export'	  																	#callback function
-									);
+	if ( file_exists( RADIO_STATION_DIR . '/includes/import-export.php' ) ) {
+		add_submenu_page( 'radio-station', 	$rs . ' ' . __( 'Import/Export Show Data', 'radio-station' ), __( 'Import/Export', 'radio-station' ), 'manage_options', 'import-export-shows', 'radio_station_import_export_show_page' );
+	}
 
-	add_submenu_page( 'radio-station', $rs . ' ' . __( 'Export Playlists', 'radio-station' ), __( 'Export Playlists', 'radio-station' ), $settingscap, 'playlist-export', 'radio_station_admin_export' );
 	add_submenu_page( 'radio-station', $rs . ' ' . __( 'Settings', 'radio-station' ), __( 'Settings', 'radio-station' ), $settingscap, 'radio-station', 'radio_station_settings_page' );
-	add_submenu_page( 'radio-station', $rs . ' ' . __( 'Help', 'radio-station' ), __( 'Help', 'radio-station' ), 'publish_playlists', 'radio-station-help', 'radio_station_plugin_help' );
+	add_submenu_page( 'radio-station', $rs . ' ' . __( 'Help', 'radio-station' ), __( 'Help', 'radio-station' ), 'publish_playlists', 'radio-station-help', 'radio_station_plugin_help_page' );
 	do_action( 'radio_station_admin_submenu_bottom' );
 
 	// --- hack the submenu global to add post type add/edit URLs ---
@@ -277,10 +279,26 @@ function radio_station_role_editor() {
 	// echo "</a>";
 }
 
-// ----------------
-// Output Help Page
-// ----------------
-function radio_station_plugin_help() {
+// -----------------------
+// Import/Export Show Page
+// -----------------------
+function radio_station_import_export_show_page() {
+
+	// --- enqueue semantic/ui styles ---
+	$suffix = '.min';
+	if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {$suffix = '';}
+	$semantic_ui = plugins_url( 'vendor/semantic/ui/dist/semantic' . $suffix . '.css', RADIO_STATION_FILE );
+	wp_enqueue_style( 'semantic-ui-style', $semantic_url, array(), '2.4.1', true );
+
+	// --- display the import/export page ---
+	include RADIO_STATION_DIR . '/templates/import-export-shows.php';
+
+}
+
+// -----------------------
+// Output Plugin Help Page
+// -----------------------
+function radio_station_plugin_help_page() {
 
 	// --- output announcement content ---
 	// 2.2.2: include patreon button link
@@ -296,7 +314,8 @@ function radio_station_plugin_help() {
 // ---------------------------
 // Output Playlist Export Page
 // ---------------------------
-function radio_station_admin_export() {
+// TODO: rewrite playlist export function
+function radio_station_playlist_export_page() {
 
 	global $wpdb;
 
@@ -396,21 +415,9 @@ function radio_station_admin_export() {
 	}
 
 	// display the export page
-	include RADIO_STATION_DIR . '/templates/admin-export.php';
+	include RADIO_STATION_DIR . '/templates/playlist-export.php';
 
 }
-
-// ---------------------------
-// Output Show Import/Export Page (YAML)
-// ---------------------------
-function show_data_import_export() {
-	//set up the variables and other data used in the include file below
-
-	// display the export page
-	include RADIO_STATION_DIR . '/templates/import-export-shows.php';
-
-} //show_data_import_export()
-
 
 
 // ---------------------

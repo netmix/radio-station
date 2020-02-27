@@ -86,7 +86,8 @@ foreach ( $weekdays as $day ) {
 			$output .= '</span>';
 
 			// --- show hosts ---
-			if ( $atts['show_djs'] || $atts['show_hosts'] ) {
+			// 2.3.0: changed from show_djs
+			if ( $atts['show_hosts'] ) {
 
 				$hosts = '';
 				if ( $show['hosts'] && is_array( $show['hosts'] ) && ( count( $show['hosts'] ) > 0 ) ) {

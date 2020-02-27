@@ -2,9 +2,17 @@
 /* Radio Station Template Styles */
 /* ============================= */
 
-/* ---------------- */
+.radio-clear {
+	display: block;
+	clear: both;
+}
+
 /* Show Page Styles */
 /* ---------------- */
+
+#show-posts, #show-playlists, #show-episodes {
+	overflow: hidden;
+}
 
 #show-content .show-sections {
     min-width: 250px;

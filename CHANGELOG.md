@@ -4,7 +4,41 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## 2.3.0
+* Include: Plugin Loader (1.0.9) with plugin options and settings
+* Include: Freemius SDK (2.3.0) and Freemius integration
+* Feature: assign new Producer role to a Show for Show displays
+* Feature: internal Schedule Show Shift Conflict checking 
+* Feature: Show Shift saving completeness and conflict checking
+* Feature: added REST/Feed endpoints (broadcast, schedule, shows, genres)
+* Feature: options to set Page and default View for Master Schedule
+* Feature: post type Archive Shortcodes and Show-related Shortcodes
+* Feature: display Radio Timezone on Master Schedule table view
+* Feature: added Show Header image to Shows for single Show display
+* Feature: add Show Language Taxonomy to Shows (and Overrides)
+* Improved: new Data Model and Schedule (with Override) Calculation
+* Improved: new Show Content Template layout display method
+* Improved: new Playlist Content Template layout display method
+* Improved: added multiple Genre highlight selection on Master Schedule
+* Improved: added Custom Field and Revision support to post types
+* Improved: missing output sanitization throughout the plugin
+* Improved: added file hierarchy fallbacks for CSS, JS and Templates
+* Improved: enqueue conditional scripts inline instead of echoing
+* Improved: Master Schedule displays enhancements and styling
+* Improved: add View/Edit links for editing custom post types
+* Improved: load Datepicker styles locally instead of via Google
+* Improved: add debug function for debug display and logging
+* Roles: new Show Producer role (same capabilities as DJ / Host)
+* Roles: new Show Editor role (edit permissions but not Admin)
+* Roles: Changed DJ role Label to DJ / Host (for talk show usage)
+* Admin: Added Plugin Settings Admin Page (via Plugin Loader)
+* Admin: Added plugin Upgrade / Updated details admin notices
+* Admin: Schedule conflict notice and Show conflicts in Shift column
+* Admin: Show/Override content indicator columns to Admin Show list
+* Admin: Show Description helper text metabox on Show edit screen
+* Admin: Fix to restore Admin Bar New/Edit links for plugin post types
+* Admin: Store installed version for future updates and announcements
+* Disabled: automatic loading of old templates (non theme agnostic)
 
 ## 2.2.8
 

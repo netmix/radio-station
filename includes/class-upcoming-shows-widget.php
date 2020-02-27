@@ -5,6 +5,7 @@
  * Since 2.1.1
  */
 
+// note: widget class name to remain unchanged for backwards compatibility
 class DJ_Upcoming_Widget extends WP_Widget {
 
 	// use __construct instead of DJ_Upcoming_Widget
@@ -36,7 +37,7 @@ class DJ_Upcoming_Widget extends WP_Widget {
 		$link_djs = isset( $instance['link_djs'] ) ? $instance['link_djs'] : '';
 
 		// 2.3.0: convert template style code to straight php echo
-		echo '
+		$fields = '
 		<p>
 			<label for="' . esc_attr( $this->get_field_id( 'title' ) ) . '">
 				' . esc_html( __( 'Title', 'radio-station' ) ) . '
@@ -62,9 +63,9 @@ class DJ_Upcoming_Widget extends WP_Widget {
 			'below' => __( 'Below', 'radio-station' ),
 		);
 		foreach ( $positions as $position => $label ) {
-			echo '<option value="' . esc_attr( $position ) . '"' . selected( $title_position, $position, false ) . '>' . esc_html( $label ) . '</option>';
+			$fields .= '<option value="' . esc_attr( $position ) . '"' . selected( $title_position, $position, false ) . '>' . esc_html( $label ) . '</option>';
 		}
-		echo '</select>
+		$fields .= '</select>
 			' . esc_html( __( 'Show Title Position (relative to Avatar)', 'radio-station' ) ) . '
 			</label>
 		</p>
@@ -130,8 +131,18 @@ class DJ_Upcoming_Widget extends WP_Widget {
 			</label>
 			<br />
 			<small>' . esc_html( __( 'Choose time format for displayed schedules.', 'radio-station' ) ) . '	</small>
-		</p>';
+		</p>
+		
+		<p>
+			<label for="' . esc_attr( $this->get_field_id( 'countdown' ) ) . '">
+			<input id="' .esc_attr( $this->get_field_id( 'countdown' ) ) . '" name="' . esc_attr( $this->get_field_name( 'countdown' ) ) . '" type="checkbox" ' . checked( $countdown, true, false ) . '/>
+				' . esc_html( __( 'Display Countdown Timer', 'radio-station' ) ) . '
+			</label>
+        </p>';
 
+		// --- filter and output ---
+		$fields = apply_filters( 'radio_station_upcoming_shows_widget_fields', $fields, $this, $instance );
+		echo $fields;
 	}
 
 	// --- update widget instance ---
@@ -139,24 +150,38 @@ class DJ_Upcoming_Widget extends WP_Widget {
 
 		$instance = $old_instance;
 		$instance['title'] = $new_instance['title'];
-		$instance['display_djs'] = ( isset( $new_instance['display_djs'] ) ? 1 : 0 );
-		$instance['djavatar'] = ( isset( $new_instance['djavatar'] ) ? 1 : 0 );
-		$instance['link'] = ( isset( $new_instance['link'] ) ? 1 : 0 );
+		$instance['display_djs'] = isset( $new_instance['display_djs'] ) ? 1 : 0;
+		$instance['djavatar'] = isset( $new_instance['djavatar'] ) ? 1 : 0;
+		$instance['link'] = isset( $new_instance['link'] ) ? 1 : 0;
 		$instance['default'] = $new_instance['default'];
 		$instance['limit'] = $new_instance['limit'];
 		$instance['time'] = $new_instance['time'];
-		$instance['show_sched'] = ( isset( $new_instance['show_sched'] ) ? 1 : 0 );
+		$instance['show_sched'] = isset( $new_instance['show_sched'] ) ? 1 : 0;
 
 		// 2.2.4: added title position, avatar width and DJ link settings
+		// 2.3.0: added countdown display option
 		$instance['title_position'] = $new_instance['title_position'];
 		$instance['avatar_width'] = $new_instance['avatar_width'];
-		$instance['link_djs'] = ( isset( $new_instance['link_djs'] ) ? 1 : 0 );
+		$instance['link_djs'] = isset( $new_instance['link_djs'] ) ? 1 : 0;
+		$instance['countdown'] = isset( $new_instance['countdown'] ) ? 1 : 0;
 
+		// 2.3.0: added widget filter instance to update
+		$instance = apply_filters( 'radio_station_upcoming_shows_widget_update', $instance, $new_instance, $old_instance );
 		return $instance;
 	}
 
 	// --- output widget display ---
 	public function widget( $args, $instance ) {
+
+		global $radio_station_data;
+
+		// --- set widget id ---
+		// 2.3.0: added unique widget id
+		if ( !isset( $radio_station_data['widgets']['upcoming-shows'] ) ) {
+			$id = $radio_station_data['widgets']['upcoming-shows'] = 0;
+		} else {
+			$id = $radio_station_data['widgets']['upcoming-shows']++;
+		}
 
 		// 2.3.0: filter widget_title whether empty or not
 		$title = empty( $instance['title'] ) ? '' : $instance['title'];
@@ -170,41 +195,54 @@ class DJ_Upcoming_Widget extends WP_Widget {
 		$show_sched = $instance['show_sched'];
 
 		// 2.2.4: added title position, avatar width and DJ link settings
+		// 2.3.0: added countdown display option
 		$position = empty( $instance['title_position'] ) ? 'right' : $instance['title_position'];
 		$width = empty( $instance['avatar_width'] ) ? '75' : $instance['avatar_width'];
 		$link_djs = isset( $instance['link_djs'] ) ? $instance['link_djs'] : '';
+		$countdown = isset( $instance['countdown'] ) ? $instance['countdown'] : 0;
+		$dynamic = isset( $instance['dynamic'] ) ? $instance['dynamic'] : 0;
 
 		// --- set shortcode attributes ---
 		// 2.3.0: map widget options to shortcode attributes
 		$atts = array(
-			'title'          => $title, //
+			// --- legacy widget options ---
+			'title'          => $title,
 			'display_djs'    => $display_djs,
 			'show_avatar'    => $djavatar,
 			'show_link'      => $link,
-			// 'default_name'	=> #default,
+			'default'	     => $default,
 			'limit'          => $limit,
 			'time'           => $time,
 			'show_sched'     => $show_sched,
+			// --- new widget options ---
 			// 'show_playlist'		=> $show_playlist,
 			// 'show_desc'			=> $show_desc,
-			// new widget options
 			'title_position' => $position,
 			'avatar_width'   => $width,
 			'link_djs'       => $link_djs,
+			'countdown'      => $countdown,
+			'dynamic'        => $dynamic,
 			'widget'         => 1,
+			'id'             => $id,
 		);
 
-		echo $args['before_widget']; // phpcs:ignore WordPress.Security.OutputNotEscaped
+		// --- before widget ---
+		// phpcs:ignore WordPress.Security.OutputNotEscaped
+		echo $args['before_widget'];
 
 		// --- open widget container ---
-		echo '<div class="widget">';
+		// 2.3.0: add unique id to widget
+		$id = 'upcoming-shows-widget-' . $id;
+		echo '<div id="' . esc_attr( $id ) . '" class="widget">';
 
 		// --- output widget title ---
-		echo $args['before_title']; // phpcs:ignore WordPress.Security.OutputNotEscaped
+		// phpcs:ignore WordPress.Security.OutputNotEscaped
+		echo $args['before_title'];
 		if ( !empty( $title ) ) {
 			echo esc_html( $title );
 		}
-		echo $args['after_title']; // phpcs:ignore WordPress.Security.OutputNotEscaped
+		// phpcs:ignore WordPress.Security.OutputNotEscaped
+		echo $args['after_title'];
 
 		// --- get default display output ---
 		// 2.3.0: use shortcode to generate default widget output
@@ -216,20 +254,23 @@ class DJ_Upcoming_Widget extends WP_Widget {
 
 		// --- output widget display ---
 		if ( $output ) {
-			echo $output; // phpcs:ignore WordPress.Security.OutputNotEscaped
+			// phpcs:ignore WordPress.Security.OutputNotEscaped
+			echo $output;
 		}
 
 		// --- close widget container ---
 		echo '</div>';
 
+		// --- after widget ---
+		// phpcs:ignore WordPress.Security.OutputNotEscaped
+		echo $args['after_widget'];
+
 		// --- enqueue widget stylesheet in footer ---
 		// (this means it will only load if widget is on page)
 		// 2.2.4: renamed djonair.css to widgets.css and load for all widgets
-		// 2.3.0: widgets.css prefixed to rs-widgets.css
+		// 2.3.0: widgets.css merged into rs-shortcodes.css
 		// 2.3.0: use abstracted method for enqueueing widget styles
-		radio_station_enqueue_style( 'widgets' );
-
-		echo $args['after_widget']; // phpcs:ignore WordPress.Security.OutputNotEscaped
+		radio_station_enqueue_style( 'shortcodes' );
 
 	}
 }
@@ -237,7 +278,8 @@ class DJ_Upcoming_Widget extends WP_Widget {
 
 // --- register the widget ---
 // 2.2.7: revert anonymous function usage for backwards compatibility
-add_action( 'widgets_init', 'radio_station_register_djcomingup_widget' );
-function radio_station_register_djcomingup_widget() {
+add_action( 'widgets_init', 'radio_station_register_upcoming_shows_widget' );
+function radio_station_register_upcoming_shows_widget() {
+	// note: widget class name to remain unchanged for backwards compatibility
 	register_widget( 'DJ_Upcoming_Widget' );
 }

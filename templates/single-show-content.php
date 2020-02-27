@@ -16,16 +16,13 @@ $post_id = $radio_station_data['show-id'] = $post->ID;
 // --- get schedule time format ---
 $time_format = (int) radio_station_get_setting( 'clock_time_format', $post_id );
 
-// --- get show meta ---
+// --- get show meta data ---
 $show_title = get_the_title( $post_id );
 $header_id = get_post_meta( $post_id, 'show_header', true );
 $avatar_id = get_post_meta( $post_id, 'show_avatar', true );
 $thumbnail_id = get_post_meta( $post_id, '_thumbnail_id', true );
 $genres = wp_get_post_terms( $post_id, RADIO_STATION_GENRES_SLUG );
 $languages = wp_get_post_terms( $post_id, RADIO_STATION_LANGUAGES_SLUG );
-// if ( $languages && !is_array( $languages ) ) {
-//	$languages = array( $languages );
-// }
 $hosts = get_post_meta( $post_id, 'show_user_list', true );
 $producers = get_post_meta( $post_id, 'show_producer_list', true );
 $active = get_post_meta( $post_id, 'show_active', true );
@@ -40,14 +37,14 @@ $patreon_title = __( 'Become a Supporter for', 'radio-station' ) . ' ' . $show_t
 // $show_rss = get_post_meta( $post_id, 'show_rss', true );
 $show_rss = false; // TEMP
 
-// --- filter all show meta ---
+// --- filter all show meta data ---
 $show_title = apply_filters( 'radio_station_show_title', $show_title, $post_id );
 $header_id = apply_filters( 'radio_station_show_header', $header_id, $post_id );
 $avatar_id = apply_filters( 'radio_station_show_avatar', $avatar_id, $post_id );
 $thumbnail_id = apply_filters( 'radio_station_show_thumbnail', $thumbnail_id, $post_id );
 $genres = apply_filters( 'radio_station_show_genres', $genres, $post_id );
 $languages = apply_filters( 'radio_station_show_languages', $languages, $post_id );
-$hosts = apply_filters( 'radio_station_show_djs', $hosts, $post_id );
+$hosts = apply_filters( 'radio_station_show_hosts', $hosts, $post_id );
 $producers = apply_filters( 'radio_station_show_producers', $producers, $post_id );
 $active = apply_filters( 'radio_station_show_active', $active, $post_id );
 $shifts = apply_filters( 'radio_station_show_shifts', $shifts, $post_id );
@@ -105,7 +102,7 @@ $show_icons = apply_filters( 'radio_station_show_page_icons', $show_icons, $post
 // --- set show related defaults ---
 $show_latest = $show_posts = $show_playlists = $show_episodes = false;
 
-// --- check for show blog posts ---
+// --- check for latest show blog posts ---
 // $latest_limit = radio_station_get_setting( 'show_latest_posts' );
 // $latest_limit = false;
 // $latest_limit = apply_filters( 'radio_station_show_page_latest_limit', $latest_limit, $post_id );
@@ -169,7 +166,7 @@ if ( ( $avatar_id || $thumbnail_id ) || ( count( $show_icons ) > 0 ) || ( $show_
 		}
 	}
 
-	// --- show controls
+	// --- show controls ---
 	if ( ( count( $show_icons ) > 0 ) || ( $show_file ) ) {
 
 		$blocks['show_images'] .= '<div class="show-controls">';
@@ -525,10 +522,6 @@ if ( ( strlen( trim( $content ) ) > 0 ) || $show_posts || $show_playlists || $sh
 		$sections['about']['heading'] = '<h3 id="show-section-about">' . esc_html( __( 'About the Show', 'radio-station' ) ) . '</h3>';
 		$sections['about']['anchor'] = __( 'About', 'radio-station' );
 
-		// $sections['about']['label'] = '<div id="show-about-tab" class="show-tab tab-active" onclick="radio_show_tab(\'about\');">';
-		// 	$sections['about']['label'] .= esc_html( 'About', 'radio-station' );
-		// $sections['about']['label'] .= '</div>';
-
 		$sections['about']['content'] = '<div id="show-about" class="show-tab tab-active"><br>';
 		$sections['about']['content'] .= '<div id="show-description" class="show-description">';
 		$sections['about']['content'] .= $show_description;
@@ -544,15 +537,9 @@ if ( ( strlen( trim( $content ) ) > 0 ) || $show_posts || $show_playlists || $sh
 		$sections['episodes']['heading'] = '<h3 id="show-section-episodes">' . esc_html( __( 'Show Episodes', 'radio-station' ) ) . '</h3>';
 		$sections['episodes']['anchor'] = __( 'Episodes', 'radio-station' );
 
-		// $sections['episodes']['label'] = '<div id="show-episodes-tab" class="show-tab ';
-		// if ( $i == 0 ) {$class = "tab-active";} else {$class = "tab-inactive";}
-		// $sections['episodes']['label'] .= ' ' . $class . '"  onclick="radio_show_tab(\'episodes\');">';
-		//	$sections['episodes']['label'] .= esc_html( 'Episodes', 'radio-station' );
-		// $sections['episodes']['label'] .= '</div>';
-
 		$sections['episodes']['content'] = '<div id="show-episodes" class="show-section-content"><br>';
 		$radio_station_data['show-episodes'] = $show_posts;
-		$shortcode = '[show-episodes-list per_page="' . $episodes_per_page . '"]';
+		$shortcode = '[show-episodes-archive per_page="' . $episodes_per_page . '"]';
 		$shortcode = apply_filters( 'radio_station_show_page_episodes_shortcode', $shortcode, $post_id );
 		$sections['episodes']['content'] .= do_shortcode( $shortcode );
 		$sections['episodes']['content'] .= '</div>';
@@ -565,14 +552,9 @@ if ( ( strlen( trim( $content ) ) > 0 ) || $show_posts || $show_playlists || $sh
 		$sections['posts']['heading'] = '<h3 id="show-section-posts">' . esc_html( __( 'Show Posts', 'radio-station' ) ) . '</h3>';
 		$sections['posts']['anchor'] = __( 'Posts', 'radio-station' );
 
-		// if ( $i == 0 ) {$class = "tab-active";} else {$class = "tab-inactive";}
-		// $sections['posts']['label'] = '<div id="show-posts-tab" class="show-tab ' . $class . '" onclick="radio_show_tab(\'posts\');">';
-		//	$sections['posts']['label'] .= esc_html( 'Posts', 'radio-station' );
-		// $sections['posts']['label'] .= '</div>';
-
 		$sections['posts']['content'] = '<div id="show-posts" class="show-section-content"><br>';
 		$radio_station_data['show-posts'] = $show_posts;
-		$shortcode = '[show-posts-list per_page="' . $posts_per_page . '"]';
+		$shortcode = '[show-posts-archive per_page="' . $posts_per_page . '"]';
 		$shortcode = apply_filters( 'radio_station_show_page_posts_shortcode', $shortcode, $post_id );
 		$sections['posts']['content'] .= do_shortcode( $shortcode );
 		$sections['posts']['content'] .= '</div>';
@@ -585,14 +567,9 @@ if ( ( strlen( trim( $content ) ) > 0 ) || $show_posts || $show_playlists || $sh
 		$sections['playlists']['heading'] = '<h3 id="show-section-playlists">' . esc_html( __( 'Show Playlists', 'radio-station' ) ) . '</h3>';
 		$sections['playlists']['anchor'] = __( 'Playlists', 'radio-station' );
 
-		// if ( $i == 0 ) {$class = "tab-active";} else {$class = "tab-inactive";}
-		// $sections['playlists']['label'] = '<div id="show-playlists-tab" class="show-tab ' . $class . '" onclick="radio_show_tab(\'playlists\');">';
-		//	$sections['playlists']['label'] .= esc_html( 'Playlists', 'radio-station' );
-		// $sections['playlists']['label'] .= '</div>';
-
 		$sections['playlists']['content'] = '<div id="show-playlists" class="show-section-content"><br>';
 		$radio_station_data['show-playlists'] = $show_playlists;
-		$shortcode = '[show-playlists-list per_page="' . $playlists_per_page . '"]';
+		$shortcode = '[show-playlists-archive per_page="' . $playlists_per_page . '"]';
 		$shortcode = apply_filters( 'radio_station_show_page_playlists_shortcode', $shortcode, $post_id );
 		$sections['playlists']['content'] .= do_shortcode( $shortcode );
 		$sections['playlists']['content'] .= '</div>';
@@ -667,7 +644,8 @@ $class = implode( ' ', $classes );
 
 						// --- output blocks ---
 						echo '<div class="' . esc_attr( $class ) . '">';
-						echo $blocks[$block]; // phpcs:ignore WordPress.Security.OutputNotEscaped
+						// phpcs:ignore WordPress.Security.OutputNotEscaped
+						echo $blocks[$block];
 						echo '</div>';
 
 						$first = '';
@@ -692,7 +670,7 @@ $class = implode( ' ', $classes );
 					</div>
 					<?php
 					$radio_station_data['show-latests'] = $show_latest;
-					$shortcode = '[show-latest-list thumbnails="0" pagination="0" content="none"]';
+					$shortcode = '[show-latest-archive thumbnails="0" pagination="0" content="none"]';
 					$shortcode = apply_filters( 'radio_station_show_page_latest_shortcode', $shortcode, $post_id );
 					echo wp_kses_post( do_shortcode( $shortcode ) );
 					?>
@@ -791,7 +769,8 @@ $class = implode( ' ', $classes );
 
 							// --- section content ---
 							// echo wp_kses_post( $sections[$section]['content'] );
-							echo $sections[$section]['content']; // phpcs:ignore WordPress.Security.OutputNotEscaped
+							// phpcs:ignore WordPress.Security.OutputNotEscaped
+							echo $sections[$section]['content'];
 
 							$i ++;
 						}
@@ -809,108 +788,6 @@ $class = implode( ' ', $classes );
 
 <?php
 
-// --- set show page javascript ---
-$js = "/* Show/Hide Audio Player */
-function radio_show_player() {
-	if (typeof jQuery == 'function') {jQuery('#show-player').fadeIn(1000);}
-	else {document.getElementById('show-player').style.display = 'block';}
-}
-
-/* Switch Section Tabs */
-function radio_show_tab(tab) {
-	if (typeof jQuery == 'function') {
-		jQuery('.show-tab').removeClass('tab-active').addClass('tab-inactive');
-		jQuery('#show-'+tab+'-tab').removeClass('tab-inactive').addClass('tab-active');
-		jQuery('#show-'+tab).removeClass('tab-inactive').addClass('tab-active');
-	} else {
-		tabs = document.getElementsByClassName('show-tab');
-		for (i = 0; i < tabs.length; i++) {
-			tabs[i].className = tabs[i].className.replace('-tab-active', '-tab-inactive');
-		}
-		button = document.getElementById('show-'+tab+'-tab');
-		button.className = button.className.replace('-tab-inactive', '-tab-active');
-		content = document.getElementById('show-'+tab);
-		content.className = content.className.replace('-tab-inactive', '-tab-active');
-	}
-}
-
-/* Responsive Page */
-function radio_show_responsive() {
-
-	/* Check to Add Narrow Class */
-	if (typeof jQuery == 'function') {
-		showcontent = jQuery('#show-content');
-		if (showcontent.width() < 500) {showcontent.addClass('narrow');}
-		else {showcontent.removeClass('narrow');}
-		
-	} else {
-		showcontent = document.getElementById('show-content');
-		if (showcontent.offsetWidth < 500) {showcontent.classList.add('narrow');}
-		else {showcontent.classList.remove('narrow');}
-	}
-
-	/* Maybe Display Show More Button */
-	descstate = document.getElementById('show-desc-state');
-	if ( descstate && (descstate.value != 'expanded') ) {
-		showdesc = document.getElementsByClassName('show-description')[0];
-		if (showdesc.offsetHeight < showdesc.scrollHeight) {
-			document.getElementById('show-more-overlay').style.display = 'block';
-			document.getElementById('show-desc-buttons').style.display = 'block';
-			showdesc.style.paddingBottom = '0';
-		} else {
-			document.getElementById('show-more-overlay').style.display = 'none';
-			document.getElementById('show-desc-buttons').style.display = 'none';
-			showdesc.style.paddingBottom = '30px';
-		}
-	}
-}
-
-/* Description Show More/Less */
-function radio_show_desc(moreless) {
-	if (moreless == 'more') {
-		if (typeof jQuery == 'function') {jQuery('#show-description').addClass('expanded');}
-		else {document.getElementById('show-description').classList.add('expanded');}
-		document.getElementById('show-more-overlay').style.display = 'none';		
-		document.getElementById('show-desc-more').style.display = 'none';
-		document.getElementById('show-desc-less').style.display = 'inline-block';
-	}
-	if (moreless == 'less') {
-		if (typeof jQuery == 'function') {jQuery('.show-description').removeClass('expanded');}
-		else {document.getElementById('show-description').classList.remove('expanded');}
-		document.getElementById('show-more-overlay').style.display = 'block';
-		document.getElementById('show-desc-less').style.display = 'none';
-		document.getElementById('show-desc-more').style.display = '';
-		radio_scroll_to('show-section-about');
-	}
-}
-
-/* Section Scroll Link */
-function radio_scroll_link(id) {
-	if (typeof jQuery == 'function') {
-		section = jQuery('#show-section-'+id);
-		scrolltop = section.offset().top - section.height() - 40;
-		jQuery('html, body').animate({ 'scrollTop': scrolltop }, 1000);
-	} else {
-		radio_scroll_to('show-section-'+id);
-	}
-}
-
-/* Responsive Load and Resizing */
-if (typeof jQuery == 'function') {
-	jQuery(document).ready(function() {radio_show_responsive();} );
-	jQuery(window).resize(function () {
-		radio_resize_debounce(radio_show_responsive, 500, 'showpage');
-	});
-} else {
-	if (window.addEventListener) {
-		document.body[addEventListener]('load', radio_show_responsive, false);
-		document.body[addEventListener]('resize', radio_show_responsive, false);
-	} else {
-		document.body[attachEvent]('onload', radio_show_responsive, false);
-		document.body[attachEvent]('onresize', radio_show_responsive, false);
-	}
-}";
-
 // --- enqueue script inline ---
-// 2.3.0: enqueue instead of echoing
-wp_add_inline_script( 'radio-station', $js );
+// 2.3.0: enqueue script instead of echoing
+radio_station_enqueue_script( 'radio-station-show-page', array( 'radio-station' ), true );

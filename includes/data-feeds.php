@@ -66,7 +66,8 @@ function radio_station_api_discovery_link() {
 	$link = "<link rel='" . RADIO_STATION_API_DOCS_URL . "' href='" . esc_url( $api_url ) . "' />";
 	$link = apply_filters( 'radio_station_api_discovery_link', $link );
 	if ( $link ) {
-		echo $link; // phpcs:ignore WordPress.Security.OutputNotEscaped
+		// phpcs:ignore WordPress.Security.OutputNotEscaped
+		echo $link;
 	}
 }
 
@@ -79,7 +80,8 @@ function radio_station_api_discovery_rsd() {
 	$link = '<api name="RadioStation" blogID="1" preferred="false" apiLink="' . esc_url( $api_url ) . '" />';
 	$link = apply_filters( 'radio_station_api_discovery_rsd', $link );
 	if ( $link ) {
-		echo $link; // phpcs:ignore WordPress.Security.OutputNotEscaped
+		// phpcs:ignore WordPress.Security.OutputNotEscaped
+		echo $link;
 	}
 }
 
@@ -801,9 +803,11 @@ function radio_station_feed_radio() {
 
 	if ( isset( $_GET['format'] ) && ( 'xml' == $_GET['format'] ) ) {
 		header( 'Content-Type: application/rss+xml' );
-		echo radio_station_format_xml( $radio ); // phpcs:ignore WordPress.Security.OutputNotEscaped
+		// phpcs:ignore WordPress.Security.OutputNotEscaped
+		echo radio_station_format_xml( $radio );
 	} else {
 		header( 'Content-Type: application/json' );
+		// phpcs:ignore WordPress.Security.OutputNotEscaped
 		echo json_encode( $radio );
 	}
 }
@@ -824,9 +828,11 @@ function radio_station_feed_broadcast( $comment_feed, $feed_name ) {
 
 	if ( isset( $_GET['format'] ) && ( 'xml' == $_GET['format'] ) ) {
 		header( 'Content-Type: application/rss+xml' );
-		echo radio_station_format_xml( $broadcast ); // phpcs:ignore WordPress.Security.OutputNotEscaped
+		// phpcs:ignore WordPress.Security.OutputNotEscaped
+		echo radio_station_format_xml( $broadcast );
 	} else {
 		header( 'Content-Type: application/json' );
+		// phpcs:ignore WordPress.Security.OutputNotEscaped
 		echo json_encode( $broadcast );
 	}
 }
@@ -851,9 +857,11 @@ function radio_station_feed_schedule( $comment_feed, $feed_name ) {
 
 	if ( isset( $_GET['format'] ) && ( 'xml' == $_GET['format'] ) ) {
 		header( 'Content-Type: application/rss+xml' );
-		echo radio_station_format_xml( $schedule ); // phpcs:ignore WordPress.Security.OutputNotEscaped
+		// phpcs:ignore WordPress.Security.OutputNotEscaped
+		echo radio_station_format_xml( $schedule );
 	} else {
 		header( 'Content-Type: application/json' );
+		// phpcs:ignore WordPress.Security.OutputNotEscaped
 		echo json_encode( $schedule );
 	}
 }
@@ -912,9 +920,11 @@ function radio_station_feed_shows( $comment_feed, $feed_name ) {
 
 	if ( isset( $_GET['format'] ) && ( 'xml' == $_GET['format'] ) ) {
 		header( 'Content-Type: application/rss+xml' );
-		echo radio_station_format_xml( $show_list ); // phpcs:ignore WordPress.Security.OutputNotEscaped
+		echo radio_station_format_xml( $show_list );
+		// phpcs:ignore WordPress.Security.OutputNotEscaped
 	} else {
 		header( 'Content-Type: application/json' );
+		// phpcs:ignore WordPress.Security.OutputNotEscaped
 		echo json_encode( $show_list );
 	}
 }
@@ -974,9 +984,11 @@ function radio_station_feed_genres( $comment_feed, $feed_name ) {
 
 	if ( isset( $_GET['format'] ) && ( 'xml' == $_GET['format'] ) ) {
 		header( 'Content-Type: application/rss+xml' );
-		echo radio_station_format_xml( $genre_list ); // phpcs:ignore WordPress.Security.OutputNotEscaped
+		// phpcs:ignore WordPress.Security.OutputNotEscaped
+		echo radio_station_format_xml( $genre_list );
 	} else {
 		header( 'Content-Type: application/json' );
+		// phpcs:ignore WordPress.Security.OutputNotEscaped
 		echo json_encode( $genre_list );
 	}
 }
@@ -1036,9 +1048,11 @@ function radio_station_feed_languages( $comment_feed, $feed_name ) {
 
 	if ( isset( $_GET['format'] ) && ( 'xml' == $_GET['format'] ) ) {
 		header( 'Content-Type: application/rss+xml' );
-		echo radio_station_format_xml( $language_list ); // phpcs:ignore WordPress.Security.OutputNotEscaped
+		// phpcs:ignore WordPress.Security.OutputNotEscaped
+		echo radio_station_format_xml( $language_list );
 	} else {
 		header( 'Content-Type: application/json' );
+		// phpcs:ignore WordPress.Security.OutputNotEscaped
 		echo json_encode( $language_list );
 	}
 }
@@ -1065,9 +1079,11 @@ function radio_station_feed_not_found( $details ) {
 
 	if ( isset( $_GET['format'] ) && ( 'xml' == $_GET['format'] ) ) {
 		header( 'Content-Type: application/rss+xml' );
-		echo radio_station_format_xml( $error ); // phpcs:ignore WordPress.Security.OutputNotEscaped
+		// phpcs:ignore WordPress.Security.OutputNotEscaped
+		echo radio_station_format_xml( $error );
 	} else {
 		header( 'Content-Type: application/json' );
+		// phpcs:ignore WordPress.Security.OutputNotEscaped
 		echo json_encode( $error );
 	}
 }

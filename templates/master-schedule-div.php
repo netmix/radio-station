@@ -84,7 +84,8 @@ foreach ( $master_list as $hour => $days ) {
 				$output .= '</span>';
 
 				// list of DJs
-				if ( $atts['show_djs'] ) {
+				// 2.3.0: changed from show_djs
+				if ( $atts['show_hosts'] ) {
 
 					$output .= '<span class="show-dj-names">';
 

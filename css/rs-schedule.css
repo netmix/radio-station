@@ -1,6 +1,11 @@
-/* ----------------------------- */
+/* ============================= */
 /* Radio Station Schedule Styles */
-/* ----------------------------- */
+/* ============================= */
+
+.radio-clear {
+	display: block;
+	clear: both;
+}
 
 /* Schedule Controls */
 /* ----------------- */
@@ -37,8 +42,8 @@
     padding-right: 2px;
 }
 
-/* Table Style Grid */
-/* ---------------- */
+/* Table View Styles */
+/* ----------------- */
 #master-program-schedule {
 	width: 100%;
 	height: 100%;
@@ -206,15 +211,15 @@
 }
 
 
-/* Bare List Style */
-/* --------------- */
+/* List View Styles */
+/* ---------------- */
 #master-list .master-list-day-item.highlighted {
 	border: 1px dashed orange;
 	background-color: rgba(235,235,0,0.4);
 }
 
 
-/* Tabbed Styled List */
+/* Tabbed View Styles */
 /* ------------------ */
 
 #master-schedule-tabs {
@@ -299,8 +304,8 @@
 }
 
 
-/* Div Style Grid */
-/* -------------- */
+/* Div View Styles */
+/* --------------- */
 #master-schedule-divs {
 	width: 100%;
 }

@@ -1,6 +1,6 @@
 <?php
 /*
- * Define all Post Types and Genre Taxonomy
+ * Define all Post Types and Taxonomies
  * Author: Nikki Blight
  * Since: 2.0.0
  */
@@ -10,8 +10,8 @@
 // -- Show
 // -- Playlist
 // -- Override
-// -* DJ / Host
-// -* Producer
+// * DJ / Host
+// * Producer
 // - Set CPTs to Classic Editor
 // - Add Theme Thumbnail Support
 // - Add Admin Bar Add New Links
@@ -20,11 +20,6 @@
 // - Register Show Taxonomies
 // -- Genre Taxonomy
 // -- Language Taxonomy
-
-// Development TODOs
-// -----------------
-// - change Host post type slug to rs-host
-// - change Producer post type slug to rs-producer
 
 
 // ------------------
@@ -378,8 +373,8 @@ function radio_station_admin_bar_view_edit_links( $wp_admin_bar ) {
 // ------------------------
 // Register Show Taxonomies
 // ------------------------
-add_action( 'init', 'radio_station_create_show_taxonomies' );
-function radio_station_create_show_taxonomies() {
+add_action( 'init', 'radio_station_register_show_taxonomies' );
+function radio_station_register_show_taxonomies() {
 
 	// --------------
 	// Genre Taxonomy
@@ -423,6 +418,8 @@ function radio_station_create_show_taxonomies() {
 		),
 	);
 	$post_types = array( RADIO_STATION_SHOW_SLUG, RADIO_STATION_OVERRIDE_SLUG );
+	// 2.3.0: added filter for genre taxonomy arguments
+	$args = apply_filters( 'radio_station_genre_taxonomy_args', $args );
 	register_taxonomy( RADIO_STATION_GENRES_SLUG, $post_types, $args );
 
 	// -----------------
@@ -465,6 +462,7 @@ function radio_station_create_show_taxonomies() {
 		),
 	);
 	$post_types = array( RADIO_STATION_SHOW_SLUG, RADIO_STATION_OVERRIDE_SLUG );
+	$args = apply_filters( 'radio_station_language_taxonomy_args', $args );
 	register_taxonomy( RADIO_STATION_LANGUAGES_SLUG, $post_types, $args );
 
 }

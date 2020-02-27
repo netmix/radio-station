@@ -319,7 +319,7 @@ function radio_station_master_schedule_selector() {
 	$genre_links = array();
 	foreach ( $genres as $i => $genre ) {
 		$slug = sanitize_title_with_dashes( $genre->name );
-		$javascript = 'javascript:show_highlight(\'' . $slug . '\')';
+		$javascript = 'javascript:radio_show_highlight(\'' . $slug . '\')';
 		$title = __( 'Click to toggle Highlight of Shows with this Genre.', 'radio-station' );
 		$genre_link = '<a id="genre-highlight-' . esc_attr( $slug ) . '" class="genre-highlight" href="' . $javascript . '" title="' . esc_attr( $title ) . '">';
 		$genre_link .= esc_html( $genre->name ) . '</a>';
@@ -333,7 +333,7 @@ function radio_station_master_schedule_selector() {
 	// 2.3.0: improved to highlight / unhighlight multiple genres
 	// 2.3.0: improved to work with table, tabs or list view
 	$js = "var highlighted_genres = new Array();
-	function show_highlight(genre) {
+	function radio_show_highlight(genre) {
 		if (jQuery('#genre-highlight-'+genre).hasClass('highlighted')) {
 			jQuery('#genre-highlight-'+genre).removeClass('highlighted');
 
@@ -372,8 +372,7 @@ function radio_station_master_schedule_selector() {
 // 2.2.7: added for tabbed schedule view
 function radio_station_master_schedule_tabs_js() {
 
-	$js = "var masterschedule = jQuery.noConflict();
-	masterschedule(document).ready(function() {
+	$js = "jQuery(document).ready(function() {
 		dayweek = new Date().getDay();
 		if (dayweek == '0') {day = 'sunday';}
 		if (dayweek == '1') {day = 'monday';}
@@ -382,15 +381,15 @@ function radio_station_master_schedule_tabs_js() {
 		if (dayweek == '4') {day = 'thursday';}
 		if (dayweek == '5') {day = 'friday';}
 		if (dayweek == '6') {day = 'saturday';}
-		masterschedule('#master-schedule-tabs-header-'+day).addClass('active-day-tab');
-		masterschedule('#master-schedule-tabs-day-'+day).addClass('active-day-panel');
-		masterschedule('.master-schedule-tabs-day').bind('click', function (event) {
-			headerID = masterschedule(event.target).closest('li').attr('id');
+		jQuery('#master-schedule-tabs-header-'+day).addClass('active-day-tab');
+		jQuery('#master-schedule-tabs-day-'+day).addClass('active-day-panel');
+		jQuery('.master-schedule-tabs-day').bind('click', function (event) {
+			headerID = jQuery(event.target).closest('li').attr('id');
 			panelID = headerID.replace('header', 'day');
-			masterschedule('.master-schedule-tabs-day').removeClass('active-day-tab');
-			masterschedule('#'+headerID).addClass('active-day-tab');
-			masterschedule('.master-schedule-tabs-panel').removeClass('active-day-panel');
-			masterschedule('#'+panelID).addClass('active-day-panel');
+			jQuery('.master-schedule-tabs-day').removeClass('active-day-tab');
+			jQuery('#'+headerID).addClass('active-day-tab');
+			jQuery('.master-schedule-tabs-panel').removeClass('active-day-panel');
+			jQuery('#'+panelID).addClass('active-day-panel');
 		});
 	});";
 
@@ -405,12 +404,13 @@ function radio_station_master_schedule_tabs_js() {
 // 2.3.0: added for table responsiveness
 function radio_station_master_schedule_table_js() {
 
-	$js = "/* Responsive Table */
+	$js = "/* Trigger Responsive Table */
 	jQuery(document).ready(function() {radio_table_responsive();} );
 	jQuery(window).resize(function () {
 		radio_resize_debounce(radio_table_responsive, 500, 'scheduletable');
 	});
 
+	/* Make Table Responsive */
 	function radio_table_responsive() {
 		tablewidth = jQuery('#master-program-schedule').width();
 		daycolumns = Math.floor(tablewidth / 100) - 1;
@@ -451,6 +451,7 @@ function radio_station_master_schedule_table_js() {
 		console.log('Last Column: '+lastcolumn);
 	}
 	
+	/* Shift Day Left /  Right */
 	function radio_shift_day(leftright) {
 		tablewidth = jQuery('#master-program-schedule').width();
 		daycolumns = Math.floor(tablewidth / 100) - 1;

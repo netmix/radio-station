@@ -10,7 +10,6 @@
 // - Get Show
 // - Get Shows
 // - Get Show Shifts
-// - Show Conflict Checker
 // - Get Schedule Overrides
 // - Get Show Data
 // - Get Show Metadata
@@ -18,20 +17,22 @@
 // - Get Current Schedule
 // - Get Current Show
 // - Get Next Show
+// - Get Next Shows
 // - Get Blog Posts for Show
 // - Get Playlists for Show
 // - Get Genre
 // - Get Genres
 // - Get Shows for Genre
-// === Show Avatar ===
-// - Get Show Avatar ID
-// - Get Show Avatar URL
-// - Get Show Avatar
+// - Get Shows for Language
 // === Shift Checking ===
 // - Schedule Conflict Checker
 // - Show Shift Checker
 // - New Shifts Checker
 // - Validate Shift Time
+// === Show Avatar ===
+// - Get Show Avatar ID
+// - Get Show Avatar URL
+// - Get Show Avatar
 // === URL Functions ===
 // - Get Streaming URL
 // - Get Master Schedule Page URL
@@ -53,6 +54,7 @@
 // - Get Previous Day
 // - Trim Excerpt
 // - Shorten String
+// - Sanitize Values
 // === Translations ===
 // - Translate Weekday
 // - Translate Month
@@ -120,7 +122,7 @@ function radio_station_get_shows( $args = false ) {
 		}
 	}
 
-	// -- get and return shows ---
+	// --- get and return shows ---
 	$shows = get_posts( $defaults );
 	$shows = apply_filters( 'radio_station_get_shows', $shows, $defaults );
 
@@ -322,7 +324,7 @@ function radio_station_get_overrides( $start_date = false, $end_date = false ) {
 	$query = "SELECT ID,post_title,post_name FROM " . $wpdb->posts
 	         . " WHERE post_type = '" . RADIO_STATION_OVERRIDE_SLUG . "' AND post_status = 'publish'";
 	$overrides = $wpdb->get_results( $query, ARRAY_A );
-	if ( !$overrides && !is_array( $overrides ) && ( count( $overrides ) < 1 ) ) {
+	if ( !$overrides || !is_array( $overrides ) || ( count( $overrides ) < 1 ) ) {
 		return false;
 	}
 
@@ -1046,7 +1048,9 @@ function radio_station_get_next_shows( $limit = 3, $show_shifts = false ) {
 	$next_shows = array();
 	$current_split = false;
 	$now = strtotime( current_time( 'mysql' ) );
-	$weekdays = radio_station_get_schedule_weekdays();
+	$today = date( 'w', $now ); // numerical
+	$weekdays = radio_station_get_schedule_weekdays( $today );
+
 	foreach ( $weekdays as $day ) {
 		if ( isset( $show_shifts[$day] ) ) {
 			$shifts = $show_shifts[$day];
@@ -1145,11 +1149,13 @@ function radio_station_get_genre( $genre ) {
 	if ( !$term ) {
 		return false;
 	}
-	$genre[$term->name]['id'] = $term->term_id;
-	$genre[$term->name]['name'] = $term->name;
-	$genre[$term->name]['slug'] = $term->slug;
-	$genre[$term->name]['description'] = $term->description;
-	$genre[$term->name]['url'] = get_term_link( $term, RADIO_STATION_GENRES_SLUG );
+	$genre[$term->name] = array(
+		'id'            => $term->term_id,
+		'name'          => $term->name,
+		'slug'          => $term->slug,
+		'description'   => $term->description,
+		'url'           => get_term_link( $term, RADIO_STATION_GENRES_SLUG ),
+	);
 
 	return $genre;
 }
@@ -1170,11 +1176,13 @@ function radio_station_get_genres( $args = false ) {
 	$genres = array();
 	if ( $terms ) {
 		foreach ( $terms as $term ) {
-			$genres[$term->name]['id'] = $term->term_id;
-			$genres[$term->name]['name'] = $term->name;
-			$genres[$term->name]['slug'] = $term->slug;
-			$genres[$term->name]['description'] = $term->description;
-			$genres[$term->name]['url'] = get_term_link( $term, RADIO_STATION_GENRES_SLUG );
+			$genres[$term->name] = array(
+				'id'            => $term->term_id,
+				'name'          => $term->name,
+				'slug'          => $term->slug,
+				'description'   => $term->description,
+				'url'           => get_term_link( $term, RADIO_STATION_GENRES_SLUG ),
+			);
 		}
 	}
 
@@ -1281,95 +1289,6 @@ function radio_station_get_language_shows( $language = false ) {
 	return $shows;
 }
 
-
-// -------------------
-// === Show Avatar ===
-// -------------------
-
-// ------------------
-// Update Show Avatar
-// ------------------
-// 2.3.0: trigger show avatar update when editing
-add_action( 'replace_editor', 'radio_station_update_show_avatar', 10, 2 );
-function radio_station_update_show_avatar( $replace_editor, $post ) {
-	$show_id = $post->ID;
-	radio_station_get_show_avatar_id( $show_id );
-
-	return $replace_editor;
-}
-
-// ------------------
-// Get Show Avatar ID
-// ------------------
-// 2.3.0: added get show avatar ID with thumbnail update
-// note: existing thumbnail (featured image) ID is duplicated to the show avatar ID,
-// allowing for handling of Show Avatars and Featured Images separately.
-function radio_station_get_show_avatar_id( $show_id ) {
-
-	// --- get thumbnail and avatar ID ---
-	$avatar_id = get_post_meta( $show_id, 'show_avatar', true );
-
-	// --- check thumbnail to avatar updated switch ---
-	$updated = get_post_meta( $show_id, '_rs_image_updated', true );
-	if ( !$updated ) {
-		if ( !$avatar_id ) {
-			$thumbnail_id = get_post_meta( $show_id, '_thumbnail_id', true );
-			if ( $thumbnail_id ) {
-				// --- duplicate the existing thumbnail to avatar meta ---
-				$avatar_id = $thumbnail_id;
-				add_post_meta( $show_id, 'show_avatar', $avatar_id );
-			}
-		}
-		// --- add a flag indicating image has been updated ---
-		add_post_meta( $show_id, '_rs_image_updated', true );
-	}
-
-	// --- filter and return ---
-	$avatar_id = apply_filters( 'radio_station_show_avatar_id', $avatar_id, $show_id );
-
-	return $avatar_id;
-}
-
-// -------------------
-// Get Show Avatar URL
-// -------------------
-// 2.3.0: added to get the show avatar URL
-function radio_station_get_show_avatar_url( $show_id, $size = 'thumbnail' ) {
-
-	// --- get avatar ID ---
-	$avatar_id = radio_station_get_show_avatar_id( $show_id );
-
-	// --- get the attachment image source ---
-	$avatar_url = false;
-	if ( $avatar_id ) {
-		$avatar_src = wp_get_attachment_image_src( $avatar_id, $size );
-		$avatar_url = $avatar_src[0];
-	}
-
-	// --- filter and return ---
-	$avatar_url = apply_filters( 'radio_station_show_avatar_url', $avatar_url, $show_id );
-	return $avatar_url;
-}
-
-// ---------------
-// Get Show Avatar
-// ---------------
-// 2.3.0: added this function for getting show avatar tag
-function radio_station_get_show_avatar( $show_id, $size = 'thumbnail', $attr = array() ) {
-
-	// --- get avatar ID ---
-	$avatar_id = radio_station_get_show_avatar_id( $show_id );
-
-	// --- get the attachment image tag ---
-	$avatar = false;
-	if ( $avatar_id ) {
-		$avatar = wp_get_attachment_image( $avatar_id, $size, false, $attr );
-	}
-
-	// --- filter and return ---
-	$avatar = apply_filters( 'radio_station_show_avatar', $avatar, $show_id );
-	return $avatar;
-}
 
 // ----------------------
 // === Shift Checking ===
@@ -1755,6 +1674,96 @@ function radio_station_validate_shift( $shift ) {
 }
 
 
+// -------------------
+// === Show Avatar ===
+// -------------------
+
+// ------------------
+// Update Show Avatar
+// ------------------
+// 2.3.0: trigger show avatar update when editing
+add_action( 'replace_editor', 'radio_station_update_show_avatar', 10, 2 );
+function radio_station_update_show_avatar( $replace_editor, $post ) {
+	$show_id = $post->ID;
+	radio_station_get_show_avatar_id( $show_id );
+
+	return $replace_editor;
+}
+
+// ------------------
+// Get Show Avatar ID
+// ------------------
+// 2.3.0: added get show avatar ID with thumbnail update
+// note: existing thumbnail (featured image) ID is duplicated to the show avatar ID,
+// allowing for handling of Show Avatars and Featured Images separately.
+function radio_station_get_show_avatar_id( $show_id ) {
+
+	// --- get thumbnail and avatar ID ---
+	$avatar_id = get_post_meta( $show_id, 'show_avatar', true );
+
+	// --- check thumbnail to avatar updated switch ---
+	$updated = get_post_meta( $show_id, '_rs_image_updated', true );
+	if ( !$updated ) {
+		if ( !$avatar_id ) {
+			$thumbnail_id = get_post_meta( $show_id, '_thumbnail_id', true );
+			if ( $thumbnail_id ) {
+				// --- duplicate the existing thumbnail to avatar meta ---
+				$avatar_id = $thumbnail_id;
+				add_post_meta( $show_id, 'show_avatar', $avatar_id );
+			}
+		}
+		// --- add a flag indicating image has been updated ---
+		add_post_meta( $show_id, '_rs_image_updated', true );
+	}
+
+	// --- filter and return ---
+	$avatar_id = apply_filters( 'radio_station_show_avatar_id', $avatar_id, $show_id );
+
+	return $avatar_id;
+}
+
+// -------------------
+// Get Show Avatar URL
+// -------------------
+// 2.3.0: added to get the show avatar URL
+function radio_station_get_show_avatar_url( $show_id, $size = 'thumbnail' ) {
+
+	// --- get avatar ID ---
+	$avatar_id = radio_station_get_show_avatar_id( $show_id );
+
+	// --- get the attachment image source ---
+	$avatar_url = false;
+	if ( $avatar_id ) {
+		$avatar_src = wp_get_attachment_image_src( $avatar_id, $size );
+		$avatar_url = $avatar_src[0];
+	}
+
+	// --- filter and return ---
+	$avatar_url = apply_filters( 'radio_station_show_avatar_url', $avatar_url, $show_id );
+	return $avatar_url;
+}
+
+// ---------------
+// Get Show Avatar
+// ---------------
+// 2.3.0: added this function for getting show avatar tag
+function radio_station_get_show_avatar( $show_id, $size = 'thumbnail', $attr = array() ) {
+
+	// --- get avatar ID ---
+	$avatar_id = radio_station_get_show_avatar_id( $show_id );
+
+	// --- get the attachment image tag ---
+	$avatar = false;
+	if ( $avatar_id ) {
+		$avatar = wp_get_attachment_image( $avatar_id, $size, false, $attr );
+	}
+
+	// --- filter and return ---
+	$avatar = apply_filters( 'radio_station_show_avatar', $avatar, $show_id );
+	return $avatar;
+}
+
+
 // ---------------------
 // === URL Functions ===
 // ---------------------
@@ -1949,6 +1958,7 @@ function radio_station_patreon_button_styles() {
 	#radio-station-patreon-button:hover {opacity:1 !important;}</style>';
 }
 
+
 // ------------------------
 // === Helper Functions ===
 // ------------------------
@@ -1974,15 +1984,17 @@ function radio_station_get_profile_id( $type, $user_id ) {
 	$results = $wpdb->get_results( $query, ARRAY_A );
 
 	// --- check for and return published profile ID ---
-	foreach ( $results as $result ) {
-		$query = "SELECT ID FROM " . $wpdb->prefix . "posts
-				  WHERE post_status = 'publish' AND post_id = %d";
-		$query = $wpdb->prepare( $query, $result['ID'] );
-		$post_id = $wpdb->get_var( $query );
-		if ( $post_id ) {
-			$radio_station_data[$type . '-' . $user_id] = $post_id;
+	if ( $results && is_array( $results ) && ( count( $results ) > 0 ) ) {
+		foreach ( $results as $result ) {
+			$query = "SELECT ID FROM " . $wpdb->prefix . "posts
+					  WHERE post_status = 'publish' AND post_id = %d";
+			$query = $wpdb->prepare( $query, $result['ID'] );
+			$post_id = $wpdb->get_var( $query );
+			if ( $post_id ) {
+				$radio_station_data[$type . '-' . $user_id] = $post_id;
 
-			return $post_id;
+				return $post_id;
+			}
 		}
 	}
 
@@ -2031,17 +2043,10 @@ function radio_station_get_timezone_options( $include_wp_timezone = false ) {
 				foreach ( $timezones as $timezone ) {
 					$prefix = $offset < 0 ? '-' : '+';
 					$hour = gmdate( 'H', abs( $offset ) );
+					$hour = gmdate( 'H', abs( $offset ) );
 					$minutes = gmdate( 'i', abs( $offset ) );
-					// TODO: check for 15/45 minute timezones ?
-					if ( 30 == $minutes ) {
-						$halfhour = '.5';
-					} elseif ( 0 == $minutes ) {
-						$halfhour = '';
-					} else {
-						$halfhour = ':' . $minutes;
-					}
-					$code = radio_station_get_timezone_code( $timezone );
-					$label = $code . ' (GMT' . $prefix . $hour . $halfhour . ') - ';
+					$code = event_flow_get_timezone_code( $timezone );
+					$label = $code . ' (GMT' . $prefix . $hour . ':' . $minutes . ') - ';
 					$timezone_split = explode( '/', $timezone );
 					unset( $timezone_split[0] );
 					$timezone_joined = implode( '/', $timezone_split );
@@ -2073,7 +2078,6 @@ function radio_station_get_timezone_options( $include_wp_timezone = false ) {
 function radio_station_get_timezone_code( $timezone ) {
 	$date_time = new DateTime();
 	$date_time->setTimeZone( new DateTimeZone( $timezone ) );
-
 	return $date_time->format( 'T' );
 }
 
@@ -2377,11 +2381,13 @@ function radio_station_convert_shift_time( $time, $timeformat ) {
 // ---------------------
 // note: no translations here because used internally for sorting
 // 2.3.0: added to get schedule weekdays from start of week
-function radio_station_get_schedule_weekdays() {
+function radio_station_get_schedule_weekdays( $weekstart = false ) {
 
-	// --- get start of the week ---
-	$weekstart = get_option( 'start_of_week' );
-	$weekstart = apply_filters( 'radio_station_schedule_weekday_start', $weekstart );
+	// --- maybe get start of the week ---
+	if ( !$weekstart ) {
+		$weekstart = get_option( 'start_of_week' );
+		$weekstart = apply_filters( 'radio_station_schedule_weekday_start', $weekstart );
+	}
 
 	// --- loop weekdays and reorder from start day ---
 	$weekdays = array(
@@ -2414,20 +2420,25 @@ function radio_station_get_schedule_weekdays() {
 // ------------
 // Trim Excerpt
 // ------------
-// (copy of wp_trim_excerpt)
-function radio_station_trim_excerpt( $content ) {
+// (modified copy of wp_trim_excerpt)
+function radio_station_trim_excerpt( $content, $length = false, $more = false ) {
 
 	$raw_content = $content;
 	$content = strip_shortcodes( $content );
+	// TODO: check for Gutenberg plugin-only equivalent ?
 	if ( function_exists( 'excerpt_remove_blocks' ) ) {
 		$content = excerpt_remove_blocks( $content );
 	}
 	$content = apply_filters( 'the_content', $content );
 	$content = str_replace( ']]>', ']]&gt;', $content );
 
-	$excerpt_length = (int) apply_filters( 'radio_station_excerpt_length', 35 );
-	$excerpt_more = apply_filters( 'radio_station_excerpt_more', ' [&hellip;]' );
-	$excerpt = wp_trim_words( $content, $excerpt_length, $excerpt_more );
+	if ( !$length ) {
+		$length = (int) apply_filters( 'radio_station_excerpt_length', 35 );
+	}
+	if ( !$more ) {
+		$more = apply_filters( 'radio_station_excerpt_more', ' [&hellip;]' );
+	}
+	$excerpt = wp_trim_words( $content, $length, $more );
 
 	return apply_filters( 'radio_station_trim_excerpt', $excerpt, $raw_content );
 }
@@ -2451,6 +2462,34 @@ function radio_station_shorten_string( $string, $limit ) {
 	}
 
 	return $shortened;
+}
+
+// ---------------
+// Sanitize Values
+// ---------------
+function radio_station_sanitize_values( $data, $keys ) {
+	$sanitized = array();
+	foreach ( $keys as $key => $type ) {
+		if ( isset( $data[$key] ) ) {
+			if ( 'boolean' == $type ) {
+				if ( ( 0 == $data[$key] ) || ( 1 == $data[$key] ) ) {
+					$sanitized[$key] = $data[$key];
+				}
+			} elseif ( 'integer' == $type ) {
+				$sanitized[$key] = absint( $data[$key] );
+			} elseif ( 'alphanumeric' == $type ) {
+				$value = preg_match( '/^[a-zA-Z0-9_]+$/', $data[$key] );
+				if ( $value ) {
+					$sanitized[$key] = $value;
+				}
+			} elseif ( 'text' == $type ) {
+				$sanitized[$key] = sanitize_text_field( $data[$key] );
+			} elseif ( 'slug' == $type ) {
+				$sanitized[$key] = sanitize_title( $data[$key] );
+			}
+		}
+	}
+	return $sanitized;
 }
 
 
@@ -3002,6 +3041,7 @@ function radio_station_get_now_playing() {
 		return $playlist;
 	}
 	$show_id = $current_show['show'];
+	$shifts = $current_show['shifts'];
 
 	// --- grab the most recent playlist for the current show ---
 	$args = array(
@@ -3055,7 +3095,7 @@ function radio_station_get_now_playing() {
 		}
 	}
 
-	// --- filter and teturn tracks ---
+	// --- filter and return tracks ---
 	$playlist = apply_filters( 'radio_station_show_now_playing', $playlist, $show_id );
 
 	return $playlist;

@@ -2,7 +2,7 @@
 /* Radio Station ScriptS */
 /* --------------------- */
 
-/* Scrolling Function */
+/* Smooth Scrolling */
 function radio_scroll_to(id) {
 	elem = document.getElementById(id);
 	var jump = parseInt((elem.getBoundingClientRect().top - 50) * .2);

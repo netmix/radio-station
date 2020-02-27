@@ -100,7 +100,7 @@ foreach ( $weekdays as $day ) {
 			$panels .= '</span>';
 
 			// --- show hosts ---
-			if ( $atts['show_djs'] || $atts['show_hosts'] ) {
+			if ( $atts['show_hosts'] ) {
 
 				$hosts = '';
 				if ( $show['hosts'] && is_array( $show['hosts'] ) && ( count( $show['hosts'] ) > 0 ) ) {
@@ -132,7 +132,8 @@ foreach ( $weekdays as $day ) {
 				$hosts = apply_filters( 'radio_station_schedule_show_hosts', $hosts, $show['id'], 'tabs' );
 				if ( $hosts ) {
 					$panels .= '<div class="show-dj-names show-host-names">';
-					$panels .= $hosts; // phpcs:ignore WordPress.Security.OutputNotEscaped
+					// phpcs:ignore WordPress.Security.OutputNotEscaped
+					$panels .= $hosts;
 					$panels .= '</div>';
 				}
 			}
@@ -227,7 +228,7 @@ foreach ( $weekdays as $day ) {
 
 	if ( !$foundshows ) {
 		$panels .= '<li class="master-schedule-tabs-show">';
-		$panels .= esc_html( __( 'No Shows found for this day.', 'radio-station' ) );
+		$panels .= esc_html( __( 'No Shows scheduled for this day.', 'radio-station' ) );
 		$panels .= '</li>';
 	}
 
