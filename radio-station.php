@@ -82,7 +82,8 @@ define( 'RADIO_STATION_DIR', dirname( __FILE__ ) );
 define( 'RADIO_STATION_HOME_URL', 'https://netmix.com/radio-station/' );
 define( 'RADIO_STATION_DOCS_URL', 'https://netmix.com/radio-station/docs/' );
 define( 'RADIO_STATION_API_DOCS_URL', 'https://netmix.com/radio-station/docs/api/' );
-define('RADIO_STATION_PLUGIN_DIR', '/wp-content/plugins/radio-station');
+// define('RADIO_STATION_PLUGIN_DIR', '/wp-content/plugins/radio-station');
+define('RADIO_STATION_PLUGIN_URL', plugin_dir_url( __FILE__ ));
 
 // ------------------------
 // Define Plugin Data Slugs
