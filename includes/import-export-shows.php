@@ -21,11 +21,11 @@
   	//collection of useful template code.
   	//call __success if import is successful
   		// $yaml_import_message = __('this is a success message', 'radio-station');
-  		// add_action('admin_notices', 'yaml_import__success');
+  		// add_action('admin_notices', 'radio_station_yaml_import__success');
 
   	//call __failure if we have a problem
   		// $yaml_import_message = __('this is a failure message', 'radio-station');
-  		// add_action('admin_notices', 'yaml_import__failure');
+  		// add_action('admin_notices', 'radio_station_yaml_import__failure');
 
   	// wp_safe_redirect( admin_url( 'admin.php?page=import-export-shows' ) ); exit;
     // error_log("YAML file uploaded but not parsed.\n", 3, "/tmp/my-errors.log"); //FIXME debugging code
@@ -35,8 +35,8 @@
  // - Import (and replace) all show data (YAML)
  // -------------------------
  //this function handles the response to the post requests from the page's form submissions
- add_action( 'admin_init', 'process_show_data_import' );
- function process_show_data_import() {
+ add_action( 'admin_init', 'radio_station_process_show_data_import' );
+ function radio_station_process_show_data_import() {
  	//using a global variable since that seems to be the only easy way to
  	//get a parameter to an add_action() callback function
  	global $yaml_import_message;
@@ -49,37 +49,44 @@
 
   switch ($_POST['action']) {
     case 'radio_station_yaml_import_action':
-      import_helper();
+      radio_station_import_helper();
       break;
     case 'radio_station_yaml_export_action':
-      export_helper();
+      radio_station_export_helper();
       break;
     default:
       //do nothing.
       return;
   }
- }//process_show_data_import()
+}//radio_station_process_show_data_import()
 
  //import helper function
- function import_helper(){
+ function radio_station_import_helper(){
    	global $yaml_import_message;
    	global $yaml_parse_errors;
     if( ! wp_verify_nonce( $_POST['yaml_import_nonce'], 'yaml_import_nonce' ) )
   		return;
   	if( ! current_user_can( 'manage_options' ) )
   		return;
-  	$extension = end( explode( '.', $_FILES['import_file']['name'] ) );
-  	if( $extension != 'yaml' ) {
+  	$extension = strtolower(end( explode( '.', $_FILES['import_file']['name'] ) ));
+    error_log("POST DATA\n>>". print_r($extension, true) . "<<\n", 3, "/tmp/my-errors.log"); //FIXME debugging code
+
+
+
+  	if( $extension != 'yaml' && $extension != 'yml' ) {
+  	// if( $extension != 'yaml'){
   		//call __failure if we have a problem
   		$yaml_import_message = __('Please upload a valid YAML file.', 'radio-station');
-  		add_action('admin_notices', 'yaml_import__failure');
+  		add_action('admin_notices', 'radio_station_yaml_import__failure');
   		// wp_die( __( 'Please upload a valid YAML file' ) );
+      return;
   	}
   	$import_file = $_FILES['import_file']['tmp_name'];
   	if( empty( $import_file ) ) {
   		//call __failure if we have a problem
   		$yaml_import_message = __('Please upload a file to import.', 'radio-station');
-  		add_action('admin_notices', 'yaml_import__failure');
+  		add_action('admin_notices', 'radio_station_yaml_import__failure');
+      return;
   		// wp_die( __( 'Please upload a file to import' ) );
   	}
 
@@ -87,23 +94,23 @@
     $existing_data_fate = filter_var($_POST['delete_show_data'], FILTER_VALIDATE_BOOLEAN);
 
   	//parse and save the yaml file if possible, returning success or failure messages to the user as appropriate
-  	if (yaml_import_ok($import_file, $existing_data_fate)){
+  	if (radio_station_yaml_import_ok($import_file, $existing_data_fate)){
   		//$globals $yaml_import_message, and $yaml_parse_errors are empty
       if ($existing_data_fate){
     		$yaml_import_message = __('Successfully parsed and imported YAML file, deleting pre-existing show data.', 'radio-station');
       }else{
     		$yaml_import_message = __('Successfully parsed and imported YAML file. Pre-existing show data remains unchanged.', 'radio-station');
       }
-  		add_action('admin_notices', 'yaml_import__success');
+  		add_action('admin_notices', 'radio_station_yaml_import__success');
   	}else{
   		//global $yaml_import_message contins message to display to the user
   		//global $yaml_parse_errors contains the detail for display by import-export-shows.php
-  		add_action('admin_notices', 'yaml_import__failure');
+  		add_action('admin_notices', 'radio_station_yaml_import__failure');
   	}
- }//import_helper()
+ }//radio_station_import_helper()
 
  //export helper function
- function export_helper(){
+ function radio_station_export_helper(){
  	 global $yaml_import_message;
    global $yaml_parse_errors;
   // error_log("POST DATA\n". print_r($_POST, true) . "\n", 3, "/tmp/my-errors.log"); //FIXME debugging code
@@ -128,24 +135,21 @@
    }
 
    //create the zip files that the user can download
-   $image_index = create_show_image_archive();
-   if (! $image_index){
-     //something went wrong, abort
-     return;
-   }
+   $image_index = radio_station_create_show_image_archive();
 
    //create show_data.yaml
-   $yaml_data = get_published_shows($image_url, $image_index);
+   $yaml_data = radio_station_get_published_shows($image_url, $image_index);
    $yaml = Yaml::dump($yaml_data);
    $yaml = "---\n#Show data file (YAML format)\n\n" . $yaml . "...\n";
    file_put_contents($base_dir . '/show_data.yaml', $yaml);
 
-   $zip_size = convert_filesize(filesize("$base_dir/show_images.zip"), 1);
-   $tgz_size = convert_filesize(filesize("$base_dir/show_images.tgz"), 1);
+   $zip_size = radio_station_convert_filesize(filesize("$base_dir/show_images.zip"), 1);
+   $tgz_size = radio_station_convert_filesize(filesize("$base_dir/show_images.tgz"), 1);
 
    //set up links for user to download the files
    $yaml_import_message = __('Export successful. Use the following link(s) to download your data.', 'radio-station');
-   if ($_POST['image_prefix_url']){
+   if ($image_index){
+     //provide image archive links if there were images to export
      $yaml_import_message .= "
           <ul style=\"padding-left: 10px;\">
             <li><a href=\"$base_url/show_data.yaml\" download=\"$export_filename\">Data file</a></li>
@@ -164,15 +168,16 @@
    }
 
    //queue up messaging and return
-   add_action('admin_notices', 'yaml_import__success');
- }//export_helper()
+   add_action('admin_notices', 'radio_station_yaml_import__success');
+ }//radio_station_export_helper()
 
  //helper function
  //returns an array of all published shows
- function get_published_shows($image_location = false, $image_index){
+ function radio_station_get_published_shows($image_location = false, $image_index){
    $parameters = array(
      'posts_per_page'     => -1,
-     'post_type'          => 'show',
+     'post_type'          => RADIO_STATION_SHOW_SLUG,
+     // 'post_type'          => 'show',
      'post_status'        => 'publish'
    );
    $shows = get_posts($parameters);
@@ -187,9 +192,9 @@
       $yaml_show['show-title'] = $show->post_title;
       $yaml_show['show-description'] = $show->post_content;
       $yaml_show['show-excerpt'] = $show->post_excerpt;
-      $yaml_show['show-schedule'] = get_show_schedule($show->ID);
-      $yaml_show['show-user-list'] = get_show_users($show->ID);
-      $yaml_show['show-producer-list'] = get_show_producers($show->ID);
+      $yaml_show['show-schedule'] = radio_station_get_show_schedule($show->ID);
+      $yaml_show['show-user-list'] = radio_station_get_show_users($show->ID);
+      $yaml_show['show-producer-list'] = radio_station_get_show_producers($show->ID);
 
       //these fields are metadata
       $yaml_show['show-tagline'] = $metadata['show_tagline'][0];
@@ -219,11 +224,11 @@
       array_push($yaml_shows, $yaml_show);
    }//foreach ($shows...
    return $yaml_shows;
- }//get_published_shows()
+ }//radio_station_get_published_shows()
 
  //helper function
  //Display success admin message
- function yaml_import__success(){
+ function radio_station_yaml_import__success(){
  	global $yaml_import_message;
  	?>
  	<div class="notice notice-success is-dismissible">
@@ -234,7 +239,7 @@
 
  //helper function
  //Display failure admin message
- function yaml_import__failure($msg){
+ function radio_station_yaml_import__failure($msg){
  	global $yaml_import_message;
  	?>
  	<div class="notice notice-error is-dismissible">
@@ -244,7 +249,7 @@
  }
 
 // this function handles processing data from a YAML file and writing it to the DB
-function yaml_import_ok($file_name = '', $delete_existing = false){
+function radio_station_yaml_import_ok($file_name = '', $delete_existing = false){
   global $yaml_import_message;
   global $yaml_parse_errors;
 
@@ -261,30 +266,34 @@ function yaml_import_ok($file_name = '', $delete_existing = false){
   $return_value = true;
   foreach ($shows as $show){
     $sanitized_show = array();
-    if (show_is_valid($show, $sanitized_show)){
+    if (radio_station_show_is_valid($show, $sanitized_show)){
       //FIXME re-factor the code to insert an "are you sure" dialogue step prior to actually doing the import
 
       if ($delete_existing){
         //remove all existing show data prior to import if requested
-        delete_show_data();
+        radio_station_delete_show_data();
       }
 
       //convert the show schedule metadata to the legacy format
-      $converted_show_schedule = convert_show_schedule($sanitized_show['show-schedule']);
+      $converted_show_schedule = radio_station_convert_show_schedule($sanitized_show['show-schedule']);
       //retrieve the show's producer and user IDs from the DB
-      $show_users = convert_user_list($sanitized_show['show-user-list']);
-      $show_producers = convert_user_list($sanitized_show['show-producer-list']);
+      $show_users = radio_station_convert_user_list($sanitized_show['show-user-list']);
+      $show_producers = radio_station_convert_user_list($sanitized_show['show-producer-list']);
       //format show image url's for inclusion if supplied
       $image_urls = array();
       if (!is_null($sanitized_show['show-image'])){ $image_urls['show_image_url'] = $sanitized_show['show-image']; }
       if (!is_null($sanitized_show['show-avatar'])){
         $image_urls['avatar_image_url'] = $sanitized_show['show-avatar'];
         if ($sanitized_show['upload-images']){ #upload avatar image here so we have its ID for the metadata below
-          $image_urls['show_avatar'] = upload_image($sanitized_show['show-avatar'], null);
-          $image_urls['show_header'] = upload_image($sanitized_show['show-header'], null);
+          $image_urls['show_avatar'] = radio_station_upload_image($sanitized_show['show-avatar'], null);
         }
       }
-      if (!is_null($sanitized_show['show-header'])){ $image_urls['header_image_url'] = $sanitized_show['show-header']; }
+      if (!is_null($sanitized_show['show-header'])){
+        $image_urls['header_image_url'] = $sanitized_show['show-header'];
+        if ($sanitized_show['upload-images']){
+          $image_urls['show_header'] = radio_station_upload_image($sanitized_show['show-header'], null);
+        }
+      }
       $post_data = array(
         'post_title'   => $sanitized_show['show-title'], //show-title
         'post_content' => $sanitized_show['show-description'], //show-desciption
@@ -311,20 +320,20 @@ function yaml_import_ok($file_name = '', $delete_existing = false){
 
       //upload show-image & show-header if show inserted correctly and upload of images is called for
       if ($sanitized_show['upload-images'] && is_int($new_show) && $new_show > 0){
-        $image_id = upload_image($sanitized_show['show-image'], $new_show);
+        $image_id = radio_station_upload_image($sanitized_show['show-image'], $new_show);
         update_post_meta($new_show, 'show_image_id', $image_id); //store the image ID so we can use it later
       }
     } else {
       $return_value = false;
       //errors are accumulated in the global $yaml_import_message, for display to the user
-    } //if_show_is_valid
+    } //if radio_station_show_is_valid
   }
 
   return $return_value;
-}//function yaml_import_ok()
+}//function radio_station_yaml_import_ok()
 
 //this function uploads an image to the media library and adds it as the featured image of a post if $post_id is supplied
-function upload_image($image_url, $post_id = null){
+function radio_station_upload_image($image_url, $post_id = null){
   $image_name       = basename(parse_url($image_url, PHP_URL_PATH));
   $upload_dir       = wp_upload_dir(); // Set upload folder
   $image_data       = file_get_contents($image_url); // Get image data
@@ -372,7 +381,7 @@ function upload_image($image_url, $post_id = null){
 }//function add_featured_image()
 
 //this function creates an archive of all the images associated with all published shows defined in the system.
-function create_show_image_archive(){
+function radio_station_create_show_image_archive(){
   //Three files are created in the WP uploads directory: show_images.tgz, show_images.zip, and show_images.yaml
   //The images .tgz and .zip files contain the actual image files. The .yaml file contains the file names, and size
   //information needed to render the data to the user. If previous files are found, they are replaced.
@@ -389,7 +398,7 @@ function create_show_image_archive(){
   $image_index = array();
 
   //remove the previous files if they exit
-  delete_folder($base_dir . '/export');
+  radio_station_delete_folder($base_dir . '/export');
   unlink($base_dir . '/show_images.yaml');
   unlink($base_dir . '/show_images.tgz');
   unlink($base_dir . '/show_images.zip');
@@ -398,7 +407,7 @@ function create_show_image_archive(){
   if (! mkdir($base_dir . '/export')){
     $yaml_parse_errors = '';
     $yaml_import_message = __('Failed to create export folder', 'radio-station') . ' ' . $base_dir . '/export';
-	  add_action('admin_notices', 'yaml_import__failure');
+	  add_action('admin_notices', 'radio_station_yaml_import__failure');
     return false;
   }
 
@@ -407,21 +416,23 @@ function create_show_image_archive(){
     //fetch all the metadata for this show
     $metadata = get_post_meta($show->ID);
 
-      foreach (['show_image_id', 'show_avatar', 'show_header'] as $image_ref){
-        if (! array_key_exists($image_ref, $metadata)){
-          break;
-        }
-        $src = get_image_path($metadata[$image_ref][0]);
-        $dst = $base_dir . '/export/' . basename($src);
-        if (! copy($src, $dst)) {
-          $yaml_parse_errors = "src: $src</br> dst: $dst</br>";
-          $yaml_import_message = __('Failed to copy file. See below for details', 'radio-station');
-    		  add_action('admin_notices', 'yaml_import__failure');
-          return false;
-        }
-        $image_index[$metadata[$image_ref][0]] = ['path' => $dst, 'file' => basename($src)];
-      }
-      //create the YAML index file
+      foreach (array('show_image_id', 'show_avatar', 'show_header') as $image_ref){
+        if (! wp_attachment_is_image($metadata[$image_ref][0]) ){
+          //if no image present then move on and log a notice
+          $yaml_parse_errors .= __('No image exported for', 'radio-station') . " $show->post_title ($image_ref) </br>";
+        }else{
+          $src = radio_station_get_image_path($metadata[$image_ref][0]);
+          $dst = $base_dir . '/export/' . basename($src);
+          if (! copy($src, $dst)) {
+            $yaml_parse_errors = "src: $src</br> dst: $dst</br>";
+            $yaml_import_message = __('Failed to copy file. See below for details', 'radio-station');
+      		  add_action('admin_notices', 'radio_station_yaml_import__failure');
+            return false;
+          }
+          //update the YAML index file
+          $image_index[$metadata[$image_ref][0]] = ['path' => $dst, 'file' => basename($src)];
+        }//if (! wp_attachment_is_image...
+      }//foreach (array('show_image_id'...
   }//foreach ($shows...)
 
   //create the zip file
@@ -439,7 +450,7 @@ function create_show_image_archive(){
   }else{
     $yaml_parse_errors = "";
     $yaml_import_message = __('Failed to create show_images.zip', 'radio-station');
-	  add_action('admin_notices', 'yaml_import__failure');
+	  add_action('admin_notices', 'radio_station_yaml_import__failure');
     return false;
   }
 
@@ -451,26 +462,26 @@ function create_show_image_archive(){
   unlink($base_dir . '/show_images.tar');
   rename($base_dir . '/show_images.tar.gz', $base_dir . '/show_images.tgz');
   return $image_index;
-}//create_show_image_archive()
+}//radio_station_create_show_image_archive()
 
 //helper function
 //deletes a folder containing files
-function delete_folder($path) {
+function radio_station_delete_folder($path) {
     if (is_dir($path) === true) {
         $files = array_diff(scandir($path), array('.', '..'));
         foreach ($files as $file) {
-            delete_folder(realpath($path) . '/' . $file);
+            radio_station_delete_folder(realpath($path) . '/' . $file);
         }
         return rmdir($path);
     }else if (is_file($path) === true) {
         return unlink($path);
     }
     return false;
-}//function delete_folder()
+}//function radio_station_delete_folder()
 
 //helper function
 //retrieves the absolute filesystem path of the passed image_id if available. Can be used to retrieve intermediate sizes also.
-function get_image_path($image_id, $size = 'full') {
+function radio_station_get_image_path($image_id, $size = 'full') {
     $file = get_attached_file($image_id, true);
     if (empty($size) || $size === 'full') {
         // for the original size get_attached_file is fine
@@ -488,7 +499,7 @@ function get_image_path($image_id, $size = 'full') {
 }
 
 //this function returns an array of email addresses of show users for the given show ID
-function get_show_users($show_id){
+function radio_station_get_show_users($show_id){
   $users = get_post_meta($show_id, 'show_user_list', true);
   $email_list = array();
   foreach ($users as $user){
@@ -499,7 +510,7 @@ function get_show_users($show_id){
 }
 
 //this function returns an array of email addresses of show producers for the given show ID
-function get_show_producers($show_id){
+function radio_station_get_show_producers($show_id){
   $producers = get_post_meta($show_id, 'show_producer_list', true);
   $email_list = array();
   foreach ($producers as $producer){
@@ -510,7 +521,7 @@ function get_show_producers($show_id){
 }
 
 //this function takes an array of email addresses, and returns, if possible, an array of matching WordPress user ID's.
-function convert_user_list($users_email_array){
+function radio_station_convert_user_list($users_email_array){
   $tmp = array();
   foreach ($users_email_array as $user){
     $uid = get_user_by('email', $user);
@@ -519,10 +530,10 @@ function convert_user_list($users_email_array){
     }
   }
   return $tmp;
-}//function convert_user_list()
+}//function radio_station_convert_user_list()
 
 //this function validates the datastructure for a show and display's any error messages
-function show_is_valid($show, &$sanitized_show = array()){
+function radio_station_show_is_valid($show, &$sanitized_show = array()){
    //validation proceeds field by field as noted below, until all have been checked. Errors are accumulated in
    //$errors. Successfully validating fields are copied into $sanitized_show as we go along
    //success is returned at the end if there are no errors. In case of failure, $sanitized_show
@@ -550,13 +561,14 @@ function show_is_valid($show, &$sanitized_show = array()){
 
    //validate title (make sure it's a string)
    if (!is_null($show['show-title'])){
-     $sanitized_show['show-title'] = keep_basic_html_only($show['show-title']);
+     $sanitized_show['show-title'] = radio_station_keep_basic_html_only($show['show-title']);
    }else{
      $errors .= '<li>' . __('show-title: may not be null.','radio-station') . '</li>';
    }
    //validate description
    if (!is_null($show['show-description'])){
-     $sanitized_show['show-description'] = keep_basic_html_only($show['show-description'],WITH_PARAGRAPH_TAGS);
+     // $sanitized_show['show-description'] = radio_station_keep_basic_html_only($show['show-description'],WITH_PARAGRAPH_TAGS);
+     $sanitized_show['show-description'] = wp_kses_post($show['show-description']);
    }
    //Uncomment if requiring show-description
    // else{
@@ -564,7 +576,7 @@ function show_is_valid($show, &$sanitized_show = array()){
    // }
 
    //validate excerpt
-   $sanitized_show['show-excerpt'] = keep_basic_html_only($show['show-excerpt'],WITH_PARAGRAPH_TAGS);
+   $sanitized_show['show-excerpt'] = radio_station_keep_basic_html_only($show['show-excerpt'],WITH_PARAGRAPH_TAGS);
 
    //validate image (make sure it's a URL or an integer)
    $tmp_var = filter_var($show['show-image'], FILTER_VALIDATE_URL);
@@ -605,10 +617,10 @@ function show_is_valid($show, &$sanitized_show = array()){
    }
 
    //validate tagline
-   $sanitized_show['show-tagline'] = keep_basic_html_only($show['show-tagline']);
+   $sanitized_show['show-tagline'] = radio_station_keep_basic_html_only($show['show-tagline']);
 
    //validate show-schedule
-   if (schedule_is_valid($show['show-schedule'], $errors)){
+   if (radio_station_schedule_is_valid($show['show-schedule'], $errors)){
      $sanitized_show['show-schedule'] = $show['show-schedule'];
    }
 
@@ -702,13 +714,13 @@ function show_is_valid($show, &$sanitized_show = array()){
      $errors = '<h2>'.$sanitized_show['show-title'].'</h2>'.__('Data file errors noted as follows:', 'radio-station').
                '<ul style="padding-left: 20px; list-style: disc;">' . $errors . '</ul>';
   		 $yaml_parse_errors = $errors;
-  		 add_action('admin_notices', 'yaml_import__failure');
+  		 add_action('admin_notices', 'radio_station_yaml_import__failure');
      return false;
    }
-}//function show_is_valid()
+}//function radio_station_show_is_valid()
 
 //this function converts the show-schedule from the 24h time format used in the YAML file to the am/pm internal structure
-function convert_show_schedule($show_schedule){
+function radio_station_convert_show_schedule($show_schedule){
   //$show is the post ID of the show in question
   //$show_schdule is an associative array as documented in the contextual help under import/export (see also /help/show-schedule.php)
   //data is assumed to be validated. i.e. a valid show ID is passed and $show_schedule contains at least 1 valid timeblock
@@ -717,7 +729,7 @@ function convert_show_schedule($show_schedule){
   foreach ($show_schedule as $day=>$times){ //loop through the days of the week
     foreach($times as $timeblock){//loop through each time block for a given day
       $tmp = array();
-      $tmp['day'] = canonicalize_day($day);
+      $tmp['day'] = radio_station_canonicalize_day($day);
       // - ["05:30", "06:00", "disabled", "encore"]
       //convert start time in block
       $tmp['start_hour'] = substr($timeblock[0],0,2);
@@ -753,10 +765,10 @@ function convert_show_schedule($show_schedule){
     }//foreach($times...)
   }//foreach($show_schedule...)
   return $converted_schedule;
-}//convert_show_schedule()
+}//radio_station_convert_show_schedule()
 
-//this function returns a datastructure describing a show's schedule (used by export_helper() function via get_published_shows())
-function get_show_schedule($show_id){
+//this function returns a datastructure describing a show's schedule (used by radio_station_export_helper() function via radio_station_get_published_shows())
+function radio_station_get_show_schedule($show_id){
   $schedule = get_post_meta($show_id, 'show_sched', true);
   $converted_schedule = array();
   foreach ($schedule as $tb){ //loop through all time blocks
@@ -783,9 +795,10 @@ function get_show_schedule($show_id){
     }
   }
   return $converted_schedule;
-}
+}//radio_station_get_show_schedule
 //this function deletes all shows and associated data from the database
-function delete_show_data(){
+
+function radio_station_delete_show_data(){
   //get an array of all show CPT ids
   $parameters = array(
     'posts_per_page'     => -1,
@@ -806,10 +819,10 @@ function delete_show_data(){
   }
 }//delete_show_data()
 
-//convert_show_schedule helper function
+//radio_station_convert_show_schedule helper function
 //converts the various day formats to full-length capitalized form
-function canonicalize_day($day){
-  define('DAYS_LOOKUP', array(
+function radio_station_canonicalize_day($day){
+  $days_lookup = array(
     'sun' => 'Sunday',
     'mon' => 'Monday',
     'tue' => 'Tuesday',
@@ -817,13 +830,13 @@ function canonicalize_day($day){
     'thu' => 'Thursday',
     'fri' => 'Friday',
     'sat' => 'Saturday'
-  ));
-  return DAYS_LOOKUP[substr(strtolower($day),0,3)];
+  );
+  return $days_lookup[substr(strtolower($day),0,3)];
 }//canonicalize_day()
 
 //Validation helper function
 //validates the schedule portion of an imported YAML file. returns true if valid, false otherwise, with any error messages appended to $error_buffer
-function schedule_is_valid($schedule, &$error_buffer){
+function radio_station_schedule_is_valid($schedule, &$error_buffer){
  /* expected format for $schedule data passed in. the presence of at least one day/time-block is enforced
 
  show-schedule:
@@ -891,11 +904,11 @@ function schedule_is_valid($schedule, &$error_buffer){
    $error_buffer .= $errors;
    return false;
  }
-}//function schedule_is_valid()
+}//function radio_station_schedule_is_valid()
 
 //Validation helper function
 //removes all html tags except for those explicitly defined below
-function keep_basic_html_only($string, $with_paragraph = false){
+function radio_station_keep_basic_html_only($string, $with_paragraph = false){
  #paragraph
  $tmp = $string;
  if ($with_paragraph) {
@@ -937,11 +950,11 @@ function keep_basic_html_only($string, $with_paragraph = false){
  $tmp = strip_tags($tmp);
  $tmp = wp_strip_all_tags($tmp);
  return htmlspecialchars_decode(trim($tmp));
-}//function keep_basic_html_only()
+}//function radio_station_keep_basic_html_only()
 
 //Validation helper function
 //parses whether or not field passed is a valid URL or ID
-function is_url_or_ID(&$field, $nullOK = false){
+function radio_station_is_url_or_ID(&$field, $nullOK = false){
  $tmp_var = filter_var($field, FILTER_VALIDATE_URL);
  if ($tmp_var){
    $field = $tmp_var;
@@ -959,7 +972,7 @@ function is_url_or_ID(&$field, $nullOK = false){
      }
    }
  }
-}//function is_url_or_ID()
+}//function radio_station_is_url_or_ID()
 
 //Validation helper function
 //function returns true if associative array
@@ -969,19 +982,19 @@ function isAssoc(array $arr){
 }
 
 // Returns a file size limit in bytes based on the PHP upload_max_filesize and post_max_size
-function file_upload_max_size() {
+function radio_station_file_upload_max_size() {
   static $max_size = -1;
 
   if ($max_size < 0) {
     // Start with post_max_size.
-    $post_max_size = parse_size(ini_get('post_max_size'));
+    $post_max_size = radio_station_parse_size(ini_get('post_max_size'));
     if ($post_max_size > 0) {
       $max_size = $post_max_size;
     }
 
     // If upload_max_size is less, then reduce. Except if upload_max_size is
     // zero, which indicates no limit.
-    $upload_max = parse_size(ini_get('upload_max_filesize'));
+    $upload_max = radio_station_parse_size(ini_get('upload_max_filesize'));
     if ($upload_max > 0 && $upload_max < $max_size) {
       $max_size = $upload_max;
     }
@@ -990,7 +1003,7 @@ function file_upload_max_size() {
 }
 
 //helper function
-function parse_size($size) {
+function radio_station_parse_size($size) {
   $unit = preg_replace('/[^bkmgtpezy]/i', '', $size); // Remove the non-unit characters from the size.
   $size = preg_replace('/[^0-9\.]/', '', $size); // Remove the non-numeric characters from the size.
   if ($unit) {
@@ -1003,7 +1016,7 @@ function parse_size($size) {
 }
 
 //returns human readable file size string
-function convert_filesize($bytes, $decimals = 2){
+function radio_station_convert_filesize($bytes, $decimals = 2){
     $size = array(' b',' Kb',' Mb',' Gb',' Tb',' Pb',' Eb',' Zb',' Yb');
     $factor = floor((strlen($bytes) - 1) / 3);
     return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . @$size[$factor];

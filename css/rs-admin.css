@@ -8,6 +8,10 @@
 .inputfile{
   opacity: 0;
 }
+
+.left-padding {
+  margin-left: 17px;
+}
 #advanced-options{
   display: none;
 }
@@ -18,4 +22,8 @@
 
 #delete-data-warning{
   display: none;
+}
+
+.debug-border {
+  border: 1px solid red;
 }
