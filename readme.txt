@@ -36,7 +36,7 @@ Since 2.3.0, the first major feature update since plugin takeover in July 2019, 
 * Admin Plugin Settings Page (with a plethora of new options)
 * ...and a Radio Station Data API via the WordPress REST API! 
 
-If you have been using Radio Station prior to version 2.3.0 and want to update, it is recommended that you read [the blog post for the 2.3.0 release](https://netmix.com/2-3-0-release-announcement/). As there is quite a lot of refactoring and changes in this version, you will want to check the details of the new changes with your current usage - especially if you have been using any custom page templates in your theme or other plugin-related custom code on your site. As these are probably the most significant changes that will ever be made to the plugin in a release, we have worked hard to maintain backwards oompatibility and test the new features thoroughly, but it's important you know what is going and test things out yourself in the update process.
+If you have been using Radio Station prior to version 2.3.0 and want to update, it is recommended that you read [the blog post for the 2.3.0 release](https://netmix.com/2-3-0-release-announcement/). As there is quite a lot of refactoring and changes in this version, you will want to check the details of the new changes with your current usage - especially if you have been using any custom page templates in your theme or other plugin-related custom code on your site. As these are probably the most significant changes that will ever be made to the plugin in a release, we have worked hard to maintain backwards compatibility and test the new features thoroughly, but it's important you know what is going and test things out yourself in the update process.
 
 = Support and Contribution =
 
@@ -54,7 +54,7 @@ Firstly, you can visit the Plugin Settings screen to adjust the default [Options
 
 Add a New Show and assign it a Shift timeslot and Publish. Then check out how it displays on a single Show page by clicking the Show Permalink. Schedule Overrides work in a similar way but are for specific date and time blocks only. Depending on your Theme, you may wish to adjust the [Templates](https://netmix.com/radio-station/docs/Display.md#page-templates) used. You can also assign different [Images](https://netmix.com/radio-station/docs/Display.md#images) to Shows (and Schedule Overrides.) Then have a look at your Program Schedule page to see the Show displayed there also. Just keep adding Shows until you have your Schedule filled in! You can further [Manage](https://netmix.com/radio-station/docs/Manage.md) your Shows and other Station data via the WordPress Admin area.
 
-Next you may want to give some users on your site some plugin [Roles](https://netmix.com/radio-station/docs/Roles.md). (Note that while the default interface in WordPress allows you to assign a single role to a user, it also supports multiple roles, but you need to add a plugin to get an interface for this.) Giving a Role of Host/DJ or Producer to a user will allow them to be assigned to a Show on the Show Edit Page and thus edit that particular Show also. You can also assign the Show Editor role if you have someone needs to edit all plugin records without being a site Administator.
+Next you may want to give some users on your site some plugin [Roles](https://netmix.com/radio-station/docs/Roles.md). (Note that while the default interface in WordPress allows you to assign a single role to a user, it also supports multiple roles, but you need to add a plugin to get an interface for this.) Giving a Role of Host/DJ or Producer to a user will allow them to be assigned to a Show on the Show Edit Page and thus edit that particular Show also. You can also assign the Show Editor role if you have someone needs to edit all plugin records without being a site Administrator.
 
 There are a few [Widgets](https://netmix.com/radio-station/docs/Widgets.md) you can add via your Appearance -> Widgets menu. The main one will display the currently playing Show, and another will display Upcoming Shows. There is also a Current Playlist Widget for if you have created and assigned a Playlist to a Show.
 
@@ -112,7 +112,7 @@ Try re-saving your site's permalink settings via Settings -> Permalinks.  Wordpr
 
 = What if I want to change or style the plugin's displays? =
 
-The default styles for Radio Station have intionally kept fairly minimal so as to be compatible with most themes, so you may wish to add your own styles to suit your site's look and feel. The best way to do this is to add your own `rs-custom.css` to your Child Theme's directory, and add more specific style rules that modify or override the existing styles. Radio Station will automatically detect the presence of this file and enqueue it. You can find the base styles in the `/css/` directory of the plugin.
+The default styles for Radio Station have intentionally been kept fairly minimal so as to be compatible with most themes, so you may wish to add your own styles to suit your site's look and feel. The best way to do this is to add your own `rs-custom.css` to your Child Theme's directory, and add more specific style rules that modify or override the existing styles. Radio Station will automatically detect the presence of this file and enqueue it. You can find the base styles in the `/css/` directory of the plugin.
 
 = What Widgets are available with this plugin? =
 
@@ -270,7 +270,7 @@ We haven't built an interface between Google Calendar and Radio Station just yet
 * Improved: show shifts interface background colors
 * Added: navigate away from page on shift change check
 * Added: default time format option to Widgets
-* Removed: current show transients (intermittant unreliability)
+* Removed: current show transients (intermittent unreliability)
 * Fixed: AJAX call causing plugin conflicts via save_post action
 * Fixed: calculation of Upcoming Shows near end of the week
 * Fixed: remove and duplicate actions on new shifts
@@ -366,12 +366,12 @@ We haven't built an interface between Google Calendar and Radio Station just yet
 * Fix to not 404 author pages for DJs without blog posts
 
 = 2.2.7 =
-* Dutch translation added (Thank you to André Dortmont for the file!)
+* Dutch translation added (Thank you to AndrÃ© Dortmont for the file!)
 * Added Tabbed Display for Master Schedule Shortcode (via Tutorial)
 * Add Show list columns with active, shift, DJs and show image displays
 * Add Schedule Override list columns with date sorting and filtering
 * Add playlist track information labels to Now Playing Widget
-* Added meridiem (am/pm) translations via WP Locale class
+* Added meridian (am/pm) translations via WP Locale class
 * Added star rating link to plugin announcement box
 * Added update subscription form to plugin Help page
 * Fix to checkbox value saving for On Air/Upcoming Widgets
@@ -414,7 +414,7 @@ We haven't built an interface between Google Calendar and Radio Station just yet
 * shift main playlist and show metaboxes above editor
 * set plugin custom post types editor to Classic Editor
 * add high priority to side metaboxes for plugin post types
-* added dismissable development changeover admin notice
+* added dismissible development changeover admin notice
 * added simple Patreon supporter image button and blurb
 * added filter for DJ Avatar size on Author page template
 * fix to Schedule Override metabox value saving
@@ -478,7 +478,7 @@ We haven't built an interface between Google Calendar and Radio Station just yet
 * Fixed issue on the master schedule where genres containing more than one work wouldn't highlight when clicked
 * Added ability to display DJ names on the master schedule.
 * Fixed bug in the Upcoming widget.  Override Schedule no longer display as upcoming when they are on-air.
-* Verified compatibility woth WordPress 4.0
+* Verified compatibility with WordPress 4.0
 
 = 2.0.13 =
 * Added the ability to display show avatars on the program grid.
@@ -524,7 +524,7 @@ We haven't built an interface between Google Calendar and Radio Station just yet
 * Master Schedule bug for shows that start at midnight and end before the hour is up fixed.
 
 = 2.0.3 =
-* Compatibility fix: Fixed a jquery conflict in the backend that was occuring in certain themes
+* Compatibility fix: Fixed a jquery conflict in the backend that was occurring in certain themes
 
 = 2.0.2 =
 * Bug fix: Scheduling issue with overnight shows fixed
@@ -588,7 +588,7 @@ We haven't built an interface between Google Calendar and Radio Station just yet
 * Fixed some areas of the code that were generating PHP notices in WordPress 3.6
 
 = 1.4.3 =
-* Master schedule shortcode now displays indiviual shows in both 24 and 12 hour time
+* Master schedule shortcode now displays individual shows in both 24 and 12 hour time
 * Fixed some areas of the code that were generating PHP notices in WordPress 3.6
 * Added example of how to display show schedule to single-show.php template
 * Added more options to the plugin's widgets
@@ -650,7 +650,7 @@ We haven't built an interface between Google Calendar and Radio Station just yet
 * Reduced the size of the content field in the playlist post type
 * Some minor formatting changes to default templates
 * Added genre highlighter to the master programming schedule page
-* Added a second Update button on the bottom of the playlist edit page for convinience.
+* Added a second Update button on the bottom of the playlist edit page for convenience.
 * Added sample template for DJ user pages
 * Fixed a bug in the master schedule shortcode that messed up the table for shows that are more than two hours in duration
 * Fixed a bug in the master schedule shortcode to accomodate shows that run from late night into the following morning.

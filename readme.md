@@ -1,6 +1,6 @@
 # Radio Station
 
-Radio Station let's you build and manage a Show Schedule for a radio station or Internet broadcaster's WordPress website. 
+Radio Station lets you build and manage a Show Schedule for a radio station or Internet broadcaster's WordPress website. 
 
 ## Plugin Details
 
@@ -23,11 +23,11 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 ## Description
 
-Radio Station by NetMix is a plugin to build and manage a Show Schedule for a radio station or internet broadcaster's WordPress website, including podcasters. It's functionality was originally based on Drupal 6's Station plugin, reworked for use in Wordpress and then extended.
+Radio Station by NetMix is a plugin to build and manage a Show Schedule for a radio station or internet broadcaster's WordPress website, including podcasters. Its functionality was originally based on Drupal 6's Station plugin, reworked for use in Wordpress and then extended.
 
 The plugin adds a new "Show" post type, schedulable blocks of time that contain a Show description, a Show shifts repeater field, assignable images and other meta information. You can also create Playlists associated with those shows, or assign standard blog posts to relate to a Show. It also supports adding Schedule Overrides for specific dates and times, and adds the ability to associate users (given a role of "Host" or "Producer") to Shows, so they can be displayed for that Show and to give them edit access.
 
-A schedule of all Shows can be generated and added to a page with a shortcode (or simple page selection in the Plugin Settings) which has a number of Layout and display options. Shows can be categorized into Genres and a Genre highlighting filter appears on the embedded Schedule view. Each Show has it's own dedicated page to display all the Show details in a responsive layout.
+A schedule of all Shows can be generated and added to a page with a shortcode (or simple page selection in the Plugin Settings) which has a number of Layout and display options. Shows can be categorized into Genres and a Genre highlighting filter appears on the embedded Schedule view. Each Show has its own dedicated page to display all the Show details in a responsive layout.
 
 The plugin contains a widget to display the on-air Current Show linked to the Show page, with various widget display options, and further widgets for displaying Upcoming Shows and current Playlist tracks. Shortcodes are available for these widgets, as well as for displaying archive lists of any of the plugin's custom post types.
 
@@ -47,7 +47,7 @@ Since 2.3.0, the first major feature update since plugin takeover in July 2019, 
 * Admin Plugin Settings Page (with a plethora of new options)
 * ...and a Radio Station Data API via the WordPress REST API! 
 
-If you have been using Radio Station prior to version 2.3.0 and want to update, it is recommended that you read [the blog post for the 2.3.0 release](https://netmix.com/2-3-0-release-announcement/). As there is quite a lot of refactoring and changes in this version, you will want to check the details of the new changes with your current usage - especially if you have been using any custom page templates in your theme or other plugin-related custom code on your site. As these are probably the most significant changes that will ever be made to the plugin in a release, we have worked hard to maintain backwards oompatibility and test the new features thoroughly, but it's important you know what is going and test things out yourself in the update process.
+If you have been using Radio Station prior to version 2.3.0 and want to update, it is recommended that you read [the blog post for the 2.3.0 release](https://netmix.com/2-3-0-release-announcement/). As there is quite a lot of refactoring and changes in this version, you will want to check the details of the new changes with your current usage - especially if you have been using any custom page templates in your theme or other plugin-related custom code on your site. As these are probably the most significant changes that will ever be made to the plugin in a release, we have worked hard to maintain backwards compatibility and test the new features thoroughly, but it's important you know what is going and test things out yourself in the update process.
 
 ### Support and Contribution
 
@@ -65,7 +65,7 @@ Firstly, you can visit the Plugin Settings screen to adjust the default [Options
 
 Add a New Show and assign it a Shift timeslot and Publish. Then check out how it displays on a single Show page by clicking the Show Permalink. Schedule Overrides work in a similar way but are for specific date and time blocks only. Depending on your Theme, you may wish to adjust the [Templates](https://netmix.com/radio-station/docs/Display.md#page-templates) used. You can also assign different [Images](https://netmix.com/radio-station/docs/Display.md#images) to Shows (and Schedule Overrides.) Then have a look at your Program Schedule page to see the Show displayed there also. Just keep adding Shows until you have your Schedule filled in! You can further [Manage](https://netmix.com/radio-station/docs/Manage.md) your Shows and other Station data via the WordPress Admin area.
 
-Next you may want to give some users on your site some plugin [Roles](https://netmix.com/radio-station/docs/Roles.md). (Note that while the default interface in WordPress allows you to assign a single role to a user, it also supports multiple roles, but you need to add a plugin to get an interface for this.) Giving a Role of Host/DJ or Producer to a user will allow them to be assigned to a Show on the Show Edit Page and thus edit that particular Show also. You can also assign the Show Editor role if you have someone needs to edit all plugin records without being a site Administator.
+Next you may want to give some users on your site some plugin [Roles](https://netmix.com/radio-station/docs/Roles.md). (Note that while the default interface in WordPress allows you to assign a single role to a user, it also supports multiple roles, but you need to add a plugin to get an interface for this.) Giving a Role of Host/DJ or Producer to a user will allow them to be assigned to a Show on the Show Edit Page and thus edit that particular Show also. You can also assign the Show Editor role if you have someone needs to edit all plugin records without being a site Administrator.
 
 There are a few [Widgets](https://netmix.com/radio-station/docs/Widgets.md) you can add via your Appearance -> Widgets menu. The main one will display the currently playing Show, and another will display Upcoming Shows. There is also a Current Playlist Widget for if you have created and assigned a Playlist to a Show.
 
@@ -120,7 +120,7 @@ Try re-saving your site's permalink settings via Settings -> Permalinks.  Wordpr
 
 #### What if I want to change or style the plugin's displays?
 
-The default styles for Radio Station have intionally kept fairly minimal so as to be compatible with most themes, so you may wish to add your own styles to suit your site's look and feel. The best way to do this is to add your own `rs-custom.css` to your Child Theme's directory, and add more specific style rules that modify or override the existing styles. Radio Station will automatically detect the presence of this file and enqueue it. You can find the base styles in the `/css/` directory of the plugin.
+The default styles for Radio Station have intentionally been kept fairly minimal so as to be compatible with most themes, so you may wish to add your own styles to suit your site's look and feel. The best way to do this is to add your own `rs-custom.css` to your Child Theme's directory, and add more specific style rules that modify or override the existing styles. Radio Station will automatically detect the presence of this file and enqueue it. You can find the base styles in the `/css/` directory of the plugin.
 
 #### What Widgets are available with this plugin?
 
