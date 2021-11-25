@@ -276,7 +276,7 @@ function radio_station_archive_list_shortcode( $post_type, $atts ) {
 		'description'  => 'excerpt',
 		'hide_empty'   => 0,
 		'time'         => $time_format,
-		'view'         => 0,
+		'view'         => 'none', // changed from 0 to none because of string comparison in PHP7
 		// --- taxonomy queries ---
 		'genre'        => '',
 		'language'     => '',
