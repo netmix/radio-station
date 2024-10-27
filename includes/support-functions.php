@@ -590,7 +590,10 @@ function radio_station_get_show_data_meta( $show, $single = false ) {
 	$thumbnail_id = get_post_meta( $show->ID, '_thumbnail_id', true );
 	if ( $thumbnail_id ) {
 		$thumbnail = wp_get_attachment_image_src( $thumbnail_id, 'thumbnail' );
-		$thumbnail_url = $thumbnail[0];
+		// 2.5.10: handle failure of return value
+		if ( $thumbnail && is_array( $thumbnail ) && isset( $thumbnail[0] ) ) {
+			$thumbnail_url = $thumbnail[0];
+		}
 	}
 
 	// --- create array and return ---
@@ -1312,7 +1315,10 @@ function radio_station_get_show_avatar_url( $show_id, $size = 'thumbnail' ) {
 		// 2.4.0.6: added show avatar size filter
 		$size = apply_filters( 'radio_station_show_avatar_size', $size );
 		$avatar_src = wp_get_attachment_image_src( $avatar_id, $size );
-		$avatar_url = $avatar_src[0];
+		// 2.5.10: handle failure to get image source
+		if ( $avatar_src && is_array( $avatar_src ) && isset( $avatar_src[0] ) ) {
+			$avatar_url = $avatar_src[0];
+		}
 	}
 
 	// --- filter and return ---
@@ -2504,3 +2510,56 @@ function radio_station_settings_allowed_html( $allowed, $type, $context ) {
 
 	return $allowed;
 }
+
+// --------------------------
+// Player Widget Allowed HTML
+// --------------------------
+// 2.5.10: added allowed HTML for player widget
+add_filter( 'radio_station_allowed_html', 'radio_station_widget_player_allowed_html', 10, 3 );
+function radio_station_widget_player_allowed_html( $allowed, $type, $context ) {
+
+	if ( ( 'widget' != $type ) || ( 'player' != $context ) ) {
+		return $allowed;
+	}
+
+	// --- link ---
+	$allowed['link'] = array(
+		'rel'         => array(),
+		'href'        => array(),
+	);
+
+	// --- button ---
+	$allowed['button'] = array(
+		'id'          => array(),
+		'class'       => array(),
+		'role'        => array(),
+		'title'       => array(),
+		'onclick'     => array(),
+		'tabindex'    => array(),
+		'aria-label'  => array(),
+		'style'       => array(),
+	);
+
+	// --- input ---
+	$allowed['input'] = array(
+		'id'          => array(),
+		'class'       => array(),
+		'name'        => array(),
+		'value'       => array(),
+		'type'        => array(),
+		'data'        => array(),
+		'placeholder' => array(),
+		'style'       => array(),
+		'checked'     => array(),
+		'onclick'     => array(),
+		'max'         => array(),
+		'min'         => array(),
+		'aria-label'  => array(),
+	);
+
+	// --- styles ---
+	$allowed['style'] = array();
+	
+	return $allowed;
+}
+

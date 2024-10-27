@@ -6,7 +6,7 @@ Plugin Name: Radio Station
 Plugin URI: https://radiostation.pro/radio-station
 Description: Adds Show pages, DJ role, playlist and on-air programming functionality to your site.
 Author: Tony Zeoli, Tony Hayes
-Version: 2.5.9.1
+Version: 2.5.9.5
 Requires at least: 3.3.1
 Text Domain: radio-station
 Domain Path: /languages
@@ -343,9 +343,9 @@ function radio_station_add_pricing_path_filter() {
 	}
 }
 
-// ------------------------
-// Pricing Page Path Filter
-// ------------------------
+// ---------------------------------
+// Freemius Pricing Page Path Filter
+// ---------------------------------
 // 2.5.0: added for Freemius Pricing Page v2
 function radio_station_pricing_page_path( $default_pricing_js_path ) {
 	$suffix = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) || RADIO_STATION_DEBUG ? '' : '.min';
@@ -678,11 +678,12 @@ function radio_station_add_inline_script( $handle, $js, $position = 'after' ) {
 		} */
 		
 		// 2.5.7: enqueue dummy javascript file to output in footer
-		if ( !wp_script_is( 'rp-footer', 'registered' ) ) {
-			$script_url = plugins_url( '/js/rp-footer.js', RADIO_STATION_FILE );
-			wp_register_script( 'rp-footer', $script_url, array(), '', true );
+		// 2.5.10: fix slug from rp-footer to rs-footer
+		if ( !wp_script_is( 'rs-footer', 'registered' ) ) {
+			$script_url = plugins_url( '/js/rs-footer.js', RADIO_STATION_FILE );
+			wp_register_script( 'rs-footer', $script_url, array(), '1.0.0', true );
 		}
-		wp_add_inline_script( 'rp-footer', $js, $position );
+		wp_add_inline_script( 'rs-footer', $js, $position );
 	}
 }
 

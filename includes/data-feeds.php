@@ -860,7 +860,8 @@ function radio_station_route_radio( $response, $handler, $request ) {
 		$route = $request->get_route();
 		if ( '/' . $base == $route ) {
 			$data = $response->data;
-			$date['success'] = true;
+			// 2.5.10: fix to incorrect variable (date)
+			$data['success'] = true;
 			$data['endpoints'] = radio_station_get_route_urls();
 			$response->data = $data;
 		}

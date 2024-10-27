@@ -5686,7 +5686,7 @@ function radio_station_playlist_show_metabox() {
 			'numberposts' => -1,
 			'offset'      => 0,
 			'orderby'     => 'post_title',
-			'order'       => 'aSC',
+			'order'       => 'ASC',
 			'post_type'   => RADIO_STATION_SHOW_SLUG,
 			'post_status' => array( 'publish', 'draft' ),
 			'include'     => implode( ',', $allowed_shows ),

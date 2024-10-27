@@ -80,6 +80,7 @@
 		<exclude name="Universal.ControlStructures.DisallowLonelyIf.Found"/>
 		<exclude name="WordPress.PHP.DevelopmentFunctions.error_log_print_r"/>
 		<exclude name="WordPress.PHP.DevelopmentFunctions.error_log_error_log"/>
+		<exclude name="WordPress.Security.NonceVerification.Recommended"/>
 		<exclude name="Generic.Strings.UnnecessaryStringConcat.Found"/>
 		<exclude name="Universal.Operators.DisallowStandalonePostIncrementDecrement.PostIncrementFound"/>
 		<exclude name="Universal.Operators.DisallowStandalonePostIncrementDecrement.PostDecrementFound"/>
