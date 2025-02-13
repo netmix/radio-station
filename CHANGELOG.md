@@ -10,10 +10,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 = 2.5.10 =
 * Updated: Freemius SDK (2.8.0)
 * Updated: reader.php with prefixed reader functions
-* Updated: Plugin Panel (1.3.1) with new reader function
+* Updated: Plugin Panel (1.3.6) with new reader function
 * Updated: Color Picker Alpha Library (3.0.4)
 * Updated: Howler Library (2.2.4)
 * Improved: use wp_kses on player widget output
+* Improved: player volume slider background sync/hover
+* Fixed: Freemius optin image URL path
 
 = 2.5.9 =
 * Fixed: Missing use of prepare method on some database queries

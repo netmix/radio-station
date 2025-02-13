@@ -1,11 +1,11 @@
 === Radio Station by netmix® - Manage and play your Show Schedule in WordPress! ===
 Contributors: tonyzeoli, majick
-Donate link: https://netmix.co/donate
+Donate link: https://netmix.org
 Tags: radio station, radio shows, radio station schedule, radio broadcasting, streaming radio player
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires at least: 3.3.1
-Tested up to: 6.6.1
+Tested up to: 6.7.1
 Stable tag: 2.5.9
 
 Radio Station lets you build and manage a Show Schedule for a radio station or Internet broadcaster's WordPress website. 
@@ -407,10 +407,12 @@ We recommend you test these on a Staging site (or a development copy of your liv
 = 2.5.10 =
 * Updated: Freemius SDK (2.8.0)
 * Updated: reader.php with prefixed reader functions
-* Updated: Plugin Panel (1.3.1) with new reader function
+* Updated: Plugin Panel (1.3.6) with new reader function
 * Updated: Color Picker Alpha Library (3.0.4)
 * Updated: Howler Library (2.2.4)
 * Improved: use wp_kses on player widget output
+* Improved: player volume slider background sync/hover
+* Fixed: Freemius optin image URL path
 
 = 2.5.9 =
 * Fixed: Missing use of prepare method on some database queries

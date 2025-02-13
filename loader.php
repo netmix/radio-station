@@ -5,7 +5,7 @@
 // =================================
 
 // -------------
-// Loader v1.3.2
+// Loader v1.3.4
 // -------------
 // Note: Changelog at end of file.
 
@@ -546,6 +546,10 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 			// $noncecheck = wp_verify_nonce( sanitize_text_field( $_POST['_wpnonce'] ), $args['slug'] . '_update_settings' );
 			check_admin_referer( $args['slug'] . '_update_settings' );
 
+			// --- debug posted values ---
+			// 	1.3.?: move debug output to after check_admin_referer
+			$this->debug_posted( $settings );
+
 			// --- get plugin options and default settings ---
 			// 1.0.9: allow filtering of plugin options (eg. for Pro/Add Ons)
 			$options = $this->options;
@@ -1026,6 +1030,35 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 
 		}
 
+		// --------------------------
+		// Debug Output Posted Values
+		// --------------------------
+		function debug_posted( $settings ) {
+			if ( $this->debug ) {
+				echo '<br><b>Current Settings:</b><br>';
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions
+				echo esc_html( print_r( $settings, true ) );
+				echo '<br><br>' . "\n";
+
+				echo '<br><b>Plugin Options:</b><br>';
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions
+				echo esc_html( print_r( $this->options, true ) );
+				echo '<br><br>' . "\n";
+
+				// phpcs:ignore WordPress.Security.NonceVerification.Missing
+				if ( isset( $_POST ) ) {
+					echo '<br><b>Posted Values:</b><br>';
+					// phpcs:ignore WordPress.Security.NonceVerification.Missing
+					$post_keys = array_keys( $_POST );
+					foreach ( $post_keys as $post_key ) {
+						$value = sanitize_text_field( $_POST[$post_key] );
+						// phpcs:ignore WordPress.PHP.DevelopmentFunctions
+						echo esc_html( $post_key ) . ': ' . esc_html( print_r( $value, true ) ) . '<br>' . "\n";
+					}
+				}
+			}
+		}
+			
 		// -----------------------
 		// Validate Plugin Setting
 		// -----------------------
@@ -1305,8 +1338,10 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 			// --- maybe delete settings on deactivation ---
 			register_deactivation_hook( $args['file'], array( $this, 'delete_settings' ) );
 
-			// --- maybe load thickbox ---
+			// --- maybe enqueue scripts / thickbox ---
 			add_action( 'admin_enqueue_scripts', array( $this, 'maybe_load_thickbox' ) );
+			// 1.3.4: add earlier enqueue settings page resources check
+			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_resources' ) );
 
 			// --- AJAX readme viewer ---
 			add_action( 'wp_ajax_' . $namespace . '_readme_viewer', array( $this, 'readme_viewer' ) );
@@ -1543,21 +1578,11 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 			// 1.0.5: use sanitize_text_field on request variable
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			if ( isset( $_REQUEST['page'] ) && ( sanitize_text_field( wp_unslash( $_REQUEST['page'] ) ) == $args['slug'] . '-wp-support-forum' ) && is_admin() ) {
-				if ( !function_exists( 'wp_redirect' ) ) {
-					include ABSPATH . WPINC . '/pluggable.php';
-				}
+				// 1.0.7: fix support URL undefined variable warning
 				if ( isset( $args['support'] ) ) {
-					// changes the support forum slug for premium based on the pro plugin file slug
-					// 1.0.7: fix support URL undefined variable warning
-					$support_url = $args['support'];
-					// 1.2.1: removed in favour of filtering via Pro
-					// if ( $premium && isset( $args['proslug'] ) ) {
-					// 	$support_url = str_replace( $args['slug'], $args['proslug'], $support_url );
-					// }
-					$support_url = apply_filters( 'freemius_plugin_support_url_redirect', $support_url, $args['slug'] );
-					// phpcs:ignore WordPress.Security.SafeRedirect
-					wp_redirect( $support_url );
-					exit;
+					// 1.3.6: add action and bug out on redirect
+					add_action( 'admin_init', array( $this, 'support_redirect' ) );
+					return;
 				}
 			}
 
@@ -1683,6 +1708,28 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 			}
 		}
 
+		// ----------------
+		// Support Redirect
+		// ----------------
+		// 1.3.6: enqueued on admin_init for slightly later execution
+		function support_redirect() {
+		
+			$args = $this->args;
+			$support_url = $args['support'];
+
+			// changes the support forum slug for premium based on the pro plugin file slug
+			// 1.2.1: removed in favour of filtering via Pro
+			// if ( $premium && isset( $args['proslug'] ) ) {
+			// 	$support_url = str_replace( $args['slug'], $args['proslug'], $support_url );
+			// }
+			$support_url = apply_filters( 'freemius_plugin_support_url_redirect', $support_url, $args['slug'] );
+
+			// 1.3.6: removed conditional include of pluggable (no longer necessary)
+			// phpcs:ignore WordPress.Security.SafeRedirect
+			wp_redirect( $support_url );
+			exit;
+		}
+
 		// ------------------------
 		// Freemius Connect Message
 		// ------------------------
@@ -1718,6 +1765,58 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 		// ====================
 		// --- Plugin Admin ---
 		// ====================
+
+		// --------------------------------
+		// Enequeue Settings Page Resources
+		// --------------------------------
+		// 1.3.4: added enqueue resources function
+		public function enqueue_resources() {
+			
+			$args = $this->args;
+			$namespace = $this->namespace;
+
+			if ( isset( $_REQUEST['page'] ) && ( sanitize_text_field( wp_unslash( $_REQUEST['page'] ) ) == $args['slug'] ) ) {
+
+				// --- get plugin options and default settings ---
+				// 1.1.2: fix for filtering of plugin options
+				$options = $this->options;
+				$options = apply_filters( $namespace . '_options', $options );
+
+				// --- maybe enqueue media scripts ---
+				// 1.1.7: added media gallery script enqueueing for image field
+				// 1.1.7: added color picker and color picker alpha script enqueueing
+				$enqueued_media = $enqueued_color_picker = $enqueue_color_picker = $enqueue_color_picker_alpha = false;
+				foreach ( $options as $option ) {
+					if ( ( 'image' == $option['type'] ) && !$enqueued_media ) {
+						wp_enqueue_media();
+						$enqueued_media = true;
+					} elseif ( 'color' == $option['type'] ) { 
+						$enqueue_color_picker = true;
+					} elseif ( 'coloralpha' == $option['type'] ) {
+						$enqueue_color_picker_alpha = true;
+					}
+				}
+
+				// 1.2.5: moved out of 
+				if ( $enqueue_color_picker_alpha ) {
+					wp_enqueue_style( 'wp-color-picker' );
+					$suffix = '.min';
+					if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
+						$suffix = '';
+					}
+					$url = plugins_url( '/js/wp-color-picker-alpha' . $suffix . '.js', $args['file'] );
+					wp_enqueue_script( 'wp-color-picker-a', $url, array( 'wp-color-picker' ), '3.0.0', true );
+					$enqueued_color_picker = true;
+				} elseif ( $enqueue_color_picker ) {
+					wp_enqueue_style( 'wp-color-picker' );
+					wp_enqueue_script( 'wp-color-picker' );
+					$enqueued_color_picker = true;			
+				}
+
+				// --- enqueue print of settings scripts / styles ---
+				$this->settings_resources( $enqueued_media, $enqueued_color_picker );
+			}
+		}
 
 		// -----------------
 		// Add Settings Menu
@@ -1891,26 +1990,8 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 			echo '<div id="admin-notices-wrap" style="display:none";><h2 style="display:none;"></h2></div>' . "\n";
 			echo '</div>' . "\n";
 
-			// --- toggle notice box script ---
-			echo "<script>function settings_toggle_notices() {
-				if (document.getElementById('admin-notices-wrap').style.display == '') {
-					document.getElementById('admin-notices-wrap').style.display = 'none';
-					document.getElementById('admin-notices-arrow').innerHTML = '&#9656;';
-				} else {
-					document.getElementById('admin-notices-wrap').style.display = '';
-					document.getElementById('admin-notices-arrow').innerHTML= '&#9662;';
-				}
-			} ";
-
-			// --- modified from /wp-admin/js/common.js to move notices ---
-			echo "jQuery(document).ready(function() {
-				setTimeout(function() {
-					jQuery('div.update-nag, div.updated, div.error, div.notice').not('.inline, .below-h2').insertAfter(jQuery('#admin-notices-wrap h2'));
-					count = parseInt(jQuery('#admin-notices-wrap').children().length - 1);
-					if (count > 0) {jQuery('#admin-notices-count').html('('+count+')');}
-					else {jQuery('#admin-notices-box').hide();}
-				}, 500);
-			});</script>";
+			// 1.3.6: move notice boxer scripts to setting_scripts
+			$this->scripts[] = 'notice_boxer';
 
 		}
 
@@ -1922,30 +2003,6 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 			$args = $this->args;
 			$namespace = $this->namespace;
 			$settings = $GLOBALS[$namespace];
-
-			// --- output debug values ---
-			if ( $this->debug ) {
-				echo '<br><b>Current Settings:</b><br>';
-				// phpcs:ignore WordPress.PHP.DevelopmentFunctions
-				echo esc_html( print_r( $settings, true ) );
-				echo '<br><br>' . "\n";
-
-				echo '<br><b>Plugin Options:</b><br>';
-				// phpcs:ignore WordPress.PHP.DevelopmentFunctions
-				echo esc_html( print_r( $this->options, true ) );
-				echo '<br><br>' . "\n";
-
-				// phpcs:ignore WordPress.Security.NonceVerification.Missing
-				if ( isset( $_POST ) ) {
-					echo '<br><b>Posted Values:</b><br>';
-					// phpcs:ignore WordPress.Security.NonceVerification.Missing
-					$posted = array_map( 'sanitize_text_field', $_POST );
-					foreach ( $posted as $key => $value ) {
-						// phpcs:ignore WordPress.PHP.DevelopmentFunctions
-						echo esc_html( $key ) . ': ' . esc_html( print_r( $value, true ) ) . '<br>' . "\n";
-					}
-				}
-			}
 
 			// --- check for animated gif icon with fallback to normal icon ---
 			// 1.0.9: fix to check if PNG file exists
@@ -2212,37 +2269,6 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 			$options = $this->options;
 			$options = apply_filters( $namespace . '_options', $options );
 
-			// --- maybe enqueue media scripts ---
-			// 1.1.7: added media gallery script enqueueing for image field
-			// 1.1.7: added color picker and color picker alpha script enqueueing
-			$enqueued_media = $enqueued_color_picker = $enqueue_color_picker = $enqueue_color_picker_alpha = false;
-			foreach ( $options as $option ) {
-				if ( ( 'image' == $option['type'] ) && !$enqueued_media ) {
-					wp_enqueue_media();
-					$enqueued_media = true;
-				} elseif ( 'color' == $option['type'] ) { 
-					$enqueue_color_picker = true;
-				} elseif ( 'coloralpha' == $option['type'] ) {
-					$enqueue_color_picker_alpha = true;
-				}
-			}
-
-			// 1.2.5: moved out of 
-			if ( $enqueue_color_picker_alpha ) {
-				wp_enqueue_style( 'wp-color-picker' );
-				$suffix = '.min';
-				if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
-					$suffix = '';
-				}
-				$url = plugins_url( '/js/wp-color-picker-alpha' . $suffix . '.js', $args['file'] );
-				wp_enqueue_script( 'wp-color-picker-a', $url, array( 'wp-color-picker' ), '3.0.0', true );
-				$enqueued_color_picker = true;
-			} elseif ( $enqueue_color_picker ) {
-				wp_enqueue_style( 'wp-color-picker' );
-				wp_enqueue_script( 'wp-color-picker' );
-				$enqueued_color_picker = true;			
-			}
-
 			$defaults = $this->default_settings();
 			$settings = $this->get_settings( false );
 
@@ -2259,7 +2285,10 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 			$sections = $this->sections;
 
 			$currenttab = '';
-			if ( isset( $settings['settingstab'] ) ) {
+			// 1.3.4: allow for switching setting tab via querystring
+			if ( isset( $_REQUEST['tab'] ) ) {
+				$currenttab = sanitize_text_field( wp_unslash( $_REQUEST['tab'] ) );
+			} elseif ( isset( $settings['settingstab'] ) ) {
 				$currenttab = $settings['settingstab'];
 			}
 
@@ -2442,7 +2471,7 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 			echo '</form>' . "\n";
 
 			// --- enqueue settings resources ---
-			$this->settings_resources( $enqueued_media, $enqueued_color_picker );
+			// 1.3.4: moved settings resources enqueue to admin_enqueue_scripts
 		}
 
 		// ---------------------
@@ -2532,10 +2561,19 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 			}
 
 			// --- enqueue settings scripts ---
-			add_action( 'admin_footer', array( $this, 'setting_scripts' ) );
+			// 1.3.4: change from admin_footer hook
+			// 1.3.5: change back to admin_footer hook (for jQuery!)
+			// 1.3.6: enqueue and append to dummy admin script
+			// add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+			// add_action( 'admin_footer', array( $this, 'setting_scripts' ) );
+			$this->enqueue_scripts();
 
 			// --- enqueue settings styles ---
-			add_action( 'admin_footer', array( $this, 'setting_styles' ) );
+			// 1.3.4: change from admin_footer hook
+			// 1.3.6: enqueue and append to dummy admin style
+			// add_action( 'admin_enqueue_styles', array( $this, 'enqueue_styles' ) );
+			// add_action( 'admin_print_styles', array( $this, 'setting_styles' ) );
+			$this->enqueue_styles();
 
 		}
 
@@ -3025,6 +3063,20 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 		}
 
 		// ---------------
+		// Enqueue Scripts
+		// ---------------
+		// 1.3.6: enqueue scripts inline via dummy script
+		public function enqueue_scripts() {
+			
+			$version = $this->plugin_version();
+			wp_register_script( 'plugin-admin-settings', null, array( 'jquery' ), $version, true );
+			wp_enqueue_script( 'plugin-admin-settings' );
+			$js = $this->setting_scripts();
+			wp_add_inline_script( 'plugin-admin-settings', $js, 'after' );
+
+		}
+
+		// ---------------
 		// Setting Scripts
 		// ---------------
 		// 1.0.9: added settings page scripts
@@ -3032,8 +3084,12 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 
 			$args = $this->args;
 			$scripts = $this->scripts;
+
 			if ( count( $scripts ) > 0 ) {
-				echo "<script>";
+
+				// 1.3.6: buffer script output
+				ob_start();
+				
 				foreach ( $scripts as $script ) {
 
 					// 1.2.5: output scripts based on stored script keys
@@ -3059,6 +3115,29 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 						echo "	jQuery('#settings-tab').val(tab);" . "\n";
 						echo "});" . "\n";
 
+					} elseif ( 'notice_boxer' == $script ) {
+						
+						// --- toggle notice box script ---
+						echo "function settings_toggle_notices() {
+							if (document.getElementById('admin-notices-wrap').style.display == '') {
+								document.getElementById('admin-notices-wrap').style.display = 'none';
+								document.getElementById('admin-notices-arrow').innerHTML = '&#9656;';
+							} else {
+								document.getElementById('admin-notices-wrap').style.display = '';
+								document.getElementById('admin-notices-arrow').innerHTML= '&#9662;';
+							}
+						}" . "\n";
+
+						// --- modified from /wp-admin/js/common.js to move notices ---
+						echo "jQuery(document).ready(function() {
+							setTimeout(function() {
+								jQuery('div.update-nag, div.updated, div.error, div.notice').not('.inline, .below-h2').insertAfter(jQuery('#admin-notices-wrap h2'));
+								count = parseInt(jQuery('#admin-notices-wrap').children().length - 1);
+								if (count > 0) {jQuery('#admin-notices-count').html('('+count+')');}
+								else {jQuery('#admin-notices-box').hide();}
+							}, 500);
+						});" . "\n";
+						
 					} elseif ( 'settings_reset' == $script ) {
 
 						// --- reset settings function ---
@@ -3169,9 +3248,26 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 
 				// 1.2.5: added for possible extra settings scripts
 				do_action( $args['namespace'] . '_settings_scripts', $args );
+				
+				$js = ob_get_contents();
+				ob_end_clean();
+				return $js;
 
-				echo "</script>";
 			}
+		}
+		
+		// --------------
+		// Enqueue Styles
+		// --------------
+		// 1.3.6: enqueue styles inline via dummy stylesheet
+		public function enqueue_styles() {
+			
+			$version = $this->plugin_version();
+			wp_register_style( 'plugin-admin-settings', null, array(), $version, 'all' );
+			wp_enqueue_style( 'plugin-admin-settings' );
+			$css = $this->setting_styles();
+			wp_add_inline_style( 'plugin-admin-settings', $css );
+			
 		}
 
 		// --------------
@@ -3247,11 +3343,13 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 			// --- filter and output styles ---
 			$namespace = $this->namespace;
 			$styles = apply_filters( $namespace . '_admin_page_styles', $styles );
+			$styles_string = implode( "\n", $styles );
+
 			// 1.2.5: added wp_strip_all_tags to styles output
 			// 1.3.0: use wp_kses_post on styles output
-			// echo wp_strip_all_tags( implode( "\n", $styles ) );
-			echo "<style>" . wp_kses_post( implode( "\n", $styles ) ) . "</style>";
-
+			// 1.3.6: return style string instead of echo
+			// echo wp_strip_all_tags( istyles_string ) );
+			return $styles_string;
 		}
 
 	}
@@ -3524,6 +3622,13 @@ if ( !function_exists( 'radio_station_load_prefixed_functions' ) ) {
 // =========
 // CHANGELOG
 // =========
+
+// == 1.3.4 ==
+// - switch to settings tab via querystring
+// - enqueue settings page resources earlier
+
+// == 1.3.3 ==
+// - move post debug output to after check_admin_referer
 
 // == 1.3.2 ==
 // - added isset and wp_unslash to $_REQUEST inputs

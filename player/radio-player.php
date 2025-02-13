@@ -185,7 +185,7 @@ function radio_player_set_debug_mode() {
 		$debug = apply_filters( 'radio_station_player_debug', $debug );
 		$debug = apply_filters( 'radio_player_debug', $debug );
 	}
-	define( 'RADIO_PLAYER_DEBUG', true );
+	define( 'RADIO_PLAYER_DEBUG', $debug );
 }
 
 
@@ -961,49 +961,6 @@ function radio_player_ajax() {
 		unset( $_REQUEST['theme'] );
 	}
 
-	// --- open HTML and head ---
-	// 2.5.0: buffer head content to maybe replace window title tag
-	// note: do not remove these span tags, they magically "fix" broken output buffering!?
-	// 2.5.10: set title with javascript instead to avoid output buffering entirely
-	echo '<html><head>' . "\n";
-	// echo '<span></span>';
-	// ob_start();
-	// echo '<span></span>';
-	wp_head();
-	// echo '<span></span>';
-	// $head = ob_get_contents();
-	// echo '<span></span>';
-	// ob_end_clean();
-	if ( isset( $atts['title'] ) && $atts['title'] && ( '' != $atts['title'] ) ) {
-		/* if ( stristr( $head, '<title' ) ) {
-			$posa = stripos( $head, '<title' );
-			$chunks = str_split( $head, $posa );
-			$before = $chunks[0];
-			unset( $chunks[0] );
-			$head = implode( '', $chunks );
-			$posa = stripos( $head, '>' ) + 1;
-			$chunks = str_split( $head, $posa );
-			unset( $chunks[0] );
-			$head = implode( '', $chunks );
-			$posb = stripos( $head, '</title>' ) + strlen( '</title>' );
-			$chunks = str_split( $head, $posb );
-			unset( $chunks[0] );
-			$after = implode( '', $chunks );
-			$head = $before . "\n" . '<title>' . esc_html( $atts['title'] ) . '</title>' . "\n" . $after;
-		} else {
-			$head .= '<title>' . esc_html( $atts['title'] ) . '</title>' . "\n";
-		}
-		*/
-		// 2.5.10: set document title with javascript
-		echo "<script>document.title = '" . esc_js( $atts['title'] ) . "';</script>" . "\n";
-	} 
-	
-	// echo $head . "\n";
-	echo '</head>' . "\n";
-
-	// --- open body ---
-	echo '<body>' . "\n";
-
 	// 2.5.0: check for popup attribute
 	$popup = ( isset( $atts['popup'] ) && $atts['popup'] ) ? true : false;
 	// 2.5.0: clear widget/block/popup attributes
@@ -1040,6 +997,79 @@ function radio_player_ajax() {
 		$background_color = apply_filters( 'radio_player_background_color', $background_color );
 	}
 
+	// --- maybe add text color ---
+	// 2.5.0: added for matching with background color
+	// 2.5.6: fix for undefined variable css
+	// 2.5.10: moved up so that inline style can be in header
+	$css = '';
+	if ( '' != $text_color ) {
+		if ( ( 'rgb' != substr( $text_color, 0, 3 ) ) && ( '#' != substr( $text_color, 0, 1 ) ) ) {
+			$text_color = '#' . $text_color;
+		}
+		$css .= '#player-contents {color: ' . esc_attr( $text_color ) . ';}' . "\n";
+	}
+
+	// --- maybe add background color ---
+	if ( '' != $background_color ) {
+		if ( ( 'rgb' != substr( $background_color, 0, 3 ) ) && ( '#' != substr( $background_color, 0, 1 ) ) ) {
+			$background_color = '#' . $background_color;
+		}
+		$css .= 'body {background: ' . esc_attr( $background_color ) . ';}' . "\n";
+	}
+
+	// --- output extra player styles ---
+	$css = apply_filters( 'radio_station_player_ajax_styles', $css, $atts );
+	$css = apply_filters( 'radio_player_ajax_styles', $css, $atts );
+	// 2.5.6: use wp_kses_post instead of wp_strip_all_tags
+	// 2.5.6: use radio_player_add_inline_style (with fallback)
+	radio_player_add_inline_style( $css );
+
+	// 2.5.10: set document title with javascript
+	if ( isset( $atts['title'] ) && $atts['title'] && ( '' != $atts['title'] ) ) {
+		$js = "document.title = '" . esc_js( $atts['title'] ) . "';" . "\n";
+		radio_player_add_inline_script( $js );
+	}
+
+	// --- open HTML and head ---
+	// 2.5.0: buffer head content to maybe replace window title tag
+	// note: do not remove these span tags, they magically "fix" broken output buffering!?
+	// 2.5.10: set title with javascript instead to avoid output buffering entirely
+	echo '<html><head>' . "\n";
+	// echo '<span></span>';
+	// ob_start();
+	// echo '<span></span>';
+	wp_head();
+	// echo '<span></span>';
+	// $head = ob_get_contents();
+	// echo '<span></span>';
+	// ob_end_clean();
+	/* if ( isset( $atts['title'] ) && $atts['title'] && ( '' != $atts['title'] ) ) {
+		if ( stristr( $head, '<title' ) ) {
+			$posa = stripos( $head, '<title' );
+			$chunks = str_split( $head, $posa );
+			$before = $chunks[0];
+			unset( $chunks[0] );
+			$head = implode( '', $chunks );
+			$posa = stripos( $head, '>' ) + 1;
+			$chunks = str_split( $head, $posa );
+			unset( $chunks[0] );
+			$head = implode( '', $chunks );
+			$posb = stripos( $head, '</title>' ) + strlen( '</title>' );
+			$chunks = str_split( $head, $posb );
+			unset( $chunks[0] );
+			$after = implode( '', $chunks );
+			$head = $before . "\n" . '<title>' . esc_html( $atts['title'] ) . '</title>' . "\n" . $after;
+		} else {
+			$head .= '<title>' . esc_html( $atts['title'] ) . '</title>' . "\n";
+		}
+	} */
+	
+	// echo $head . "\n";
+	echo '</head>' . "\n";
+
+	// --- open body ---
+	echo '<body>' . "\n";
+		
 	// --- debug shortcode attributes ---
 	if ( defined( 'RADIO_PLAYER_DEBUG' ) && RADIO_PLAYER_DEBUG ) {
 		echo '<span style="display:none;">Radio Player Shortcode Attributes: ' . esc_html( print_r( $atts, true ) ) . '</span>';
@@ -1062,33 +1092,6 @@ function radio_player_ajax() {
 		// --- call wp_footer actions ---
 		wp_footer();
 
-		// --- maybe add text color ---
-		// 2.5.0: added for matching with background color
-		// 2.5.6: fix for undefined variable css
-		$css = '';
-		if ( '' != $text_color ) {
-			if ( ( 'rgb' != substr( $text_color, 0, 3 ) ) && ( '#' != substr( $text_color, 0, 1 ) ) ) {
-				$text_color = '#' . $text_color;
-			}
-			$css .= '#player-contents {color: ' . esc_attr( $text_color ) . ';}' . "\n";
-		}
-
-		// --- maybe add background color ---
-		if ( '' != $background_color ) {
-			if ( ( 'rgb' != substr( $background_color, 0, 3 ) ) && ( '#' != substr( $background_color, 0, 1 ) ) ) {
-				$background_color = '#' . $background_color;
-			}
-			$css .= 'body {background: ' . esc_attr( $background_color ) . ';}' . "\n";
-		}
-
-		// --- output extra player styles ---
-		$css = apply_filters( 'radio_station_player_ajax_styles', $css, $atts );
-		$css = apply_filters( 'radio_player_ajax_styles', $css, $atts );
-		// 2.5.6: use wp_kses_post instead of wp_strip_all_tags
-		// echo '<style>' . wp_kses_post( $css ) . '</style>';
-		// 2.5.6: use radio_player_add_inline_style (with fallback)
-		radio_player_add_inline_style( 'radio-player', $css );
-
 	// --- close footer ---
 	echo '</div>' . "\n";
 
@@ -1105,18 +1108,28 @@ function radio_player_ajax() {
 // 2.5.6: added for possible missed inline styles (via shortcodes)
 function radio_player_add_inline_style( $css ) {
 
+	// TODO: find a way to fix this? it does NOT enqueue inline
 	// --- add check if style is already done ---
-	if ( !wp_style_is( 'radio-player', 'done' ) ) {
+	if ( wp_style_is( 'radio-player', 'registered' ) && !wp_style_is( 'radio-player', 'done' ) ) {
+
 		// --- add styles as normal ---
 		wp_add_inline_style( 'radio-player', $css );
+		
 	} else {
+
+		$version = function_exists( 'radio_station_plugin_version' ) ? radio_station_plugin_version() : '2.5.0';
+		wp_register_style( 'radio-player-footer', null, array(), $version, 'all' );
+		wp_enqueue_style( 'radio-player-footer' );
+		wp_add_inline_style( 'radio-player-footer', $css );
+
 		// --- fallback: store extra styles for later output ---
-		global $radio_player_styles;
-		add_action( 'wp_print_footer_scripts', 'radio_player_print_footer_styles', 20 );
-		if ( !isset( $radio_player_styles[$handle] ) ) {
-			$radio_player_styles = '';
-		}
-		$radio_player_styles .= $css;
+		// global $radio_player_styles;
+		// add_action( 'wp_print_footer_scripts', 'radio_player_print_footer_styles', 20 );
+		// if ( !isset( $radio_player_styles ) ) {
+		//	$radio_player_styles = '';
+		// }
+		// $radio_player_styles .= $css;
+
 	}
 }
 
@@ -1124,10 +1137,7 @@ function radio_player_add_inline_style( $css ) {
 // Print Footer Styles
 // -------------------
 // 2.5.6: added for possible missed inline styles (via shortcode)
-function radio_player_print_footer_styles() {
-	global $radio_player_styles;
-	echo '<style>' . wp_kses_post( $css ) . '</style>';
-}
+// 2.5.10: removed in favour of enqueueing inline style to dummy
 
 // -------------------------
 // Sanitize Shortcode Values
@@ -1280,7 +1290,7 @@ function radio_player_sanitize_values( $keys ) {
 	// --- open audio element ---
 	$html = '';
 	if ( 1 === $instance ) {
-		$html .= "<!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->\n";
+		$html .= "<!--[if lt IE 9]><!--script>document.createElement('audio');</script><![endif]-->\n";
 	}
 	$html .= sprintf( '<audio %s controls="controls">', join( ' ', $attr_strings ) );
 
@@ -1476,7 +1486,7 @@ function radio_player_core_scripts() {
 		if ( '' != $js ) {
 			if ( function_exists( 'wp_add_inline_script' ) ) {
 				// 2.5.0: added check if script already done
-				if ( !wp_script_is( 'done', 'radio-player' ) ) {
+				if ( !wp_script_is( 'radio-player', 'done' ) ) {
 					// --- add inline script ---
 					wp_add_inline_script( 'radio-player', $js, 'before' );
 				} else {
@@ -1577,21 +1587,17 @@ function radio_player_enqueue_script( $script ) {
 // 2.5.10: added for fallback printing of scripts in footer
 function radio_player_inline_script( $js, $position = 'after' ) {
 
-	$enqueue_in_footer = false;
 	if ( function_exists( 'wp_add_inline_script' ) ) {
-		if ( !wp_script_is( 'done', 'radio-player' ) ) {
+		if ( !wp_script_is( 'radio-player', 'done' ) ) {
 			wp_add_inline_script( 'radio-player', $js, $position );
 		} else {
-			$enqueue_in_footer = true;
+			$version = function_exists( 'radio_station_plugin_version' ) ? radio_station_plugin_version() : '2.5.0';
+			wp_register_script( 'radio-player-footer', null, array( 'jquery' ), $version, true );
+			wp_enqueue_script( 'radio-player-footer' );
+			wp_add_inline_script( 'radio-player-footer', $js, $position );
 		}
 	}
-	if ( $enqueue_in_footer ) {
-		if ( !wp_script_is( 'rp-footer', 'registered' ) ) {
-			$script_url = plugins_url( '/player/js/rp-footer.js', RADIO_STATION_FILE );
-			wp_register_script( 'rp-footer', $script_url, array(), '1.0.0', true );
-		}
-		wp_add_inline_script( 'rp-footer', $js, $position );
-	}
+
 }
 
 
@@ -1717,7 +1723,7 @@ function radio_player_enqueue_howler( $infooter ) {
 		wp_localize_script( 'rp-mediaelement', 'rpSettings', $player_settings );
 	} else {
 		// --- output script settings variable directly ---
-		echo "<script>var rpSettings; ";
+		echo "var rpSettings; ";
 		foreach ( $player_settings as $key => $value ) {
 			if ( is_string( $value ) ) {
 				echo "rpSettings[" . esc_js( $key ) . "] = '" . esc_js( $value ) . "'; ";
@@ -1725,7 +1731,6 @@ function radio_player_enqueue_howler( $infooter ) {
 				echo "rpSettings[" . esc_js( $key ) . "] = " . esc_js( $value ) . "; ";
 			}
 		}
-		echo "</script>";
 	}
 } */
 
@@ -2112,7 +2117,7 @@ function radio_player_state() {
 
 	// --- reset saving state in parent frame ---
 	// 2.5.8: not necessary to do this here
-	// echo "<script>parent.radio_player_data.state.saving = false;</script>" . "\n";
+	// echo "parent.radio_player_data.state.saving = false;" . "\n";
 
 	if ( !function_exists( 'get_current_user_id' ) || !function_exists( 'update_user_meta' ) ) {
 		exit;
@@ -2833,7 +2838,7 @@ function radio_player_enqueue_styles( $script = false, $skin = false ) {
 			$control_styles = radio_player_control_styles( false );
 			if ( '' != $control_styles ) {
 				// 2.5.6: use wp_kses_post on control styles
-				echo '<style>' . wp_kses_post( $control_styles ) . '</style>';
+				echo wp_kses_post( $control_styles );
 			}
 			
 		} */
@@ -3078,37 +3083,37 @@ function radio_player_control_styles( $instance ) {
 	// --- Player Colors ---
 	// 2.5.0: added for main color styling override
 	if ( isset( $colors['text'] ) && ( '' != $colors['text'] ) ) {
-		$css .= $container . " {color: " . $colors['text'] . ";}" . "\n";
+		$css .= esc_attr( $container ) . " {color: " . esc_attr( $colors['text'] ) . ";}" . "\n";
 	}
 	if ( isset( $colors['background'] ) && ( '' != $colors['background'] ) ) {
-		$css .= $container . " {background-color: " . $colors['background'] . ";}" . "\n";
+		$css .= esc_attr( $container ) . " {background-color: " . esc_attr( $colors['background'] ) . ";}" . "\n";
 	}
 
 	// --- Play Button ---
 	// 2.4.0.2: fix to glowingloading animation reference
 	$css .= "/* Playing Button */
-" . $container . ".loaded .rp-play-pause-button-bg {background-color: " . $colors['buttons'] . ";}
-" . $container . ".playing .rp-play-pause-button-bg {background-color: " . $colors['playing'] . ";}
-" . $container . ".error .rp-play-pause-button-bg {background-color: #CC0000;}
-" . $container . ".loading .rp-play-pause-button-bg {animation: glowingloading 1s infinite alternate;}
-" . $container . ".playing .rp-play-pause-button-bg, 
-" . $container . ".playing.loaded .rp-play-pause-button-bg {animation: glowingplaying 1s infinite alternate;}
+" . esc_attr( $container ) . ".loaded .rp-play-pause-button-bg {background-color: " . esc_attr( $colors['buttons'] ) . ";}
+" . esc_attr( $container ) . ".playing .rp-play-pause-button-bg {background-color: " . esc_attr( $colors['playing'] ) . ";}
+" . esc_attr( $container ) . ".error .rp-play-pause-button-bg {background-color: #CC0000;}
+" . esc_attr( $container ) . ".loading .rp-play-pause-button-bg {animation: glowingloading 1s infinite alternate;}
+" . esc_attr( $container ) . ".playing .rp-play-pause-button-bg, 
+" . esc_attr( $container ) . ".playing.loaded .rp-play-pause-button-bg {animation: glowingplaying 1s infinite alternate;}
 @keyframes glowingloading {
-	from {background-color: " . $colors['buttons'] . ";} to {background-color: " . $colors['buttons'] . "80;}
+	from {background-color: " . esc_attr( $colors['buttons'] ) . ";} to {background-color: " . esc_attr( $colors['buttons'] ) . "80;}
 }
 @keyframes glowingplaying {
-	from {background-color: " . $colors['playing'] . ";} to {background-color: " . $colors['playing'] . "C0;}
+	from {background-color: " . esc_attr( $colors['playing'] ) . ";} to {background-color: " . esc_attr( $colors['playing'] ) . "C0;}
 }" . "\n";
 
 	// --- Active Volume Buttons Color ---
 	// 2.5.0: added popup player button selector
 	$css .= "/* Volume Buttons */
-" . $container . " .rp-mute:hover, " . $container . ".muted .rp-mute, " . $container . ".muted .rp-mute:hover,
-" . $container . " .rp-volume-max:focus, " . $container . " .rp-volume-max:hover, " . $container . ".maxed .rp-volume-max,
-" . $container . " .rp-volume-up:focus, " . $container . " .rp-volume-up:hover,
-" . $container . " .rp-volume-down:focus, " . $container . " .rp-volume-down:hover,
-" . $container . " .rp-popup-button:focus, " . $container . " .rp-popup-button:hover {
-	background-color: " . $colors['buttons'] . ";
+" . esc_attr( $container ) . " .rp-mute:hover, " . esc_attr( $container ) . ".muted .rp-mute, " . esc_attr( $container ) . ".muted .rp-mute:hover,
+" . esc_attr( $container ) . " .rp-volume-max:focus, " . esc_attr( $container ) . " .rp-volume-max:hover, " . esc_attr( $container ) . ".maxed .rp-volume-max,
+" . esc_attr( $container ) . " .rp-volume-up:focus, " . esc_attr( $container ) . " .rp-volume-up:hover,
+" . esc_attr( $container ) . " .rp-volume-down:focus, " . esc_attr( $container ) . " .rp-volume-down:hover,
+" . esc_attr( $container ) . " .rp-popup-button:focus, " . esc_attr( $container ) . " .rp-popup-button:hover {
+	background-color: " . esc_attr( $colors['buttons'] ) . ";
 }" . "\n";
 
 	// --- Volume Range Input and Container ---
@@ -3117,60 +3122,61 @@ function radio_player_control_styles( $instance ) {
 	// 2.4.0.4: added no border style to range input (border added on some themes)
 	// 2.5.0: added input height 100% to fix vertical slider alignment
 	$css .= "/* Range Input */
-" . $container . " .rp-volume-controls input[type=range] {";
+" . esc_attr( $container ) . " .rp-volume-controls input[type=range] {";
 	$css .= "height: 100%; margin: 0; background-color: transparent; vertical-align: middle; -webkit-appearance: none; border: none;}
-" . $container . " .rp-volume-controls input[type=range]:focus {outline: none; box-shadow: none;}
-" . $container . " .rp-volume-controls input[type=range]::-moz-focus-inner,
-" . $container . " .rp-volume-controls input[type=range]::-moz-focus-outer {outline: none; box-shadow: none;}" . "\n";
+" . esc_attr( $container ) . " .rp-volume-controls input[type=range]:focus {outline: none; box-shadow: none;}
+" . esc_attr( $container ) . " .rp-volume-controls input[type=range]::-moz-focus-inner,
+" . esc_attr( $container ) . " .rp-volume-controls input[type=range]::-moz-focus-outer {outline: none; box-shadow: none;}" . "\n";
 
 	// --- Range Track (synced Background Div) ---
 	// 2.4.0.3: add position absolute/top on slider background (cross-browser display fix)
-	// 2.6.0: set top bottom and height to 10px for consistent display
+	// 2.5.10: set top bottom and height to 10px for consistent display
+	// 2.5.10: set z-index to 1 to use with improved javascript calculations
 	$css .= "/* Range Track */
-" . $container . " .rp-volume-controls .rp-volume-slider-bg {
-	position: absolute; top: 10px; bottom: 10px; overflow: hidden; height: 10px; margin-left: 9px; z-index: -1; border: 1px solid rgba(128, 128, 128, 0.5); border-radius: 3px; background: rgba(128, 128, 128, 0.5);
+" . esc_attr( $container ) . " .rp-volume-controls .rp-volume-slider-bg {
+	position: absolute; top: 10px; bottom: 10px; overflow: hidden; height: 10px; margin-left: 9px; z-index: 1; border: 1px solid rgba(128, 128, 128, 0.5); border-radius: 3px; background: rgba(128, 128, 128, 0.5);
 }
-" . $container . ".playing .rp-volume-controls .rp-volume-slider-bg {background: " . $colors['track'] . ";}
-" . $container . ".playing.muted .rp-volume-controls .rp-volume-slider-bg {background: rgba(128, 128, 128, 0.5);}" . "\n";
+" . esc_attr( $container ) . ".playing .rp-volume-controls .rp-volume-slider-bg {background: " . esc_attr( $colors['track'] ) . ";}
+" . esc_attr( $container ) . ".playing.muted .rp-volume-controls .rp-volume-slider-bg {background: rgba(128, 128, 128, 0.5);}" . "\n";
 
 	// --- Slider Range Track (Clickable Transparent) ---
 	$css .= "/* Range Track */
-" . $container . " .rp-volume-controls input[type=range]::-webkit-slider-runnable-track {height: 9px; background: transparent; -webkit-appearance: none; color: transparent}
-" . $container . " .rp-volume-controls input[type=range]::-moz-range-track {height: 9px; background: transparent; color: transparent;}
-" . $container . " .rp-volume-controls input[type=range]::-ms-track {height: 9px; color: transparent; background: transparent; border-color: transparent;}" . "\n";
+" . esc_attr( $container ) . " .rp-volume-controls input[type=range]::-webkit-slider-runnable-track {height: 9px; background: transparent; -webkit-appearance: none; color: transparent}
+" . esc_attr( $container ) . " .rp-volume-controls input[type=range]::-moz-range-track {height: 9px; background: transparent; color: transparent;}
+" . esc_attr( $container ) . " .rp-volume-controls input[type=range]::-ms-track {height: 9px; color: transparent; background: transparent; border-color: transparent;}" . "\n";
 // 2.4.0.3: remove float on range input (cross-browser display fix)
 // " . $container . " .rp-volume-controls input[type=range] {float: left; margin-top: -9px;}
 
 	// --- Slider Range Thumb ---
-	$thumb_radius = '9px';
+	// 2.5.10: fix to slider range thumb border radius (for default circle buttons)
 	$css .= "/* Range Thumb */
-" . $container . " .rp-volume-controls input[type=range]::-webkit-slider-thumb {
+" . esc_attr( $container ) . " .rp-volume-controls input[type=range]::-webkit-slider-thumb {
 	width: 18px; height: 18px; cursor: pointer; background: rgba(128, 128, 128, 1);
-	border: 1px solid rgba(128, 128, 128, 0.5); border-radius: ' . $thumb_radius . ';
+	border: 1px solid rgba(128, 128, 128, 0.5); border-radius: 9px; z-index: 2;
 	margin-top: -4.5px; -webkit-appearance: none;
 }
-" . $container . " .rp-volume-controls input[type=range]::-moz-range-thumb {
+" . esc_attr( $container ) . " .rp-volume-controls input[type=range]::-moz-range-thumb {
 	width: 18px; height: 18px; cursor: pointer; background: rgba(128, 128, 128, 1);
-	border: 1px solid rgba(128, 128, 128, 0.5); border-radius: ' . $thumb_radius;
+	border: 1px solid rgba(128, 128, 128, 0.5); border-radius: 9px; z-index: 2;
 }
-" . $container . " .rp-volume-controls input[type=range]::-ms-thumb {
+" . esc_attr( $container ) . " .rp-volume-controls input[type=range]::-ms-thumb {
 	width: 18px; height: 18px; cursor: pointer; background: rgba(128, 128, 128, 1);
-	border: 1px solid rgba(128, 128, 128, 0.5); border-radius: ' . $thumb_radius . '; margin-top: 0px;
+	border: 1px solid rgba(128, 128, 128, 0.5); border-radius: 9px; z-index: 2; margin-top: 0px; 
 }
-" . $container . ".rounded .rp-volume-controls input[type=range]::-webkit-slider-thumb {border-radius: 5px !important;}
-" . $container . ".square .rp-volume-controls input[type=range]::-webkit-slider-thumb {border-radius: 0px !important;}
-" . $container . ".playing .rp-volume-controls input[type=range]::-webkit-slider-thumb {background: " . $colors['thumb'] . "};
-" . $container . ".playing .rp-volume-controls input[type=range]::-moz-range-thumb {background: " . $colors['thumb'] . "};
-" . $container . ".playing .rp-volume-controls input[type=range]::-ms-thumb {background: " . $colors['thumb'] . "};
-" . $container . " input[type=range]::-ms-tooltip {display: none;}
+" . esc_attr( $container ) . ".rounded .rp-volume-controls input[type=range]::-webkit-slider-thumb {border-radius: 5px !important;}
+" . esc_attr( $container ) . ".square .rp-volume-controls input[type=range]::-webkit-slider-thumb {border-radius: 0px !important;}
+" . esc_attr( $container ) . ".playing .rp-volume-controls input[type=range]::-webkit-slider-thumb {background: " . esc_attr( $colors['thumb'] ) . "};
+" . esc_attr( $container ) . ".playing .rp-volume-controls input[type=range]::-moz-range-thumb {background: " . esc_attr( $colors['thumb'] ) . "};
+" . esc_attr( $container ) . ".playing .rp-volume-controls input[type=range]::-ms-thumb {background: " . esc_attr( $colors['thumb'] ) . "};
+" . esc_attr( $container ) . " input[type=range]::-ms-tooltip {display: none;}
 @supports (-ms-ime-align:auto) {
-  " . $container . " .rp-volume-controls input[type=range] {margin: 0;}
+  " . esc_attr( $container ) . " .rp-volume-controls input[type=range] {margin: 0;}
 }" . "\n";
 
 	// --- dummy element style for thumb width ---
 	// note: since *actual* range input thumb width is hard/impossible to get with jQuery,
 	// if changing the thumb width style, override this style also for volume background to match!
-	$css .= $container . " .rp-volume-thumb {display: none; width: 18px;}" . "\n";
+	$css .= esc_attr( $container ) . " .rp-volume-thumb {display: none; width: 18px;}" . "\n";
 
 	// --- get volume control display settings ---
 	// 2.4.1.4: added volume control visibility options filter
@@ -3182,16 +3188,16 @@ function radio_player_control_styles( $instance ) {
 
 	// --- volume display styles ---
 	if ( !in_array( 'slider', $volume_controls ) ) {
-		$css .= "\n" . $container . " .rp-volume-slider-container {display: none;}" . "\n";
+		$css .= "\n" . esc_attr(  $container ) . " .rp-volume-slider-container {display: none;}" . "\n";
 	}
 	if ( !in_array( 'updown', $volume_controls ) ) {
-		$css .= "\n" . $container . " .rp-volume-up, " . $container . " .rp-volume-down {display: none;}" . "\n";
+		$css .= "\n" . esc_attr( $container ) . " .rp-volume-up, " . esc_attr( $container ) . " .rp-volume-down {display: none;}" . "\n";
 	}
 	if ( !in_array( 'mute', $volume_controls ) ) {
-		$css .= "\n" . $container . " .rp-mute {display: none;}" . "\n";
+		$css .= "\n" . esc_attr( $container ) . " .rp-mute {display: none;}" . "\n";
 	}
 	if ( !in_array( 'max', $volume_controls ) ) {
-		$css .= "\n" . $container . " .rp-volume-max {display: none;}" . "\n";
+		$css .= "\n" . esc_attr( $container ) . " .rp-volume-max {display: none;}" . "\n";
 	}
 
 	// --- filter and return ---

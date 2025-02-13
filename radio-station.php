@@ -6,7 +6,7 @@ Plugin Name: Radio Station
 Plugin URI: https://radiostation.pro/radio-station
 Description: Adds Show pages, DJ role, playlist and on-air programming functionality to your site.
 Author: Tony Zeoli, Tony Hayes
-Version: 2.5.9.5
+Version: 2.5.9.7
 Requires at least: 3.3.1
 Text Domain: radio-station
 Domain Path: /languages
@@ -301,7 +301,7 @@ if ( RADIO_STATION_DEBUG ) {
 // Start Plugin Loader Instance
 // ----------------------------
 require RADIO_STATION_DIR . '/loader.php';
-$instance = new radio_station_loader( $settings );
+$rs_instance = new radio_station_loader( $settings );
 
 
 // --------------------------
@@ -313,6 +313,7 @@ if ( is_admin() ) {
 
 	// --- Admin Includes ---
 	require RADIO_STATION_DIR . '/radio-station-admin.php';
+	// require RADIO_STATION_DIR . '/includes/onboarding.php';
 	require RADIO_STATION_DIR . '/includes/post-types-admin.php';
 
 	// --- Contextual Help ---
@@ -373,15 +374,13 @@ function radio_station_check_plan_options() {
 	// 2.4.0.4: remove unnecessary second argument to wp_cache_get
 	$plugins = wp_cache_get( 'plugins' );
 	if ( !$plugins ) {
-		if ( function_exists( 'get_plugins' ) ) {
-			$plugins = get_plugins();
-		} else {
-			$plugin_path = ABSPATH . 'wp-admin/includes/plugin.php';
-			if ( file_exists( $plugin_path ) ) {
-				include $plugin_path;
-				$plugins = get_plugins();
+		if ( !function_exists( 'get_plugins' ) ) {
+			$admin_plugins = ABSPATH . 'wp-admin/includes/plugin.php';
+			if ( file_exists( $admin_plugins ) ) {
+				include_once $admin_plugins;
 			}
 		}
+		$plugins = get_plugins();
 	}
 	if ( $plugins && is_array( $plugins ) && ( count( $plugins ) > 0 ) ) {
 		foreach ( $plugins as $slug => $plugin ) {
@@ -531,7 +530,8 @@ function radio_station_freemius_plugin_url_path( $default_path ) {
 		return $icon_path;
 	}
 	$icon_path = RADIO_STATION_DIR . '/images/' . RADIO_STATION_SLUG . '.png';
-	if ( file_exists( $default_path ) ) {
+	// 2.5.10: fix to mismatched variable default_path
+	if ( file_exists( $icon_path ) ) {
 		return $icon_path;
 	}
 	// 2.5.0: fix to incorrect return of undefined local_path
@@ -655,35 +655,37 @@ function radio_station_enqueue_script( $scriptkey, $deps = array(), $infooter = 
 // 2.5.0: added for missed inline scripts (via shortcodes)
 function radio_station_add_inline_script( $handle, $js, $position = 'after' ) {
 
+	// --- maybe enqueue footer dummy script ---
+	/* if ( ( 'rs-footer' == $handle ) && !wp_script_is( 'rs-footer', 'enqueued' ) ) {
+		$script_url = plugins_url( '/js/rs-footer.js', RADIO_STATION_FILE );
+		wp_enqueue_script( 'rs-footer', $script_url, array(), '1.0.0', true );
+	} */
+
 	// --- add check if script is already done ---
-	if ( !wp_script_is( $handle, 'done' ) ) {
+	if ( wp_script_is( $handle, 'registered' ) && !wp_script_is( $handle, 'done' ) ) {
+
 		// --- handle javascript normally ---
-		wp_add_inline_script( $handle, $js, $position );
+		wp_add_inline_script( $handle, $js, $position );		
+
 	} else {
-		// --- store extra javascript for later output ---
-		/* if ( !strstr( $handle, '-admin' ) ) {
-			global $radio_station_scripts;
-			add_action( 'wp_print_footer_scripts', 'radio_station_print_footer_scripts', 20 );
-			if ( !isset( $radio_station_scripts[$handle] ) ) {
-				$radio_station_scripts[$handle] = '';
-			}
-			$radio_station_scripts[$handle] .= $js;
-		} else {
-			global $radio_station_admin_scripts;
-			add_action( 'admin_print_footer_scripts', 'radio_station_admin_print_footer_scripts', 20 );
-			if ( !isset( $radio_station_admin_scripts[$handle] ) ) {
-				$radio_station_admin_scripts[$handle] = '';
-			}
-			$radio_station_admin_scripts[$handle] .= $js;
-		} */
-		
+
 		// 2.5.7: enqueue dummy javascript file to output in footer
 		// 2.5.10: fix slug from rp-footer to rs-footer
-		if ( !wp_script_is( 'rs-footer', 'registered' ) ) {
+		// 2.5.10: change from register_script to enqueue_script
+		/* if ( !wp_script_is( 'rs-footer', 'enqueued' ) ) {
 			$script_url = plugins_url( '/js/rs-footer.js', RADIO_STATION_FILE );
-			wp_register_script( 'rs-footer', $script_url, array(), '1.0.0', true );
+			wp_enqueue_script( 'rs-footer', $script_url, array(), '1.0.0', true );
 		}
-		wp_add_inline_script( 'rs-footer', $js, $position );
+		wp_add_inline_script( 'rs-footer', $js, $position ); */
+		
+		// 2.5.7: enqueue dummy javascript file to output in footer
+		if ( !wp_script_is( 'radio-station-footer', 'registered' ) ) {
+			$version = functIon_exists( 'radio_station_plugin_version' ) ? radio_station_plugin_version() : '2.5.0';
+			wp_register_script( 'radio-station-footer', null, array( 'jquery' ), $version, true );
+			wp_enqueue_script( 'radio-station-footer' );
+		}
+		wp_add_inline_script( 'radio-station-footer', $js, $position );
+
 	}
 }
 
@@ -767,12 +769,14 @@ function radio_station_enqueue_style( $stylekey, $deps = array() ) {
 function radio_station_add_inline_style( $handle, $css ) {
 
 	// --- add check if style is already done ---
-	if ( !wp_style_is( $handle, 'done' ) ) {
+	if ( wp_style_is( $handle, 'registered' ) && !wp_style_is( $handle, 'done' ) ) {
+
 		// --- handle style normally ---
 		wp_add_inline_style( $handle, $css );
+
 	} else {
 		// --- store extra styles for later output ---
-		if ( !strstr( $handle, '-admin' ) ) {
+		/* if ( !strstr( $handle, '-admin' ) ) {
 			global $radio_station_styles;
 			add_action( 'wp_print_footer_scripts', 'radio_station_print_footer_styles', 20 );
 			if ( !isset( $radio_station_styles[$handle] ) ) {
@@ -786,7 +790,13 @@ function radio_station_add_inline_style( $handle, $css ) {
 				$radio_station_admin_styles[$handle] = '';
 			}
 			$radio_station_admin_styles[$handle] .= $css;
+		} */
+		if ( !wp_style_is( 'radio-station-footer', 'registered' ) ) {
+			$version = function_exists( 'radio_station_plugin_version' ) ? radio_station_plugin_version() : '2.5.0';
+			wp_register_style( 'radio-station-footer', null, array(), $version, 'all' );
+			wp_enqueue_style( 'radio-station-footer' );
 		}
+		wp_add_inline_style( 'radio-station-footer', $css );
 	}
 }
 
@@ -794,27 +804,27 @@ function radio_station_add_inline_style( $handle, $css ) {
 // Print Footer Styles
 // -------------------
 // 2.5.0: added for missed inline styles
-function radio_station_print_footer_styles() {
+/* function radio_station_print_footer_styles() {
 	global $radio_station_styles;
 	if ( is_array( $radio_station_styles ) && ( count( $radio_station_styles ) > 0 ) ) {
 		foreach ( $radio_station_styles as $handle => $css ) {
 			echo '<style>' . wp_kses_post( $css ) . '</style>';
 		}
 	}
-}
+} */
 
 // -------------------------
 // Print Admin Footer Styles
 // -------------------------
 // 2.5.0: added for missed inline styles
-function radio_station_admin_print_footer_styles() {
+/* function radio_station_admin_print_footer_styles() {
 	global $radio_station_admin_styles;
 	if ( is_array( $radio_station_admin_styles ) && ( count( $radio_station_admin_styles ) > 0 ) ) {
 		foreach ( $radio_station_admin_styles as $handle => $css ) {
 			echo '<style>' . wp_kses_post( $css ) . '</style>';
 		}
 	}
-}
+} */
 
 // ------------------
 // Enqueue Datepicker
@@ -1068,9 +1078,10 @@ function radio_station_streaming_data( $data, $station = false ) {
 		'fformat'  => radio_station_get_setting( 'fallback_format' ),
 	);
 	
-	if ( RADIO_STATION_DEBUG ) {
-		echo '<span style="display:none;">Player Stream Data: ' . esc_html( print_r( $data, true ) ) . '</span>' . "\n";
-	}
+	// commented out: this breaks player settings
+	// if ( RADIO_STATION_DEBUG ) {
+	//	echo '<span style="display:none;">Player Stream Data: ' . esc_html( print_r( $data, true ) ) . '</span>' . "\n";
+	// }
 	$data = apply_filters( 'radio_station_streaming_data', $data, $station );
 	return $data;
 }

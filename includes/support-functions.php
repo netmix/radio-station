@@ -1363,9 +1363,12 @@ function radio_station_get_show_avatar( $show_id, $size = 'thumbnail', $attr = a
 function radio_station_get_stream_url() {
 	$streaming_url = '';
 	$stream = radio_station_get_setting( 'streaming_url' );
-	if ( RADIO_STATION_DEBUG ) {
-		echo '<span style="display:none;">Stream URL Setting: ' . esc_html( $stream ) . '</span>';
-	}
+	
+	// commented out: this breaks player settings
+	// if ( RADIO_STATION_DEBUG ) {
+		// echo '<span style="display:none;">Stream URL Setting: ' . esc_html( $stream ) . '</span>';
+	// }
+
 	if ( $stream && ( '' != $stream ) ) {
 		$streaming_url = $stream;
 	}
@@ -1384,9 +1387,12 @@ function radio_station_get_fallback_url() {
 	if ( $fallback && ( '' != $fallback ) ) {
 		$fallback_url = $fallback;
 	}
-	if ( RADIO_STATION_DEBUG ) {
-		echo '<span style="display:none;">Fallback URL Setting: ' . esc_html( $fallback_url ) . '</span>';
-	}
+	
+	// commented out: this breaks player settings
+	// if ( RADIO_STATION_DEBUG ) {
+	// 	echo '<span style="display:none;">Fallback URL Setting: ' . esc_html( $fallback_url ) . '</span>';
+	// }
+
 	$fallback_url = apply_filters( 'radio_station_fallback_url', $fallback_url );
 
 	return $fallback_url;
@@ -2007,7 +2013,8 @@ function radio_station_sanitize_values( $data, $keys ) {
 	// echo 'Sanitize Keys: '; print_r( $keys );
 	// echo 'Sanitize Data: '; print_r( $data );
 	// echo 'Sanitized: '; print_r( $sanitized );
-
+	// 2.5.10: add filter for sanitized values (in case fixes needed)
+	$sanitized = apply_filters( 'radio_station_sanitized_values', $sanitized, $data, $keys );
 	return $sanitized;
 }
 

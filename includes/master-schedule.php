@@ -690,7 +690,7 @@ function radio_station_ajax_schedule_loader() {
 	} else {
 		$views = array( $atts['view'] );
 	}
-	echo "Views: " . esc_html( print_r( $views, true ) ) . "\n";
+	// echo "Views: " . esc_html( print_r( $views, true ) ) . "\n";
 	foreach ( $views as $view ) {
 
 		$view = trim( $view );

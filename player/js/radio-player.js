@@ -463,12 +463,14 @@ function radio_player_volume_slider(instance, volume) {
 	sliderbg = jQuery('#radio_container_'+instance+' .rp-volume-slider-bg');
 	thumb = jQuery('#radio_container_'+instance+' .rp-volume-thumb');
 	if (slider.length) {
-		sliderbg.hide(); /* .css('border','inherit'); */
-		slider.val(volume); swidth = slider.width();
+		sliderbg.hide(); slider.val(volume); swidth = slider.width();
 		thumb.show(); twidth = thumb.width(); thumb.hide();
-		bgwidth = (swidth - (twidth / 2)) * (volume / 100) * 0.98;
-		sliderbg.attr('style', 'width: '+bgwidth+'px !important;').show(); /*  border:inherit; */
-		if (radio_player.debug) {newwidth = parseInt(sliderbg.css('width')); console.log('Volume Slider: '+swidth+' : '+twidth+' : '+bgwidth+' : '+newwidth);}
+		mwidth = parseInt(sliderbg.css('margin-left').replace('px',''));
+		bgwidth = parseInt((swidth - twidth) * (volume / 100)) - mwidth;
+		sliderbg.attr('style', 'width: '+bgwidth+'px !important;').show();
+		if (radio_player.debug) {
+			newwidth = parseInt(sliderbg.css('width')); console.log('Volume Slider BF: Slider '+swidth+' : Thumb '+twidth+' : Margin '+mwidth+' : BG '+bgwidth+' : Now '+newwidth);
+		}
 		if (volume == 100) {container.addClass('maxed');} else {container.removeClass('maxed');}
 	}
 }
@@ -1190,6 +1192,14 @@ jQuery(document).ready(function() {
 		}
 	});
 
+	/* --- bind volume slider background changes --- */
+	jQuery('.rp-volume-slider').on('mousemove', function() {
+		container = jQuery(this).parents('.radio-container')
+		instance = container.attr('id').replace('radio_container_','');
+		volume = parseInt(jQuery(this).val());
+		radio_player_volume_slider(instance, volume);
+	});
+
 	/* --- bind volume slider changes --- */
 	jQuery('.rp-volume-slider').on('change', function() {
 		container = jQuery(this).parents('.radio-container')
@@ -1209,7 +1219,7 @@ jQuery(document).ready(function() {
 	jQuery('.rp-mute').on('click', function() {
 		container = jQuery(this).parents('.radio-container');
 		instance = container.attr('id').replace('radio_container_','');
-		console.log('mute click '+instance);
+		if (radio_player.debug) {console.log('mute click '+instance);}
 		if (container.hasClass('muted')) {mute = false;} else {mute = true;}
 		if (typeof radio_player_data.players[instance] != 'undefined') {
 			if (radio_player.debug) {console.log('Mute/Unmute Player '+instance);}

@@ -1204,10 +1204,12 @@ function radio_station_genre_archive_list( $atts ) {
 				}
 
 				// --- genre title ---
-				$list .= '<div class="genre-title"><h3 class="genre-title">' . "\n";
+				// 2.5.10: change div class to genre-title-wrapper
+				$list .= '<div class="genre-title-wrapper"><h3 class="genre-title">' . "\n";
 				if ( $atts['link_genres'] ) {
-					$list .= '<a href="' . esc_url( $genre['url'] ) . '">';
-						$list .= esc_html( $genre['name'] ) . "\n";
+					// 2.5.10: added genre-link class
+					$list .= '<a class="genre-link" href="' . esc_url( $genre['url'] ) . '">';
+						$list .= esc_html( $genre['name'] );
 					$list .= '</a>' . "\n";
 				} else {
 					$list .= esc_html( $genre['name'] ) . "\n";
@@ -1237,10 +1239,12 @@ function radio_station_genre_archive_list( $atts ) {
 			}
 
 			// --- genre title ---
-			$heading .= '<div class="genre-title"><h3 class="genre-title">' . "\n";
+			// 2.5.10: change div class to genre-title-wrapper
+			$heading .= '<div class="genre-title-wrapper"><h3 class="genre-title">' . "\n";
 			if ( $atts['link_genres'] ) {
-				$heading .= '<a href="' . esc_url( $genre['url'] ) . '">';
-					$heading .= esc_html( $genre['name'] ) . "\n";
+				// 2.5.10: added genre-link class
+				$heading .= '<a class="genre-link" href="' . esc_url( $genre['url'] ) . '">';
+					$heading .= esc_html( $genre['name'] );
 				$heading .= '</a>' . "\n";
 			} else {
 				$heading .= esc_html( $genre['name'] ) . "\n";
@@ -2479,6 +2483,11 @@ function radio_station_current_show_shortcode( $atts ) {
 
 			// --- enqueue shortcode styles ---
 			radio_station_enqueue_style( 'shortcodes' );
+			
+			// 2.6.7: filter to enqueue= reloader script in current window
+			if ( $atts['dynamic'] ) {
+				$dynamic = apply_filters( 'radio_station_countdown_dynamic', false, 'current-show', $atts, false );
+			}
 
 			return $html;
 		}
@@ -2515,10 +2524,12 @@ function radio_station_current_show_shortcode( $atts ) {
 	if ( $atts['for_time'] ) {
 		$current_shift = radio_station_get_current_show( $atts['for_time'] );
 		$time = radio_station_get_time( 'datetime', $atts['for_time'] );
-		echo '<span style="display:none;">' . "\n";
-			echo 'Current Shift For Time: ' . esc_html( $atts['for_time'] ) . ' : ' . esc_html( $time ) . "\n";
-			echo esc_html( print_r( $current_shift, true ) ) . "\n";
-		echo '</span>' . "\n";
+		if ( RADIO_STATION_DEBUG ) {
+			echo '<span style="display:none;">' . "\n";
+				echo 'Current Shift For Time: ' . esc_html( $atts['for_time'] ) . ' : ' . esc_html( $time ) . "\n";
+				echo esc_html( print_r( $current_shift, true ) ) . "\n";
+			echo '</span>' . "\n";
+		}
 	} else {
 		$current_shift = radio_station_get_current_show();
 	}
@@ -3308,6 +3319,11 @@ function radio_station_upcoming_shows_shortcode( $atts ) {
 			// --- enqueue shortcode styles ---
 			radio_station_enqueue_style( 'shortcodes' );
 
+			// 2.6.7: filter to enqueue reloader script in current window
+			if ( $atts['dynamic'] ) {
+				$dynamic = apply_filters( 'radio_station_countdown_dynamic', false, 'upcoming-shows', $atts, false );
+			}
+
 			// --- filter and return ---
 			$html = apply_filters( 'radio_station_upcoming_shows_shortcode_ajax', $html, $atts, $instance );
 			return $html;
@@ -3960,6 +3976,11 @@ function radio_station_current_playlist_shortcode( $atts ) {
 
 			// --- enqueue shortcode styles ---
 			radio_station_enqueue_style( 'shortcodes' );
+
+			// 2.6.7: filter to enqueue= reloader script in current window
+			if ( $atts['dynamic'] ) {
+				$dynamic = apply_filters( 'radio_station_countdown_dynamic', false, 'current-playlist', $atts, false );
+			}
 
 			// 2.5.0: added filter for shortcode output
 			$html = apply_filters( 'radio_station_current_playlist_shortcode_ajax', $html, $atts, $instance );

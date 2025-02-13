@@ -390,7 +390,7 @@ function radio_station_get_current_show( $time = false ) {
 	$current_show = apply_filters( 'radio_station_current_show', $current_show, $time, $show_shifts, $channel );
 
 	if ( RADIO_STATION_DEBUG ) {
-		echo 'Current Show (Set): ' . esc_html( print_r( $current_show, true ) ) . PHP_EOL;
+		echo '<span style="display:none;">Current Show (Set): ' . esc_html( print_r( $current_show, true ) ) . '</span>' . PHP_EOL;
 	}
 
 	// --- set to global data ---
