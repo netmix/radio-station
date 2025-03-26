@@ -5,7 +5,7 @@
 // =================================
 
 // -------------
-// Loader v1.3.4
+// Loader v1.3.5
 // -------------
 // Note: Changelog at end of file.
 
@@ -1051,6 +1051,7 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 					// phpcs:ignore WordPress.Security.NonceVerification.Missing
 					$post_keys = array_keys( $_POST );
 					foreach ( $post_keys as $post_key ) {
+						$post_key = sanitize_text_field( $post_key );
 						$value = sanitize_text_field( $_POST[$post_key] );
 						// phpcs:ignore WordPress.PHP.DevelopmentFunctions
 						echo esc_html( $post_key ) . ': ' . esc_html( print_r( $value, true ) ) . '<br>' . "\n";
@@ -1991,7 +1992,7 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 			echo '</div>' . "\n";
 
 			// 1.3.6: move notice boxer scripts to setting_scripts
-			$this->scripts[] = 'notice_boxer';
+			// $this->scripts[] = 'notice_boxer';
 
 		}
 
@@ -2333,7 +2334,7 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 				// --- output tab switcher script ---
 				// 1.0.9: add to settings scripts
 				// 1.2.5: only store script reference
-				$this->scripts[] = 'tab_switcher';
+				// $this->scripts[] = 'tab_switcher';
 
 				$i = 0;
 				echo '<ul id="settings-tab-buttons">' . "\n";
@@ -2354,7 +2355,7 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 
 			// --- reset to default script ---
 			// 1.0.9: add to settings scripts
-			$this->scripts[] = 'settings_reset';
+			// $this->scripts[] = 'settings_reset';
 
 			// --- start settings form ---
 			// 1.2.0: remove unused prefix on settings tab name attribute
@@ -2543,6 +2544,9 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 		// 1.2.3: added for standalone enqueueing of resources from table
 		// 1.2.4: added missing public visibility declaration
 		public function settings_resources( $media = true, $color_picker = true ) {
+
+			// 1.3.5: set default scripts to enqueue
+			$this->scripts = array( 'notice_boxer', 'tab_switcher', 'settings_reset' );
 
 			// --- number input step script ---
 			// 1.0.9: added to script array
@@ -3240,10 +3244,7 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 						echo "});" . "\n";
 
 					}
-					// else {
-						// [no longer implemented - no escape option]
-						// echo $script;
-					// }
+
 				}
 
 				// 1.2.5: added for possible extra settings scripts

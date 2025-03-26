@@ -42,7 +42,7 @@ if ( !defined( 'ABSPATH' ) ) exit;
 // - Show Shift Conflict Notice
 // - MailChimp Subscriber Form
 // - AJAX Record Subscriber
-// - AJAX Clear Subscriber
+// - AJAX Clear Notices
 
 
 // -------------------
@@ -1614,7 +1614,7 @@ function radio_station_announcement_content( $dismissable = true ) {
 	if ( $dismissable ) {
 		// 2.5.8: added nonce to dismissal URL
 		$dismiss_url = admin_url( 'admin-ajax.php?action=radio_station_announcement_dismiss' );
-		$dismiss_url .= add_query_arg( 'nonce',  wp_create_nonce( 'radio_station_notice' ), $dismiss_url );
+		$dismiss_url = add_query_arg( 'nonce',  wp_create_nonce( 'radio_station_notice' ), $dismiss_url );
 		echo '<div style="position:absolute; top:20px; right: 20px;">' . "\n";
 			echo '<a href="' . esc_url( $dismiss_url ) . '" target="radio-station-notice-iframe" style="text-decoration:none;">' . "\n";
 				echo '<span class="dashicons dashicons-dismiss" title="' . esc_html( __( 'Dismiss this Notice', 'radio-station' ) ) . '"></span>' . "\n";

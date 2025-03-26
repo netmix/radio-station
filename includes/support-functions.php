@@ -1043,14 +1043,19 @@ function radio_station_get_show_playlists( $show_id = false, $args = array() ) {
 function radio_station_get_genre( $genre ) {
 
 	// 2.3.3.8: explicitly check for numberic genre term ID
-	$id = absint( $genre );
-	if ( $id < 1 ) {
+	// 2.5.9.10: fix to check with ctype_digit not absint
+	if ( !ctype_digit( $genre ) ) {
 		// $genre = sanitize_title( $genre );
 		$term = get_term_by( 'slug', $genre, RADIO_STATION_GENRES_SLUG );
+		// echo '<span style="display:none;">Genre slug ' . $genre. ' - Genre ' . print_r( $term, true ) . '</span>';
 		if ( !$term ) {
 			$term = get_term_by( 'name', $genre, RADIO_STATION_GENRES_SLUG );
 		}
 	} else {
+		$id = absint( $genre );
+		if ( $id < 1 ) {
+			return false;
+		}
 		$term = get_term_by( 'id', $genre, RADIO_STATION_GENRES_SLUG );
 	}
 	if ( !$term ) {
@@ -1890,14 +1895,17 @@ function radio_station_get_language( $lang = false ) {
 
 	// --- get the specified language term ---
 	// 2.3.3.8: explicitly check for numberic language term ID
-	$id = absint( $lang );
-	if ( $id < 1 ) {
+	// 2.5.10: fix to check for numeric digit
+	if ( !ctype_digit( $lang ) ) {
 		$term = get_term_by( 'slug', $lang, RADIO_STATION_LANGUAGES_SLUG );
 		if ( !$term ) {
 			$term = get_term_by( 'name', $lang, RADIO_STATION_LANGUAGES_SLUG );
 		}
 	} else {
-		$term = get_term_by( 'id', $lang, RADIO_STATION_LANGUAGES_SLUG );
+		$id = absint( $lang );
+		if ( $id < 1 ) {
+			$term = get_term_by( 'id', $lang, RADIO_STATION_LANGUAGES_SLUG );
+		}
 	}
 
 	// --- set language from term ---

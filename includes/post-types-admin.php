@@ -432,11 +432,7 @@ function radio_station_show_info_metabox() {
 
 	global $post;
 	// 2.4.0.9: added check for object for PHP8
-	if ( is_object( $post ) && property_exists( $post, 'ID' ) ) {
-		$post_id = $post->ID;
-	} else {
-		$post_id = 0;
-	}
+	$post_id = ( is_object( $post ) && property_exists( $post, 'ID' ) ) ? $post->ID : 0;
 
 	// 2.3.0: added missing nonce field
 	wp_nonce_field( 'radio-station', 'show_meta_nonce' );

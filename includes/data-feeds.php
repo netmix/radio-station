@@ -261,9 +261,9 @@ function radio_station_get_shows_data( $show = false ) {
 		if ( strstr( $show, ',' ) ) {
 			$show_ids = explode( ',', $show );
 			foreach ( $show_ids as $show ) {
-				$id = absint( $show );
 				// 2.5.0: shortened conditional to single line
-				$show = ( $id < 1 ) ? sanitize_title( $show ) : $id;
+				// 2.5.10: fix test for numeric show IDs
+				$show = ctype_digit( $show ) ? absint( $show ) : sanitize_title( $show );
 				$show = radio_station_get_show( $show );
 				$show = radio_station_get_show_data_meta( $show, true );
 				$show = radio_station_convert_show_shifts( $show );
@@ -272,9 +272,8 @@ function radio_station_get_shows_data( $show = false ) {
 				$shows[] = $show;
 			}
 		} else {
-			$id = absint( $show );
 			// 2.5.0: shortened conditional to single line
-			$show = ( $id < 1 ) ? sanitize_title( $show ) : $id;
+			$show = ctype_digit( $show ) ? absint( $show ) : sanitize_title( $show );
 			$show = radio_station_get_show( $show );
 			$show = radio_station_get_show_data_meta( $show, true );
 			$show = radio_station_convert_show_shifts( $show );
@@ -1370,7 +1369,8 @@ add_filter( 'parse_query', 'radio_station_feed_filter_fix', 0 );
 function radio_station_feed_filter_fix( $query ) {
 
 	// --- override incorrect shows feed ---
-	if ( isset( $query->query['feed'] ) && ( 'feed' == $query->query['feed'] ) && ( 'show' == $query->query['post_type'] ) ) {
+	// 2.5.10: add isset for post_type key
+	if ( isset( $query->query['feed'] ) && ( 'feed' == $query->query['feed'] ) && isset( $query->query['post_type'] ) && ( 'show' == $query->query['post_type'] ) ) {
 		
 		if ( strstr( filter_var( $_SERVER['REQUEST_URI'], FILTER_SANITIZE_URL ), '/shows/feed/' ) ) {
 			

@@ -646,7 +646,8 @@ function radio_station_author_host_pages( $template ) {
 
 			// --- get user by ID or name ---
 			$host = get_query_var( 'host' );
-			if ( absint( $host ) > - 1 ) {
+			// 2.5.10: fix to numeric check
+			if ( ctype_digit( $host ) ) {
 				$user = get_user_by( 'ID', $host );
 			} else {
 				$user = get_user_by( 'slug', $host );
@@ -663,8 +664,9 @@ function radio_station_author_host_pages( $template ) {
 		} elseif ( get_query_var( 'producer' ) ) {
 
 			// --- get user by ID or name ---
+			// 2.5.10: fix to numeric check
 			$producer = get_query_var( 'producer' );
-			if ( absint( $producer ) > - 1 ) {
+			if ( ctype_digit( $producer ) ) {
 				$user = get_user_by( 'ID', $producer );
 			} else {
 				$user = get_user_by( 'slug', $producer );

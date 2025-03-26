@@ -1265,13 +1265,12 @@ function radio_player_sanitize_values( $keys ) {
 	}
 
 	// --- set HTML attributes ---
-	// TODO: replace radio_player_validate_boolean ?
 	// TODO: replace and store player ID ?
 	$html_atts = array(
 		'class'    => $atts['class'],
 		'id'       => sprintf( 'audio-%d-%d', $post_id, $instance ),
-		'loop'     => radio_player_validate_boolean( $atts['loop'] ),
-		'autoplay' => radio_player_validate_boolean( $atts['autoplay'] ),
+		'loop'     => (bool) $atts['loop'],
+		'autoplay' => (bool) $atts['autoplay']),
 		'preload'  => $atts['preload'],
 		'style'    => $atts['style'],
 	);
@@ -3223,48 +3222,3 @@ function radio_player_control_styles( $instance ) {
 //	return $tag;
 // }
 
-
-// ------------------------------------------
-// === Standalone Compatibility Functions ===
-// ------------------------------------------
-// (for player use outside WordPress context)
-
-// -----------------
-// Output Script Tag
-// -----------------
-// 2.5.10: deprecated (standalone version could replace wp_enqueue_script)
-// 2.5.7: echo instead of return script tag
-// function radio_player_script_tag( $url, $version ) {
-	// 2.5.10: use esc_url not esc_url_raw
-	// echo '<script type="text/javascript" src="' . esc_url( $url . '?' . $version ) . '"></script>';
-// }
-
-// ----------------
-// Output Style Tag
-// ----------------
-// 2.5.10: deprecated (standalone version could replace wp_enqueue_style)
-// 2.5.7: echo instead of return style tag
-// function radio_player_style_tag( $id, $url, $version ) {
-	// 2.5.10: use esc_url not esc_url_raw
-	// echo '<link id="' . esc_attr( $id ) . '-css" href="' . esc_url( $url . '?' . $version ) . '" rel="stylesheet" type="text/css" media="all">';
-// }
-
-// ----------------
-// Validate Boolean
-// ----------------
-// copy of wp_validate_boolean
-function radio_player_validate_boolean( $var ) {
-	if ( is_bool( $var ) ) {
-		return $var;
-	}
-
-	if ( is_string( $var ) ) {
-		if ( 'false' === strtolower( $var ) ) {
-			return false;
-		} elseif ( 'true' === strtolower( $var ) ) {
-			return true;
-		}
-	}
-
-	return (bool) $var;
-}

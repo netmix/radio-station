@@ -10,9 +10,9 @@ Donate link: https://netmix.co/donate
 
 Tags: dj, music, playlist, radio, shows, scheduling, broadcasting
 
-Requires at least: 3.3.1
+Requires at least: 3.3
 
-Tested up to: 6.7.1
+Tested up to: 6.7
 
 Stable tag: 2.5.9
 

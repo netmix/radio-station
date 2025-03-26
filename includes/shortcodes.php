@@ -1039,8 +1039,10 @@ function radio_station_genre_archive_list( $atts ) {
 			// 2.5.6: fix to get genre by genre_slug
 			$genre = radio_station_get_genre( $genre_slug );
 			if ( $genre ) {
-				$genres[$genre['name']] = $genre;
-				$genre_ids[] = $genre['id'];
+				// 2.5.10: fix to get first array key
+				$name = array_key_first( $genre );
+				$genres[$name] = $genre[$name];
+				$genre_ids[] = $genre[$name]['id'];
 			}
 		}
 	} else {
@@ -1453,8 +1455,10 @@ function radio_station_language_archive_list( $atts ) {
 			}
 			$language = radio_station_get_language( $language_slug );
 			if ( $language ) {
-				$languages[$language['name']] = $language;
-				$language_ids[] = $language['id'];
+				// 2.5.10: fix to get first array key
+				$name = array_key_first( $language );
+				$languages[$name] = $language[$name];
+				$language_ids[] = $language[$name]['id'];
 			}
 		}
 	} else {
