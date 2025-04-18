@@ -567,6 +567,7 @@ if ( !$active || !$shifts ) {
 	// 2.3.3.9: added span wrap with class for actual timezone
 	$label = __( 'Timezone', 'radio-station' );
 	$label = apply_filters( 'radio_station_show_timezone_label', $label, $post_id );
+	$blocks['show_times'] .= '<div class="station-timezone">' . "\n";
 	$blocks['show_times'] .= '<span class="show-timezone-label show-label">' . esc_html( $label ) . '</span>: ' . "\n";
 	if ( !isset( $timezone_code ) ) {
 		$blocks['show_times'] .= '<span class="show-timezone">';
@@ -580,10 +581,13 @@ if ( !$active || !$shifts ) {
 		$blocks['show_times'] .= ' [' . esc_html( __( 'UTC', 'radio-station' ) ) . $utc_offset . ']';
 		$blocks['show_times'] .= '</span>' . "\n";
 	}
+	$blocks['show_times'] .= '</div>' . "\n";
 
-	// TODO: --- display user timezone ---
-	// $block['show_times'] .= ...
+	// --- user timezone ---
+	// TODO: check user timezone setting !!!
+	$blocks['show_times'] .= '<div class="div-timezone"></div>' . "\n";
 
+	// --- show shift times ---
 	$blocks['show_times'] .= '<table class="show-times" cellpadding="0" cellspacing="0">' . "\n";
 
 	$found_encore = false;
@@ -629,20 +633,20 @@ if ( !$active || !$shifts ) {
 					// --- set show time output ---
 					// 2.3.4: fix to start data_format attribute
 					$show_time = '<div class="' . esc_attr( $class ) . '">' . "\n";
-					$show_time .= '<span class="rs-time rs-start-time" data-format="' . esc_attr( $start_data_format ) . '" data="' . esc_attr( $shift_start_time ) . '">' . esc_html( $start_display ) . '</span>' . "\n";
-					$show_time .= '<span class="rs-sep"> - </span>' . "\n";
-					$show_time .= '<span class="rs-time rs-end-time" data-format="' . esc_attr( $end_data_format ) . '" data="' . esc_attr( $shift_end_time ) . '">' . esc_html( $end_display ) . '</span>' . "\n";
-					if ( isset( $shift['encore'] ) && ( 'on' == $shift['encore'] ) ) {
-						$found_encore = true;
-						$show_time .= '<span class="show-encore">*</span>' . "\n";
-					}
+						$show_time .= '<span class="rs-time rs-start-time" data-format="' . esc_attr( $start_data_format ) . '" data="' . esc_attr( $shift_start_time ) . '">' . esc_html( $start_display ) . '</span>' . "\n";
+						$show_time .= '<span class="rs-sep"> - </span>' . "\n";
+						$show_time .= '<span class="rs-time rs-end-time" data-format="' . esc_attr( $end_data_format ) . '" data="' . esc_attr( $shift_end_time ) . '">' . esc_html( $end_display ) . '</span>' . "\n";
+						if ( isset( $shift['encore'] ) && ( 'on' == $shift['encore'] ) ) {
+							$found_encore = true;
+							$show_time .= '<span class="show-encore">*</span>' . "\n";
+						}
 					$show_time .= '</div>' . "\n";
 
 					// 2.3.3.9: add user show time div
 					$show_time .= '<div class="show-user-time">' . "\n";
-					$show_time .= '[<span class="rs-time rs-start-time"></span>' . "\n";
-					$show_time .= '<span class="rs-sep">' . esc_html( $separator ) . '</span>' . "\n";
-					$show_time .= '<span class="rs-time rs-end-time"></span>]' . "\n";
+						$show_time .= '[<span class="rs-time rs-start-time"></span>' . "\n";
+						$show_time .= '<span class="rs-sep">' . esc_html( $separator ) . '</span>' . "\n";
+						$show_time .= '<span class="rs-time rs-end-time"></span>]' . "\n";
 					$show_time .= '</div>' . "\n";
 
 					$show_times[] = $show_time;
@@ -751,7 +755,15 @@ if ( $schedule_page && !empty( $schedule_page ) ) {
 	$blocks['show_times'] .= '<a href="' . esc_url( $schedule_link ) . '" title="' . esc_attr( $title ) . '">' . "\n";
 	$label = __( 'Full Station Schedule', 'radio-station' );
 	$label = apply_filters( 'radio_station_show_schedule_link_anchor', $label, $post_id );
-	$blocks['show_times'] .= '&larr; ' . esc_html( $label ) . '</a>' . "\n";
+	// 2.5.10: set arrow according to block position
+	if ( 'left' == $block_position ) {
+		$blocks['show_times'] .= '&larr; ';
+	}
+	$blocks['show_times'] .= esc_html( $label );
+	if ( 'right' == $block_position ) {
+		$blocks['show_times'] .= '&rarr; ';
+	}
+	$blocks['show_times'] .= '</a>' . "\n";
 	$blocks['show_times'] .= '</div>' . "\n";
 }
 
@@ -934,6 +946,9 @@ echo '<input type="hidden" id="radio-page-type" value="show">' . "\n";
 
 	echo '</div>' . "\n";
 
+
+
+	// --- show sections ---
 	echo '<div class="show-sections">' . "\n";
 
 	// --- Display Latest Show Posts ---

@@ -157,7 +157,9 @@ function radio_station_get_station_data() {
 	$fallback_format = radio_station_get_setting( 'fallback_format' );
 
 	// --- get station data ---
+	// 2.5.10: add station image URL
 	$station_url = radio_station_get_station_url();
+	$image_url = radio_station_get_station_image_url();
 	$schedule_url = radio_station_get_schedule_url();
 	$language = radio_station_get_language();
 
@@ -175,6 +177,7 @@ function radio_station_get_station_data() {
 	// --- set station data array ---
 	// 2.3.2: added schedule updated timestamp
 	// 2.3.3.9: enabled format and fallback data
+	// 2.5.10: add station image URL
 	$station_data = array(
 		'timezone'        => $timezone,
 		'stream_url'      => $stream_url,
@@ -182,6 +185,7 @@ function radio_station_get_station_data() {
 		'fallback_url'    => $fallback_url,
 		'fallback_format' => $fallback_format,
 		'station_url'     => $station_url,
+		'image_url'       => $image_url,
 		'schedule_url'    => $schedule_url,
 		'language'        => $language['slug'],
 		'timestamp'       => $now,
@@ -261,9 +265,9 @@ function radio_station_get_shows_data( $show = false ) {
 		if ( strstr( $show, ',' ) ) {
 			$show_ids = explode( ',', $show );
 			foreach ( $show_ids as $show ) {
-				$id = absint( $show );
 				// 2.5.0: shortened conditional to single line
-				$show = ( $id < 1 ) ? sanitize_title( $show ) : $id;
+				// 2.5.10: fix test for numeric show IDs
+				$show = ctype_digit( $show ) ? absint( $show ) : sanitize_title( $show );
 				$show = radio_station_get_show( $show );
 				$show = radio_station_get_show_data_meta( $show, true );
 				$show = radio_station_convert_show_shifts( $show );
@@ -272,9 +276,8 @@ function radio_station_get_shows_data( $show = false ) {
 				$shows[] = $show;
 			}
 		} else {
-			$id = absint( $show );
 			// 2.5.0: shortened conditional to single line
-			$show = ( $id < 1 ) ? sanitize_title( $show ) : $id;
+			$show = ctype_digit( $show ) ? absint( $show ) : sanitize_title( $show );
 			$show = radio_station_get_show( $show );
 			$show = radio_station_get_show_data_meta( $show, true );
 			$show = radio_station_convert_show_shifts( $show );
@@ -860,7 +863,8 @@ function radio_station_route_radio( $response, $handler, $request ) {
 		$route = $request->get_route();
 		if ( '/' . $base == $route ) {
 			$data = $response->data;
-			$date['success'] = true;
+			// 2.5.10: fix to incorrect variable (date)
+			$data['success'] = true;
 			$data['endpoints'] = radio_station_get_route_urls();
 			$response->data = $data;
 		}
@@ -1369,7 +1373,8 @@ add_filter( 'parse_query', 'radio_station_feed_filter_fix', 0 );
 function radio_station_feed_filter_fix( $query ) {
 
 	// --- override incorrect shows feed ---
-	if ( isset( $query->query['feed'] ) && ( 'feed' == $query->query['feed'] ) && ( 'show' == $query->query['post_type'] ) ) {
+	// 2.5.10: add isset for post_type key
+	if ( isset( $query->query['feed'] ) && ( 'feed' == $query->query['feed'] ) && isset( $query->query['post_type'] ) && ( 'show' == $query->query['post_type'] ) ) {
 		
 		if ( strstr( filter_var( $_SERVER['REQUEST_URI'], FILTER_SANITIZE_URL ), '/shows/feed/' ) ) {
 			

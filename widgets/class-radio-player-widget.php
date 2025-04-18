@@ -382,13 +382,14 @@ class Radio_Player_Widget extends WP_Widget {
 		// --- maybe debug widget attributes --
 		// 2.5.0: added for debugging widget attributes
 		// 2.5.6: added sanitize_text_field wrapper
-		if ( isset( $_REQUEST['player-debug'] ) && ( '1' === sanitize_text_field( $_REQUEST['player-debug'] ) ) ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( isset( $_REQUEST['player-debug'] ) && ( '1' === sanitize_text_field( wp_unslash( $_REQUEST['player-debug'] ) ) ) ) {
 			echo '<span style="display:none;">Radio Player Widget Attributes: ';
 			echo esc_html( print_r( $atts, true ) ) . '</span>';
 		}
 
 		// 2.5.0: get context filtered allowed HTML
-		$allowed = radio_station_allowed_html( 'widget', 'radio-player' );
+		$allowed = radio_station_allowed_html( 'widget', 'player' );
 
 		// --- before widget ---
 		// 2.5.0: use wp_kses on output
@@ -414,10 +415,10 @@ class Radio_Player_Widget extends WP_Widget {
 			$output = apply_filters( 'radio_station_player_widget_override', $output, $args, $atts );
 
 			// --- output widget display ---
-			// TODO: test wp_kses on widget output ?
-			// wp_kses( $output, $allowed );
+			// 2.5.10: use wp_kses with allowed HTML on output
 			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-			echo $output;
+			// echo $output;
+			echo wp_kses( $output, $allowed );
 
 		echo '</div>' . "\n";
 

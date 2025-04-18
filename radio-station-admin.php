@@ -42,7 +42,7 @@ if ( !defined( 'ABSPATH' ) ) exit;
 // - Show Shift Conflict Notice
 // - MailChimp Subscriber Form
 // - AJAX Record Subscriber
-// - AJAX Clear Subscriber
+// - AJAX Clear Notices
 
 
 // -------------------
@@ -531,7 +531,8 @@ function radio_station_parse_doc( $id ) {
 	$contents = str_replace( '.md#', '#', $contents );
 
 	// --- process markdown formatting ---
-	$formatted = Markdown( $contents );
+	// 2.5. : use prefixed markdown function
+	$formatted = radio_station_markdown( $contents );
 
 	// --- a # name links to headings ---
 	for ( $i = 1; $i < 7; $i++ ) {
@@ -568,7 +569,7 @@ function radio_station_parse_doc( $id ) {
 			// 2.5.6: replace onclick with class and id
 			// $onclick = ' onclick="radio_load_doc(\'' . esc_js( $url ) . '\');';
 			$class = ' class="doc-link" id="' . esc_attr( $url ) . '-doc-link"';
-			$after = substr( $after, ($pos2 + 1), strlen( $after ) );
+			$after = substr( $after, ( $pos2 + 1 ), strlen( $after ) );
 			$formatted = $before . $placeholder . $class . $after;
 		}
 	}
@@ -1062,12 +1063,28 @@ function radio_station_get_notices() {
 		$contents = file_get_contents( $readme );
 
 		// --- fix to parser failing on license lines ---
-		$contents = str_replace( 'License: GPLv2 or later', '', $contents );
-		$contents = str_replace( 'License URI: http://www.gnu.org/licenses/gpl-2.0.html', '', $contents );
+		// 2.5.10: remove license lines regardless of contents
+		// $contents = str_replace( 'License: GPLv2 or later', '', $contents );
+		// $contents = str_replace( 'License URI: http://www.gnu.org/licenses/gpl-2.0.html', '', $contents );
+		$strip_lines = array( 'License', 'License URI' );
+		foreach( $strip_lines as $strip_line ) {
+			if ( strstr( $contents, $strip_line ) ) {
+				$pos = strpos( $contents, $strip_line . ':' );
+				$chunks = str_split( $contents, $pos );
+				$before = $chunks[0];
+				unset( $chunks[0] );
+				$remainder = implode( '', $chunks );
+				$posb = strpos( $remainder, "\n" );
+				$chunks = str_split( $remainder, $posb );
+				unset( $chunks[0] );
+				$remainder = implode( '', $chunks );
+				$contents = $before . $remainder;
+			}
+		}
 
 		// --- include Markdown Readme Parser ---
 		include $parser;
-		$readme = new WordPress_Readme_Parser();
+		$readme = new radio_station_readme_parser();
 		$parsed = $readme->parse_readme_contents( $contents );
 
 		// --- parse all the notices to get notice info ---
@@ -1597,7 +1614,7 @@ function radio_station_announcement_content( $dismissable = true ) {
 	if ( $dismissable ) {
 		// 2.5.8: added nonce to dismissal URL
 		$dismiss_url = admin_url( 'admin-ajax.php?action=radio_station_announcement_dismiss' );
-		$dismiss_url .= add_query_arg( 'nonce',  wp_create_nonce( 'radio_station_notice' ), $dismiss_url );
+		$dismiss_url = add_query_arg( 'nonce',  wp_create_nonce( 'radio_station_notice' ), $dismiss_url );
 		echo '<div style="position:absolute; top:20px; right: 20px;">' . "\n";
 			echo '<a href="' . esc_url( $dismiss_url ) . '" target="radio-station-notice-iframe" style="text-decoration:none;">' . "\n";
 				echo '<span class="dashicons dashicons-dismiss" title="' . esc_html( __( 'Dismiss this Notice', 'radio-station' ) ) . '"></span>' . "\n";

@@ -1197,6 +1197,9 @@ $options = array(
 	//	'section' => 'taxonomies',
 	// ),
 
+	// TODO: guest archive pages
+
+
 	// === Single Templates ===
 
 	// --- Templates Change Note ---

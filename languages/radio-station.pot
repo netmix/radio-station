@@ -1,543 +1,65 @@
-# Copyright (C) 2023 Radio Station
+# Copyright (C) 2024 Radio Station
 # This file is distributed under the same license as the Radio Station package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Radio Station 2.5.4\n"
+"Project-Id-Version: Radio Station 2.5.9.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/radio-station\n"
-"POT-Creation-Date: 2023-07-30 06:22:39+00:00\n"
+"POT-Creation-Date: 2024-10-27 04:44:56+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2023-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2024-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 
-#: help/contextual-help-config.php:52 includes/extra-strings.php:219
+#: help/contextual-help-config.php:53 includes/extra-strings.php:218
 msgid "Import"
 msgstr ""
 
-#: help/contextual-help-config.php:63 includes/extra-strings.php:223
-#: templates/playlist-export.php:140
+#: help/contextual-help-config.php:66 includes/extra-strings.php:222
+#: templates/playlist-export.php:147
 msgid "Export"
 msgstr ""
 
-#: help/contextual-help-config.php:74
+#: help/contextual-help-config.php:79
 msgid "YAML format "
 msgstr ""
 
-#: help/contextual-help-config.php:85
+#: help/contextual-help-config.php:92
 msgid "show-schedule:"
 msgstr ""
 
-#: includes/blocks.php:40 includes/extra-strings.php:63
-#: radio-station-admin.php:198 radio-station-admin.php:887
-#: radio-station-admin.php:976 radio-station-admin.php:1543
-#: radio-station-admin.php:1622 radio-station-admin.php:1722
+#: includes/blocks.php:42 includes/extra-strings.php:63
+#: radio-station-admin.php:203 radio-station-admin.php:902
+#: radio-station-admin.php:993 radio-station-admin.php:1585
+#: radio-station-admin.php:1673 radio-station-admin.php:1773
 msgid "Radio Station"
 msgstr ""
 
-#: includes/class-current-playlist-widget.php:15
-#: widgets/class-current-playlist-widget.php:15
-msgid "Display currently playing playlist."
-msgstr ""
-
-#: includes/class-current-playlist-widget.php:17
-#: widgets/class-current-playlist-widget.php:17
-msgid "(Radio Station) Now Playing List"
-msgstr ""
-
-#: includes/class-current-playlist-widget.php:48
-#: includes/class-current-show-widget.php:55
-#: includes/class-current-show-widget.php:171
-#: includes/class-radio-clock-widget.php:45
-#: includes/class-upcoming-shows-widget.php:52
-#: includes/class-upcoming-shows-widget.php:147 includes/extra-strings.php:428
-#: widgets/class-current-playlist-widget.php:69
-#: widgets/class-current-show-widget.php:89
-#: widgets/class-current-show-widget.php:207
-#: widgets/class-radio-clock-widget.php:87
-#: widgets/class-upcoming-shows-widget.php:92
-#: widgets/class-upcoming-shows-widget.php:202
-msgid "Default"
-msgstr ""
-
-#: includes/class-current-playlist-widget.php:49
-#: includes/class-current-show-widget.php:56
-#: includes/class-upcoming-shows-widget.php:53 includes/extra-strings.php:245
-#: widgets/class-current-playlist-widget.php:70
-#: widgets/class-current-show-widget.php:90
-#: widgets/class-upcoming-shows-widget.php:93
-msgid "On"
-msgstr ""
-
-#: includes/class-current-playlist-widget.php:50
-#: includes/class-current-show-widget.php:57
-#: includes/class-upcoming-shows-widget.php:54 includes/extra-strings.php:246
-#: options.php:1049 widgets/class-current-playlist-widget.php:71
-#: widgets/class-current-show-widget.php:91
-#: widgets/class-upcoming-shows-widget.php:94
-msgid "Off"
-msgstr ""
-
-#: includes/class-current-playlist-widget.php:52
-#: includes/class-current-show-widget.php:59
-#: includes/class-upcoming-shows-widget.php:56
-#: widgets/class-current-playlist-widget.php:73
-#: widgets/class-current-show-widget.php:93
-#: widgets/class-upcoming-shows-widget.php:96
-msgid "AJAX Load Widget?"
-msgstr ""
-
-#: includes/class-current-playlist-widget.php:58
-#: includes/class-current-show-widget.php:65
-#: includes/class-radio-clock-widget.php:37
-#: includes/class-upcoming-shows-widget.php:62 includes/extra-strings.php:487
-#: includes/post-types-admin.php:3069
-msgid "Title"
-msgstr ""
-
-#: includes/class-current-playlist-widget.php:66
-#: widgets/class-current-playlist-widget.php:106
-msgid "Link to Playlist?"
-msgstr ""
-
-#: includes/class-current-playlist-widget.php:73
-#: widgets/class-current-playlist-widget.php:133
-msgid "Show Song Title"
-msgstr ""
-
-#: includes/class-current-playlist-widget.php:80
-#: widgets/class-current-playlist-widget.php:141
-msgid "Show Artist Name"
-msgstr ""
-
-#: includes/class-current-playlist-widget.php:87
-#: widgets/class-current-playlist-widget.php:149
-msgid " Show Album Name"
-msgstr ""
-
-#: includes/class-current-playlist-widget.php:94
-#: widgets/class-current-playlist-widget.php:157
-msgid "Show Record Label Name"
-msgstr ""
-
-#: includes/class-current-playlist-widget.php:101
-#: widgets/class-current-playlist-widget.php:165
-msgid "Show DJ Comments"
-msgstr ""
-
-#: includes/class-current-playlist-widget.php:108
-#: widgets/class-current-playlist-widget.php:88
-#: widgets/class-current-show-widget.php:117
-#: widgets/class-upcoming-shows-widget.php:120
-msgid "Hide Widget if Empty"
-msgstr ""
-
-#: includes/class-current-playlist-widget.php:115
-#: includes/class-current-show-widget.php:183
-#: includes/class-upcoming-shows-widget.php:159
-#: widgets/class-current-playlist-widget.php:123
-#: widgets/class-current-show-widget.php:199
-#: widgets/class-upcoming-shows-widget.php:194
-msgid "Display Countdown Timer"
-msgstr ""
-
-#: includes/class-current-show-widget.php:15
-#: widgets/class-current-show-widget.php:15
-msgid "The currently playing on-air Show."
-msgstr ""
-
-#: includes/class-current-show-widget.php:17
-#: widgets/class-current-show-widget.php:17
-msgid "(Radio Station) Current Show On-Air"
-msgstr ""
-
-#: includes/class-current-show-widget.php:30
-msgid "No Show scheduled for this time."
-msgstr ""
-
-#: includes/class-current-show-widget.php:73
-#: includes/class-upcoming-shows-widget.php:70
-msgid "Link the title to the Show page"
-msgstr ""
-
-#: includes/class-current-show-widget.php:82
-#: includes/class-upcoming-shows-widget.php:79
-#: widgets/class-current-show-widget.php:136
-#: widgets/class-upcoming-shows-widget.php:139
-msgid "Above"
-msgstr ""
-
-#: includes/class-current-show-widget.php:83
-#: includes/class-upcoming-shows-widget.php:80 includes/extra-strings.php:693
-#: widgets/class-current-show-widget.php:137
-#: widgets/class-upcoming-shows-widget.php:140
-msgid "Left"
-msgstr ""
-
-#: includes/class-current-show-widget.php:84
-#: includes/class-upcoming-shows-widget.php:81 includes/extra-strings.php:640
-#: widgets/class-current-show-widget.php:138
-#: widgets/class-upcoming-shows-widget.php:141
-msgid "Right"
-msgstr ""
-
-#: includes/class-current-show-widget.php:85
-#: includes/class-upcoming-shows-widget.php:82
-#: widgets/class-current-show-widget.php:139
-#: widgets/class-upcoming-shows-widget.php:142
-msgid "Below"
-msgstr ""
-
-#: includes/class-current-show-widget.php:92
-#: includes/class-upcoming-shows-widget.php:88
-#: widgets/class-current-show-widget.php:145
-#: widgets/class-upcoming-shows-widget.php:148
-msgid "Show Title Position (relative to Avatar)"
-msgstr ""
-
-#: includes/class-current-show-widget.php:99
-#: widgets/class-current-show-widget.php:154
-msgid "Display Show Avatar"
-msgstr ""
-
-#: includes/class-current-show-widget.php:105
-#: includes/class-upcoming-shows-widget.php:101
-#: widgets/class-current-show-widget.php:171
-#: widgets/class-upcoming-shows-widget.php:174
-msgid "Avatar Width"
-msgstr ""
-
-#: includes/class-current-show-widget.php:108
-msgid "Width of Show Avatar (in pixels, default full width)"
-msgstr ""
-
-#: includes/class-current-show-widget.php:114
-msgid "Display names of the DJs on the Show"
-msgstr ""
-
-#: includes/class-current-show-widget.php:121
-msgid "Link Host/DJ names to author pages"
-msgstr ""
-
-#: includes/class-current-show-widget.php:128
-#: includes/class-upcoming-shows-widget.php:132
-msgid "Display schedule info for this show"
-msgstr ""
-
-#: includes/class-current-show-widget.php:135
-msgid "Display multiple schedules (if show airs more than once per week)"
-msgstr ""
-
-#: includes/class-current-show-widget.php:142
-#: widgets/class-current-show-widget.php:252
-#: widgets/class-upcoming-shows-widget.php:231
-msgid "Display encore presentation text for Show"
-msgstr ""
-
-#: includes/class-current-show-widget.php:149
-msgid "Display description of show"
-msgstr ""
-
-#: includes/class-current-show-widget.php:156
-msgid "Display link to show's playlist"
-msgstr ""
-
-#: includes/class-current-show-widget.php:162
-msgid "No Show Display Text"
-msgstr ""
-
-#: includes/class-current-show-widget.php:165
-msgid "Text to display if no Show is scheduled for the current time."
-msgstr ""
-
-#: includes/class-current-show-widget.php:169
-#: includes/class-radio-clock-widget.php:43
-#: includes/class-upcoming-shows-widget.php:145
-msgid "Time Format"
-msgstr ""
-
-#: includes/class-current-show-widget.php:172
-#: includes/class-radio-clock-widget.php:46
-#: includes/class-upcoming-shows-widget.php:148 includes/extra-strings.php:495
-#: widgets/class-current-show-widget.php:208
-#: widgets/class-radio-clock-widget.php:88
-#: widgets/class-upcoming-shows-widget.php:203
-msgid "12 Hour"
-msgstr ""
-
-#: includes/class-current-show-widget.php:173
-#: includes/class-radio-clock-widget.php:47
-#: includes/class-upcoming-shows-widget.php:149 includes/extra-strings.php:496
-#: widgets/class-current-show-widget.php:209
-#: widgets/class-radio-clock-widget.php:89
-#: widgets/class-upcoming-shows-widget.php:204
-msgid "24 Hour"
-msgstr ""
-
-#: includes/class-current-show-widget.php:177
-#: includes/class-radio-clock-widget.php:51
-msgid "Choose time format for displayed schedules"
-msgstr ""
-
-#: includes/class-radio-clock-widget.php:14
-#: widgets/class-radio-clock-widget.php:14
-msgid "Display current radio and user times."
-msgstr ""
-
-#: includes/class-radio-clock-widget.php:16
-#: widgets/class-radio-clock-widget.php:16
-msgid "(Radio Station) Radio Clock"
-msgstr ""
-
-#: includes/class-radio-clock-widget.php:23 includes/extra-strings.php:518
-#: widgets/class-radio-clock-widget.php:23
-msgid "Radio Clock"
-msgstr ""
-
-#: includes/class-radio-clock-widget.php:57
-msgid "Include seconds display."
-msgstr ""
-
-#: includes/class-radio-clock-widget.php:62
-msgid "Day Display"
-msgstr ""
-
-#: includes/class-radio-clock-widget.php:64
-#: includes/class-radio-clock-widget.php:83 includes/extra-strings.php:501
-#: widgets/class-radio-clock-widget.php:49
-#: widgets/class-radio-clock-widget.php:68
-msgid "Full"
-msgstr ""
-
-#: includes/class-radio-clock-widget.php:65
-#: includes/class-radio-clock-widget.php:84 includes/extra-strings.php:522
-#: widgets/class-radio-clock-widget.php:50
-#: widgets/class-radio-clock-widget.php:69
-msgid "Short"
-msgstr ""
-
-#: includes/class-radio-clock-widget.php:66
-#: includes/class-radio-clock-widget.php:85 includes/extra-strings.php:499
-#: includes/post-types-admin.php:4962 options.php:690
-#: widgets/class-radio-clock-widget.php:51
-#: widgets/class-radio-clock-widget.php:70
-msgid "None"
-msgstr ""
-
-#: includes/class-radio-clock-widget.php:70
-msgid "Display day with clock times."
-msgstr ""
-
-#: includes/class-radio-clock-widget.php:76
-msgid "Include date display."
-msgstr ""
-
-#: includes/class-radio-clock-widget.php:81
-msgid "Month Display"
-msgstr ""
-
-#: includes/class-radio-clock-widget.php:89
-msgid "Display month with clock times."
-msgstr ""
-
-#: includes/class-radio-clock-widget.php:95
-msgid "Include timezone display."
-msgstr ""
-
-#: includes/class-radio-player-widget.php:16
-#: widgets/class-radio-player-widget.php:16
-msgid "Radio Station Stream Player."
-msgstr ""
-
-#: includes/class-radio-player-widget.php:18
-#: widgets/class-radio-player-widget.php:18
-msgid "(Radio Station) Stream Player"
-msgstr ""
-
-#: includes/class-radio-player-widget.php:47
-#: widgets/class-radio-player-widget.php:75
-msgid "Stream or File URL"
-msgstr ""
-
-#: includes/class-radio-player-widget.php:57
-#: widgets/class-current-playlist-widget.php:60
-#: widgets/class-current-show-widget.php:79
-#: widgets/class-radio-clock-widget.php:40
-#: widgets/class-radio-player-widget.php:67
-#: widgets/class-upcoming-shows-widget.php:74
-msgid "Widget Title"
-msgstr ""
-
-#: includes/class-radio-player-widget.php:66
-#: widgets/class-radio-player-widget.php:84
-msgid "Player Station Text"
-msgstr ""
-
-#: includes/class-radio-player-widget.php:77
-#: includes/class-radio-player-widget.php:94
-#: includes/class-radio-player-widget.php:130
-#: includes/class-radio-player-widget.php:149 includes/extra-strings.php:244
-#: widgets/class-radio-player-widget.php:98
-#: widgets/class-radio-player-widget.php:119
-#: widgets/class-radio-player-widget.php:192
-#: widgets/class-radio-player-widget.php:212
-msgid "Plugin Setting"
-msgstr ""
-
-#: includes/class-radio-player-widget.php:78 includes/extra-strings.php:589
-#: options.php:268 widgets/class-radio-player-widget.php:95
-#: widgets/class-radio-player-widget.php:99
-msgid "Display Station Image"
-msgstr ""
-
-#: includes/class-radio-player-widget.php:79
-#: widgets/class-radio-player-widget.php:100
-msgid "Do Not Display Image"
-msgstr ""
-
-#: includes/class-radio-player-widget.php:86
-msgid "Whether to display Station Image in Player."
-msgstr ""
-
-#: includes/class-radio-player-widget.php:95 includes/extra-strings.php:593
-#: options.php:285 options.php:302 widgets/class-radio-player-widget.php:120
-msgid "Amplitude"
-msgstr ""
-
-#: includes/class-radio-player-widget.php:96 includes/extra-strings.php:594
-#: options.php:284 options.php:301 widgets/class-radio-player-widget.php:121
-msgid "Howler"
-msgstr ""
-
-#: includes/class-radio-player-widget.php:97 includes/extra-strings.php:595
-#: options.php:283 options.php:300 widgets/class-radio-player-widget.php:122
-msgid "jPlayer"
-msgstr ""
-
-#: includes/class-radio-player-widget.php:104
-msgid "Player Script to load by default."
-msgstr ""
-
-#: includes/class-radio-player-widget.php:113
-#: widgets/class-radio-player-widget.php:176
-msgid "Vertical (Stacked)"
-msgstr ""
-
-#: includes/class-radio-player-widget.php:114
-#: widgets/class-radio-player-widget.php:177
-msgid "Horizontal (Inline)"
-msgstr ""
-
-#: includes/class-radio-player-widget.php:121
-msgid "Layout Style for Widget Area (wide or tall)"
-msgstr ""
-
-#: includes/class-radio-player-widget.php:131 includes/extra-strings.php:611
-#: options.php:315 widgets/class-radio-player-widget.php:193
-msgid "Light"
-msgstr ""
-
-#: includes/class-radio-player-widget.php:132 includes/extra-strings.php:612
-#: options.php:316 widgets/class-radio-player-widget.php:194
-msgid "Dark"
-msgstr ""
-
-#: includes/class-radio-player-widget.php:140
-#: widgets/class-radio-player-widget.php:189
-msgid "Player Theme Style"
-msgstr ""
-
-#: includes/class-radio-player-widget.php:150 includes/extra-strings.php:614
-#: widgets/class-radio-player-widget.php:213
-msgid "Circular"
-msgstr ""
-
-#: includes/class-radio-player-widget.php:151 includes/extra-strings.php:615
-#: widgets/class-radio-player-widget.php:214
-msgid "Rounded"
-msgstr ""
-
-#: includes/class-radio-player-widget.php:152 includes/extra-strings.php:616
-#: widgets/class-radio-player-widget.php:215
-msgid "Square"
-msgstr ""
-
-#: includes/class-radio-player-widget.php:160
-msgid "Layout Style for Widget Area"
-msgstr ""
-
-#: includes/class-radio-player-widget.php:167 options.php:418
-#: widgets/class-radio-player-widget.php:135
-msgid "Player Start Volume"
-msgstr ""
-
-#: includes/class-radio-player-widget.php:176
-msgid "Use this as the default Player instance."
-msgstr ""
-
-#: includes/class-upcoming-shows-widget.php:15
-#: widgets/class-upcoming-shows-widget.php:15
-msgid "Display the upcoming Shows."
-msgstr ""
-
-#: includes/class-upcoming-shows-widget.php:17
-#: widgets/class-upcoming-shows-widget.php:17
-msgid "(Radio Station) Upcoming Shows"
-msgstr ""
-
-#: includes/class-upcoming-shows-widget.php:95
-#: widgets/class-upcoming-shows-widget.php:157
-msgid "Display Show Avatars"
-msgstr ""
-
-#: includes/class-upcoming-shows-widget.php:104
-msgid "Width of Show Avatars (in pixels, default 75px)"
-msgstr ""
-
-#: includes/class-upcoming-shows-widget.php:110
-msgid "Display names of the DJs on the show"
-msgstr ""
-
-#: includes/class-upcoming-shows-widget.php:117
-msgid "Link DJ names to author pages"
-msgstr ""
-
-#: includes/class-upcoming-shows-widget.php:123
-msgid "No Additional Schedules Text"
-msgstr ""
-
-#: includes/class-upcoming-shows-widget.php:126
-msgid "If no Show is scheduled for the current time, display this text."
-msgstr ""
-
-#: includes/class-upcoming-shows-widget.php:138
-#: widgets/class-upcoming-shows-widget.php:82
-msgid "Limit"
-msgstr ""
-
-#: includes/class-upcoming-shows-widget.php:141
-#: widgets/class-upcoming-shows-widget.php:85
-msgid "Number of upcoming Shows to display."
-msgstr ""
-
-#: includes/class-upcoming-shows-widget.php:153
-msgid "Choose time format for displayed schedules."
-msgstr ""
-
-#: includes/data-feeds.php:1334
+#: includes/data-feeds.php:1352
 msgid "Error 400 No Requested Data"
 msgstr ""
 
-#: includes/data-feeds.php:1335
+#: includes/data-feeds.php:1353
 msgid "The requested data could not be found."
 msgstr ""
 
-#: includes/extra-strings.php:2 options.php:723
+#: includes/data-feeds.php:1464 includes/data-feeds.php:1491
+#: includes/extra-strings.php:431 includes/shortcodes.php:2828
+#: includes/shortcodes.php:3613 templates/master-schedule-div.php:135
+#: templates/master-schedule-legacy.php:184
+#: templates/master-schedule-list.php:335
+#: templates/master-schedule-table.php:537
+#: templates/master-schedule-tabs.php:432 templates/single-show-content.php:377
+#: templates/single-show-content.php:416
+msgid "and"
+msgstr ""
+
+#: includes/extra-strings.php:2 options.php:752
 msgid "Grid View"
 msgstr ""
 
-#: includes/extra-strings.php:3 options.php:724
+#: includes/extra-strings.php:3 options.php:753
 msgid "Calendar View"
 msgstr ""
 
@@ -581,33 +103,33 @@ msgstr ""
 msgid "Magenta"
 msgstr ""
 
-#: includes/extra-strings.php:14 options.php:1033
+#: includes/extra-strings.php:14 options.php:1101
 msgid "Team Archive Page"
 msgstr ""
 
-#: includes/extra-strings.php:15 options.php:1037
+#: includes/extra-strings.php:15 options.php:1105
 msgid "Select the Page for displaying the Team archive list."
 msgstr ""
 
-#: includes/extra-strings.php:16 options.php:659 options.php:944
-#: options.php:977 options.php:1010 options.php:1046 options.php:1077
-#: options.php:1112
+#: includes/extra-strings.php:16 options.php:688 options.php:986
+#: options.php:1019 options.php:1052 options.php:1088 options.php:1114
+#: options.php:1145 options.php:1180
 msgid "Automatic Display"
 msgstr ""
 
-#: includes/extra-strings.php:17 options.php:1055
+#: includes/extra-strings.php:17 options.php:1123
 msgid "Replaces selected page content with default Team Archive. Alternatively customize display using the shortcode:"
 msgstr ""
 
-#: includes/extra-strings.php:18 options.php:845
+#: includes/extra-strings.php:18
 msgid "Combined Team Tab"
 msgstr ""
 
-#: includes/extra-strings.php:19 options.php:848
+#: includes/extra-strings.php:19
 msgid "Do Not Combine"
 msgstr ""
 
-#: includes/extra-strings.php:20 options.php:849
+#: includes/extra-strings.php:20
 msgid "Combined List"
 msgstr ""
 
@@ -619,31 +141,31 @@ msgstr ""
 msgid "Combine team members (eg. hosts, producers into a single display tab."
 msgstr ""
 
-#: includes/extra-strings.php:23 options.php:736
+#: includes/extra-strings.php:23 options.php:765
 msgid "Time Spaced Grid"
 msgstr ""
 
-#: includes/extra-strings.php:24 options.php:739
+#: includes/extra-strings.php:24 options.php:768
 msgid "Enable Grid View option for equalized time spacing and background imsges."
 msgstr ""
 
-#: includes/extra-strings.php:25 options.php:500
+#: includes/extra-strings.php:25 options.php:515
 msgid "Player Bar Height"
 msgstr ""
 
-#: includes/extra-strings.php:26 options.php:504
+#: includes/extra-strings.php:26 options.php:519
 msgid "Set the height of the Sitewide Player Bar in pixels."
 msgstr ""
 
-#: includes/extra-strings.php:27 options.php:590
+#: includes/extra-strings.php:27 options.php:606
 msgid "Display Current Show"
 msgstr ""
 
-#: includes/extra-strings.php:28 options.php:595
+#: includes/extra-strings.php:28 options.php:611
 msgid "Display the Current Show in the Player Bar."
 msgstr ""
 
-#: includes/extra-strings.php:29 options.php:603
+#: includes/extra-strings.php:29 options.php:619
 msgid "Display Now Playing"
 msgstr ""
 
@@ -651,39 +173,39 @@ msgstr ""
 msgid "Display the currently playing song in the Player Bar, if a supported metadata format is available. (Icy Meta, Icecast, Shoutcast 1/2, Current Playlist"
 msgstr ""
 
-#: includes/extra-strings.php:31 options.php:629
+#: includes/extra-strings.php:31 options.php:632
 msgid "Track Animation"
 msgstr ""
 
-#: includes/extra-strings.php:32 options.php:632
+#: includes/extra-strings.php:32 options.php:635
 msgid "No Animation"
 msgstr ""
 
-#: includes/extra-strings.php:33 options.php:633
+#: includes/extra-strings.php:33 options.php:636
 msgid "Left to Right Ticker"
 msgstr ""
 
-#: includes/extra-strings.php:34 options.php:634
+#: includes/extra-strings.php:34 options.php:637
 msgid "Right to Left Ticker"
 msgstr ""
 
-#: includes/extra-strings.php:35 options.php:635
+#: includes/extra-strings.php:35 options.php:638
 msgid "Back and Forth"
 msgstr ""
 
-#: includes/extra-strings.php:36 options.php:639
+#: includes/extra-strings.php:36 options.php:642
 msgid "How to animate the currently playing track display."
 msgstr ""
 
-#: includes/extra-strings.php:37 options.php:617
+#: includes/extra-strings.php:37 options.php:651
 msgid "Metadata URL"
 msgstr ""
 
-#: includes/extra-strings.php:38 options.php:621
+#: includes/extra-strings.php:38 options.php:655
 msgid "Now playing metadata is normally retrieved via the Stream URL. Use this setting if you need to provide an alternative metadata location."
 msgstr ""
 
-#: includes/extra-strings.php:39 options.php:553
+#: includes/extra-strings.php:39 options.php:569
 msgid "Page Load Timeout"
 msgstr ""
 
@@ -691,11 +213,11 @@ msgstr ""
 msgid "Number of milliseconds to wait for new Page to load before fading in anyway. Use 0 for instant display."
 msgstr ""
 
-#: includes/extra-strings.php:41 options.php:457
+#: includes/extra-strings.php:41 options.php:472
 msgid "Popup Player Button"
 msgstr ""
 
-#: includes/extra-strings.php:42 options.php:460
+#: includes/extra-strings.php:42 options.php:475
 msgid "Add button to open Popup Player in separate window."
 msgstr ""
 
@@ -775,12 +297,12 @@ msgstr ""
 msgid "Back to Plugins page."
 msgstr ""
 
-#: includes/extra-strings.php:62 loader.php:1682 radio-station-admin.php:203
-#: radio-station-admin.php:207 radio-station-admin.php:238
+#: includes/extra-strings.php:62 loader.php:1780 radio-station-admin.php:208
+#: radio-station-admin.php:212 radio-station-admin.php:243
 msgid "Settings"
 msgstr ""
 
-#: includes/extra-strings.php:64 radio-station-admin.php:229
+#: includes/extra-strings.php:64 radio-station-admin.php:234
 #: templates/playlist-export.php:2
 msgid "Export Playlists"
 msgstr ""
@@ -805,19 +327,19 @@ msgstr ""
 msgid "Radio Station Pro"
 msgstr ""
 
-#: includes/extra-strings.php:70 includes/support-functions.php:1134
+#: includes/extra-strings.php:70 includes/support-functions.php:1213
 msgid "Thumbnail"
 msgstr ""
 
-#: includes/extra-strings.php:71 includes/support-functions.php:1135
+#: includes/extra-strings.php:71 includes/support-functions.php:1214
 msgid "Medium"
 msgstr ""
 
-#: includes/extra-strings.php:72 includes/support-functions.php:1136
+#: includes/extra-strings.php:72 includes/support-functions.php:1215
 msgid "Large"
 msgstr ""
 
-#: includes/extra-strings.php:73 includes/support-functions.php:1137
+#: includes/extra-strings.php:73 includes/support-functions.php:1216
 msgid "Full Size"
 msgstr ""
 
@@ -889,21 +411,21 @@ msgstr ""
 msgid "Remove %s Avatar Image"
 msgstr ""
 
-#: includes/extra-strings.php:91 includes/post-types-admin.php:1861
-#: loader.php:3010
+#: includes/extra-strings.php:91 includes/post-types-admin.php:1882
+#: loader.php:3108
 msgid "Are you sure you want to remove this image?"
 msgstr ""
 
-#: includes/extra-strings.php:92 includes/post-types-admin.php:1862
+#: includes/extra-strings.php:92 includes/post-types-admin.php:1883
 msgid "Select or Upload Image"
 msgstr ""
 
-#: includes/extra-strings.php:93 includes/post-types-admin.php:1863
+#: includes/extra-strings.php:93 includes/post-types-admin.php:1884
 msgid "Use this Image"
 msgstr ""
 
-#: includes/extra-strings.php:94 includes/post-types-admin.php:6003
-#: includes/post-types.php:44
+#: includes/extra-strings.php:94 includes/post-types-admin.php:6059
+#: includes/post-types.php:46
 msgid "Show"
 msgstr ""
 
@@ -911,11 +433,11 @@ msgstr ""
 msgid "Select Show"
 msgstr ""
 
-#: includes/extra-strings.php:96 includes/post-types-admin.php:6384
+#: includes/extra-strings.php:96 includes/post-types-admin.php:6449
 msgid "Draft"
 msgstr ""
 
-#: includes/extra-strings.php:97 includes/post-types-admin.php:6391
+#: includes/extra-strings.php:97 includes/post-types-admin.php:6456
 msgid "No Shows to Select."
 msgstr ""
 
@@ -999,1249 +521,1278 @@ msgstr ""
 msgid "minutees"
 msgstr ""
 
-#: includes/extra-strings.php:119
+#: includes/extra-strings.php:118
 msgid "Linked Playlist"
 msgstr ""
 
-#: includes/extra-strings.php:120
+#: includes/extra-strings.php:119
 msgid "Select Playlist"
 msgstr ""
 
-#: includes/extra-strings.php:121
+#: includes/extra-strings.php:120
 msgid "No Playlists to Select."
 msgstr ""
 
-#: includes/extra-strings.php:122
+#: includes/extra-strings.php:121
 msgid "The Playlist data for this Episode."
 msgstr ""
 
-#: includes/extra-strings.php:123
+#: includes/extra-strings.php:122
 msgid "Set Episode Number to one above current highest?"
 msgstr ""
 
-#: includes/extra-strings.php:124
+#: includes/extra-strings.php:123
 msgid "Select Audio File"
 msgstr ""
 
-#: includes/extra-strings.php:125
+#: includes/extra-strings.php:124
 msgid "Remove Selected Audio"
 msgstr ""
 
-#: includes/extra-strings.php:126
+#: includes/extra-strings.php:125
 msgid "Are you sure you want to remove this audio?"
 msgstr ""
 
-#: includes/extra-strings.php:127
+#: includes/extra-strings.php:126
 msgid "Assign to Show Episode"
 msgstr ""
 
-#: includes/extra-strings.php:128
+#: includes/extra-strings.php:127
 msgid "No Episode"
 msgstr ""
 
-#: includes/extra-strings.php:129
+#: includes/extra-strings.php:128
 msgid "No Show Episodes found."
 msgstr ""
 
-#: includes/extra-strings.php:130 includes/post-types-admin.php:5798
+#: includes/extra-strings.php:129 includes/post-types-admin.php:5853
 msgid "No Show selected."
 msgstr ""
 
-#: includes/extra-strings.php:131
+#: includes/extra-strings.php:130
 msgid "Warning! This playlist is assigned to more than one episode."
 msgstr ""
 
-#: includes/extra-strings.php:132
+#: includes/extra-strings.php:131
 msgid "Number"
 msgstr ""
 
-#: includes/extra-strings.php:133
+#: includes/extra-strings.php:132
 msgid "of"
 msgstr ""
 
-#: includes/extra-strings.php:134 includes/post-types-admin.php:6053
-#: includes/post-types-admin.php:6620 includes/post-types.php:47
+#: includes/extra-strings.php:133 includes/post-types-admin.php:6109
+#: includes/post-types-admin.php:6689 includes/post-types.php:49
 msgid "Edit Show"
 msgstr ""
 
-#: includes/extra-strings.php:135
+#: includes/extra-strings.php:134
 msgid "Episode Show"
 msgstr ""
 
-#: includes/extra-strings.php:136 includes/post-types.php:56
+#: includes/extra-strings.php:135 includes/post-types.php:58
 msgid "All Shows"
 msgstr ""
 
-#: includes/extra-strings.php:137
+#: includes/extra-strings.php:136
 msgid "Episode for Show"
 msgstr ""
 
-#: includes/extra-strings.php:138
+#: includes/extra-strings.php:137
 msgid "Not Assigned"
 msgstr ""
 
-#: includes/extra-strings.php:139 includes/post-types-admin.php:6199
-#: includes/post-types-admin.php:6549
+#: includes/extra-strings.php:138 includes/post-types-admin.php:6262
+#: includes/post-types-admin.php:6616
 msgid "No Shows available to Select."
 msgstr ""
 
-#: includes/extra-strings.php:140
+#: includes/extra-strings.php:139
 msgid "Episode"
 msgstr ""
 
-#: includes/extra-strings.php:141
+#: includes/extra-strings.php:140
 msgid "Add Episode"
 msgstr ""
 
-#: includes/extra-strings.php:142
+#: includes/extra-strings.php:141
 msgid "Edit Episode"
 msgstr ""
 
-#: includes/extra-strings.php:143
+#: includes/extra-strings.php:142
 msgid "New Episode"
 msgstr ""
 
-#: includes/extra-strings.php:144
+#: includes/extra-strings.php:143
 msgid "View Episode"
 msgstr ""
 
-#: includes/extra-strings.php:145
+#: includes/extra-strings.php:144
 msgid "Search Episodes"
 msgstr ""
 
-#: includes/extra-strings.php:146
+#: includes/extra-strings.php:145
 msgid "No Episodes found"
 msgstr ""
 
-#: includes/extra-strings.php:147
+#: includes/extra-strings.php:146
 msgid "No Episodes found in Trash"
 msgstr ""
 
-#: includes/extra-strings.php:148
+#: includes/extra-strings.php:147
 msgid "All Episodes"
 msgstr ""
 
-#: includes/extra-strings.php:149
+#: includes/extra-strings.php:148
 msgid "Post Type for Show Episodes"
 msgstr ""
 
-#: includes/extra-strings.php:150
+#: includes/extra-strings.php:149
 msgid "Search Topics"
 msgstr ""
 
-#: includes/extra-strings.php:151
+#: includes/extra-strings.php:150
 msgid "All Topics"
 msgstr ""
 
-#: includes/extra-strings.php:152
+#: includes/extra-strings.php:151
 msgid "Parent Topic"
 msgstr ""
 
-#: includes/extra-strings.php:153
+#: includes/extra-strings.php:152
 msgid "Parent Topic:"
 msgstr ""
 
-#: includes/extra-strings.php:154
+#: includes/extra-strings.php:153
 msgid "Edit Topic"
 msgstr ""
 
-#: includes/extra-strings.php:155
+#: includes/extra-strings.php:154
 msgid "Update Topic"
 msgstr ""
 
-#: includes/extra-strings.php:156
+#: includes/extra-strings.php:155
 msgid "Add New Topic"
 msgstr ""
 
-#: includes/extra-strings.php:157
+#: includes/extra-strings.php:156
 msgid "New Topic Name"
 msgstr ""
 
-#: includes/extra-strings.php:158
+#: includes/extra-strings.php:157
 msgid "Topic"
 msgstr ""
 
-#: includes/extra-strings.php:159
+#: includes/extra-strings.php:158
 msgid "Search Guests"
 msgstr ""
 
-#: includes/extra-strings.php:160
+#: includes/extra-strings.php:159
 msgid "All Guests"
 msgstr ""
 
-#: includes/extra-strings.php:161
+#: includes/extra-strings.php:160
 msgid "Parent Guest"
 msgstr ""
 
-#: includes/extra-strings.php:162
+#: includes/extra-strings.php:161
 msgid "Parent Guest:"
 msgstr ""
 
-#: includes/extra-strings.php:163
+#: includes/extra-strings.php:162
 msgid "Edit Guest"
 msgstr ""
 
-#: includes/extra-strings.php:164
+#: includes/extra-strings.php:163
 msgid "Update Guest"
 msgstr ""
 
-#: includes/extra-strings.php:165
+#: includes/extra-strings.php:164
 msgid "Add New Guest"
 msgstr ""
 
-#: includes/extra-strings.php:166
+#: includes/extra-strings.php:165
 msgid "New Guest Name"
 msgstr ""
 
-#: includes/extra-strings.php:167
+#: includes/extra-strings.php:166
 msgid "Guest"
 msgstr ""
 
-#: includes/extra-strings.php:168
+#: includes/extra-strings.php:167
 msgid "Show %s"
 msgstr ""
 
-#: includes/extra-strings.php:169
+#: includes/extra-strings.php:168
 msgid "Aired on"
 msgstr ""
 
-#: includes/extra-strings.php:170 includes/post-types-admin.php:4746
+#: includes/extra-strings.php:169 includes/post-types-admin.php:4794
 msgid "Image"
 msgstr ""
 
-#: includes/extra-strings.php:171
+#: includes/extra-strings.php:170
 msgid "Add Genre Image"
 msgstr ""
 
-#: includes/extra-strings.php:172
+#: includes/extra-strings.php:171
 msgid "Remove Genre Image"
 msgstr ""
 
-#: includes/extra-strings.php:173
+#: includes/extra-strings.php:172
 msgid "Background Color"
 msgstr ""
 
-#: includes/extra-strings.php:174
+#: includes/extra-strings.php:173
 msgid "Border Color"
 msgstr ""
 
-#: includes/extra-strings.php:175
+#: includes/extra-strings.php:174
 msgid "Text Color"
 msgstr ""
 
-#: includes/extra-strings.php:176
+#: includes/extra-strings.php:175
 msgid "Insert"
 msgstr ""
 
-#: includes/extra-strings.php:177
+#: includes/extra-strings.php:176
 msgid "this is a success message"
 msgstr ""
 
-#: includes/extra-strings.php:178
+#: includes/extra-strings.php:177
 msgid "this is a failure message"
 msgstr ""
 
-#: includes/extra-strings.php:179
+#: includes/extra-strings.php:178
 msgid "Please upload a valid YAML file."
 msgstr ""
 
-#: includes/extra-strings.php:180
+#: includes/extra-strings.php:179
 msgid "Please upload a valid YAML file"
 msgstr ""
 
-#: includes/extra-strings.php:181
+#: includes/extra-strings.php:180
 msgid "Please upload a file to import."
 msgstr ""
 
-#: includes/extra-strings.php:182
+#: includes/extra-strings.php:181
 msgid "Please upload a file to import"
 msgstr ""
 
-#: includes/extra-strings.php:183
+#: includes/extra-strings.php:182
 msgid "Successfully parsed and imported YAML file, deleting pre-existing show data."
 msgstr ""
 
-#: includes/extra-strings.php:184
+#: includes/extra-strings.php:183
 msgid "Successfully parsed and imported YAML file. Pre-existing show data remains unchanged."
 msgstr ""
 
-#: includes/extra-strings.php:185
+#: includes/extra-strings.php:184
 msgid "Export successful. Use the following link(s to download your data."
 msgstr ""
 
-#: includes/extra-strings.php:186
+#: includes/extra-strings.php:185
 msgid "Data file"
 msgstr ""
 
-#: includes/extra-strings.php:187
+#: includes/extra-strings.php:186
 msgid "Image zip file"
 msgstr ""
 
-#: includes/extra-strings.php:188
+#: includes/extra-strings.php:187
 msgid "Image tgz file"
 msgstr ""
 
-#: includes/extra-strings.php:189
+#: includes/extra-strings.php:188
 msgid "Download one of the image files and the data file. See help for details on how to stage an import including images."
 msgstr ""
 
-#: includes/extra-strings.php:190
+#: includes/extra-strings.php:189
 msgid "Show data file (YAML"
 msgstr ""
 
-#: includes/extra-strings.php:191
+#: includes/extra-strings.php:190
 msgid "Images <strong>not</strong> exported. See help for details on how to include images."
 msgstr ""
 
-#: includes/extra-strings.php:192
+#: includes/extra-strings.php:191
 msgid "YAML import error. See below for details."
 msgstr ""
 
-#: includes/extra-strings.php:193
+#: includes/extra-strings.php:192
 msgid "Failed to create export folder"
 msgstr ""
 
-#: includes/extra-strings.php:194
+#: includes/extra-strings.php:193
 msgid "No image exported for"
 msgstr ""
 
-#: includes/extra-strings.php:195
+#: includes/extra-strings.php:194
 msgid "Failed to copy file. See below for details"
 msgstr ""
 
-#: includes/extra-strings.php:196
+#: includes/extra-strings.php:195
 msgid "Failed to create show_images.zip"
 msgstr ""
 
-#: includes/extra-strings.php:197
+#: includes/extra-strings.php:196
 msgid "Each show in the YAML file must define at minimum the following keys: "
 msgstr ""
 
-#: includes/extra-strings.php:198
+#: includes/extra-strings.php:197
 msgid "show-title: may not be null."
 msgstr ""
 
-#: includes/extra-strings.php:199
+#: includes/extra-strings.php:198
 msgid "show-description: may not be null."
 msgstr ""
 
-#: includes/extra-strings.php:200
+#: includes/extra-strings.php:199
 msgid "show-image: must be a URL reference to an existing image."
 msgstr ""
 
-#: includes/extra-strings.php:201
+#: includes/extra-strings.php:200
 msgid "show-avatar: must be a URL reference to an existing image."
 msgstr ""
 
-#: includes/extra-strings.php:202
+#: includes/extra-strings.php:201
 msgid "show-header: must be a URL reference to an existing image."
 msgstr ""
 
-#: includes/extra-strings.php:203
+#: includes/extra-strings.php:202
 msgid "upload-images: may not be null."
 msgstr ""
 
-#: includes/extra-strings.php:204
+#: includes/extra-strings.php:203
 msgid "show-url: must be a valid web address."
 msgstr ""
 
-#: includes/extra-strings.php:205
+#: includes/extra-strings.php:204
 msgid "show-podcast: must be a valid web address."
 msgstr ""
 
-#: includes/extra-strings.php:206
+#: includes/extra-strings.php:205
 msgid "show-user-list: must be a simple array of valid email addresses."
 msgstr ""
 
-#: includes/extra-strings.php:207
+#: includes/extra-strings.php:206
 msgid "show-producer-list: must be a simple array of valid email addresses."
 msgstr ""
 
-#: includes/extra-strings.php:208
+#: includes/extra-strings.php:207
 msgid "show-email: must be a valid email address."
 msgstr ""
 
-#: includes/extra-strings.php:209
+#: includes/extra-strings.php:208
 msgid "show-active: may not be null."
 msgstr ""
 
-#: includes/extra-strings.php:210
+#: includes/extra-strings.php:209
 msgid "YAML data parsed successfully, but contains formatting errors. See below for details."
 msgstr ""
 
-#: includes/extra-strings.php:211
+#: includes/extra-strings.php:210
 msgid "Data file errors noted as follows:"
 msgstr ""
 
-#: includes/extra-strings.php:212
+#: includes/extra-strings.php:211
 msgid "show-schedule[<weekday>] time blocks must be in 24h format and have the form \"04:55\" (note 0 padding."
 msgstr ""
 
-#: includes/extra-strings.php:213
+#: includes/extra-strings.php:212
 msgid "Error, for show-schedule[<weekday>], only \"disabled\" and \"encore\" flags are allowed"
 msgstr ""
 
-#: includes/extra-strings.php:214
+#: includes/extra-strings.php:213
 msgid "show-schedule[<weekday>] must reference an array of time blocks containing at least one element."
 msgstr ""
 
-#: includes/extra-strings.php:215
+#: includes/extra-strings.php:214
 msgid "Invalid weekday. show-schedule[<weekday>] must be one of \"sun\"..\"sat\", or \"sunday\"..\"saturday\" (case insensitive."
 msgstr ""
 
-#: includes/extra-strings.php:216
+#: includes/extra-strings.php:215
 msgid " show-schedule: must define at least one weekday."
 msgstr ""
 
-#: includes/extra-strings.php:217
+#: includes/extra-strings.php:216
 msgid "Import/Export Show Data"
 msgstr ""
 
-#: includes/extra-strings.php:218 radio-station-admin.php:235
+#: includes/extra-strings.php:217 radio-station-admin.php:240
 msgid "Import/Export"
 msgstr ""
 
-#: includes/extra-strings.php:220
+#: includes/extra-strings.php:219
 msgid "Import show data from a YAML file."
 msgstr ""
 
-#: includes/extra-strings.php:221
+#: includes/extra-strings.php:220
 msgid "Delete existing show data"
 msgstr ""
 
-#: includes/extra-strings.php:222
+#: includes/extra-strings.php:221
 msgid "WARNING"
 msgstr ""
 
-#: includes/extra-strings.php:224
+#: includes/extra-strings.php:223
 msgid "Export show data to a downloadable file. Does not include images by default. Check Advanced for additional options."
 msgstr ""
 
-#: includes/extra-strings.php:225
+#: includes/extra-strings.php:224
 msgid "Advanced"
 msgstr ""
 
-#: includes/extra-strings.php:226
+#: includes/extra-strings.php:225
 msgid "YAML file name"
 msgstr ""
 
-#: includes/extra-strings.php:227
+#: includes/extra-strings.php:226
 msgid "Default similar to"
 msgstr ""
 
-#: includes/extra-strings.php:228
+#: includes/extra-strings.php:227
 msgid "URL where show images will be staged for import (see help"
 msgstr ""
 
-#: includes/extra-strings.php:229
+#: includes/extra-strings.php:228
 msgid "Metadata Source"
 msgstr ""
 
-#: includes/extra-strings.php:230
+#: includes/extra-strings.php:229
 msgid "Default Plugin Setting"
 msgstr ""
 
-#: includes/extra-strings.php:231
+#: includes/extra-strings.php:230
 msgid "Override: Metadata On"
 msgstr ""
 
-#: includes/extra-strings.php:232
+#: includes/extra-strings.php:231
 msgid "Override: Metadata Off"
 msgstr ""
 
-#: includes/extra-strings.php:233
+#: includes/extra-strings.php:232
 msgid "Override: Metadata URL"
 msgstr ""
 
-#: includes/extra-strings.php:234
+#: includes/extra-strings.php:233
 msgid "Override: Current Playlist"
 msgstr ""
 
-#: includes/extra-strings.php:235
+#: includes/extra-strings.php:234
 msgid "Metadata Override URL"
 msgstr ""
 
-#: includes/extra-strings.php:236
+#: includes/extra-strings.php:235
 msgid "Color Options"
 msgstr ""
 
-#: includes/extra-strings.php:237
+#: includes/extra-strings.php:236
 msgid "Player Text Color"
 msgstr ""
 
-#: includes/extra-strings.php:238
+#: includes/extra-strings.php:237
 msgid "Player Background Color"
 msgstr ""
 
-#: includes/extra-strings.php:239
+#: includes/extra-strings.php:238
 msgid "Playing Color"
 msgstr ""
 
-#: includes/extra-strings.php:240
+#: includes/extra-strings.php:239
 msgid "Buttons Color"
 msgstr ""
 
-#: includes/extra-strings.php:241
+#: includes/extra-strings.php:240
 msgid "Track Color"
 msgstr ""
 
-#: includes/extra-strings.php:242
+#: includes/extra-strings.php:241
 msgid "Track Thumb Color"
 msgstr ""
 
-#: includes/extra-strings.php:243
+#: includes/extra-strings.php:242
 msgid "Advanced Options"
 msgstr ""
 
-#: includes/extra-strings.php:247
+#: includes/extra-strings.php:243 widgets/class-radio-player-widget.php:100
+#: widgets/class-radio-player-widget.php:121
+#: widgets/class-radio-player-widget.php:194
+#: widgets/class-radio-player-widget.php:214
+msgid "Plugin Setting"
+msgstr ""
+
+#: includes/extra-strings.php:244 widgets/class-current-playlist-widget.php:72
+#: widgets/class-current-show-widget.php:85
+#: widgets/class-upcoming-shows-widget.php:88
+msgid "On"
+msgstr ""
+
+#: includes/extra-strings.php:245 options.php:1117
+#: widgets/class-current-playlist-widget.php:73
+#: widgets/class-current-show-widget.php:86
+#: widgets/class-upcoming-shows-widget.php:89
+msgid "Off"
+msgstr ""
+
+#: includes/extra-strings.php:246
 msgid "Current Show Display"
 msgstr ""
 
-#: includes/extra-strings.php:248
+#: includes/extra-strings.php:247
 msgid "Now Playing Track Display"
 msgstr ""
 
-#: includes/extra-strings.php:249
+#: includes/extra-strings.php:248
 msgid "Leave blank to use stream URL."
 msgstr ""
 
-#: includes/extra-strings.php:250
+#: includes/extra-strings.php:249
 msgid "Custom Theme"
 msgstr ""
 
-#: includes/extra-strings.php:251
+#: includes/extra-strings.php:250
 msgid "Popup Player to separate window."
 msgstr ""
 
-#: includes/extra-strings.php:252
+#: includes/extra-strings.php:251
 msgid "Popup Player"
 msgstr ""
 
-#: includes/extra-strings.php:253
+#: includes/extra-strings.php:252
 msgid "Edit Your Host Profile"
 msgstr ""
 
-#: includes/extra-strings.php:254
+#: includes/extra-strings.php:253
 msgid "Host Profile"
 msgstr ""
 
-#: includes/extra-strings.php:255
+#: includes/extra-strings.php:254
 msgid "Edit Your Producer Profile"
 msgstr ""
 
-#: includes/extra-strings.php:256
+#: includes/extra-strings.php:255
 msgid "Producer Profile"
 msgstr ""
 
-#: includes/extra-strings.php:257 includes/extra-strings.php:349
+#: includes/extra-strings.php:256 includes/extra-strings.php:348
 msgid "You do not have permission to do that."
 msgstr ""
 
-#: includes/extra-strings.php:258
+#: includes/extra-strings.php:257
 msgid "Profile Information"
 msgstr ""
 
-#: includes/extra-strings.php:259 includes/post-types-admin.php:474
-#: includes/post-types-admin.php:3208
+#: includes/extra-strings.php:258 includes/post-types-admin.php:479
+#: includes/post-types-admin.php:3252
 msgid "Website Link"
 msgstr ""
 
-#: includes/extra-strings.php:260
+#: includes/extra-strings.php:259
 msgid "%s Email"
 msgstr ""
 
-#: includes/extra-strings.php:261
+#: includes/extra-strings.php:260
 msgid "%s Phone"
 msgstr ""
 
-#: includes/extra-strings.php:262 includes/post-types-admin.php:527
-#: includes/post-types-admin.php:3319
+#: includes/extra-strings.php:261 includes/post-types-admin.php:533
+#: includes/post-types-admin.php:3363
 msgid "Patreon Page ID"
 msgstr ""
 
-#: includes/extra-strings.php:263
+#: includes/extra-strings.php:262
 msgid "Host Image"
 msgstr ""
 
-#: includes/extra-strings.php:264
+#: includes/extra-strings.php:263
 msgid "Producer Image"
 msgstr ""
 
-#: includes/extra-strings.php:265
+#: includes/extra-strings.php:264
 msgid "User Save Error! The selected User is already assigned to a %s Profile."
 msgstr ""
 
-#: includes/extra-strings.php:266 includes/post-types-admin.php:2630
-#: includes/post-types-admin.php:3164 includes/post-types.php:193
+#: includes/extra-strings.php:265 includes/post-types-admin.php:2655
+#: includes/post-types-admin.php:3208 includes/post-types.php:195
 msgid "Hosts"
 msgstr ""
 
-#: includes/extra-strings.php:267
+#: includes/extra-strings.php:266
 msgid "Host User"
 msgstr ""
 
-#: includes/extra-strings.php:268 includes/post-types-admin.php:3186
-#: includes/post-types.php:245
+#: includes/extra-strings.php:267 includes/post-types-admin.php:3230
+#: includes/post-types.php:247
 msgid "Producers"
 msgstr ""
 
-#: includes/extra-strings.php:269
+#: includes/extra-strings.php:268
 msgid "Producer User"
 msgstr ""
 
-#: includes/extra-strings.php:270
+#: includes/extra-strings.php:269
 msgid "Team"
 msgstr ""
 
-#: includes/extra-strings.php:271
+#: includes/extra-strings.php:270
 msgid "View"
 msgstr ""
 
-#: includes/extra-strings.php:272
+#: includes/extra-strings.php:271
 msgid "All"
 msgstr ""
 
-#: includes/extra-strings.php:273
+#: includes/extra-strings.php:272
 msgid "Editors"
 msgstr ""
 
-#: includes/extra-strings.php:274 includes/post-types.php:43
-#: includes/post-types.php:51 radio-station-admin.php:214
+#: includes/extra-strings.php:273 includes/post-types.php:45
+#: includes/post-types.php:53 radio-station-admin.php:219
 msgid "Shows"
 msgstr ""
 
-#: includes/extra-strings.php:275
+#: includes/extra-strings.php:274
 msgid "Recurring Overrides"
 msgstr ""
 
-#: includes/extra-strings.php:276
+#: includes/extra-strings.php:275
 msgid "Clear Recurrences"
 msgstr ""
 
-#: includes/extra-strings.php:277
+#: includes/extra-strings.php:276
 msgid "Save Recurrences"
 msgstr ""
 
-#: includes/extra-strings.php:278
+#: includes/extra-strings.php:277
 msgid "Add Recurrence"
 msgstr ""
 
-#: includes/extra-strings.php:279
+#: includes/extra-strings.php:278
 msgid "Saving Recurrences..."
 msgstr ""
 
-#: includes/extra-strings.php:280
+#: includes/extra-strings.php:279
 msgid "Recurrences Saved."
 msgstr ""
 
-#: includes/extra-strings.php:281
+#: includes/extra-strings.php:280
 msgid "Single Overrides"
 msgstr ""
 
-#: includes/extra-strings.php:282 includes/post-types-admin.php:3766
-#: includes/post-types-admin.php:4114 templates/playlist-export.php:14
+#: includes/extra-strings.php:281 includes/post-types-admin.php:3813
+#: includes/post-types-admin.php:4162 templates/playlist-export.php:14
 msgid "Start Date"
 msgstr ""
 
-#: includes/extra-strings.php:283 includes/post-types-admin.php:1163
-#: includes/post-types-admin.php:1502 includes/post-types-admin.php:3777
-#: includes/post-types-admin.php:4120
+#: includes/extra-strings.php:282 includes/post-types-admin.php:1172
+#: includes/post-types-admin.php:1514 includes/post-types-admin.php:3824
+#: includes/post-types-admin.php:4168
 msgid "Start Time"
 msgstr ""
 
-#: includes/extra-strings.php:284 includes/post-types-admin.php:1197
-#: includes/post-types-admin.php:1546 includes/post-types-admin.php:3818
-#: includes/post-types-admin.php:4155
+#: includes/extra-strings.php:283 includes/post-types-admin.php:1206
+#: includes/post-types-admin.php:1558 includes/post-types-admin.php:3865
+#: includes/post-types-admin.php:4203
 msgid "End Time"
 msgstr ""
 
-#: includes/extra-strings.php:285 includes/post-types-admin.php:1238
-#: includes/post-types-admin.php:1602 includes/post-types-admin.php:3889
-#: includes/post-types-admin.php:4208 includes/post-types-admin.php:4902
+#: includes/extra-strings.php:284 includes/post-types-admin.php:1247
+#: includes/post-types-admin.php:1614 includes/post-types-admin.php:3936
+#: includes/post-types-admin.php:4256 includes/post-types-admin.php:4953
 msgid "Disabled"
 msgstr ""
 
-#: includes/extra-strings.php:286
+#: includes/extra-strings.php:285
 msgid "Multiday"
 msgstr ""
 
-#: includes/extra-strings.php:287
+#: includes/extra-strings.php:286
 msgid "Repeats"
 msgstr ""
 
-#: includes/extra-strings.php:288
+#: includes/extra-strings.php:287
 msgid "Once Every Month"
 msgstr ""
 
-#: includes/extra-strings.php:289
+#: includes/extra-strings.php:288
 msgid "By Week Intervals"
 msgstr ""
 
-#: includes/extra-strings.php:290
+#: includes/extra-strings.php:289
 msgid "Every"
 msgstr ""
 
-#: includes/extra-strings.php:291
+#: includes/extra-strings.php:290
 msgid "Weeks"
 msgstr ""
 
-#: includes/extra-strings.php:292
+#: includes/extra-strings.php:291
 msgid "On the"
 msgstr ""
 
-#: includes/extra-strings.php:293
+#: includes/extra-strings.php:292
 msgid "First"
 msgstr ""
 
-#: includes/extra-strings.php:294 radio-station.php:1007
+#: includes/extra-strings.php:293 radio-station.php:1026
 msgid "Second"
 msgstr ""
 
-#: includes/extra-strings.php:295
+#: includes/extra-strings.php:294
 msgid "Third"
 msgstr ""
 
-#: includes/extra-strings.php:296
+#: includes/extra-strings.php:295
 msgid "Fourth"
 msgstr ""
 
-#: includes/extra-strings.php:297
+#: includes/extra-strings.php:296
 msgid "Fifth"
 msgstr ""
 
-#: includes/extra-strings.php:298
+#: includes/extra-strings.php:297
 msgid "Last"
 msgstr ""
 
-#: includes/extra-strings.php:299
+#: includes/extra-strings.php:298
 msgid "Cutoff Date"
 msgstr ""
 
-#: includes/extra-strings.php:300
+#: includes/extra-strings.php:299
 msgid "List Recurrence Dates"
 msgstr ""
 
-#: includes/extra-strings.php:301
+#: includes/extra-strings.php:300
 msgid "Preview Recurrence Dates"
 msgstr ""
 
-#: includes/extra-strings.php:302
+#: includes/extra-strings.php:301
 msgid "Duplicate Recurrence"
 msgstr ""
 
-#: includes/extra-strings.php:303
+#: includes/extra-strings.php:302
 msgid "Remove Recurrence"
 msgstr ""
 
-#: includes/extra-strings.php:304
+#: includes/extra-strings.php:303
 msgid "Are you sure you want to remove this Recurrence?"
 msgstr ""
 
-#: includes/extra-strings.php:305
+#: includes/extra-strings.php:304
 msgid "Are you sure you want to clear all Recurrences?"
 msgstr ""
 
-#: includes/extra-strings.php:306
+#: includes/extra-strings.php:305
 msgid "Extra Days"
 msgstr ""
 
-#: includes/extra-strings.php:307
+#: includes/extra-strings.php:306
 msgid "Number of Weeks"
 msgstr ""
 
-#: includes/extra-strings.php:308
+#: includes/extra-strings.php:307
 msgid "Preview Recurrences"
 msgstr ""
 
-#: includes/extra-strings.php:309 includes/post-types-admin.php:2038
-#: includes/post-types-admin.php:4272 includes/post-types-admin.php:5833
+#: includes/extra-strings.php:308 includes/post-types-admin.php:2059
+#: includes/post-types-admin.php:4318 includes/post-types-admin.php:5888
 msgid "Expired. Publish or Update instead."
 msgstr ""
 
-#: includes/extra-strings.php:310 includes/post-types-admin.php:4274
+#: includes/extra-strings.php:309 includes/post-types-admin.php:4320
 msgid "Failed. Invalid Override."
 msgstr ""
 
-#: includes/extra-strings.php:311 includes/post-types-admin.php:2036
-#: includes/post-types-admin.php:4276
+#: includes/extra-strings.php:310 includes/post-types-admin.php:2057
+#: includes/post-types-admin.php:4322
 msgid "Failed. Publish or Update instead."
 msgstr ""
 
-#: includes/extra-strings.php:312
+#: includes/extra-strings.php:311
 msgid "Warning! Recurring conflicts detected."
 msgstr ""
 
-#: includes/extra-strings.php:313
+#: includes/extra-strings.php:312
 msgid "Error! Override not found."
 msgstr ""
 
-#: includes/extra-strings.php:314
+#: includes/extra-strings.php:313
 msgid "Error! No matching recurrence found."
 msgstr ""
 
-#: includes/extra-strings.php:315
+#: includes/extra-strings.php:314
 msgid "Error! No saved recurrences were found."
 msgstr ""
 
-#: includes/extra-strings.php:316
+#: includes/extra-strings.php:315
 msgid "Cannot list recurring times without a valid start time."
 msgstr ""
 
-#: includes/extra-strings.php:317
+#: includes/extra-strings.php:316
 msgid "Cannot list recurring times without a valid end time."
 msgstr ""
 
-#: includes/extra-strings.php:318
+#: includes/extra-strings.php:317
 msgid "Override Date"
 msgstr ""
 
-#: includes/extra-strings.php:319
+#: includes/extra-strings.php:318
 msgid "Shows Affected"
 msgstr ""
 
-#: includes/extra-strings.php:320 includes/post-types-admin.php:624
+#: includes/extra-strings.php:319 includes/post-types-admin.php:631
 msgid "DJs / Hosts"
 msgstr ""
 
-#: includes/extra-strings.php:321
+#: includes/extra-strings.php:320
 msgid "Show Editors"
 msgstr ""
 
-#: includes/extra-strings.php:322
+#: includes/extra-strings.php:321
 msgid "Role Assignment Interface"
 msgstr ""
 
-#: includes/extra-strings.php:323
+#: includes/extra-strings.php:322
 msgid "You can assign Radio Station roles to users directly here."
 msgstr ""
 
-#: includes/extra-strings.php:324
+#: includes/extra-strings.php:323
 msgid "They can also be assigned via the WordPress user editor."
 msgstr ""
 
-#: includes/extra-strings.php:325
+#: includes/extra-strings.php:324
 msgid "Grant Role to User(s"
 msgstr ""
 
-#: includes/extra-strings.php:326
+#: includes/extra-strings.php:325
 msgid "Remove Role from User(s"
 msgstr ""
 
-#: includes/extra-strings.php:327
+#: includes/extra-strings.php:326
 msgid "Update User Roles"
 msgstr ""
 
-#: includes/extra-strings.php:328
+#: includes/extra-strings.php:327
 msgid "You have unsaved role changes."
 msgstr ""
 
-#: includes/extra-strings.php:329
+#: includes/extra-strings.php:328
 msgid "role added to user"
 msgstr ""
 
-#: includes/extra-strings.php:330
+#: includes/extra-strings.php:329
 msgid "role removed from user"
 msgstr ""
 
-#: includes/extra-strings.php:331
+#: includes/extra-strings.php:330
 msgid "Visual Schedule Editor"
 msgstr ""
 
-#: includes/extra-strings.php:332
+#: includes/extra-strings.php:331
 msgid "Table"
 msgstr ""
 
-#: includes/extra-strings.php:333
+#: includes/extra-strings.php:332
 msgid "Tabs"
 msgstr ""
 
-#: includes/extra-strings.php:334 options.php:1051
+#: includes/extra-strings.php:333 options.php:1119
 msgid "Grid"
 msgstr ""
 
-#: includes/extra-strings.php:335
+#: includes/extra-strings.php:334
 msgid "Calendar"
 msgstr ""
 
-#: includes/extra-strings.php:336
+#: includes/extra-strings.php:335
 msgid "Your session has expired. You can log in again from this page or go to the login page."
 msgstr ""
 
-#: includes/extra-strings.php:337
+#: includes/extra-strings.php:336
 msgid "You have unsaved changes. Are you sure you want to close this window?"
 msgstr ""
 
-#: includes/extra-strings.php:338
+#: includes/extra-strings.php:337
 msgid "Save Shift"
 msgstr ""
 
-#: includes/extra-strings.php:339 includes/post-types-admin.php:875
+#: includes/extra-strings.php:338 includes/post-types-admin.php:882
 msgid "Save Shifts"
 msgstr ""
 
-#: includes/extra-strings.php:340
+#: includes/extra-strings.php:339
 msgid "Save Override"
 msgstr ""
 
-#: includes/extra-strings.php:341 includes/post-types-admin.php:3540
+#: includes/extra-strings.php:340 includes/post-types-admin.php:3584
 msgid "Save Overrides"
 msgstr ""
 
-#: includes/extra-strings.php:342
+#: includes/extra-strings.php:341
 msgid "Edit Show Shifts"
 msgstr ""
 
-#: includes/extra-strings.php:343
+#: includes/extra-strings.php:342
 msgid "Edit Override Times"
 msgstr ""
 
-#: includes/extra-strings.php:344
+#: includes/extra-strings.php:343
 msgid "Edit Show Shift"
 msgstr ""
 
-#: includes/extra-strings.php:345
+#: includes/extra-strings.php:344
 msgid "Edit Override Time"
 msgstr ""
 
-#: includes/extra-strings.php:346
+#: includes/extra-strings.php:345
 msgid "Add to Schedule"
 msgstr ""
 
-#: includes/extra-strings.php:347
+#: includes/extra-strings.php:346
 msgid "Add Show or Override to Schedule"
 msgstr ""
 
-#: includes/extra-strings.php:348
+#: includes/extra-strings.php:347
 msgid "Error. Provided Show ID does not exist."
 msgstr ""
 
-#: includes/extra-strings.php:350
+#: includes/extra-strings.php:349
 msgid "Warning. Provided Shift ID is not valid."
 msgstr ""
 
-#: includes/extra-strings.php:351
+#: includes/extra-strings.php:350
 msgid "Warning. Provided Shift ID no longer exists."
 msgstr ""
 
-#: includes/extra-strings.php:352
+#: includes/extra-strings.php:351
 msgid "Display Shifts"
 msgstr ""
 
-#: includes/extra-strings.php:353
+#: includes/extra-strings.php:352
 msgid "Selected Shift"
 msgstr ""
 
-#: includes/extra-strings.php:354
+#: includes/extra-strings.php:353
 msgid "All Show Shifts"
 msgstr ""
 
-#: includes/extra-strings.php:355
+#: includes/extra-strings.php:354
 msgid "Warning. Provided Override Shift ID no longer exists."
 msgstr ""
 
-#: includes/extra-strings.php:356
+#: includes/extra-strings.php:355
 msgid "Override"
 msgstr ""
 
-#: includes/extra-strings.php:357
+#: includes/extra-strings.php:356
 msgid "Display Override"
 msgstr ""
 
-#: includes/extra-strings.php:358
+#: includes/extra-strings.php:357
 msgid "Selected Override Time"
 msgstr ""
 
-#: includes/extra-strings.php:359
+#: includes/extra-strings.php:358
 msgid "All Override Times"
 msgstr ""
 
-#: includes/extra-strings.php:360
+#: includes/extra-strings.php:359
 msgid "Error. Provided ID is not a Show or Override."
 msgstr ""
 
-#: includes/extra-strings.php:361
+#: includes/extra-strings.php:360
 msgid "Error! Invalid date value passed."
 msgstr ""
 
-#: includes/extra-strings.php:362
+#: includes/extra-strings.php:361
 msgid "Error! Invalid day value passed."
 msgstr ""
 
-#: includes/extra-strings.php:363
+#: includes/extra-strings.php:362
 msgid "Timeslot Type"
 msgstr ""
 
-#: includes/extra-strings.php:364
+#: includes/extra-strings.php:363
 msgid "Show Shift"
 msgstr ""
 
-#: includes/extra-strings.php:365 includes/post-types.php:142
+#: includes/extra-strings.php:364 includes/post-types.php:144
 msgid "Schedule Override"
 msgstr ""
 
-#: includes/extra-strings.php:366
+#: includes/extra-strings.php:365
 msgid "Recurring Override"
 msgstr ""
 
-#: includes/extra-strings.php:367
+#: includes/extra-strings.php:366
 msgid "Shift Day"
 msgstr ""
 
-#: includes/extra-strings.php:368 includes/post-types-admin.php:1231
-#: includes/post-types-admin.php:1591
+#: includes/extra-strings.php:367 includes/post-types-admin.php:1240
+#: includes/post-types-admin.php:1603
 msgid "Encore"
 msgstr ""
 
-#: includes/extra-strings.php:369
+#: includes/extra-strings.php:368
 msgid "Show Type"
 msgstr ""
 
-#: includes/extra-strings.php:370
+#: includes/extra-strings.php:369
 msgid "Existing Show"
 msgstr ""
 
-#: includes/extra-strings.php:371 includes/post-types.php:48
+#: includes/extra-strings.php:370 includes/post-types.php:50
 msgid "New Show"
 msgstr ""
 
-#: includes/extra-strings.php:372
+#: includes/extra-strings.php:371
 msgid "Override Type"
 msgstr ""
 
-#: includes/extra-strings.php:373
+#: includes/extra-strings.php:372
 msgid "Existing Override"
 msgstr ""
 
-#: includes/extra-strings.php:374
+#: includes/extra-strings.php:373
 msgid "New Override"
 msgstr ""
 
-#: includes/extra-strings.php:375
+#: includes/extra-strings.php:374
 msgid "Select Show..."
 msgstr ""
 
-#: includes/extra-strings.php:376 includes/post-types-admin.php:879
+#: includes/extra-strings.php:375 includes/post-types-admin.php:886
 msgid "Add Shift"
 msgstr ""
 
-#: includes/extra-strings.php:377
+#: includes/extra-strings.php:376
 msgid "Select Override..."
 msgstr ""
 
-#: includes/extra-strings.php:378 includes/post-types-admin.php:3543
+#: includes/extra-strings.php:377 includes/post-types-admin.php:3587
 msgid "Add Override"
 msgstr ""
 
-#: includes/extra-strings.php:379
+#: includes/extra-strings.php:378
 msgid "Open in a New Window"
 msgstr ""
 
-#: includes/extra-strings.php:380
+#: includes/extra-strings.php:379
 msgid "Create New Show"
 msgstr ""
 
-#: includes/extra-strings.php:381
+#: includes/extra-strings.php:380
 msgid "Create New Override"
 msgstr ""
 
-#: includes/extra-strings.php:382
+#: includes/extra-strings.php:381
 msgid "Adding Show Shift..."
 msgstr ""
 
-#: includes/extra-strings.php:383
+#: includes/extra-strings.php:382
 msgid "Show Shift Added."
 msgstr ""
 
-#: includes/extra-strings.php:384 includes/post-types-admin.php:871
+#: includes/extra-strings.php:383 includes/post-types-admin.php:878
 msgid "Clear Shifts"
 msgstr ""
 
-#: includes/extra-strings.php:385
+#: includes/extra-strings.php:384
 msgid "Adding Override Time..."
 msgstr ""
 
-#: includes/extra-strings.php:386
+#: includes/extra-strings.php:385
 msgid "Override Time Saved."
 msgstr ""
 
-#: includes/extra-strings.php:387 includes/post-types-admin.php:3537
+#: includes/extra-strings.php:386 includes/post-types-admin.php:3581
 msgid "Clear Overrides"
 msgstr ""
 
-#: includes/extra-strings.php:388
+#: includes/extra-strings.php:387
 msgid "Load Schedule for Previous Week"
 msgstr ""
 
-#: includes/extra-strings.php:389
+#: includes/extra-strings.php:388
 msgid "Load Schedule for Next Week"
 msgstr ""
 
-#: includes/extra-strings.php:390 options.php:1050
+#: includes/extra-strings.php:389 options.php:1118
 msgid "List"
 msgstr ""
 
-#: includes/extra-strings.php:391
+#: includes/extra-strings.php:390
 msgid "No Hosts were found to display."
 msgstr ""
 
-#: includes/extra-strings.php:392
+#: includes/extra-strings.php:391
 msgid "No Producers were found to display."
 msgstr ""
 
-#: includes/extra-strings.php:393
+#: includes/extra-strings.php:392
 msgid "No Episodes were found to display."
 msgstr ""
 
-#: includes/extra-strings.php:394 includes/shortcodes.php:2106
+#: includes/extra-strings.php:393 includes/shortcodes.php:2120
 msgid "Published on "
 msgstr ""
 
-#: includes/extra-strings.php:395
+#: includes/extra-strings.php:394
 msgid "No %s were found to display."
 msgstr ""
 
-#: includes/extra-strings.php:396
+#: includes/extra-strings.php:395
 msgid "Social Icons"
 msgstr ""
 
-#: includes/extra-strings.php:397
+#: includes/extra-strings.php:396
 msgid "Soundcloud"
 msgstr ""
 
-#: includes/extra-strings.php:398
+#: includes/extra-strings.php:397
 msgid "Mixcloud"
 msgstr ""
 
-#: includes/extra-strings.php:399
+#: includes/extra-strings.php:398
 msgid "Spotify"
 msgstr ""
 
-#: includes/extra-strings.php:400
+#: includes/extra-strings.php:399
 msgid "Twitch"
 msgstr ""
 
-#: includes/extra-strings.php:401
+#: includes/extra-strings.php:400
 msgid "Discord"
 msgstr ""
 
-#: includes/extra-strings.php:402
+#: includes/extra-strings.php:401
 msgid "Facebook"
 msgstr ""
 
-#: includes/extra-strings.php:403
+#: includes/extra-strings.php:402
 msgid "Twitter"
 msgstr ""
 
-#: includes/extra-strings.php:404
+#: includes/extra-strings.php:403
 msgid "YouTube"
 msgstr ""
 
-#: includes/extra-strings.php:405
+#: includes/extra-strings.php:404
 msgid "LinkedIn"
 msgstr ""
 
-#: includes/extra-strings.php:406
+#: includes/extra-strings.php:405
 msgid "Xing"
 msgstr ""
 
-#: includes/extra-strings.php:407
+#: includes/extra-strings.php:406
 msgid "Instagram"
 msgstr ""
 
-#: includes/extra-strings.php:408
+#: includes/extra-strings.php:407
 msgid "WhatsApp"
 msgstr ""
 
-#: includes/extra-strings.php:409
+#: includes/extra-strings.php:408
 msgid "Pinterest"
 msgstr ""
 
-#: includes/extra-strings.php:410
+#: includes/extra-strings.php:409
 msgid "Custom"
 msgstr ""
 
-#: includes/extra-strings.php:411
+#: includes/extra-strings.php:410
 msgid "Add a Social Icon"
 msgstr ""
 
-#: includes/extra-strings.php:412
+#: includes/extra-strings.php:411
 msgid "Move this Icon Up"
 msgstr ""
 
-#: includes/extra-strings.php:413
+#: includes/extra-strings.php:412
 msgid "Move this Icon Down"
 msgstr ""
 
-#: includes/extra-strings.php:414
+#: includes/extra-strings.php:413
 msgid "Remove this Social Icon"
 msgstr ""
 
-#: includes/extra-strings.php:415
+#: includes/extra-strings.php:414
 msgid "URL"
 msgstr ""
 
-#: includes/extra-strings.php:416
+#: includes/extra-strings.php:415
 msgid "Icon URL"
 msgstr ""
 
-#: includes/extra-strings.php:417
+#: includes/extra-strings.php:416
 msgid "Unknown"
 msgstr ""
 
-#: includes/extra-strings.php:418
+#: includes/extra-strings.php:417
 msgid "Social URL Page Link"
 msgstr ""
 
-#: includes/extra-strings.php:419
+#: includes/extra-strings.php:418
 msgid "Social Icon Image URL"
 msgstr ""
 
-#: includes/extra-strings.php:420
+#: includes/extra-strings.php:419
 msgid "Are you sure you want to remove this Social Icon?"
 msgstr ""
 
-#: includes/extra-strings.php:421
+#: includes/extra-strings.php:420
 msgid "No Social Icon Services defined."
 msgstr ""
 
-#: includes/extra-strings.php:422
+#: includes/extra-strings.php:421
 msgid "You can reorder this icon after saving it."
 msgstr ""
 
-#: includes/extra-strings.php:423
+#: includes/extra-strings.php:422
 msgid "Change Timezone"
 msgstr ""
 
-#: includes/extra-strings.php:424
+#: includes/extra-strings.php:423
 msgid "Select Region..."
 msgstr ""
 
-#: includes/extra-strings.php:425
+#: includes/extra-strings.php:424
 msgid "Clear"
 msgstr ""
 
-#: includes/extra-strings.php:426
+#: includes/extra-strings.php:425
 msgid "Cancel"
 msgstr ""
 
-#: includes/extra-strings.php:427
+#: includes/extra-strings.php:426
 msgid "Select Timezone..."
 msgstr ""
 
-#: includes/extra-strings.php:429
+#: includes/extra-strings.php:427 widgets/class-current-playlist-widget.php:71
+#: widgets/class-current-show-widget.php:84
+#: widgets/class-current-show-widget.php:212
+#: widgets/class-radio-clock-widget.php:89
+#: widgets/class-upcoming-shows-widget.php:87
+#: widgets/class-upcoming-shows-widget.php:207
+msgid "Default"
+msgstr ""
+
+#: includes/extra-strings.php:428
 msgid "Automatic Changeover Reloading"
 msgstr ""
 
-#: includes/extra-strings.php:430 templates/master-schedule-list.php:28
+#: includes/extra-strings.php:429 templates/master-schedule-list.php:28
 #: templates/master-schedule-table.php:29
 #: templates/master-schedule-table.php:600
 #: templates/master-schedule-tabs.php:30 templates/master-schedule-tabs.php:496
 msgid "to"
 msgstr ""
 
-#: includes/extra-strings.php:431 includes/shortcodes.php:2761
-#: includes/shortcodes.php:3509 radio-station-admin.php:1646
-#: templates/master-schedule-div.php:122
+#: includes/extra-strings.php:430 includes/shortcodes.php:2791
+#: includes/shortcodes.php:3576 radio-station-admin.php:1697
+#: templates/master-schedule-div.php:124
 #: templates/master-schedule-legacy.php:173
 #: templates/master-schedule-list.php:320
 #: templates/master-schedule-table.php:521
@@ -2249,17 +1800,7 @@ msgstr ""
 msgid "with"
 msgstr ""
 
-#: includes/extra-strings.php:432 includes/shortcodes.php:2798
-#: includes/shortcodes.php:3546 templates/master-schedule-div.php:133
-#: templates/master-schedule-legacy.php:184
-#: templates/master-schedule-list.php:335
-#: templates/master-schedule-table.php:537
-#: templates/master-schedule-tabs.php:432 templates/single-show-content.php:353
-#: templates/single-show-content.php:392
-msgid "and"
-msgstr ""
-
-#: includes/extra-strings.php:433 templates/master-schedule-div.php:188
+#: includes/extra-strings.php:432 templates/master-schedule-div.php:190
 #: templates/master-schedule-legacy.php:229
 #: templates/master-schedule-list.php:418
 #: templates/master-schedule-table.php:616
@@ -2267,7 +1808,7 @@ msgstr ""
 msgid "encore airing"
 msgstr ""
 
-#: includes/extra-strings.php:434 templates/master-schedule-div.php:198
+#: includes/extra-strings.php:433 templates/master-schedule-div.php:200
 #: templates/master-schedule-legacy.php:244
 #: templates/master-schedule-list.php:438
 #: templates/master-schedule-table.php:635
@@ -2275,2009 +1816,2101 @@ msgstr ""
 msgid "Audio File"
 msgstr ""
 
-#: includes/extra-strings.php:435 includes/master-schedule.php:815
-#: radio-station-admin.php:219 templates/master-schedule-list.php:459
+#: includes/extra-strings.php:434 includes/master-schedule.php:831
+#: radio-station-admin.php:224 templates/master-schedule-list.php:459
 #: templates/master-schedule-tabs.php:549
 msgid "Genres"
 msgstr ""
 
-#: includes/extra-strings.php:436
+#: includes/extra-strings.php:435
 msgid "No Shows"
 msgstr ""
 
-#: includes/extra-strings.php:437
+#: includes/extra-strings.php:436
 msgid "No scheduled Shows found for this date."
 msgstr ""
 
-#: includes/extra-strings.php:438 templates/master-schedule-table.php:182
+#: includes/extra-strings.php:437 templates/master-schedule-table.php:182
 #: templates/master-schedule-tabs.php:192
 msgid "Previous Day"
 msgstr ""
 
-#: includes/extra-strings.php:439 templates/master-schedule-table.php:195
+#: includes/extra-strings.php:438 templates/master-schedule-table.php:195
 #: templates/master-schedule-tabs.php:208
 msgid "Next Day"
 msgstr ""
 
-#: includes/extra-strings.php:440 templates/master-schedule-tabs.php:231
+#: includes/extra-strings.php:439 templates/master-schedule-tabs.php:231
 msgid "Viewing"
 msgstr ""
 
-#: includes/extra-strings.php:441
+#: includes/extra-strings.php:440
 msgid "No Shows scheduled."
 msgstr ""
 
-#: includes/extra-strings.php:442 templates/single-show-content.php:141
+#: includes/extra-strings.php:441 templates/single-show-content.php:141
 msgid "Show RSS Feed"
 msgstr ""
 
-#: includes/extra-strings.php:443 templates/single-show-content.php:242
+#: includes/extra-strings.php:442 templates/single-show-content.php:248
 msgid "Become a Supporter for"
 msgstr ""
 
-#: includes/extra-strings.php:444
+#: includes/extra-strings.php:443
 msgid "Episode Info"
 msgstr ""
 
-#: includes/extra-strings.php:445
+#: includes/extra-strings.php:444
 msgid "Broadcasted"
 msgstr ""
 
-#: includes/extra-strings.php:446
+#: includes/extra-strings.php:445
 msgid "on"
 msgstr ""
 
-#: includes/extra-strings.php:447 templates/single-show-content.php:328
+#: includes/extra-strings.php:446 templates/single-show-content.php:352
 msgid "Hosted by"
 msgstr ""
 
-#: includes/extra-strings.php:448 templates/single-show-content.php:367
+#: includes/extra-strings.php:447 templates/single-show-content.php:391
 msgid "Produced by"
 msgstr ""
 
-#: includes/extra-strings.php:449 templates/single-show-content.php:745
+#: includes/extra-strings.php:448 templates/single-show-content.php:775
 msgid "Show More"
 msgstr ""
 
-#: includes/extra-strings.php:450 templates/single-show-content.php:748
+#: includes/extra-strings.php:449 templates/single-show-content.php:778
 msgid "Show Less"
 msgstr ""
 
-#: includes/extra-strings.php:451
+#: includes/extra-strings.php:450
 msgid "Listen to this %s"
 msgstr ""
 
-#: includes/extra-strings.php:452 options.php:1333
+#: includes/extra-strings.php:451 options.php:1401
 msgid "Player"
 msgstr ""
 
-#: includes/extra-strings.php:453
+#: includes/extra-strings.php:452
 msgid "Download this Episode"
 msgstr ""
 
-#: includes/extra-strings.php:454
+#: includes/extra-strings.php:453
 msgid "About this %s"
 msgstr ""
 
-#: includes/extra-strings.php:455 templates/single-show-content.php:773
+#: includes/extra-strings.php:454 templates/single-show-content.php:803
 msgid "About"
 msgstr ""
 
-#: includes/extra-strings.php:456
+#: includes/extra-strings.php:455
 msgid "%s Show"
 msgstr ""
 
-#: includes/extra-strings.php:457
+#: includes/extra-strings.php:456
 msgid "%s Playlist"
 msgstr ""
 
-#: includes/extra-strings.php:458 templates/single-show-content.php:987
+#: includes/extra-strings.php:457 templates/single-show-content.php:1027
 msgid "Jump to"
 msgstr ""
 
-#: includes/extra-strings.php:459
+#: includes/extra-strings.php:458
 msgid "Visit %s Website"
 msgstr ""
 
-#: includes/extra-strings.php:460
+#: includes/extra-strings.php:459
 msgid "%s Phone Number"
 msgstr ""
 
-#: includes/extra-strings.php:461
+#: includes/extra-strings.php:460
 msgid "Email %s"
 msgstr ""
 
-#: includes/extra-strings.php:462
+#: includes/extra-strings.php:461
 msgid "%s RSS Feed"
 msgstr ""
 
-#: includes/extra-strings.php:463 templates/single-show-content.php:274
+#: includes/extra-strings.php:462 templates/single-show-content.php:294
 msgid "Download Latest Broadcast"
 msgstr ""
 
-#: includes/extra-strings.php:464
+#: includes/extra-strings.php:463
 msgid "Profile Info"
 msgstr ""
 
-#: includes/extra-strings.php:465
+#: includes/extra-strings.php:464
 msgid "Website"
 msgstr ""
 
-#: includes/extra-strings.php:466
+#: includes/extra-strings.php:465
 msgid "Email"
 msgstr ""
 
-#: includes/extra-strings.php:467
+#: includes/extra-strings.php:466
 msgid "Phone"
 msgstr ""
 
-#: includes/extra-strings.php:468
+#: includes/extra-strings.php:467
 msgid "Archive List"
 msgstr ""
 
-#: includes/extra-strings.php:469
+#: includes/extra-strings.php:468
 msgid "Archive list for Radio Station record types."
 msgstr ""
 
-#: includes/extra-strings.php:470 loader.php:2224 options.php:1332
+#: includes/extra-strings.php:469 loader.php:2323 options.php:1400
 msgid "General"
 msgstr ""
 
-#: includes/extra-strings.php:471
+#: includes/extra-strings.php:470
 msgid "Archive List Details"
 msgstr ""
 
-#: includes/extra-strings.php:472
+#: includes/extra-strings.php:471
 msgid "Archive Type"
 msgstr ""
 
-#: includes/extra-strings.php:473 includes/post-types.php:153
+#: includes/extra-strings.php:472 includes/post-types.php:155
 msgid "Overrides"
 msgstr ""
 
-#: includes/extra-strings.php:474 includes/post-types.php:93
-#: includes/post-types.php:101 radio-station-admin.php:217
+#: includes/extra-strings.php:473 includes/post-types.php:95
+#: includes/post-types.php:103 radio-station-admin.php:222
 msgid "Playlists"
 msgstr ""
 
-#: includes/extra-strings.php:475
+#: includes/extra-strings.php:474
 msgid "Shows by Genre"
 msgstr ""
 
-#: includes/extra-strings.php:476
+#: includes/extra-strings.php:475
 msgid "Shows by Language"
 msgstr ""
 
-#: includes/extra-strings.php:477
+#: includes/extra-strings.php:476
 msgid "Archive View"
 msgstr ""
 
-#: includes/extra-strings.php:478 options.php:674 options.php:722
+#: includes/extra-strings.php:477 options.php:703 options.php:751
 msgid "List View"
 msgstr ""
 
-#: includes/extra-strings.php:479
+#: includes/extra-strings.php:478
 msgid "Records Per Page"
 msgstr ""
 
-#: includes/extra-strings.php:480
+#: includes/extra-strings.php:479
 msgid "Use 0 for all records."
 msgstr ""
 
-#: includes/extra-strings.php:481
+#: includes/extra-strings.php:480
 msgid "Display Pagination?"
 msgstr ""
 
-#: includes/extra-strings.php:482 includes/post-types-admin.php:2653
-#: includes/post-types-admin.php:2665 includes/post-types-admin.php:4952
+#: includes/extra-strings.php:481 includes/post-types-admin.php:2678
+#: includes/post-types-admin.php:2690 includes/post-types-admin.php:5003
 msgid "No"
 msgstr ""
 
-#: includes/extra-strings.php:483 includes/post-types-admin.php:2651
-#: includes/post-types-admin.php:2667 includes/post-types-admin.php:4954
+#: includes/extra-strings.php:482 includes/post-types-admin.php:2676
+#: includes/post-types-admin.php:2692 includes/post-types-admin.php:5005
 msgid "Yes"
 msgstr ""
 
-#: includes/extra-strings.php:484
+#: includes/extra-strings.php:483
 msgid "Hide if Empty?"
 msgstr ""
 
-#: includes/extra-strings.php:485
+#: includes/extra-strings.php:484
 msgid "Archive Query"
 msgstr ""
 
-#: includes/extra-strings.php:486
+#: includes/extra-strings.php:485
 msgid "Order By"
 msgstr ""
 
-#: includes/extra-strings.php:488
+#: includes/extra-strings.php:486 includes/post-types-admin.php:3113
+msgid "Title"
+msgstr ""
+
+#: includes/extra-strings.php:487
 msgid "Published Date"
 msgstr ""
 
-#: includes/extra-strings.php:489
+#: includes/extra-strings.php:488
 msgid "Modified Date"
 msgstr ""
 
-#: includes/extra-strings.php:490
+#: includes/extra-strings.php:489
 msgid "Order"
 msgstr ""
 
-#: includes/extra-strings.php:491
+#: includes/extra-strings.php:490
 msgid "Ascending"
 msgstr ""
 
-#: includes/extra-strings.php:492
+#: includes/extra-strings.php:491
 msgid "Descending"
 msgstr ""
 
-#: includes/extra-strings.php:493
+#: includes/extra-strings.php:492
 msgid "Archive Record Display"
 msgstr ""
 
-#: includes/extra-strings.php:494
+#: includes/extra-strings.php:493
 msgid "Time Display Format"
 msgstr ""
 
-#: includes/extra-strings.php:497
+#: includes/extra-strings.php:494 widgets/class-current-show-widget.php:213
+#: widgets/class-radio-clock-widget.php:90
+#: widgets/class-upcoming-shows-widget.php:208
+msgid "12 Hour"
+msgstr ""
+
+#: includes/extra-strings.php:495 widgets/class-current-show-widget.php:214
+#: widgets/class-radio-clock-widget.php:91
+#: widgets/class-upcoming-shows-widget.php:209
+msgid "24 Hour"
+msgstr ""
+
+#: includes/extra-strings.php:496
 msgid "Description Display Format"
 msgstr ""
 
-#: includes/extra-strings.php:498
+#: includes/extra-strings.php:497
 msgid "View Default"
 msgstr ""
 
-#: includes/extra-strings.php:500 includes/post-types-admin.php:3103
+#: includes/extra-strings.php:498 includes/post-types-admin.php:5013
+#: options.php:719 widgets/class-radio-clock-widget.php:53
+#: widgets/class-radio-clock-widget.php:72
+msgid "None"
+msgstr ""
+
+#: includes/extra-strings.php:499 includes/post-types-admin.php:3147
 msgid "Excerpt"
 msgstr ""
 
-#: includes/extra-strings.php:502
+#: includes/extra-strings.php:500 widgets/class-radio-clock-widget.php:51
+#: widgets/class-radio-clock-widget.php:70
+msgid "Full"
+msgstr ""
+
+#: includes/extra-strings.php:501
 msgid "Display Image?"
 msgstr ""
 
-#: includes/extra-strings.php:503
+#: includes/extra-strings.php:502
 msgid "This setting is for Shows and Overrides."
 msgstr ""
 
-#: includes/extra-strings.php:504
+#: includes/extra-strings.php:503
 msgid "Only Shows with Shifts?"
 msgstr ""
 
-#: includes/extra-strings.php:505
+#: includes/extra-strings.php:504
 msgid "This setting is for Shows only."
 msgstr ""
 
-#: includes/extra-strings.php:506
+#: includes/extra-strings.php:505
 msgid "Display Override Dates?"
 msgstr ""
 
-#: includes/extra-strings.php:507
+#: includes/extra-strings.php:506
 msgid "This setting is for Overrides only."
 msgstr ""
 
-#: includes/extra-strings.php:508
+#: includes/extra-strings.php:507
 msgid "Style"
 msgstr ""
 
-#: includes/extra-strings.php:509
+#: includes/extra-strings.php:508
 msgid "Container Styles"
 msgstr ""
 
-#: includes/extra-strings.php:510
+#: includes/extra-strings.php:509
 msgid "Alignment"
 msgstr ""
 
-#: includes/extra-strings.php:511
+#: includes/extra-strings.php:510
 msgid "Typography"
 msgstr ""
 
-#: includes/extra-strings.php:512
+#: includes/extra-strings.php:511
 msgid "Title Text Color"
 msgstr ""
 
-#: includes/extra-strings.php:513
+#: includes/extra-strings.php:512
 msgid "Title Typography"
 msgstr ""
 
-#: includes/extra-strings.php:514
+#: includes/extra-strings.php:513
 msgid "Description Text Color"
 msgstr ""
 
-#: includes/extra-strings.php:515
+#: includes/extra-strings.php:514
 msgid "Description Typography"
 msgstr ""
 
-#: includes/extra-strings.php:516
+#: includes/extra-strings.php:515
 msgid "Meta Text Color"
 msgstr ""
 
-#: includes/extra-strings.php:517
+#: includes/extra-strings.php:516
 msgid "Meta Typography"
 msgstr ""
 
-#: includes/extra-strings.php:519
+#: includes/extra-strings.php:517 widgets/class-radio-clock-widget.php:25
+msgid "Radio Clock"
+msgstr ""
+
+#: includes/extra-strings.php:518
 msgid "Radio Station Clock time display."
 msgstr ""
 
-#: includes/extra-strings.php:520
+#: includes/extra-strings.php:519
 msgid "Radio Clock Display Options"
 msgstr ""
 
-#: includes/extra-strings.php:521 widgets/class-radio-clock-widget.php:47
+#: includes/extra-strings.php:520 widgets/class-radio-clock-widget.php:49
 msgid "Day Display Format"
 msgstr ""
 
-#: includes/extra-strings.php:523
+#: includes/extra-strings.php:521 widgets/class-radio-clock-widget.php:52
+#: widgets/class-radio-clock-widget.php:71
+msgid "Short"
+msgstr ""
+
+#: includes/extra-strings.php:522
 msgid "Display Date?"
 msgstr ""
 
-#: includes/extra-strings.php:524 widgets/class-radio-clock-widget.php:66
+#: includes/extra-strings.php:523 widgets/class-radio-clock-widget.php:68
 msgid "Month Display Format"
 msgstr ""
 
-#: includes/extra-strings.php:525
+#: includes/extra-strings.php:524
 msgid "Display Timezone?"
 msgstr ""
 
-#: includes/extra-strings.php:526
+#: includes/extra-strings.php:525
 msgid "Display Seconds?"
 msgstr ""
 
-#: includes/extra-strings.php:527
+#: includes/extra-strings.php:526
 msgid "Label Text Color"
 msgstr ""
 
-#: includes/extra-strings.php:528
+#: includes/extra-strings.php:527
 msgid "Label Typography"
 msgstr ""
 
-#: includes/extra-strings.php:529
+#: includes/extra-strings.php:528
 msgid "Times Text Color"
 msgstr ""
 
-#: includes/extra-strings.php:530
+#: includes/extra-strings.php:529
 msgid "Times Typography"
 msgstr ""
 
-#: includes/extra-strings.php:531
+#: includes/extra-strings.php:530
 msgid "Timezone Switcher Text Color"
 msgstr ""
 
-#: includes/extra-strings.php:532
+#: includes/extra-strings.php:531
 msgid "Timezone Switcher Typography"
 msgstr ""
 
-#: includes/extra-strings.php:533
+#: includes/extra-strings.php:532
 msgid "Current Playlist"
 msgstr ""
 
-#: includes/extra-strings.php:534
+#: includes/extra-strings.php:533
 msgid "Current Playlist module for Radio Station."
 msgstr ""
 
-#: includes/extra-strings.php:535
+#: includes/extra-strings.php:534
 msgid "Loading Options"
 msgstr ""
 
-#: includes/extra-strings.php:536
+#: includes/extra-strings.php:535
 msgid "AJAX Loading"
 msgstr ""
 
-#: includes/extra-strings.php:537
+#: includes/extra-strings.php:536
 msgid "To bypass page caching."
 msgstr ""
 
-#: includes/extra-strings.php:538
+#: includes/extra-strings.php:537
 msgid "Dynamic Reloading"
 msgstr ""
 
-#: includes/extra-strings.php:539
+#: includes/extra-strings.php:538
 msgid "Reload at Show changeovers."
 msgstr ""
 
-#: includes/extra-strings.php:540
+#: includes/extra-strings.php:539
 msgid "No Current Playlist Text"
 msgstr ""
 
-#: includes/extra-strings.php:541
+#: includes/extra-strings.php:540
 msgid "Blank for default. 0 for none."
 msgstr ""
 
-#: includes/extra-strings.php:542
+#: includes/extra-strings.php:541
 msgid "Extra Display Options"
 msgstr ""
 
-#: includes/extra-strings.php:543
+#: includes/extra-strings.php:542
 msgid "Display Playlist Title"
 msgstr ""
 
-#: includes/extra-strings.php:544
+#: includes/extra-strings.php:543
 msgid "Link to Playlist Page"
 msgstr ""
 
-#: includes/extra-strings.php:545
+#: includes/extra-strings.php:544
 msgid "Remaining Time Countdown"
 msgstr ""
 
-#: includes/extra-strings.php:546
+#: includes/extra-strings.php:545
 msgid "Show Time Display Options"
 msgstr ""
 
-#: includes/extra-strings.php:547
+#: includes/extra-strings.php:546
 msgid "Display Song Title"
 msgstr ""
 
-#: includes/extra-strings.php:548
+#: includes/extra-strings.php:547
 msgid "Display Artist"
 msgstr ""
 
-#: includes/extra-strings.php:549
+#: includes/extra-strings.php:548
 msgid "Display Album"
 msgstr ""
 
-#: includes/extra-strings.php:550
+#: includes/extra-strings.php:549
 msgid "Display Record Label"
 msgstr ""
 
-#: includes/extra-strings.php:551
+#: includes/extra-strings.php:550
 msgid "Display Track Comments"
 msgstr ""
 
-#: includes/extra-strings.php:552
+#: includes/extra-strings.php:551
 msgid "Track Info Text Color"
 msgstr ""
 
-#: includes/extra-strings.php:553
+#: includes/extra-strings.php:552
 msgid "Track Info Typography"
 msgstr ""
 
-#: includes/extra-strings.php:554
+#: includes/extra-strings.php:553
 msgid "Playlist Title Text Color"
 msgstr ""
 
-#: includes/extra-strings.php:555
+#: includes/extra-strings.php:554
 msgid "Playlist Title Typography"
 msgstr ""
 
-#: includes/extra-strings.php:556
+#: includes/extra-strings.php:555
 msgid "Countdown Text Color"
 msgstr ""
 
-#: includes/extra-strings.php:557
+#: includes/extra-strings.php:556
 msgid "Countdown Typography"
 msgstr ""
 
-#: includes/extra-strings.php:558
+#: includes/extra-strings.php:557
 msgid "Current Show"
 msgstr ""
 
-#: includes/extra-strings.php:559
+#: includes/extra-strings.php:558
 msgid "Current Show module for Radio Station."
 msgstr ""
 
-#: includes/extra-strings.php:560 widgets/class-current-show-widget.php:107
+#: includes/extra-strings.php:559 widgets/class-current-show-widget.php:102
 msgid "No Current Show Text"
 msgstr ""
 
-#: includes/extra-strings.php:561
+#: includes/extra-strings.php:560
 msgid "Show Display Options"
 msgstr ""
 
-#: includes/extra-strings.php:562
+#: includes/extra-strings.php:561
 msgid "Link to Show Page"
 msgstr ""
 
-#: includes/extra-strings.php:563
+#: includes/extra-strings.php:562
 msgid "Title Position"
 msgstr ""
 
-#: includes/extra-strings.php:564
+#: includes/extra-strings.php:563
 msgid "Above Image"
 msgstr ""
 
-#: includes/extra-strings.php:565
+#: includes/extra-strings.php:564
 msgid "Left of Image"
 msgstr ""
 
-#: includes/extra-strings.php:566
+#: includes/extra-strings.php:565
 msgid "Right of Image"
 msgstr ""
 
-#: includes/extra-strings.php:567
+#: includes/extra-strings.php:566
 msgid "Below Image"
 msgstr ""
 
-#: includes/extra-strings.php:568
+#: includes/extra-strings.php:567
 msgid "Display Show Image"
 msgstr ""
 
-#: includes/extra-strings.php:569
+#: includes/extra-strings.php:568
 msgid "Image Size"
 msgstr ""
 
-#: includes/extra-strings.php:570
+#: includes/extra-strings.php:569
 msgid "Image Width Override"
 msgstr ""
 
-#: includes/extra-strings.php:571
+#: includes/extra-strings.php:570
 msgid "Display Show Time"
 msgstr ""
 
-#: includes/extra-strings.php:572
+#: includes/extra-strings.php:571
 msgid "Display All Show Times"
 msgstr ""
 
-#: includes/extra-strings.php:573
+#: includes/extra-strings.php:572
 msgid "Display Show Hosts"
 msgstr ""
 
-#: includes/extra-strings.php:574
+#: includes/extra-strings.php:573
 msgid "Show Description Excerpt"
 msgstr ""
 
-#: includes/extra-strings.php:575
+#: includes/extra-strings.php:574
 msgid "Display Show Playlist"
 msgstr ""
 
-#: includes/extra-strings.php:576
+#: includes/extra-strings.php:575
 msgid "Display if Encore Airing"
 msgstr ""
 
-#: includes/extra-strings.php:577
+#: includes/extra-strings.php:576
 msgid "Show Title Color"
 msgstr ""
 
-#: includes/extra-strings.php:578
+#: includes/extra-strings.php:577
 msgid "Show Title Typography"
 msgstr ""
 
-#: includes/extra-strings.php:579
+#: includes/extra-strings.php:578
 msgid "Show Description Text Color"
 msgstr ""
 
-#: includes/extra-strings.php:580
+#: includes/extra-strings.php:579
 msgid "Show Description Typography"
 msgstr ""
 
-#: includes/extra-strings.php:581
+#: includes/extra-strings.php:580
 msgid "Radio Player"
 msgstr ""
 
-#: includes/extra-strings.php:582
+#: includes/extra-strings.php:581
 msgid "Radio Station Audio stream player module."
 msgstr ""
 
-#: includes/extra-strings.php:583 widgets/class-radio-player-widget.php:62
+#: includes/extra-strings.php:582 widgets/class-radio-player-widget.php:64
 msgid "Player Content"
 msgstr ""
 
-#: includes/extra-strings.php:584
+#: includes/extra-strings.php:583
 msgid "Stream URL"
 msgstr ""
 
-#: includes/extra-strings.php:585
+#: includes/extra-strings.php:584
 msgid "Leave blank to use default stream."
 msgstr ""
 
-#: includes/extra-strings.php:586
+#: includes/extra-strings.php:585
 msgid "Player Title Text"
 msgstr ""
 
-#: includes/extra-strings.php:587 widgets/class-current-playlist-widget.php:116
-#: widgets/class-radio-player-widget.php:87
-#: widgets/class-upcoming-shows-widget.php:113
+#: includes/extra-strings.php:586 widgets/class-current-playlist-widget.php:118
+#: widgets/class-radio-player-widget.php:89
+#: widgets/class-upcoming-shows-widget.php:108
 msgid "Empty for default, 0 for none."
 msgstr ""
 
-#: includes/extra-strings.php:588
+#: includes/extra-strings.php:587
 msgid "Player Station Image"
 msgstr ""
 
-#: includes/extra-strings.php:590
+#: includes/extra-strings.php:588 options.php:281
+#: widgets/class-radio-player-widget.php:97
+#: widgets/class-radio-player-widget.php:101
+msgid "Display Station Image"
+msgstr ""
+
+#: includes/extra-strings.php:589
 msgid "Do Not Display Station Image"
 msgstr ""
 
-#: includes/extra-strings.php:591 widgets/class-radio-player-widget.php:111
+#: includes/extra-strings.php:590 widgets/class-radio-player-widget.php:113
 msgid "Player Options"
 msgstr ""
 
-#: includes/extra-strings.php:592 options.php:280
+#: includes/extra-strings.php:591 options.php:294
 msgid "Player Script"
 msgstr ""
 
-#: includes/extra-strings.php:596
+#: includes/extra-strings.php:592 options.php:299 options.php:317
+#: widgets/class-radio-player-widget.php:122
+msgid "Amplitude"
+msgstr ""
+
+#: includes/extra-strings.php:593 widgets/class-radio-player-widget.php:123
+msgid "Howler"
+msgstr ""
+
+#: includes/extra-strings.php:594 options.php:297 options.php:315
+#: widgets/class-radio-player-widget.php:124
+msgid "jPlayer"
+msgstr ""
+
+#: includes/extra-strings.php:595
 msgid "Initial Volume"
 msgstr ""
 
-#: includes/extra-strings.php:597 options.php:343
-#: widgets/class-radio-player-widget.php:144
+#: includes/extra-strings.php:596 options.php:358
+#: widgets/class-radio-player-widget.php:146
 msgid "Volume Controls"
 msgstr ""
 
-#: includes/extra-strings.php:598 options.php:346 player/radio-player.php:376
+#: includes/extra-strings.php:597 options.php:361 player/radio-player.php:420
 msgid "Volume Slider"
 msgstr ""
 
-#: includes/extra-strings.php:599
+#: includes/extra-strings.php:598
 msgid "Up and Down Buttons"
 msgstr ""
 
-#: includes/extra-strings.php:600
+#: includes/extra-strings.php:599
 msgid "Mute Button"
 msgstr ""
 
-#: includes/extra-strings.php:601
+#: includes/extra-strings.php:600
 msgid "Maximize Button"
 msgstr ""
 
-#: includes/extra-strings.php:602
+#: includes/extra-strings.php:601
 msgid "Use as Default Player"
 msgstr ""
 
-#: includes/extra-strings.php:603
+#: includes/extra-strings.php:602
 msgid "Make this the default player on this page."
 msgstr ""
 
-#: includes/extra-strings.php:604
+#: includes/extra-strings.php:603
 msgid "Metadata Source URL"
 msgstr ""
 
-#: includes/extra-strings.php:605
+#: includes/extra-strings.php:604
 msgid "Defaults to Stream URL."
 msgstr ""
 
-#: includes/extra-strings.php:606
+#: includes/extra-strings.php:605
 msgid "Player Design"
 msgstr ""
 
-#: includes/extra-strings.php:607
+#: includes/extra-strings.php:606
 msgid "Player Layout"
 msgstr ""
 
-#: includes/extra-strings.php:608
+#: includes/extra-strings.php:607
 msgid "Vertical (Stacked"
 msgstr ""
 
-#: includes/extra-strings.php:609
+#: includes/extra-strings.php:608
 msgid "Horizontal (Inline"
 msgstr ""
 
-#: includes/extra-strings.php:610
+#: includes/extra-strings.php:609
 msgid "Player Theme"
 msgstr ""
 
-#: includes/extra-strings.php:613
+#: includes/extra-strings.php:610 options.php:330
+#: widgets/class-radio-player-widget.php:195
+msgid "Light"
+msgstr ""
+
+#: includes/extra-strings.php:611 options.php:331
+#: widgets/class-radio-player-widget.php:196
+msgid "Dark"
+msgstr ""
+
+#: includes/extra-strings.php:612
 msgid "Player Buttons"
 msgstr ""
 
-#: includes/extra-strings.php:617 options.php:1353
+#: includes/extra-strings.php:613 widgets/class-radio-player-widget.php:215
+msgid "Circular"
+msgstr ""
+
+#: includes/extra-strings.php:614 widgets/class-radio-player-widget.php:216
+msgid "Rounded"
+msgstr ""
+
+#: includes/extra-strings.php:615 widgets/class-radio-player-widget.php:217
+msgid "Square"
+msgstr ""
+
+#: includes/extra-strings.php:616 options.php:1421
 msgid "Player Colors"
 msgstr ""
 
-#: includes/extra-strings.php:618
+#: includes/extra-strings.php:617
 msgid "Playing Highlight Color"
 msgstr ""
 
-#: includes/extra-strings.php:619
+#: includes/extra-strings.php:618
 msgid "Buttons Highlight Color"
 msgstr ""
 
-#: includes/extra-strings.php:620
+#: includes/extra-strings.php:619
 msgid "Slider Track Color"
 msgstr ""
 
-#: includes/extra-strings.php:621
+#: includes/extra-strings.php:620
 msgid "Slider Thumb Color"
 msgstr ""
 
-#: includes/extra-strings.php:622
+#: includes/extra-strings.php:621
 msgid "Player Typography"
 msgstr ""
 
-#: includes/extra-strings.php:623
+#: includes/extra-strings.php:622
 msgid "Station Text Color"
 msgstr ""
 
-#: includes/extra-strings.php:624
+#: includes/extra-strings.php:623
 msgid "Station Typography"
 msgstr ""
 
-#: includes/extra-strings.php:625
+#: includes/extra-strings.php:624
 msgid "Show Text Color"
 msgstr ""
 
-#: includes/extra-strings.php:626
+#: includes/extra-strings.php:625
 msgid "Show Typography"
 msgstr ""
 
-#: includes/extra-strings.php:627
+#: includes/extra-strings.php:626
 msgid "Song Track Text Color"
 msgstr ""
 
-#: includes/extra-strings.php:628
+#: includes/extra-strings.php:627
 msgid "Song Track Typography"
 msgstr ""
 
-#: includes/extra-strings.php:629
+#: includes/extra-strings.php:628
 msgid "Master Schedule"
 msgstr ""
 
-#: includes/extra-strings.php:630
+#: includes/extra-strings.php:629
 msgid "Master Schedule module for Radio Station."
 msgstr ""
 
-#: includes/extra-strings.php:631
+#: includes/extra-strings.php:630
 msgid "Schedule Display Options"
 msgstr ""
 
-#: includes/extra-strings.php:632
+#: includes/extra-strings.php:631
 msgid "Schedule View"
 msgstr ""
 
-#: includes/extra-strings.php:633
+#: includes/extra-strings.php:632
 msgid "Ctrl-click to select multiple views."
 msgstr ""
 
-#: includes/extra-strings.php:634 options.php:673 options.php:720
+#: includes/extra-strings.php:633 options.php:702 options.php:749
 msgid "Table View"
 msgstr ""
 
-#: includes/extra-strings.php:635 options.php:676 options.php:721
+#: includes/extra-strings.php:634 options.php:705 options.php:750
 msgid "Tabbed View"
 msgstr ""
 
-#: includes/extra-strings.php:636
+#: includes/extra-strings.php:635
 msgid "Default View"
 msgstr ""
 
-#: includes/extra-strings.php:637
+#: includes/extra-strings.php:636
 msgid "Image Position"
 msgstr ""
 
-#: includes/extra-strings.php:638
+#: includes/extra-strings.php:637
 msgid "[Tabbed View] Show avatar relative to Show text."
 msgstr ""
 
-#: includes/extra-strings.php:639
+#: includes/extra-strings.php:638
 msgid "left"
 msgstr ""
 
-#: includes/extra-strings.php:641
+#: includes/extra-strings.php:639 widgets/class-current-show-widget.php:133
+#: widgets/class-upcoming-shows-widget.php:136
+msgid "Right"
+msgstr ""
+
+#: includes/extra-strings.php:640
 msgid "Hide Past Shows"
 msgstr ""
 
-#: includes/extra-strings.php:642
+#: includes/extra-strings.php:641
 msgid "[Tabbed View] Display only current and upcoming shows."
 msgstr ""
 
-#: includes/extra-strings.php:643
+#: includes/extra-strings.php:642
 msgid "Grid Width"
 msgstr ""
 
-#: includes/extra-strings.php:644
+#: includes/extra-strings.php:643
 msgid "[Grid View] Column width in pixels."
 msgstr ""
 
-#: includes/extra-strings.php:645
+#: includes/extra-strings.php:644
 msgid "[Grid View] Line up Shows by times."
 msgstr ""
 
-#: includes/extra-strings.php:646
+#: includes/extra-strings.php:645
 msgid "Calendar Weeks"
 msgstr ""
 
-#: includes/extra-strings.php:647
+#: includes/extra-strings.php:646
 msgid "[Calendar View] Number of future weeks."
 msgstr ""
 
-#: includes/extra-strings.php:648
+#: includes/extra-strings.php:647
 msgid "Previous Weeks"
 msgstr ""
 
-#: includes/extra-strings.php:649
+#: includes/extra-strings.php:648
 msgid "[Calendar View] Number of past weeks."
 msgstr ""
 
-#: includes/extra-strings.php:650
+#: includes/extra-strings.php:649
 msgid "Header Display Options"
 msgstr ""
 
-#: includes/extra-strings.php:651
+#: includes/extra-strings.php:650
 msgid "Radio Time Header"
 msgstr ""
 
-#: includes/extra-strings.php:652
+#: includes/extra-strings.php:651
 msgid "Display Radio Clock"
 msgstr ""
 
-#: includes/extra-strings.php:653
+#: includes/extra-strings.php:652
 msgid "Display Radio Timezone"
 msgstr ""
 
-#: includes/extra-strings.php:654
+#: includes/extra-strings.php:653
 msgid "No Time Header"
 msgstr ""
 
-#: includes/extra-strings.php:655
+#: includes/extra-strings.php:654
 msgid "Display Genre Highlighter"
 msgstr ""
 
-#: includes/extra-strings.php:656
+#: includes/extra-strings.php:655
 msgid "Time Display Options"
 msgstr ""
 
-#: includes/extra-strings.php:657
+#: includes/extra-strings.php:656
 msgid "Schedule Start Day"
 msgstr ""
 
-#: includes/extra-strings.php:658
+#: includes/extra-strings.php:657
 msgid "WP Start of Week"
 msgstr ""
 
-#: includes/extra-strings.php:659
+#: includes/extra-strings.php:658
 msgid "Today"
 msgstr ""
 
-#: includes/extra-strings.php:660
+#: includes/extra-strings.php:659
 msgid "Monday"
 msgstr ""
 
-#: includes/extra-strings.php:661
+#: includes/extra-strings.php:660
 msgid "Tuesday"
 msgstr ""
 
-#: includes/extra-strings.php:662
+#: includes/extra-strings.php:661
 msgid "Wednesday"
 msgstr ""
 
-#: includes/extra-strings.php:663
+#: includes/extra-strings.php:662
 msgid "Thursday"
 msgstr ""
 
-#: includes/extra-strings.php:664
+#: includes/extra-strings.php:663
 msgid "Friday"
 msgstr ""
 
-#: includes/extra-strings.php:665
+#: includes/extra-strings.php:664
 msgid "Saturday"
 msgstr ""
 
-#: includes/extra-strings.php:666
+#: includes/extra-strings.php:665
 msgid "Sunday"
 msgstr ""
 
-#: includes/extra-strings.php:667
+#: includes/extra-strings.php:666
 msgid "Link to Shows"
 msgstr ""
 
-#: includes/extra-strings.php:668
+#: includes/extra-strings.php:667
 msgid "Display Show Description"
 msgstr ""
 
-#: includes/extra-strings.php:669
+#: includes/extra-strings.php:668
 msgid "Link to Hosts"
 msgstr ""
 
-#: includes/extra-strings.php:670
+#: includes/extra-strings.php:669
 msgid "Display Show Genres"
 msgstr ""
 
-#: includes/extra-strings.php:671
+#: includes/extra-strings.php:670
 msgid "Display Encore"
 msgstr ""
 
-#: includes/extra-strings.php:672
+#: includes/extra-strings.php:671
 msgid "Headers Text Color"
 msgstr ""
 
-#: includes/extra-strings.php:673
+#: includes/extra-strings.php:672
 msgid "Headers Typography"
 msgstr ""
 
-#: includes/extra-strings.php:674
+#: includes/extra-strings.php:673
 msgid "Subheaders Text Color"
 msgstr ""
 
-#: includes/extra-strings.php:675
+#: includes/extra-strings.php:674
 msgid "Subheaders Typography"
 msgstr ""
 
-#: includes/extra-strings.php:676
+#: includes/extra-strings.php:675
 msgid "Show Title Text Color"
 msgstr ""
 
-#: includes/extra-strings.php:677
+#: includes/extra-strings.php:676
 msgid "Show Times Text Color"
 msgstr ""
 
-#: includes/extra-strings.php:678
+#: includes/extra-strings.php:677
 msgid "Show Times Typography"
 msgstr ""
 
-#: includes/extra-strings.php:679
+#: includes/extra-strings.php:678
 msgid "Schedule Colors"
 msgstr ""
 
-#: includes/extra-strings.php:680
+#: includes/extra-strings.php:679
 msgid "Odd Headers Background Color"
 msgstr ""
 
-#: includes/extra-strings.php:681
+#: includes/extra-strings.php:680
 msgid "Even Headers Background Color"
 msgstr ""
 
-#: includes/extra-strings.php:682
+#: includes/extra-strings.php:681
 msgid "Active Header Background Color"
 msgstr ""
 
-#: includes/extra-strings.php:683
+#: includes/extra-strings.php:682
 msgid "Current Show Border Color"
 msgstr ""
 
-#: includes/extra-strings.php:684
+#: includes/extra-strings.php:683
 msgid "Upcoming Shows"
 msgstr ""
 
-#: includes/extra-strings.php:685
+#: includes/extra-strings.php:684
 msgid "Upcoming Shows module for Radio Station."
 msgstr ""
 
-#: includes/extra-strings.php:686
+#: includes/extra-strings.php:685
 msgid "Upcoming Shows to Display"
 msgstr ""
 
-#: includes/extra-strings.php:687 widgets/class-upcoming-shows-widget.php:110
+#: includes/extra-strings.php:686 widgets/class-upcoming-shows-widget.php:105
 msgid "No Upcoming Shows Text"
 msgstr ""
 
-#: includes/extra-strings.php:688
+#: includes/extra-strings.php:687
 msgid "Radio Archive"
 msgstr ""
 
-#: includes/extra-strings.php:689
+#: includes/extra-strings.php:688
 msgid "Archive Record Query"
 msgstr ""
 
-#: includes/extra-strings.php:690
+#: includes/extra-strings.php:689
 msgid "Publish Date"
 msgstr ""
 
-#: includes/extra-strings.php:691
+#: includes/extra-strings.php:690
 msgid "Clock Styling"
 msgstr ""
 
-#: includes/extra-strings.php:692
+#: includes/extra-strings.php:691
 msgid "Archive Alignment"
 msgstr ""
 
-#: includes/extra-strings.php:694
+#: includes/extra-strings.php:692 widgets/class-current-show-widget.php:132
+#: widgets/class-upcoming-shows-widget.php:135
+msgid "Left"
+msgstr ""
+
+#: includes/extra-strings.php:693
 msgid "Center"
 msgstr ""
 
-#: includes/extra-strings.php:695
+#: includes/extra-strings.php:694
 msgid "Record Title Typography"
 msgstr ""
 
-#: includes/extra-strings.php:696
+#: includes/extra-strings.php:695
 msgid "Record Description Typography"
 msgstr ""
 
-#: includes/extra-strings.php:697
+#: includes/extra-strings.php:696
 msgid "Record Meta Typography"
 msgstr ""
 
-#: includes/extra-strings.php:698
+#: includes/extra-strings.php:697
 msgid "Clock Alignment"
 msgstr ""
 
-#: includes/extra-strings.php:699
+#: includes/extra-strings.php:698
 msgid "Radio Current Playlist"
 msgstr ""
 
-#: includes/extra-strings.php:700
+#: includes/extra-strings.php:699
 msgid "Track Display Options"
 msgstr ""
 
-#: includes/extra-strings.php:701
+#: includes/extra-strings.php:700
 msgid "Playlist Styling"
 msgstr ""
 
-#: includes/extra-strings.php:702
+#: includes/extra-strings.php:701
 msgid "Text Alignment"
 msgstr ""
 
-#: includes/extra-strings.php:703
+#: includes/extra-strings.php:702
 msgid "Playlist Label Typography"
 msgstr ""
 
-#: includes/extra-strings.php:704
+#: includes/extra-strings.php:703
 msgid "Playlist Info Typography"
 msgstr ""
 
-#: includes/extra-strings.php:705
+#: includes/extra-strings.php:704
 msgid "Radio Current Show"
 msgstr ""
 
-#: includes/extra-strings.php:706
+#: includes/extra-strings.php:705
 msgid "Current Show Styling"
 msgstr ""
 
-#: includes/extra-strings.php:707
+#: includes/extra-strings.php:706
 msgid "Player Alignment"
 msgstr ""
 
-#: includes/extra-strings.php:708
+#: includes/extra-strings.php:707
 msgid "Station Text Typography"
 msgstr ""
 
-#: includes/extra-strings.php:709
+#: includes/extra-strings.php:708
 msgid "Show Text Typography"
 msgstr ""
 
-#: includes/extra-strings.php:710
+#: includes/extra-strings.php:709
 msgid "Radio Schedule"
 msgstr ""
 
-#: includes/extra-strings.php:711
+#: includes/extra-strings.php:710
 msgid "Display Show Images"
 msgstr ""
 
-#: includes/extra-strings.php:712
+#: includes/extra-strings.php:711
 msgid "Schedule Typography"
 msgstr ""
 
-#: includes/extra-strings.php:713
+#: includes/extra-strings.php:712
 msgid "Radio Upcoming Shows"
 msgstr ""
 
-#: includes/extra-strings.php:714
+#: includes/extra-strings.php:713
 msgid "Upcoming Shows Styling"
 msgstr ""
 
-#: includes/legacy.php:671
+#: includes/legacy.php:654
 msgid "More Show Blog Posts"
 msgstr ""
 
 #. translators: 1: PHP function name, 2: Version number, 3: Alternative
 #. function name.
 
-#: includes/legacy.php:708
+#: includes/legacy.php:689
 msgid "%1$s is <strong>deprecated</strong> since Radio Station version %2$s! Use %3$s or check documentation for updated functionality."
 msgstr ""
 
-#: includes/master-schedule.php:825
+#: includes/master-schedule.php:841
 msgid "Click to toggle Highlight of Shows with this Genre."
 msgstr ""
 
-#: includes/post-types-admin.php:172
+#: includes/post-types-admin.php:174
 msgid "Show Language"
 msgstr ""
 
-#: includes/post-types-admin.php:209
+#: includes/post-types-admin.php:211
 msgid "Main Radio Language"
 msgstr ""
 
-#: includes/post-types-admin.php:213
+#: includes/post-types-admin.php:215
 msgid "Select below if Show language(s) differ."
 msgstr ""
 
-#: includes/post-types-admin.php:239
+#: includes/post-types-admin.php:241
 msgid "Remove Language"
 msgstr ""
 
-#: includes/post-types-admin.php:248
+#: includes/post-types-admin.php:250
 msgid "Select Language"
 msgstr ""
 
-#: includes/post-types-admin.php:264
+#: includes/post-types-admin.php:266
 msgid "Click on a Language to Add it."
 msgstr ""
 
-#: includes/post-types-admin.php:415
+#: includes/post-types-admin.php:420
 msgid "Show Information"
 msgstr ""
 
-#: includes/post-types-admin.php:461
+#: includes/post-types-admin.php:466
 msgid "Active"
 msgstr ""
 
-#: includes/post-types-admin.php:467
+#: includes/post-types-admin.php:472
 msgid "Check this box if show is currently active (Show will not appear on schedule if unchecked.)"
 msgstr ""
 
-#: includes/post-types-admin.php:485 includes/post-types-admin.php:3230
+#: includes/post-types-admin.php:490 includes/post-types-admin.php:3274
 msgid "Show Email"
 msgstr ""
 
-#: includes/post-types-admin.php:496 includes/post-types-admin.php:3252
+#: includes/post-types-admin.php:501 includes/post-types-admin.php:3296
 msgid "Show Phone"
 msgstr ""
 
-#: includes/post-types-admin.php:506
+#: includes/post-types-admin.php:511
 msgid "Latest Audio File"
 msgstr ""
 
-#: includes/post-types-admin.php:517 includes/post-types-admin.php:3296
+#: includes/post-types-admin.php:523 includes/post-types-admin.php:3340
 msgid "Disable Download"
 msgstr ""
 
-#: includes/post-types-admin.php:546
+#: includes/post-types-admin.php:552
 msgid "Show DJ(s) / Host(s)"
 msgstr ""
 
-#: includes/post-types-admin.php:550 includes/post-types-admin.php:710
+#: includes/post-types-admin.php:556 includes/post-types-admin.php:717
 msgid "Show Producer(s)"
 msgstr ""
 
-#: includes/post-types-admin.php:554
+#: includes/post-types-admin.php:560
 msgid "Show Language(s)"
 msgstr ""
 
-#: includes/post-types-admin.php:696 includes/post-types-admin.php:775
+#: includes/post-types-admin.php:703 includes/post-types-admin.php:782
 msgid "Ctrl-Click selects multiple."
 msgstr ""
 
-#: includes/post-types-admin.php:792
+#: includes/post-types-admin.php:799
 msgid "Show Schedule"
 msgstr ""
 
-#: includes/post-types-admin.php:838
+#: includes/post-types-admin.php:845
 msgid "This Show is inactive!"
 msgstr ""
 
-#: includes/post-types-admin.php:839
+#: includes/post-types-admin.php:846
 msgid "All Shifts are inactive also until Show is activated."
 msgstr ""
 
-#: includes/post-types-admin.php:886
+#: includes/post-types-admin.php:893
 msgid "Saving Show Shifts..."
 msgstr ""
 
-#: includes/post-types-admin.php:887
+#: includes/post-types-admin.php:894
 msgid "Show Shifts Saved."
 msgstr ""
 
-#: includes/post-types-admin.php:980
+#: includes/post-types-admin.php:989
 msgid "Are you sure you want to remove this shift?"
 msgstr ""
 
-#: includes/post-types-admin.php:981
+#: includes/post-types-admin.php:990
 msgid "Are you sure you want to clear the shift list?"
 msgstr ""
 
-#: includes/post-types-admin.php:1149 includes/post-types-admin.php:1487
-#: radio-station.php:1013
+#: includes/post-types-admin.php:1158 includes/post-types-admin.php:1499
+#: radio-station.php:1032
 msgid "Day"
 msgstr ""
 
-#: includes/post-types-admin.php:1243 includes/post-types-admin.php:1609
+#: includes/post-types-admin.php:1252 includes/post-types-admin.php:1621
 msgid "Duplicate Shift"
 msgstr ""
 
-#: includes/post-types-admin.php:1248 includes/post-types-admin.php:1616
+#: includes/post-types-admin.php:1257 includes/post-types-admin.php:1628
 msgid "Remove Shift"
 msgstr ""
 
-#: includes/post-types-admin.php:1268
+#: includes/post-types-admin.php:1277
 msgid "Warning! Show Shift Conflicts were detected!"
 msgstr ""
 
-#: includes/post-types-admin.php:1269
+#: includes/post-types-admin.php:1278
 msgid "Please note that Shifts with conflicts are automatically disabled upon saving."
 msgstr ""
 
-#: includes/post-types-admin.php:1270
+#: includes/post-types-admin.php:1279
 msgid "Fix the Shift and/or the Shift on the conflicting Show and Update them both."
 msgstr ""
 
-#: includes/post-types-admin.php:1271
+#: includes/post-types-admin.php:1280
 msgid "Then you can uncheck the shift Disable box and Save again to re-enable the Shift."
 msgstr ""
 
-#: includes/post-types-admin.php:1626
+#: includes/post-types-admin.php:1640
 msgid "Shift Conflicts"
 msgstr ""
 
-#: includes/post-types-admin.php:1632
+#: includes/post-types-admin.php:1646
 msgid "This Show"
 msgstr ""
 
-#: includes/post-types-admin.php:1680
-msgid "Show Description"
-msgstr ""
-
-#: includes/post-types-admin.php:1696
-msgid "The text field below is for your Show Description. It will display in the About section of your Show page."
-msgstr ""
-
-#: includes/post-types-admin.php:1697
-msgid "It is not recommended to include your past show content or archives in this area, as it will affect the Show page layout your visitors see."
-msgstr ""
-
-#: includes/post-types-admin.php:1698
-msgid "It may also impact SEO, as archived content won't have their own pages and thus their own SEO and Social meta rules."
+#: includes/post-types-admin.php:1675
+msgid "Note: Show shift conflict checker is currently disabled in your plugin settings."
 msgstr ""
 
 #: includes/post-types-admin.php:1701
+msgid "Show Description"
+msgstr ""
+
+#: includes/post-types-admin.php:1717
+msgid "The text field below is for your Show Description. It will display in the About section of your Show page."
+msgstr ""
+
+#: includes/post-types-admin.php:1718
+msgid "It is not recommended to include your past show content or archives in this area, as it will affect the Show page layout your visitors see."
+msgstr ""
+
+#: includes/post-types-admin.php:1719
+msgid "It may also impact SEO, as archived content won't have their own pages and thus their own SEO and Social meta rules."
+msgstr ""
+
+#: includes/post-types-admin.php:1722
 msgid "We recommend using WordPress Posts to add new posts and assign them to your Show(s) using the Related Show metabox on the Post Edit screen so they display on the Show page."
 msgstr ""
 
-#: includes/post-types-admin.php:1702
+#: includes/post-types-admin.php:1723
 msgid "This way you can then assign them to a relevant Post Category for display on your site also."
 msgstr ""
 
-#: includes/post-types-admin.php:1708
+#: includes/post-types-admin.php:1729
 msgid "Radio Station Pro includes an Episodes post type for adding past episodes."
 msgstr ""
 
-#: includes/post-types-admin.php:1709
+#: includes/post-types-admin.php:1730
 msgid "These are then automatically listed on your Show page in an Episodes tab."
 msgstr ""
 
-#: includes/post-types-admin.php:1710
+#: includes/post-types-admin.php:1731
 msgid "Go Pro!"
 msgstr ""
 
-#: includes/post-types-admin.php:1711
+#: includes/post-types-admin.php:1732
 msgid "Find out more..."
 msgstr ""
 
-#: includes/post-types-admin.php:1730
+#: includes/post-types-admin.php:1751
 msgid "Show Logo"
 msgstr ""
 
-#: includes/post-types-admin.php:1746
+#: includes/post-types-admin.php:1767
 msgid "Show Images"
 msgstr ""
 
-#: includes/post-types-admin.php:1794
+#: includes/post-types-admin.php:1815
 msgid "Set Show Avatar Image"
 msgstr ""
 
-#: includes/post-types-admin.php:1801
+#: includes/post-types-admin.php:1822
 msgid "Remove Show Avatar Image"
 msgstr ""
 
-#: includes/post-types-admin.php:1837
+#: includes/post-types-admin.php:1858
 msgid "Set Show Header Image"
 msgstr ""
 
-#: includes/post-types-admin.php:1844
+#: includes/post-types-admin.php:1865
 msgid "Remove Show Header Image"
 msgstr ""
 
-#: includes/post-types-admin.php:2040
+#: includes/post-types-admin.php:2061
 msgid "Error! No Show ID provided."
 msgstr ""
 
-#: includes/post-types-admin.php:2045
+#: includes/post-types-admin.php:2066
 msgid "Failed. Invalid Show."
 msgstr ""
 
-#: includes/post-types-admin.php:2480
+#: includes/post-types-admin.php:2505
 msgid "Warning! Shift conflicts detected."
 msgstr ""
 
-#: includes/post-types-admin.php:2625
+#: includes/post-types-admin.php:2650
 msgid "Active?"
 msgstr ""
 
-#: includes/post-types-admin.php:2627
+#: includes/post-types-admin.php:2652
 msgid "About?"
 msgstr ""
 
-#: includes/post-types-admin.php:2628
+#: includes/post-types-admin.php:2653
 msgid "Shifts"
 msgstr ""
 
-#: includes/post-types-admin.php:2635 includes/post-types-admin.php:2823
-#: includes/post-types-admin.php:3120
+#: includes/post-types-admin.php:2660 includes/post-types-admin.php:2866
+#: includes/post-types-admin.php:3164
 msgid "Show Avatar"
 msgstr ""
 
-#: includes/post-types-admin.php:2711
+#: includes/post-types-admin.php:2736
 msgid "This Shift is Disabled."
 msgstr ""
 
-#: includes/post-types-admin.php:2720
+#: includes/post-types-admin.php:2745
 msgid "This Shift has Schedule Conflicts and is Disabled."
 msgstr ""
 
-#: includes/post-types-admin.php:2722
+#: includes/post-types-admin.php:2747
 msgid "This Shift has Schedule Conflicts."
 msgstr ""
 
-#: includes/post-types-admin.php:2731
+#: includes/post-types-admin.php:2756
 msgid "This Show is not currently active."
 msgstr ""
 
-#: includes/post-types-admin.php:2773
+#: includes/post-types-admin.php:2798
 msgid "This shift is disabled as no day is set."
 msgstr ""
 
-#: includes/post-types-admin.php:2875
+#: includes/post-types-admin.php:2919
 msgid "Filter by show day"
 msgstr ""
 
-#: includes/post-types-admin.php:2877
+#: includes/post-types-admin.php:2921
 msgid "All show days"
 msgstr ""
 
-#: includes/post-types-admin.php:2900
+#: includes/post-types-admin.php:2944
 msgid "Override Show Data"
 msgstr ""
 
-#: includes/post-types-admin.php:2941
+#: includes/post-types-admin.php:2985
 msgid "Link to Show"
 msgstr ""
 
-#: includes/post-types-admin.php:2949
+#: includes/post-types-admin.php:2993
 msgid "No Show Link"
 msgstr ""
 
-#: includes/post-types-admin.php:2986
+#: includes/post-types-admin.php:3030
 msgid "If selected, Override data will be used from the Linked Show."
 msgstr ""
 
-#: includes/post-types-admin.php:2995
+#: includes/post-types-admin.php:3039
 msgid "Sync Genres?"
 msgstr ""
 
-#: includes/post-types-admin.php:3005
+#: includes/post-types-admin.php:3049
 msgid "If checked, assigned Genre terms are synced from the Linked Show when Updating."
 msgstr ""
 
-#: includes/post-types-admin.php:3015
+#: includes/post-types-admin.php:3059
 msgid "Sync Languages?"
 msgstr ""
 
-#: includes/post-types-admin.php:3025
+#: includes/post-types-admin.php:3069
 msgid "If checked, assigned Language terms are synced from the Linked Show when Updating."
 msgstr ""
 
-#: includes/post-types-admin.php:3045
+#: includes/post-types-admin.php:3089
 msgid "Usage Note"
 msgstr ""
 
-#: includes/post-types-admin.php:3046
+#: includes/post-types-admin.php:3090
 msgid " Unchecked boxes use Show data, checked boxes use Override data."
 msgstr ""
 
-#: includes/post-types-admin.php:3053
+#: includes/post-types-admin.php:3097
 msgid "Override?"
 msgstr ""
 
-#: includes/post-types-admin.php:3055
+#: includes/post-types-admin.php:3099
 msgid "Override Data"
 msgstr ""
 
-#: includes/post-types-admin.php:3076
+#: includes/post-types-admin.php:3120
 msgid "Use Title Editor metabox above."
 msgstr ""
 
-#: includes/post-types-admin.php:3086
+#: includes/post-types-admin.php:3130
 msgid "Description"
 msgstr ""
 
-#: includes/post-types-admin.php:3093
+#: includes/post-types-admin.php:3137
 msgid "Use Content Editor metabox below."
 msgstr ""
 
-#: includes/post-types-admin.php:3110
+#: includes/post-types-admin.php:3154
 msgid "Use Excerpt Editor metabox below."
 msgstr ""
 
-#: includes/post-types-admin.php:3127
+#: includes/post-types-admin.php:3171
 msgid "Use Show Images metabox."
 msgstr ""
 
-#: includes/post-types-admin.php:3142
+#: includes/post-types-admin.php:3186
 msgid "Featured Image"
 msgstr ""
 
-#: includes/post-types-admin.php:3149
+#: includes/post-types-admin.php:3193
 msgid "Use Feature Image metabox."
 msgstr ""
 
-#: includes/post-types-admin.php:3171
+#: includes/post-types-admin.php:3215
 msgid "Use Host assignment box below."
 msgstr ""
 
-#: includes/post-types-admin.php:3193
+#: includes/post-types-admin.php:3237
 msgid "Use Producer assignment box below."
 msgstr ""
 
-#: includes/post-types-admin.php:3274
+#: includes/post-types-admin.php:3318
 msgid "Latest Audio"
 msgstr ""
 
-#: includes/post-types-admin.php:3304
+#: includes/post-types-admin.php:3348
 msgid "Check to Disable"
 msgstr ""
 
-#: includes/post-types-admin.php:3346
+#: includes/post-types-admin.php:3390
 msgid "Override DJ(s) / Host(s)"
 msgstr ""
 
-#: includes/post-types-admin.php:3350
+#: includes/post-types-admin.php:3394
 msgid "Override Producer(s)"
 msgstr ""
 
-#: includes/post-types-admin.php:3494
+#: includes/post-types-admin.php:3538
 msgid "Override Schedule"
 msgstr ""
 
-#: includes/post-types-admin.php:3548
+#: includes/post-types-admin.php:3592
 msgid "Saving Overrides..."
 msgstr ""
 
-#: includes/post-types-admin.php:3549
+#: includes/post-types-admin.php:3593
 msgid "Overrides Saved."
 msgstr ""
 
-#: includes/post-types-admin.php:3899 includes/post-types-admin.php:4213
+#: includes/post-types-admin.php:3946 includes/post-types-admin.php:4261
 msgid "Duplicate Override"
 msgstr ""
 
-#: includes/post-types-admin.php:3905 includes/post-types-admin.php:4218
+#: includes/post-types-admin.php:3952 includes/post-types-admin.php:4266
 msgid "Remove Override"
 msgstr ""
 
-#: includes/post-types-admin.php:3954
+#: includes/post-types-admin.php:4001
 msgid "Are you sure you want to remove this Override?"
 msgstr ""
 
-#: includes/post-types-admin.php:3955
+#: includes/post-types-admin.php:4002
 msgid "Are you sure you want to clear all overrides?"
 msgstr ""
 
-#: includes/post-types-admin.php:4735
+#: includes/post-types-admin.php:4783
 msgid "Override Time(s)"
 msgstr ""
 
-#: includes/post-types-admin.php:4736
+#: includes/post-types-admin.php:4784
 msgid "Affected Show(s)"
 msgstr ""
 
-#: includes/post-types-admin.php:4741 includes/post-types-admin.php:5567
+#: includes/post-types-admin.php:4789 includes/post-types-admin.php:5622
 msgid "Linked Show"
 msgstr ""
 
-#: includes/post-types-admin.php:4896
+#: includes/post-types-admin.php:4947
 msgid "Inactive"
 msgstr ""
 
-#: includes/post-types-admin.php:4981
+#: includes/post-types-admin.php:5032
 msgid "Override Logo"
 msgstr ""
 
-#: includes/post-types-admin.php:5062
+#: includes/post-types-admin.php:5115
 msgid "Filter by override date"
 msgstr ""
 
-#: includes/post-types-admin.php:5064
+#: includes/post-types-admin.php:5117
 msgid "All Override Months"
 msgstr ""
 
-#: includes/post-types-admin.php:5092
+#: includes/post-types-admin.php:5145
 msgid "Past and Future"
 msgstr ""
 
-#: includes/post-types-admin.php:5094 includes/post-types.php:152
+#: includes/post-types-admin.php:5147 includes/post-types.php:154
 msgid "All Overrides"
 msgstr ""
 
-#: includes/post-types-admin.php:5095
+#: includes/post-types-admin.php:5148
 msgid "Past Overrides"
 msgstr ""
 
-#: includes/post-types-admin.php:5096
+#: includes/post-types-admin.php:5149
 msgid "Overrides Today"
 msgstr ""
 
-#: includes/post-types-admin.php:5097
+#: includes/post-types-admin.php:5150
 msgid "Future Overrides"
 msgstr ""
 
-#: includes/post-types-admin.php:5120
+#: includes/post-types-admin.php:5173
 msgid "Playlist Entries"
 msgstr ""
 
-#: includes/post-types-admin.php:5140 includes/post-types-admin.php:5440
+#: includes/post-types-admin.php:5193 includes/post-types-admin.php:5495
 msgid "Move Track Up"
 msgstr ""
 
-#: includes/post-types-admin.php:5141 includes/post-types-admin.php:5441
+#: includes/post-types-admin.php:5194 includes/post-types-admin.php:5496
 msgid "Move Track Down"
 msgstr ""
 
-#: includes/post-types-admin.php:5142 includes/post-types-admin.php:5442
+#: includes/post-types-admin.php:5195 includes/post-types-admin.php:5497
 msgid "Duplicate Track"
 msgstr ""
 
-#: includes/post-types-admin.php:5143 includes/post-types-admin.php:5443
+#: includes/post-types-admin.php:5196 includes/post-types-admin.php:5498
 msgid "Remove Track"
 msgstr ""
 
-#: includes/post-types-admin.php:5158
+#: includes/post-types-admin.php:5212
 msgid "Clear Tracks"
 msgstr ""
 
-#: includes/post-types-admin.php:5161
+#: includes/post-types-admin.php:5215
 msgid "Save Tracks"
 msgstr ""
 
-#: includes/post-types-admin.php:5164
+#: includes/post-types-admin.php:5218
 msgid "Add Track"
 msgstr ""
 
-#: includes/post-types-admin.php:5169
+#: includes/post-types-admin.php:5223
 msgid "Saving Playlist Tracks..."
 msgstr ""
 
-#: includes/post-types-admin.php:5170
+#: includes/post-types-admin.php:5224
 msgid "Playlist Tracks Saved."
 msgstr ""
 
-#: includes/post-types-admin.php:5179
+#: includes/post-types-admin.php:5233
 msgid "Tracks marked New are moved to the end of Playlist on update."
 msgstr ""
 
-#: includes/post-types-admin.php:5182
+#: includes/post-types-admin.php:5236
 msgid "Are you sure you want to clear the track list?"
 msgstr ""
 
-#: includes/post-types-admin.php:5287 includes/post-types-admin.php:5501
+#: includes/post-types-admin.php:5341 includes/post-types-admin.php:5556
 msgid "Length"
 msgstr ""
 
-#: includes/post-types-admin.php:5295 includes/post-types-admin.php:5518
-#: includes/shortcodes.php:4078 templates/single-playlist-content.php:52
+#: includes/post-types-admin.php:5349 includes/post-types-admin.php:5573
+#: includes/shortcodes.php:4176 templates/single-playlist-content.php:67
 msgid "Comments"
 msgstr ""
 
-#: includes/post-types-admin.php:5296 includes/post-types-admin.php:5525
+#: includes/post-types-admin.php:5350 includes/post-types-admin.php:5580
 msgid "New"
 msgstr ""
 
-#: includes/post-types-admin.php:5298 includes/post-types-admin.php:5530
-#: includes/post-types-admin.php:6085
+#: includes/post-types-admin.php:5352 includes/post-types-admin.php:5585
+#: includes/post-types-admin.php:6146
 msgid "Status"
 msgstr ""
 
-#: includes/post-types-admin.php:5300 includes/post-types-admin.php:5533
+#: includes/post-types-admin.php:5354 includes/post-types-admin.php:5588
 msgid "Queued"
 msgstr ""
 
-#: includes/post-types-admin.php:5301 includes/post-types-admin.php:5534
+#: includes/post-types-admin.php:5355 includes/post-types-admin.php:5589
 msgid "Played"
 msgstr ""
 
-#: includes/post-types-admin.php:5304 includes/post-types-admin.php:5540
+#: includes/post-types-admin.php:5358 includes/post-types-admin.php:5595
 msgid "Move"
 msgstr ""
 
-#: includes/post-types-admin.php:5432 includes/post-types-admin.php:6084
-#: includes/shortcodes.php:4057 templates/legacy/single-playlist.php:45
-#: templates/single-playlist-content.php:48
+#: includes/post-types-admin.php:5487 includes/post-types-admin.php:6145
+#: includes/shortcodes.php:4155 templates/legacy/single-playlist.php:45
+#: templates/single-playlist-content.php:58
 msgid "Artist"
 msgstr ""
 
-#: includes/post-types-admin.php:5433 includes/post-types-admin.php:6083
-#: includes/shortcodes.php:4049 templates/legacy/single-playlist.php:46
-#: templates/single-playlist-content.php:49
+#: includes/post-types-admin.php:5488 includes/post-types-admin.php:6144
+#: includes/shortcodes.php:4147 templates/legacy/single-playlist.php:46
+#: templates/single-playlist-content.php:59
 msgid "Song"
 msgstr ""
 
-#: includes/post-types-admin.php:5434 includes/shortcodes.php:4064
+#: includes/post-types-admin.php:5489 includes/shortcodes.php:4162
 #: templates/legacy/single-playlist.php:47
-#: templates/single-playlist-content.php:50
+#: templates/single-playlist-content.php:61
 msgid "Album"
 msgstr ""
 
-#: includes/post-types-admin.php:5435 templates/legacy/single-playlist.php:48
+#: includes/post-types-admin.php:5490 templates/legacy/single-playlist.php:48
 msgid "Record Label"
 msgstr ""
 
-#: includes/post-types-admin.php:5503
+#: includes/post-types-admin.php:5558
 msgctxt "minutes unit"
 msgid "m"
 msgstr ""
 
-#: includes/post-types-admin.php:5515
+#: includes/post-types-admin.php:5570
 msgctxt "seconds unit"
 msgid "s"
 msgstr ""
 
-#: includes/post-types-admin.php:5649
+#: includes/post-types-admin.php:5704
 msgid "No Shows were found."
 msgstr ""
 
-#: includes/post-types-admin.php:5655
+#: includes/post-types-admin.php:5710
 msgid "You are not assigned to any Shows."
 msgstr ""
 
-#: includes/post-types-admin.php:5664 includes/post-types-admin.php:6184
+#: includes/post-types-admin.php:5719 includes/post-types-admin.php:6247
 msgid "Assign to Show"
 msgstr ""
 
-#: includes/post-types-admin.php:5666 includes/post-types-admin.php:5789
-#: includes/post-types-admin.php:6187
+#: includes/post-types-admin.php:5721 includes/post-types-admin.php:5844
+#: includes/post-types-admin.php:6250
 msgid "Unassigned"
 msgstr ""
 
-#: includes/post-types-admin.php:5706
+#: includes/post-types-admin.php:5761
 msgid "You can assign Playlists to Show Episodes in Radio Station Pro."
 msgstr ""
 
-#: includes/post-types-admin.php:5707 radio-station-admin.php:1397
+#: includes/post-types-admin.php:5762 radio-station-admin.php:1439
 msgid "Go PRO"
 msgstr ""
 
-#: includes/post-types-admin.php:5708
+#: includes/post-types-admin.php:5763
 msgid "Find Out More..."
 msgstr ""
 
-#: includes/post-types-admin.php:5786
+#: includes/post-types-admin.php:5841
 msgid "Assign to Show Shift"
 msgstr ""
 
-#: includes/post-types-admin.php:5788
+#: includes/post-types-admin.php:5843
 msgid "Latest Show"
 msgstr ""
 
-#: includes/post-types-admin.php:5831
+#: includes/post-types-admin.php:5886
 msgid "Failed. Use manual Publish or Update instead."
 msgstr ""
 
-#: includes/post-types-admin.php:5835
+#: includes/post-types-admin.php:5890
 msgid "Failed. No Playlist ID provided."
 msgstr ""
 
-#: includes/post-types-admin.php:5840
+#: includes/post-types-admin.php:5895
 msgid "Failed. Invalid Playlist ID."
 msgstr ""
 
-#: includes/post-types-admin.php:6004
+#: includes/post-types-admin.php:6060
 msgid "Tracks"
 msgstr ""
 
-#: includes/post-types-admin.php:6005
+#: includes/post-types-admin.php:6061
 msgid "Track List"
 msgstr ""
 
-#: includes/post-types-admin.php:6079
+#: includes/post-types-admin.php:6140
 msgid "Show/Hide Tracklist"
 msgstr ""
 
-#: includes/post-types-admin.php:6298
+#: includes/post-types-admin.php:6363
 msgid "Related to Show"
 msgstr ""
 
-#: includes/post-types-admin.php:6361
+#: includes/post-types-admin.php:6426
 msgid "Select Show(s)"
 msgstr ""
 
-#: includes/post-types-admin.php:6534
+#: includes/post-types-admin.php:6601
 msgid "Related Show(s)"
 msgstr ""
 
-#: includes/post-types-admin.php:6574
+#: includes/post-types-admin.php:6643
 msgid "Show(s)"
 msgstr ""
 
-#: includes/post-types-admin.php:6707
+#: includes/post-types-admin.php:6776
 msgid "Set Related Show(s)"
 msgstr ""
 
-#: includes/post-types-admin.php:6842
+#: includes/post-types-admin.php:6914
 msgid "Updated Related Shows for %d Posts."
 msgstr ""
 
-#: includes/post-types-admin.php:6848
+#: includes/post-types-admin.php:6920
 msgid "Failed to Update Related Shows for %d Posts."
 msgstr ""
 
-#: includes/post-types-admin.php:7098
+#: includes/post-types-admin.php:7171
 msgid "Failed. Please relogin and try again."
 msgstr ""
 
-#: includes/post-types.php:45 includes/post-types.php:46
+#: includes/post-types.php:47 includes/post-types.php:48
 msgid "Add Show"
 msgstr ""
 
-#: includes/post-types.php:49
+#: includes/post-types.php:51
 msgid "View Show"
 msgstr ""
 
-#: includes/post-types.php:53
+#: includes/post-types.php:55
 msgid "Search Shows"
 msgstr ""
 
-#: includes/post-types.php:54
+#: includes/post-types.php:56
 msgid "No Shows found"
 msgstr ""
 
-#: includes/post-types.php:55
+#: includes/post-types.php:57
 msgid "No Shows found in Trash"
 msgstr ""
 
-#: includes/post-types.php:63
+#: includes/post-types.php:65
 msgid "Shows Archive"
 msgstr ""
 
-#: includes/post-types.php:94
+#: includes/post-types.php:96
 msgid "Playlist"
 msgstr ""
 
-#: includes/post-types.php:95 includes/post-types.php:96
+#: includes/post-types.php:97 includes/post-types.php:98
 msgid "Add Playlist"
 msgstr ""
 
-#: includes/post-types.php:97
+#: includes/post-types.php:99
 msgid "Edit Playlist"
 msgstr ""
 
-#: includes/post-types.php:98
+#: includes/post-types.php:100
 msgid "New Playlist"
 msgstr ""
 
-#: includes/post-types.php:99 includes/shortcodes.php:2848
-#: includes/shortcodes.php:4099
+#: includes/post-types.php:101 includes/shortcodes.php:2878
+#: includes/shortcodes.php:4197
 msgid "View Playlist"
 msgstr ""
 
-#: includes/post-types.php:103
+#: includes/post-types.php:105
 msgid "Search Playlists"
 msgstr ""
 
-#: includes/post-types.php:104
+#: includes/post-types.php:106
 msgid "No Playlists found"
 msgstr ""
 
-#: includes/post-types.php:105
+#: includes/post-types.php:107
 msgid "No Playlists found in Trash"
 msgstr ""
 
-#: includes/post-types.php:106
+#: includes/post-types.php:108
 msgid "All Playlists"
 msgstr ""
 
-#: includes/post-types.php:113
+#: includes/post-types.php:115
 msgid "Playlists Archive"
 msgstr ""
 
-#: includes/post-types.php:141 radio-station-admin.php:220
+#: includes/post-types.php:143 radio-station-admin.php:225
 msgid "Schedule Overrides"
 msgstr ""
 
-#: includes/post-types.php:143 includes/post-types.php:144
+#: includes/post-types.php:145 includes/post-types.php:146
 msgid "Add Schedule Override"
 msgstr ""
 
-#: includes/post-types.php:145
+#: includes/post-types.php:147
 msgid "Edit Schedule Override"
 msgstr ""
 
-#: includes/post-types.php:146
+#: includes/post-types.php:148
 msgid "New Schedule Override"
 msgstr ""
 
-#: includes/post-types.php:147
+#: includes/post-types.php:149
 msgid "View Schedule Override"
 msgstr ""
 
-#: includes/post-types.php:149
+#: includes/post-types.php:151
 msgid "Search Overrides"
 msgstr ""
 
-#: includes/post-types.php:150
+#: includes/post-types.php:152
 msgid "No Overrides found"
 msgstr ""
 
-#: includes/post-types.php:151
+#: includes/post-types.php:153
 msgid "No Overrides found in Trash"
 msgstr ""
 
-#: includes/post-types.php:160
+#: includes/post-types.php:162
 msgid "Schedule Overrides Archive"
 msgstr ""
 
-#: includes/post-types.php:194
+#: includes/post-types.php:196
 msgid "Host"
 msgstr ""
 
-#: includes/post-types.php:195
+#: includes/post-types.php:197
 msgid "Add New Host Profile"
 msgstr ""
 
-#: includes/post-types.php:196
+#: includes/post-types.php:198
 msgid "Add Host Profile"
 msgstr ""
 
-#: includes/post-types.php:197
+#: includes/post-types.php:199
 msgid "Edit Host Profile"
 msgstr ""
 
-#: includes/post-types.php:198
+#: includes/post-types.php:200
 msgid "New Host Profile"
 msgstr ""
 
-#: includes/post-types.php:199
+#: includes/post-types.php:201
 msgid "View Host Profile"
 msgstr ""
 
-#: includes/post-types.php:200
+#: includes/post-types.php:202
 msgid "Show Hosts"
 msgstr ""
 
-#: includes/post-types.php:202
+#: includes/post-types.php:204
 msgid "Search Host Profiles"
 msgstr ""
 
-#: includes/post-types.php:203
+#: includes/post-types.php:205
 msgid "No Host Profiles found"
 msgstr ""
 
-#: includes/post-types.php:204
+#: includes/post-types.php:206
 msgid "No Host Profiles found in Trash"
 msgstr ""
 
-#: includes/post-types.php:205
+#: includes/post-types.php:207
 msgid "All Host Profiles"
 msgstr ""
 
-#: includes/post-types.php:213
+#: includes/post-types.php:215
 msgid "Host Profiles Archive"
 msgstr ""
 
-#: includes/post-types.php:246
+#: includes/post-types.php:248
 msgid "Producer"
 msgstr ""
 
-#: includes/post-types.php:247
+#: includes/post-types.php:249
 msgid "Add New Producer Profile"
 msgstr ""
 
-#: includes/post-types.php:248
+#: includes/post-types.php:250
 msgid "Add Producer Profile"
 msgstr ""
 
-#: includes/post-types.php:249
+#: includes/post-types.php:251
 msgid "Edit Producer Profile"
 msgstr ""
 
-#: includes/post-types.php:250
+#: includes/post-types.php:252
 msgid "New Producer Profile"
 msgstr ""
 
-#: includes/post-types.php:251
+#: includes/post-types.php:253
 msgid "View Producer Profile"
 msgstr ""
 
-#: includes/post-types.php:252
+#: includes/post-types.php:254
 msgid "Show Producers Profile"
 msgstr ""
 
-#: includes/post-types.php:254
+#: includes/post-types.php:256
 msgid "Search Producer Profiles"
 msgstr ""
 
-#: includes/post-types.php:255
+#: includes/post-types.php:257
 msgid "No Producer Profiles found"
 msgstr ""
 
-#: includes/post-types.php:256
+#: includes/post-types.php:258
 msgid "No Producer Profiles found in Trash"
 msgstr ""
 
-#: includes/post-types.php:257
+#: includes/post-types.php:259
 msgid "All Producer Profiles"
 msgstr ""
 
-#: includes/post-types.php:265
+#: includes/post-types.php:267
 msgid "Producer Profiles Archive"
 msgstr ""
 
-#: includes/post-types.php:407
+#: includes/post-types.php:409
 msgid "Edit"
 msgstr ""
 
-#: includes/post-types.php:464
+#: includes/post-types.php:466
 msgctxt "taxonomy general name"
 msgid "Genres"
 msgstr ""
 
-#: includes/post-types.php:465
+#: includes/post-types.php:467
 msgctxt "taxonomy singular name"
 msgid "Genre"
 msgstr ""
 
-#: includes/post-types.php:466
+#: includes/post-types.php:468
 msgid "Search Genres"
 msgstr ""
 
-#: includes/post-types.php:467
+#: includes/post-types.php:469
 msgid "All Genres"
 msgstr ""
 
-#: includes/post-types.php:468
+#: includes/post-types.php:470
 msgid "Parent Genre"
 msgstr ""
 
-#: includes/post-types.php:469
+#: includes/post-types.php:471
 msgid "Parent Genre:"
 msgstr ""
 
-#: includes/post-types.php:470
+#: includes/post-types.php:472
 msgid "Edit Genre"
 msgstr ""
 
-#: includes/post-types.php:471
+#: includes/post-types.php:473
 msgid "Update Genre"
 msgstr ""
 
-#: includes/post-types.php:472
+#: includes/post-types.php:474
 msgid "Add New Genre"
 msgstr ""
 
-#: includes/post-types.php:473
+#: includes/post-types.php:475
 msgid "New Genre Name"
 msgstr ""
 
-#: includes/post-types.php:474
+#: includes/post-types.php:476
 msgid "Genre"
 msgstr ""
 
-#: includes/post-types.php:510
+#: includes/post-types.php:512
 msgctxt "taxonomy general name"
 msgid "Languages"
 msgstr ""
 
-#: includes/post-types.php:511
+#: includes/post-types.php:513
 msgctxt "taxonomy singular name"
 msgid "Language"
 msgstr ""
 
-#: includes/post-types.php:512
+#: includes/post-types.php:514
 msgid "Search Languages"
 msgstr ""
 
-#: includes/post-types.php:513
+#: includes/post-types.php:515
 msgid "All Languages"
 msgstr ""
 
-#: includes/post-types.php:514
+#: includes/post-types.php:516
 msgid "Parent Language"
 msgstr ""
 
-#: includes/post-types.php:515
+#: includes/post-types.php:517
 msgid "Parent Language:"
 msgstr ""
 
-#: includes/post-types.php:516
+#: includes/post-types.php:518
 msgid "Edit Language"
 msgstr ""
 
-#: includes/post-types.php:517
+#: includes/post-types.php:519
 msgid "Update Language"
 msgstr ""
 
-#: includes/post-types.php:518
+#: includes/post-types.php:520
 msgid "Add New Language"
 msgstr ""
 
-#: includes/post-types.php:519
+#: includes/post-types.php:521
 msgid "New Language Name"
 msgstr ""
 
-#: includes/post-types.php:520
+#: includes/post-types.php:522
 msgid "Language"
 msgstr ""
 
 #: includes/shortcodes.php:80 includes/shortcodes.php:84
 #: includes/shortcodes.php:98 includes/shortcodes.php:111
-#: includes/shortcodes.php:113 templates/single-show-content.php:550
-#: templates/single-show-content.php:557
+#: includes/shortcodes.php:113 templates/single-show-content.php:573
+#: templates/single-show-content.php:580
 msgid "UTC"
 msgstr ""
 
@@ -4297,1462 +3930,1526 @@ msgstr ""
 msgid "Your Time"
 msgstr ""
 
-#: includes/shortcodes.php:678
+#: includes/shortcodes.php:680
 msgid "No Shows in the requested Genre and Language were found."
 msgstr ""
 
-#: includes/shortcodes.php:680
+#: includes/shortcodes.php:682
 msgid "No Shows in the requested Genre were found."
 msgstr ""
 
-#: includes/shortcodes.php:682
+#: includes/shortcodes.php:684
 msgid "No Shows in the requested Language were found."
 msgstr ""
 
-#: includes/shortcodes.php:684
+#: includes/shortcodes.php:686
 msgid "No Shows were found to display."
 msgstr ""
 
-#: includes/shortcodes.php:687
+#: includes/shortcodes.php:689
 msgid "No Playlists were found to display."
 msgstr ""
 
-#: includes/shortcodes.php:689
+#: includes/shortcodes.php:691
 msgid "No Overrides were found to display."
 msgstr ""
 
-#: includes/shortcodes.php:1062
+#: includes/shortcodes.php:1066
 msgid "No Genres were found to display."
 msgstr ""
 
-#: includes/shortcodes.php:1161
+#: includes/shortcodes.php:1165
 msgid "No Shows were found with Genres assigned."
 msgstr ""
 
-#: includes/shortcodes.php:1213
+#: includes/shortcodes.php:1218
 msgid "No Shows in this Genre."
 msgstr ""
 
-#: includes/shortcodes.php:1475
+#: includes/shortcodes.php:1481
 msgid "No Languages were found to display."
 msgstr ""
 
-#: includes/shortcodes.php:1629
+#: includes/shortcodes.php:1635
 msgid "No Shows were found with Languages assigned."
 msgstr ""
 
-#: includes/shortcodes.php:1665
+#: includes/shortcodes.php:1671
 msgid "No Shows in this Language."
 msgstr ""
 
-#: includes/shortcodes.php:2043
+#: includes/shortcodes.php:2056
 msgid "View all posts by %s"
 msgstr ""
 
-#: includes/shortcodes.php:2570 templates/single-show-content.php:499
+#: includes/shortcodes.php:2600 templates/single-show-content.php:522
 msgid "Show Times"
 msgstr ""
 
-#: includes/shortcodes.php:2825 includes/shortcodes.php:3569
-#: templates/single-show-content.php:648
+#: includes/shortcodes.php:2855 includes/shortcodes.php:3636
+#: templates/single-show-content.php:671
 msgid "Encore Presentation"
 msgstr ""
 
-#: includes/shortcodes.php:2957
+#: includes/shortcodes.php:2993
 msgid "No Show currently scheduled."
 msgstr ""
 
-#: includes/shortcodes.php:3629
+#: includes/shortcodes.php:3702
 msgid "No Upcoming Shows Scheduled."
 msgstr ""
 
-#: includes/shortcodes.php:4071 templates/single-playlist-content.php:51
+#: includes/shortcodes.php:4169 templates/single-playlist-content.php:64
 msgid "Label"
 msgstr ""
 
-#: includes/shortcodes.php:4132
+#: includes/shortcodes.php:4230
 msgid "No Current Playlist available."
 msgstr ""
 
-#: includes/shortcodes.php:4445
+#: includes/shortcodes.php:4561
 msgid "More Playlists"
 msgstr ""
 
-#: includes/support-functions.php:1743
+#: includes/support-functions.php:1853
 msgid "WordPress Setting"
 msgstr ""
 
-#: includes/templates.php:863
+#: includes/templates.php:955
 msgid "%s for Shows"
 msgstr ""
 
-#: includes/templates.php:865
+#: includes/templates.php:957
 msgid "%s for Show"
 msgstr ""
 
-#: includes/templates.php:874
+#: includes/templates.php:966
 msgid "More %s for Shows"
 msgstr ""
 
-#: includes/templates.php:876
+#: includes/templates.php:968
 msgid "More %s for Show"
 msgstr ""
 
-#: includes/templates.php:1161
+#: includes/templates.php:1259
 msgid "Previous Related Show"
 msgstr ""
 
-#: includes/templates.php:1166
+#: includes/templates.php:1264
 msgid "Next Related Show"
 msgstr ""
 
-#: includes/times.php:116 scheduler/schedule-engine.php:2733
+#: includes/times.php:148 scheduler/schedule-engine.php:2769
 msgid "WordPress Timezone"
 msgstr ""
 
-#: includes/user-roles.php:58 includes/user-roles.php:77
-#: includes/user-roles.php:78 includes/user-roles.php:290
+#: includes/user-roles.php:60 includes/user-roles.php:79
+#: includes/user-roles.php:80 includes/user-roles.php:292
 msgid "DJ / Host"
 msgstr ""
 
-#: includes/user-roles.php:82
+#: includes/user-roles.php:84
 msgid "Show Producer"
 msgstr ""
 
-#: includes/user-roles.php:162
+#: includes/user-roles.php:164
 msgid "Show Editor"
 msgstr ""
 
-#: loader.php:1355
+#: loader.php:1443
 msgid "Plugin Name"
 msgstr ""
 
-#: loader.php:1357
+#: loader.php:1445
 msgid "Requires at least"
 msgstr ""
 
-#: loader.php:1357 loader.php:1358
+#: loader.php:1445 loader.php:1446
 msgid "WordPress"
 msgstr ""
 
-#: loader.php:1358
+#: loader.php:1446
 msgid "Tested up to"
 msgstr ""
 
-#: loader.php:1360
+#: loader.php:1448
 msgid "Stable Tag"
 msgstr ""
 
-#: loader.php:1362
+#: loader.php:1450
 msgid "Contributors"
 msgstr ""
 
-#: loader.php:1388
+#: loader.php:1476
 msgid "Extra Notes"
 msgstr ""
 
 #. Translators: plugin title, user name, site link, freemius link
 
-#: loader.php:1599
+#: loader.php:1696
 msgid "If you want to more easily access support and feedback for this plugins features and functionality, %1$s can connect your user, %2$s at %3$s, to %4$s"
 msgstr ""
 
-#: loader.php:1700
+#: loader.php:1798
 msgid "Upgrade"
 msgstr ""
 
-#: loader.php:1708
+#: loader.php:1806
 msgid "Pro Details"
 msgstr ""
 
-#: loader.php:1722
+#: loader.php:1820
 msgid "Add Ons"
 msgstr ""
 
-#: loader.php:1790
+#: loader.php:1888
 msgid "Notices"
 msgstr ""
 
-#: loader.php:1918
+#: loader.php:2017
 msgid "by"
 msgstr ""
 
-#: loader.php:1928
+#: loader.php:2027
 msgid "Plugin Homepage"
 msgstr ""
 
-#: loader.php:1928
+#: loader.php:2027
 msgid "Home"
 msgstr ""
 
-#: loader.php:1932
+#: loader.php:2031
 msgid "View Plugin"
 msgstr ""
 
-#: loader.php:1932
+#: loader.php:2031
 msgid "Readme"
 msgstr ""
 
-#: loader.php:1935
+#: loader.php:2034
 msgid "Plugin Documentation"
 msgstr ""
 
-#: loader.php:1935
+#: loader.php:2034
 msgid "Docs"
 msgstr ""
 
-#: loader.php:1938
+#: loader.php:2037
 msgid "Plugin Support"
 msgstr ""
 
-#: loader.php:1938
+#: loader.php:2037
 msgid "Support"
 msgstr ""
 
-#: loader.php:1941
+#: loader.php:2040
 msgid "Plugin Development"
 msgstr ""
 
-#: loader.php:1941
+#: loader.php:2040
 msgid "Dev"
 msgstr ""
 
-#: loader.php:1989 radio-station-admin.php:1565
+#: loader.php:2088 radio-station-admin.php:1607
 msgid "Rate on WordPress.Org"
 msgstr ""
 
-#: loader.php:2006 radio-station.php:237
+#: loader.php:2105 radio-station.php:241
 msgid "Share the Plugin Love"
 msgstr ""
 
-#: loader.php:2023 radio-station.php:239
+#: loader.php:2122 radio-station.php:243
 msgid "Support this Plugin"
 msgstr ""
 
-#: loader.php:2043
+#: loader.php:2142
 msgid "Settings Updated."
 msgstr ""
 
-#: loader.php:2045
+#: loader.php:2144
 msgid "Error! Settings NOT Updated."
 msgstr ""
 
-#: loader.php:2047
+#: loader.php:2146
 msgid "Settings Reset!"
 msgstr ""
 
-#: loader.php:2316
+#: loader.php:2415
 msgid "Reset Settings"
 msgstr ""
 
-#: loader.php:2318
+#: loader.php:2417
 msgid "Save Settings"
 msgstr ""
 
-#: loader.php:2505
+#: loader.php:2604
 msgid "Use Ctrl and Click to Select"
 msgstr ""
 
-#: loader.php:2544
+#: loader.php:2643
 msgid "Premium Feature."
 msgstr ""
 
-#: loader.php:2546 radio-station-admin.php:397
+#: loader.php:2645 radio-station-admin.php:403
 msgid "Upgrade Now"
 msgstr ""
 
-#: loader.php:2553
+#: loader.php:2654
 msgid "Details"
 msgstr ""
 
-#: loader.php:2556
+#: loader.php:2657
 msgid "Coming soon in Pro version!"
 msgstr ""
 
-#: loader.php:2881
+#: loader.php:2979
 msgid "Add Image"
 msgstr ""
 
-#: loader.php:2889
+#: loader.php:2987
 msgid "Remove Image"
 msgstr ""
 
-#: loader.php:2969
+#: loader.php:3067
 msgid "Are you sure you want to reset to default settings?"
 msgstr ""
 
-#: options.php:19
+#: options.php:20
 msgid "Streaming URL"
 msgstr ""
 
-#: options.php:21
+#: options.php:22
 msgid "Enter the Streaming URL for your Radio Station. This is used in the Radio Player and discoverable via Data Feeds."
 msgstr ""
 
-#: options.php:30
+#: options.php:31
 msgid "Streaming Format"
 msgstr ""
 
-#: options.php:32
+#: options.php:33
 msgid "Select streaming format for streaming URL."
 msgstr ""
 
-#: options.php:41
+#: options.php:42
 msgid "Fallback Stream URL"
 msgstr ""
 
-#: options.php:43
+#: options.php:44
 msgid "Enter an alternative Streaming URL for Player fallback."
 msgstr ""
 
-#: options.php:52
+#: options.php:53
 msgid "Fallback Format"
 msgstr ""
 
-#: options.php:54
+#: options.php:55
 msgid "Select streaming fallback for fallback URL."
 msgstr ""
 
-#: options.php:63
+#: options.php:64
 msgid "Main Broadcast Language"
 msgstr ""
 
-#: options.php:65
+#: options.php:66
 msgid "Select the main language used on your Radio Station."
 msgstr ""
 
-#: options.php:75
+#: options.php:76
 msgid "Ping Netmix Directory"
 msgstr ""
 
-#: options.php:78
+#: options.php:79
 msgid "If you have a Netmix Directory listing, enable this to ping the directory whenever you update your schedule."
 msgstr ""
 
-#: options.php:89
+#: options.php:90
 msgid "Station Title"
 msgstr ""
 
-#: options.php:91
+#: options.php:92
 msgid "Name of your Radio Station. For use in Stream Player and Data Feeds."
 msgstr ""
 
-#: options.php:100 player/radio-player.php:304
+#: options.php:101 player/radio-player.php:348
 msgid "Station Logo Image"
 msgstr ""
 
-#: options.php:102
+#: options.php:103
 msgid "Add a logo image for your Radio Station. Please ensure image is square before uploading. Recommended size 256 x 256"
 msgstr ""
 
-#: options.php:111
+#: options.php:112
 msgid "Location Timezone"
 msgstr ""
 
-#: options.php:113
+#: options.php:114
 msgid "Select your Broadcast Location for Radio Timezone display."
 msgstr ""
 
-#: options.php:122
+#: options.php:123
 msgid "12 Hour Format"
 msgstr ""
 
-#: options.php:123
+#: options.php:124
 msgid "24 Hour Format"
 msgstr ""
 
-#: options.php:125
+#: options.php:126
 msgid "Clock Time Format"
 msgstr ""
 
-#: options.php:127
+#: options.php:128
 msgid "Default Time Format for display output. Can be overridden in each shortcode or widget."
 msgstr ""
 
-#: options.php:137
+#: options.php:138
 msgid "Station Phone"
 msgstr ""
 
-#: options.php:139
+#: options.php:140
 msgid "Main call in phone number for the Station (for requests etc.)"
 msgstr ""
 
-#: options.php:150
+#: options.php:151
 msgid "Show Phone Display"
 msgstr ""
 
-#: options.php:151
+#: options.php:152
 msgid "Display Station phone number on Shows where a Show phone number is not set."
 msgstr ""
 
-#: options.php:161
+#: options.php:162
 msgid "Station Email"
 msgstr ""
 
-#: options.php:162
+#: options.php:163
 msgid "Main email address for the Station (for requests etc.)"
 msgstr ""
 
-#: options.php:173
+#: options.php:174
 msgid "Show Email Display"
 msgstr ""
 
-#: options.php:174
+#: options.php:175
 msgid "Display Station email address on Shows where a Show email address is not set."
 msgstr ""
 
-#: options.php:184
+#: options.php:185
 msgid "Enable Data Routes"
 msgstr ""
 
-#: options.php:187
+#: options.php:188
 msgid "Enables Station Data Routes via WordPress REST API."
 msgstr ""
 
-#: options.php:195
+#: options.php:196
 msgid "Enable Data Feeds"
 msgstr ""
 
-#: options.php:198
+#: options.php:199
 msgid "Enable Station Data Feeds via WordPress Feed links."
 msgstr ""
 
-#: options.php:210
+#: options.php:211
+msgid "Shift Conflict Checker"
+msgstr ""
+
+#: options.php:214
+msgid "Check for Shift conflicts when saving Show shift times."
+msgstr ""
+
+#: options.php:223
 msgid "Disable Transients"
 msgstr ""
 
-#: options.php:213
+#: options.php:226
 msgid "Clear Schedule transients with every pageload. Less efficient but more reliable."
 msgstr ""
 
-#: options.php:221
+#: options.php:234
 msgid "Show Transients"
 msgstr ""
 
-#: options.php:224
+#: options.php:237
 msgid "Use Show Transient Data to improve Schedule calculation performance."
 msgstr ""
 
-#: options.php:248
+#: options.php:261
 msgid "Player Defaults Note"
 msgstr ""
 
-#: options.php:249
+#: options.php:262
 msgid "Note that you can override these defaults in specific Player Widgets."
 msgstr ""
 
-#: options.php:257
+#: options.php:270
 msgid "Display Station Title"
 msgstr ""
 
-#: options.php:260
+#: options.php:273
 msgid "Display your Radio Station Title in Player by default."
 msgstr ""
 
-#: options.php:271
+#: options.php:284
 msgid "Display your Radio Station Image in Player by default."
 msgstr ""
 
-#: options.php:287
+#: options.php:301
 msgid "Default audio script to use for playback in the Player."
 msgstr ""
 
-#: options.php:297
+#: options.php:312
 msgid "Fallback Scripts"
 msgstr ""
 
-#: options.php:304
+#: options.php:319
 msgid "Enabled fallback audio scripts to try when the default Player script fails."
 msgstr ""
 
-#: options.php:312
+#: options.php:327
 msgid "Default Player Theme"
 msgstr ""
 
-#: options.php:318
+#: options.php:333
 msgid "Default Player Controls theme style."
 msgstr ""
 
-#: options.php:326
+#: options.php:341
 msgid "Default Player Buttons"
 msgstr ""
 
-#: options.php:329
+#: options.php:344
 msgid "Circular Buttons"
 msgstr ""
 
-#: options.php:330
+#: options.php:345
 msgid "Rounded Buttons"
 msgstr ""
 
-#: options.php:331
+#: options.php:346
 msgid "Square Buttons"
 msgstr ""
 
-#: options.php:333
+#: options.php:348
 msgid "Default Player Buttons shape style."
 msgstr ""
 
-#: options.php:347
+#: options.php:362
 msgid "Volume Plus / Minus"
 msgstr ""
 
-#: options.php:348
+#: options.php:363
 msgid "Mute Volume Toggle"
 msgstr ""
 
-#: options.php:349
+#: options.php:364
 msgid "Maximize Volume"
 msgstr ""
 
-#: options.php:351
+#: options.php:366
 msgid "Which volume controls to display in the Player by default."
 msgstr ""
 
-#: options.php:359
+#: options.php:374
 msgid "Player Debug Mode"
 msgstr ""
 
-#: options.php:362
+#: options.php:377
 msgid "Output player debug information in browser javascript console."
 msgstr ""
 
-#: options.php:372
+#: options.php:387
 msgid "Playing Icon Highlight Color"
 msgstr ""
 
-#: options.php:374
+#: options.php:389
 msgid "Default highlight color to use for Play button icon when playing."
 msgstr ""
 
-#: options.php:383
+#: options.php:398
 msgid "Control Icons Highlight Color"
 msgstr ""
 
-#: options.php:385
+#: options.php:400
 msgid "Default highlight color to use for Control button icons when active."
 msgstr ""
 
-#: options.php:394
+#: options.php:409
 msgid "Volume Knob Color"
 msgstr ""
 
-#: options.php:396
+#: options.php:411
 msgid "Default Knob Color for Player Volume Slider."
 msgstr ""
 
-#: options.php:405
+#: options.php:420
 msgid "Volume Track Color"
 msgstr ""
 
-#: options.php:407
+#: options.php:422
 msgid "Default Track Color for Player Volume Slider."
 msgstr ""
 
-#: options.php:423
+#: options.php:433 widgets/class-radio-player-widget.php:137
+msgid "Player Start Volume"
+msgstr ""
+
+#: options.php:438
 msgid "Initial volume for when the Player starts playback."
 msgstr ""
 
-#: options.php:432
+#: options.php:447
 msgid "Single Player at Once"
 msgstr ""
 
-#: options.php:435
+#: options.php:450
 msgid "Stop any existing Player instances on the page or in other windows or tabs when a Player is started."
 msgstr ""
 
-#: options.php:444
+#: options.php:459
 msgid "Autoresume Playback"
 msgstr ""
 
-#: options.php:447
+#: options.php:462
 msgid "Attempt to resume playback if visitor was playing. Only triggered when the user first interacts with the page."
 msgstr ""
 
-#: options.php:471
+#: options.php:486
 msgid "Bar Defaults Note"
 msgstr ""
 
-#: options.php:472
+#: options.php:487
 msgid "The Bar Player uses the default configurations set above."
 msgstr ""
 
-#: options.php:473
+#: options.php:488
 msgid "You can override these in specific Player Widgets."
 msgstr ""
 
-#: options.php:481
+#: options.php:496
 msgid "Sitewide Player Bar"
 msgstr ""
 
-#: options.php:484
+#: options.php:499
 msgid "No Player Bar"
 msgstr ""
 
-#: options.php:485
+#: options.php:500
 msgid "Top Player Bar"
 msgstr ""
 
-#: options.php:486
+#: options.php:501
 msgid "Bottom Player Bar"
 msgstr ""
 
-#: options.php:490
+#: options.php:505
 msgid "Add a fixed position Player Bar which displays Sitewide."
 msgstr ""
 
-#: options.php:511
+#: options.php:526
 msgid "Fade In Player Bar"
 msgstr ""
 
-#: options.php:516
+#: options.php:531
 msgid "Number of milliseconds after Page load over which to fade in Player Bar. Use 0 for instant display."
 msgstr ""
 
-#: options.php:526
+#: options.php:541
 msgid "Continuous Playback"
 msgstr ""
 
-#: options.php:529
+#: options.php:544
 msgid "Uninterrupted Sitewide Bar playback while user is navigating between pages! Pages are loaded in background and faded in while Player Bar persists."
 msgstr ""
 
-#: options.php:538
+#: options.php:545
+msgid "Click here for setup notes."
+msgstr ""
+
+#: options.php:554
 msgid "Page Fade Time"
 msgstr ""
 
-#: options.php:543
+#: options.php:559
 msgid "Number of milliseconds over which to fade in new Pages (when continuous playback is enabled.) Use 0 for instant display."
 msgstr ""
 
-#: options.php:558
+#: options.php:574
 msgid "Number of milliseconds to wait for new Page to load before fading in anyway (when continuous playback is enabled.)"
 msgstr ""
 
-#: options.php:567
+#: options.php:583
 msgid "Bar Player Text Color"
 msgstr ""
 
-#: options.php:569
+#: options.php:585
 msgid "Text color for the fixed position Sitewide Bar Player."
 msgstr ""
 
-#: options.php:578
+#: options.php:594
 msgid "Bar Player Background Color"
 msgstr ""
 
-#: options.php:580
+#: options.php:596
 msgid "Background color for the fixed position Sitewide Bar Player."
 msgstr ""
 
-#: options.php:608
+#: options.php:624
 msgid "Display the currently playing song in the Player Bar, if a supported metadata format is available. (Icy Meta, Icecast, Shoutcast 1/2, Current Playlist)"
 msgstr ""
 
-#: options.php:649
+#: options.php:663
+msgid "Store Track Metadata?"
+msgstr ""
+
+#: options.php:668
+msgid "Save now playing track metadata in a separate database table for later use."
+msgstr ""
+
+#: options.php:678
 msgid "Master Schedule Page"
 msgstr ""
 
-#: options.php:651
+#: options.php:680
 msgid "Select the Page you are displaying the Master Schedule on."
 msgstr ""
 
-#: options.php:662
+#: options.php:691
 msgid "Replaces selected page content with Master Schedule. Alternatively customize with the shortcode: "
 msgstr ""
 
-#: options.php:670
+#: options.php:699
 msgid "Schedule View Default"
 msgstr ""
 
-#: options.php:675
+#: options.php:704
 msgid "Divs View"
 msgstr ""
 
-#: options.php:677
+#: options.php:706
 msgid "Legacy Table"
 msgstr ""
 
-#: options.php:679
+#: options.php:708
 msgid "View type to use for automatic display on Master Schedule Page."
 msgstr ""
 
-#: options.php:687
+#: options.php:716
 msgid "Schedule Clock?"
 msgstr ""
 
-#: options.php:691
+#: options.php:720
 msgid "Clock"
 msgstr ""
 
-#: options.php:692 templates/single-show-content.php:545
+#: options.php:721 templates/single-show-content.php:568
 msgid "Timezone"
 msgstr ""
 
-#: options.php:694
+#: options.php:723
 msgid "Radio Time section display above program Schedule."
 msgstr ""
 
-#: options.php:702
+#: options.php:731
 msgid "View Switching"
 msgstr ""
 
-#: options.php:705
+#: options.php:734
 msgid "Enable View Switching on the automatic Master Schedule page."
 msgstr ""
 
-#: options.php:715
+#: options.php:744
 msgid "Available Views"
 msgstr ""
 
-#: options.php:726
+#: options.php:755
 msgid "Switcher Views available on automatic Master Schedule page."
 msgstr ""
 
-#: options.php:750 options.php:864 options.php:898
+#: options.php:779 options.php:895 options.php:929
 msgid "Info Blocks Position"
 msgstr ""
 
-#: options.php:752 options.php:866 options.php:900
+#: options.php:781 options.php:897 options.php:931
 msgid "Float Left"
 msgstr ""
 
-#: options.php:753 options.php:867 options.php:901
+#: options.php:782 options.php:898 options.php:932
 msgid "Float Right"
 msgstr ""
 
-#: options.php:754 options.php:868 options.php:902
+#: options.php:783 options.php:899 options.php:933
 msgid "Float Top"
 msgstr ""
 
-#: options.php:757
+#: options.php:786
 msgid "Where to position Show info blocks relative to Show Page content."
 msgstr ""
 
-#: options.php:765
+#: options.php:794
 msgid "Show Content Layout"
 msgstr ""
 
-#: options.php:767 options.php:882 options.php:916
+#: options.php:796 options.php:913 options.php:947
 msgid "Tabbed"
 msgstr ""
 
-#: options.php:768 options.php:883 options.php:917
+#: options.php:797 options.php:914 options.php:948
 msgid "Standard"
 msgstr ""
 
-#: options.php:771
+#: options.php:800
 msgid "How to display extra sections below Show description. In content tabs or standard layout down the page."
 msgstr ""
 
-#: options.php:780
+#: options.php:809
 msgid "Content Header Images"
 msgstr ""
 
-#: options.php:783
+#: options.php:812
 msgid "If your chosen template does not display the Featured Image, enable this and use the Content Header Image box on the Show edit screen instead."
 msgstr ""
 
-#: options.php:804
+#: options.php:833
 msgid "Posts per Page"
 msgstr ""
 
-#: options.php:809
+#: options.php:838
 msgid "Linked Show Posts per page on the Show Page tab/display."
 msgstr ""
 
-#: options.php:820
+#: options.php:849
 msgid "Playlists per Page"
 msgstr ""
 
-#: options.php:822
+#: options.php:851
 msgid "Playlists per page on the Show Page tab/display"
 msgstr ""
 
-#: options.php:830
+#: options.php:859
 msgid "Episodes per Page"
 msgstr ""
 
-#: options.php:835
+#: options.php:864
 msgid "Number of Show Episodes per page on the Show page tab/display."
 msgstr ""
 
-#: options.php:852
-msgid "Combine team members (eg. hosts, producers) into a single display tab."
+#: options.php:875
+msgid "Team Tab Display"
 msgstr ""
 
-#: options.php:871
-msgid "Where to position Profile info blocks relative to Profile Page content."
+#: options.php:878
+msgid "No Team Display"
+msgstr ""
+
+#: options.php:879
+msgid "Separate Role Tabs"
 msgstr ""
 
 #: options.php:880
+msgid "Combined Team List"
+msgstr ""
+
+#: options.php:883
+msgid "How to display Show team members (eg. hosts, producers) on a Show page."
+msgstr ""
+
+#: options.php:902
+msgid "Where to position Profile info blocks relative to Profile Page content."
+msgstr ""
+
+#: options.php:911
 msgid "Profile Content Layout"
 msgstr ""
 
-#: options.php:886
+#: options.php:917
 msgid "How to display extra sections below Profile description. In content tabs or standard layout down the page."
 msgstr ""
 
-#: options.php:905
+#: options.php:936
 msgid "Where to position Episode info blocks relative to Episode Page content."
 msgstr ""
 
-#: options.php:914
+#: options.php:945
 msgid "Episode Content Layout"
 msgstr ""
 
-#: options.php:920
+#: options.php:951
 msgid "How to display extra sections below Episode description. In content tabs or standard layout down the page."
 msgstr ""
 
-#: options.php:933
+#: options.php:960
+msgid "Use Latest Episode"
+msgstr ""
+
+#: options.php:963
+msgid "Automatically use the latest Episode URL for the player embed on the Show page."
+msgstr ""
+
+#: options.php:975
 msgid "Shows Archive Page"
 msgstr ""
 
-#: options.php:937
+#: options.php:979
 msgid "Select the Page for displaying the Show archive list."
 msgstr ""
 
-#: options.php:948
+#: options.php:990
 msgid "Replaces selected page content with default Show Archive. Alternatively customize display using the shortcode:"
 msgstr ""
 
-#: options.php:966
+#: options.php:1008
 msgid "Overrides Archive Page"
 msgstr ""
 
-#: options.php:970
+#: options.php:1012
 msgid "Select the Page for displaying the Override archive list."
 msgstr ""
 
-#: options.php:981
+#: options.php:1023
 msgid "Replaces selected page content with default Override Archive. Alternatively customize display using the shortcode:"
 msgstr ""
 
-#: options.php:999
+#: options.php:1041
 msgid "Playlists Archive Page"
 msgstr ""
 
-#: options.php:1003
+#: options.php:1045
 msgid "Select the Page for displaying the Playlist archive list."
 msgstr ""
 
-#: options.php:1014
+#: options.php:1056
 msgid "Replaces selected page content with default Playlist Archive. Alternatively customize display using the shortcode:"
 msgstr ""
 
-#: options.php:1066
+#: options.php:1075
+msgid "Episodes Archive Page"
+msgstr ""
+
+#: options.php:1079
+msgid "Select the Page for displaying the Episode archive list."
+msgstr ""
+
+#: options.php:1092
+msgid "Replaces selected page content with default Episode Archive. Alternatively customize display using the shortcode:"
+msgstr ""
+
+#: options.php:1134
 msgid "Genres Archive Page"
 msgstr ""
 
-#: options.php:1070
+#: options.php:1138
 msgid "Select the Page for displaying the Genre archive list."
 msgstr ""
 
-#: options.php:1081
+#: options.php:1149
 msgid "Replaces selected page content with default Genre Archive. Alternatively customize display using the shortcode:"
 msgstr ""
 
-#: options.php:1100
+#: options.php:1168
 msgid "Languages Archive Page"
 msgstr ""
 
-#: options.php:1104
+#: options.php:1172
 msgid "Select the Page for displaying the Language archive list."
 msgstr ""
 
-#: options.php:1116
+#: options.php:1184
 msgid "Replaces selected page content with default Language Archive. Alternatively customize display using the shortcode:"
 msgstr ""
 
-#: options.php:1137
+#: options.php:1205
 msgid "Templates Change Note"
 msgstr ""
 
-#: options.php:1138
+#: options.php:1206
 msgid "Since 2.3.0, the way that Templates are implemented has changed."
 msgstr ""
 
-#: options.php:1139
+#: options.php:1207
 msgid "See the Documentation for more information:"
 msgstr ""
 
-#: options.php:1140
+#: options.php:1208
 msgid "Templates Documentation"
 msgstr ""
 
-#: options.php:1147
+#: options.php:1215
 msgid "Show Template"
 msgstr ""
 
-#: options.php:1150 options.php:1178
+#: options.php:1218 options.php:1246
 msgid "Theme Page Template (page.php)"
 msgstr ""
 
-#: options.php:1151 options.php:1179
+#: options.php:1219 options.php:1247
 msgid "Theme Post Template (single.php)"
 msgstr ""
 
-#: options.php:1152 options.php:1180
+#: options.php:1220 options.php:1248
 msgid "Theme Singular Template (singular.php)"
 msgstr ""
 
-#: options.php:1153 options.php:1181
+#: options.php:1221 options.php:1249
 msgid "Legacy Plugin Template"
 msgstr ""
 
-#: options.php:1156
+#: options.php:1224
 msgid "Which template to use for displaying Show content."
 msgstr ""
 
-#: options.php:1163 options.php:1191
+#: options.php:1231 options.php:1259
 msgid "Combined Method"
 msgstr ""
 
-#: options.php:1167
+#: options.php:1235
 msgid "Advanced usage. Use both a custom template AND content filtering for a Show. (Not compatible with Legacy templates.)"
 msgstr ""
 
-#: options.php:1175
+#: options.php:1243
 msgid "Playlist Template"
 msgstr ""
 
-#: options.php:1184
+#: options.php:1252
 msgid "Which template to use for displaying Playlist content."
 msgstr ""
 
-#: options.php:1195
+#: options.php:1263
 msgid "Advanced usage. Use both a custom template AND content filtering for a Playlist. (Not compatible with Legacy templates.)"
 msgstr ""
 
-#: options.php:1206
+#: options.php:1274
 msgid "AJAX Load Widgets?"
 msgstr ""
 
-#: options.php:1209
+#: options.php:1277
 msgid "Defaults plugin widgets to AJAX loading. Can also be set on individual widgets."
 msgstr ""
 
-#: options.php:1217
+#: options.php:1285
 msgid "Dynamic Reloading?"
 msgstr ""
 
-#: options.php:1220
+#: options.php:1288
 msgid "Automatically reload all plugin widgets on change of current Show. Can also be set on individual widgets."
 msgstr ""
 
-#: options.php:1229
+#: options.php:1297
 msgid "Convert Show Times"
 msgstr ""
 
-#: options.php:1232
+#: options.php:1300
 msgid "Automatically display Show times converted into the visitor timezone, based on their browser setting."
 msgstr ""
 
-#: options.php:1241
+#: options.php:1309
 msgid "User Timezone Switching"
 msgstr ""
 
-#: options.php:1244
+#: options.php:1312
 msgid "Allow visitors to select their Timezone manually for Show time conversions."
 msgstr ""
 
-#: options.php:1257
+#: options.php:1325
 msgid "Show Editing Permissions"
 msgstr ""
 
-#: options.php:1258
+#: options.php:1326
 msgid "By default, only Hosts and Producers that are assigned to a Show can edit that Show."
 msgstr ""
 
-#: options.php:1259
+#: options.php:1327
 msgid "This means an Administrator or Show Editor must assign these users to the Show first."
 msgstr ""
 
-#: options.php:1268
+#: options.php:1336
 msgid "Playlist Permissions"
 msgstr ""
 
-#: options.php:1269
+#: options.php:1337
 msgid "Any user with a Host or Producer role can create Playlists."
 msgstr ""
 
-#: options.php:1277
+#: options.php:1345
 msgid "Show Editor Role"
 msgstr ""
 
-#: options.php:1278
+#: options.php:1346
 msgid "Since 2.3.0, a new Show Editor role has been added with Publish and Edit capabilities for all Radio Station Post Types."
 msgstr ""
 
-#: options.php:1279
+#: options.php:1347
 msgid "You can assign this Role to any user to give them full Station Schedule updating permissions."
 msgstr ""
 
-#: options.php:1280
+#: options.php:1348
 msgid "This is so a manager can edit the schedule without requiring full site administration role."
 msgstr ""
 
-#: options.php:1288
+#: options.php:1356
 msgid "Add to Author Capabilities"
 msgstr ""
 
-#: options.php:1291
+#: options.php:1359
 msgid "Allow users with WordPress Author role to publish and edit their own Shows and Playlists."
 msgstr ""
 
-#: options.php:1299
+#: options.php:1367
 msgid "Add to Editor Capabilities"
 msgstr ""
 
-#: options.php:1302
+#: options.php:1370
 msgid "Allow users with WordPress Editor role to edit all Radio Station post types."
 msgstr ""
 
-#: options.php:1334
+#: options.php:1402
 msgid "Pages"
 msgstr ""
 
-#: options.php:1335 options.php:1361
+#: options.php:1403 options.php:1429
 msgid "Archives"
 msgstr ""
 
-#: options.php:1337
+#: options.php:1405
 msgid "Widgets"
 msgstr ""
 
-#: options.php:1338
+#: options.php:1406
 msgid "Roles"
 msgstr ""
 
-#: options.php:1347
+#: options.php:1415
 msgid "Broadcast"
 msgstr ""
 
-#: options.php:1348
+#: options.php:1416
 msgid "Station"
 msgstr ""
 
-#: options.php:1349
+#: options.php:1417
 msgid "Feeds"
 msgstr ""
 
-#: options.php:1350
+#: options.php:1418
 msgid "Performance"
 msgstr ""
 
-#: options.php:1351
+#: options.php:1419
 msgid "Basic Defaults"
 msgstr ""
 
-#: options.php:1352
+#: options.php:1420
 msgid "Advanced Defaults"
 msgstr ""
 
-#: options.php:1354
+#: options.php:1422
 msgid "Sitewide Bar Player"
 msgstr ""
 
-#: options.php:1355
+#: options.php:1423
 msgid "Schedule Page"
 msgstr ""
 
-#: options.php:1356
+#: options.php:1424
 msgid "Single Templates"
 msgstr ""
 
-#: options.php:1358
+#: options.php:1426
 msgid "Show Pages"
 msgstr ""
 
-#: options.php:1359
+#: options.php:1427
 msgid "Profile Pages"
 msgstr ""
 
-#: options.php:1360
+#: options.php:1428
 msgid "Episode Pages"
 msgstr ""
 
-#: options.php:1362
+#: options.php:1430
 msgid "Post Types"
 msgstr ""
 
-#: options.php:1363
+#: options.php:1431
 msgid "Taxonomies"
 msgstr ""
 
-#: options.php:1364
+#: options.php:1432
 msgid "Widget Loading"
 msgstr ""
 
-#: options.php:1365
+#: options.php:1433
 msgid "Permissions"
 msgstr ""
 
-#: player/radio-player.php:325
+#: player/radio-player.php:369
 msgid "Station Name"
 msgstr ""
 
-#: player/radio-player.php:357
+#: player/radio-player.php:401
 msgid "Play Radio Stream"
 msgstr ""
 
-#: player/radio-player.php:367
+#: player/radio-player.php:411 widgets/class-radio-player-widget.php:149
 msgid "Mute"
 msgstr ""
 
-#: player/radio-player.php:371
+#: player/radio-player.php:415
 msgid "Volume Down"
 msgstr ""
 
-#: player/radio-player.php:381
+#: player/radio-player.php:425
 msgid "Volume Up"
 msgstr ""
 
-#: player/radio-player.php:384
+#: player/radio-player.php:428 widgets/class-radio-player-widget.php:150
 msgid "Max"
 msgstr ""
 
-#: player/radio-player.php:408
+#: player/radio-player.php:452
 msgid "Show Title"
 msgstr ""
 
-#: player/radio-player.php:414
+#: player/radio-player.php:458
 msgid "Show Logo Image"
 msgstr ""
 
-#: radio-station-admin.php:184
+#: radio-station-admin.php:189
 msgid "You do not have permissions to access that page."
 msgstr ""
 
-#: radio-station-admin.php:235
+#: radio-station-admin.php:240
 msgid "Import/Export Shows"
 msgstr ""
 
-#: radio-station-admin.php:240
+#: radio-station-admin.php:245
 msgid "Documentation"
 msgstr ""
 
-#: radio-station-admin.php:240
+#: radio-station-admin.php:245
 msgid "Help"
 msgstr ""
 
-#: radio-station-admin.php:384
+#: radio-station-admin.php:390
 msgid "Role Assignments"
 msgstr ""
 
-#: radio-station-admin.php:385
+#: radio-station-admin.php:391
 msgid "You can assign a Radio Station role to users through the WordPress User editor."
 msgstr ""
 
-#: radio-station-admin.php:389
+#: radio-station-admin.php:395
 msgid "Radio Station Pro includes a Role Assignment Interface so you can easily assign Radio Station roles to any user."
 msgstr ""
 
-#: radio-station-admin.php:405
+#: radio-station-admin.php:411
 msgid "Find out more about Radio Station Pro"
 msgstr ""
 
-#: radio-station-admin.php:513
+#: radio-station-admin.php:523
 msgid "Back to Documentation Index"
 msgstr ""
 
-#: radio-station-admin.php:674
+#: radio-station-admin.php:633
+msgid "No playlists found for this period."
+msgstr ""
+
+#: radio-station-admin.php:687
 msgid "Right-click and download this file to save your export"
 msgstr ""
 
-#: radio-station-admin.php:816 radio-station-admin.php:892
+#: radio-station-admin.php:829 radio-station-admin.php:907
 msgid "Take a moment to Update for a better experience. In this update"
 msgstr ""
 
-#: radio-station-admin.php:820 radio-station-admin.php:896
+#: radio-station-admin.php:835 radio-station-admin.php:911
 msgid "Read full update details."
 msgstr ""
 
-#: radio-station-admin.php:886
+#: radio-station-admin.php:901
 msgid "A new version of"
 msgstr ""
 
-#: radio-station-admin.php:888
+#: radio-station-admin.php:903
 msgid "is available."
 msgstr ""
 
-#: radio-station-admin.php:905
+#: radio-station-admin.php:920
 msgid "Update Now"
 msgstr ""
 
-#: radio-station-admin.php:908 radio-station-admin.php:999
+#: radio-station-admin.php:923 radio-station-admin.php:1016
 msgid "Full Update Details"
 msgstr ""
 
-#: radio-station-admin.php:919 radio-station-admin.php:1018
-#: radio-station-admin.php:1328 radio-station-admin.php:1414
-#: radio-station-admin.php:1576
+#: radio-station-admin.php:936 radio-station-admin.php:1037
+#: radio-station-admin.php:1369 radio-station-admin.php:1456
+#: radio-station-admin.php:1620
 msgid "Dismiss this Notice"
 msgstr ""
 
-#: radio-station-admin.php:977
+#: radio-station-admin.php:994
 msgid "Update Notice"
 msgstr ""
 
-#: radio-station-admin.php:983
+#: radio-station-admin.php:1000
 msgid "Thanks for Updating! You can enjoy these improvements now"
 msgstr ""
 
-#: radio-station-admin.php:1006
+#: radio-station-admin.php:1023
 msgid "Plugin Settings"
 msgstr ""
 
-#: radio-station-admin.php:1284
+#: radio-station-admin.php:1325
 msgid "Time Sensitive Free Offer"
 msgstr ""
 
-#: radio-station-admin.php:1287
+#: radio-station-admin.php:1328
 msgid "We are excited to announce the opening of the new"
 msgstr ""
 
-#: radio-station-admin.php:1289
+#: radio-station-admin.php:1330
 msgid "Allowing listeners to newly discover Stations and Shows - which can include yours..."
 msgstr ""
 
-#: radio-station-admin.php:1291
+#: radio-station-admin.php:1332
 msgid "Because while launching,"
 msgstr ""
 
-#: radio-station-admin.php:1291
+#: radio-station-admin.php:1332
 msgid "we are offering 30 days free listing to all Radio Station users!"
 msgstr ""
 
-#: radio-station-admin.php:1292
+#: radio-station-admin.php:1333
 msgid "Interested in more exposure and listeners for your Radio Station, for free?"
 msgstr ""
 
-#: radio-station-admin.php:1304
+#: radio-station-admin.php:1345
 msgid "Yes please!"
 msgstr ""
 
-#: radio-station-admin.php:1307 widgets/class-current-playlist-widget.php:81
-#: widgets/class-current-show-widget.php:101
-#: widgets/class-radio-player-widget.php:164
-#: widgets/class-radio-player-widget.php:232
-#: widgets/class-radio-player-widget.php:242
-#: widgets/class-upcoming-shows-widget.php:104
+#: radio-station-admin.php:1348 widgets/class-current-playlist-widget.php:83
+#: widgets/class-current-show-widget.php:96
+#: widgets/class-radio-player-widget.php:166
+#: widgets/class-radio-player-widget.php:235
+#: widgets/class-radio-player-widget.php:245
+#: widgets/class-upcoming-shows-widget.php:99
 msgid "More Details"
 msgstr ""
 
-#: radio-station-admin.php:1311
+#: radio-station-admin.php:1352
 msgid "Great! I'm listed, dismiss this notice."
 msgstr ""
 
-#: radio-station-admin.php:1316
+#: radio-station-admin.php:1357
 msgid "Offer valid until end of July 2020."
 msgstr ""
 
-#: radio-station-admin.php:1317
+#: radio-station-admin.php:1358
 msgid "Activate your 30 days before it ends!"
 msgstr ""
 
-#: radio-station-admin.php:1362
+#: radio-station-admin.php:1403
 msgid "Radio Station Pro Launch Discount!"
 msgstr ""
 
-#: radio-station-admin.php:1364
+#: radio-station-admin.php:1405
 msgid "We are thrilled to announce the upcoming launch of Radio Station PRO"
 msgstr ""
 
-#: radio-station-admin.php:1365 radio-station-admin.php:1373
+#: radio-station-admin.php:1406 radio-station-admin.php:1414
 msgid "Jam-packed with new features to \"level up\" your Station's online presence."
 msgstr ""
 
-#: radio-station-admin.php:1366
+#: radio-station-admin.php:1407
 msgid "During the launch,"
 msgstr ""
 
-#: radio-station-admin.php:1366 radio-station-admin.php:1374
+#: radio-station-admin.php:1407 radio-station-admin.php:1415
 msgid "we are offering 30% discount to existing Radio Station users!"
 msgstr ""
 
-#: radio-station-admin.php:1367
+#: radio-station-admin.php:1408
 msgid "Sign up to the exclusive launch list to receive your discount code when we go LIVE."
 msgstr ""
 
-#: radio-station-admin.php:1370
+#: radio-station-admin.php:1411
 msgid "Radio Station PRO Launch is LIVE!"
 msgstr ""
 
-#: radio-station-admin.php:1372
+#: radio-station-admin.php:1413
 msgid "The long anticipated moment has arrived. The doors are open to get PRO"
 msgstr ""
 
-#: radio-station-admin.php:1374
+#: radio-station-admin.php:1415
 msgid "Remember,"
 msgstr ""
 
-#: radio-station-admin.php:1376
+#: radio-station-admin.php:1417
 msgid "Sign up here to receive your exclusive launch discount code."
 msgstr ""
 
-#: radio-station-admin.php:1391
+#: radio-station-admin.php:1432
 msgid "Yes, I'm in!"
 msgstr ""
 
-#: radio-station-admin.php:1402
+#: radio-station-admin.php:1444
 msgid "Thanks, already done."
 msgstr ""
 
-#: radio-station-admin.php:1540
+#: radio-station-admin.php:1582
 msgid "Help support us to make improvements, modifications and introduce new features!"
 msgstr ""
 
-#: radio-station-admin.php:1541
+#: radio-station-admin.php:1583
 msgid "With over a thousand radio station users thanks to the original plugin author Nikki Blight"
 msgstr ""
 
-#: radio-station-admin.php:1542
+#: radio-station-admin.php:1584
 msgid "since June 2019"
 msgstr ""
 
-#: radio-station-admin.php:1544
+#: radio-station-admin.php:1586
 msgid " plugin development has been actively taken over by"
 msgstr ""
 
-#: radio-station-admin.php:1547
+#: radio-station-admin.php:1589
 msgid "And due to our continued efforts we now have a community of over two thousand active stations!"
 msgstr ""
 
-#: radio-station-admin.php:1548
+#: radio-station-admin.php:1590
 msgid "We invite you to"
 msgstr ""
 
-#: radio-station-admin.php:1550
+#: radio-station-admin.php:1592
 msgid "Become a Radio Station Patreon Supporter"
 msgstr ""
 
-#: radio-station-admin.php:1551
+#: radio-station-admin.php:1593
 msgid "to make it better for everyone"
 msgstr ""
 
-#: radio-station-admin.php:1623
+#: radio-station-admin.php:1674
 msgid "has detected"
 msgstr ""
 
-#: radio-station-admin.php:1624
+#: radio-station-admin.php:1675
 msgid "Schedule conflicts!"
 msgstr ""
 
-#: radio-station-admin.php:1628
+#: radio-station-admin.php:1679
 msgid "The following Shows have conflicting Shift times"
 msgstr ""
 
-#: radio-station-admin.php:1667
+#: radio-station-admin.php:1718
 msgid "Go to Show List"
 msgstr ""
 
-#: radio-station-admin.php:1668
+#: radio-station-admin.php:1719
 msgid "Conflicts are highlighted"
 msgstr ""
 
-#: radio-station-admin.php:1669
+#: radio-station-admin.php:1720
 msgid "in Show Shift column."
 msgstr ""
 
-#: radio-station-admin.php:1674
+#: radio-station-admin.php:1725
 msgid "This notice will persist"
 msgstr ""
 
-#: radio-station-admin.php:1675
+#: radio-station-admin.php:1726
 msgid "until conflicts are resolved."
 msgstr ""
 
-#: radio-station-admin.php:1724
+#: radio-station-admin.php:1775
 msgid "Stay tuned! Subscribe to Radio Station's"
 msgstr ""
 
-#: radio-station-admin.php:1726
+#: radio-station-admin.php:1777
 msgid "Plugin Updates and Announcements List"
 msgstr ""
 
-#: radio-station.php:235
+#: radio-station.php:239
 msgid "Rate on WordPress.org"
 msgstr ""
 
-#: radio-station.php:998
+#: radio-station.php:1017
 msgid "This Show has started."
 msgstr ""
 
-#: radio-station.php:999
+#: radio-station.php:1018
 msgid "This Show has ended."
 msgstr ""
 
-#: radio-station.php:1000
+#: radio-station.php:1019
 msgid "This Playlist has ended."
 msgstr ""
 
-#: radio-station.php:1001
+#: radio-station.php:1020
 msgid "Commencing in"
 msgstr ""
 
-#: radio-station.php:1002
+#: radio-station.php:1021
 msgid "Remaining Time"
 msgstr ""
 
-#: radio-station.php:1008
+#: radio-station.php:1027
 msgid "Seconds"
 msgstr ""
 
-#: radio-station.php:1009
+#: radio-station.php:1028
 msgid "Minute"
 msgstr ""
 
-#: radio-station.php:1010
+#: radio-station.php:1029
 msgid "Minutes"
 msgstr ""
 
-#: radio-station.php:1011
+#: radio-station.php:1030
 msgid "Hour"
 msgstr ""
 
-#: radio-station.php:1012
+#: radio-station.php:1031
 msgid "Hours"
 msgstr ""
 
-#: radio-station.php:1014
+#: radio-station.php:1033
 msgid "Days"
 msgstr ""
 
-#: scheduler/schedule-engine.php:2685
+#: scheduler/schedule-engine.php:2722
 msgid "Africa"
 msgstr ""
 
-#: scheduler/schedule-engine.php:2686
+#: scheduler/schedule-engine.php:2723
 msgid "America"
 msgstr ""
 
-#: scheduler/schedule-engine.php:2687
+#: scheduler/schedule-engine.php:2724
 msgid "Asia"
 msgstr ""
 
-#: scheduler/schedule-engine.php:2688
+#: scheduler/schedule-engine.php:2725
 msgid "Atlantic"
 msgstr ""
 
-#: scheduler/schedule-engine.php:2689
+#: scheduler/schedule-engine.php:2726
 msgid "Australia"
 msgstr ""
 
-#: scheduler/schedule-engine.php:2690
+#: scheduler/schedule-engine.php:2727
 msgid "Europe"
 msgstr ""
 
-#: scheduler/schedule-engine.php:2691
+#: scheduler/schedule-engine.php:2728
 msgid "Indian"
 msgstr ""
 
-#: scheduler/schedule-engine.php:2692
+#: scheduler/schedule-engine.php:2729
 msgid "Pacific"
 msgstr ""
 
-#: scheduler/schedule-engine.php:2693
+#: scheduler/schedule-engine.php:2730
 msgid "Antarctica"
 msgstr ""
 
@@ -5772,23 +5469,23 @@ msgstr ""
 msgid "Newer posts"
 msgstr ""
 
-#: templates/legacy/archive-playlist.php:68 templates/legacy/author.php:101
-#: templates/legacy/playlist-archive-template.php:66
+#: templates/legacy/archive-playlist.php:68 templates/legacy/author.php:98
+#: templates/legacy/playlist-archive-template.php:67
 #: templates/legacy/show-blog-archive-template.php:78
 msgid "Nothing Found"
 msgstr ""
 
-#: templates/legacy/archive-playlist.php:72 templates/legacy/author.php:105
-#: templates/legacy/playlist-archive-template.php:70
+#: templates/legacy/archive-playlist.php:72 templates/legacy/author.php:102
+#: templates/legacy/playlist-archive-template.php:71
 #: templates/legacy/show-blog-archive-template.php:82
 msgid "Apologies, but no results were found for the requested archive. Perhaps searching will help find a related post."
 msgstr ""
 
-#: templates/legacy/author.php:54
+#: templates/legacy/author.php:51
 msgid "Author Archives: %s"
 msgstr ""
 
-#: templates/legacy/author.php:75
+#: templates/legacy/author.php:72
 msgid "About %s"
 msgstr ""
 
@@ -5820,7 +5517,7 @@ msgstr ""
 msgid "No Shows scheduled for this day."
 msgstr ""
 
-#: templates/playlist-export.php:78
+#: templates/playlist-export.php:81
 msgid "End Date"
 msgstr ""
 
@@ -5828,15 +5525,15 @@ msgstr ""
 msgid "Playlist for Show"
 msgstr ""
 
-#: templates/single-playlist-content.php:83
+#: templates/single-playlist-content.php:105
 msgid "No played tracks found for this Playlist yet."
 msgstr ""
 
-#: templates/single-playlist-content.php:91
+#: templates/single-playlist-content.php:113
 msgid "No entries found for this Playlist"
 msgstr ""
 
-#: templates/single-playlist-content.php:98
+#: templates/single-playlist-content.php:120
 msgid "All Playlists for Show"
 msgstr ""
 
@@ -5852,175 +5549,338 @@ msgstr ""
 msgid "Email Show Host"
 msgstr ""
 
-#: templates/single-show-content.php:319
+#: templates/single-show-content.php:343
 msgid "Show Info"
 msgstr ""
 
-#: templates/single-show-content.php:453
+#: templates/single-show-content.php:477
 msgid "Call in"
 msgstr ""
 
-#: templates/single-show-content.php:506
+#: templates/single-show-content.php:529
 msgid "Not Currently Scheduled."
 msgstr ""
 
-#: templates/single-show-content.php:709
+#: templates/single-show-content.php:739
 msgid "Scheduled Dates"
 msgstr ""
 
-#: templates/single-show-content.php:719
+#: templates/single-show-content.php:749
 msgid "Go to Full Station Schedule Page"
 msgstr ""
 
-#: templates/single-show-content.php:722
+#: templates/single-show-content.php:752
 msgid "Full Station Schedule"
 msgstr ""
 
-#: templates/single-show-content.php:769
+#: templates/single-show-content.php:799
 msgid "About the %s"
 msgstr ""
 
-#: templates/single-show-content.php:910
+#: templates/single-show-content.php:941
 msgid "Latest Show Posts"
 msgstr ""
 
-#: widgets/class-current-playlist-widget.php:79
-#: widgets/class-current-show-widget.php:99
-#: widgets/class-upcoming-shows-widget.php:102
+#: widgets/class-current-playlist-widget.php:17
+msgid "Display currently playing playlist."
+msgstr ""
+
+#: widgets/class-current-playlist-widget.php:19
+msgid "(Radio Station) Now Playing List"
+msgstr ""
+
+#: widgets/class-current-playlist-widget.php:62
+#: widgets/class-current-show-widget.php:74
+#: widgets/class-radio-clock-widget.php:42
+#: widgets/class-radio-player-widget.php:69
+#: widgets/class-upcoming-shows-widget.php:69
+msgid "Widget Title"
+msgstr ""
+
+#: widgets/class-current-playlist-widget.php:75
+#: widgets/class-current-show-widget.php:88
+#: widgets/class-upcoming-shows-widget.php:91
+msgid "AJAX Load Widget?"
+msgstr ""
+
+#: widgets/class-current-playlist-widget.php:81
+#: widgets/class-current-show-widget.php:94
+#: widgets/class-upcoming-shows-widget.php:97
 msgid "Show changeover reloading available in Pro."
 msgstr ""
 
-#: widgets/class-current-playlist-widget.php:80
-#: widgets/class-current-show-widget.php:100
-#: widgets/class-radio-player-widget.php:163
-#: widgets/class-radio-player-widget.php:231
-#: widgets/class-radio-player-widget.php:241
-#: widgets/class-upcoming-shows-widget.php:103
+#: widgets/class-current-playlist-widget.php:82
+#: widgets/class-current-show-widget.php:95
+#: widgets/class-radio-player-widget.php:165
+#: widgets/class-radio-player-widget.php:234
+#: widgets/class-radio-player-widget.php:244
+#: widgets/class-upcoming-shows-widget.php:98
 msgid "Upgrade to Pro"
 msgstr ""
 
-#: widgets/class-current-playlist-widget.php:98
+#: widgets/class-current-playlist-widget.php:90
+#: widgets/class-current-show-widget.php:112
+#: widgets/class-upcoming-shows-widget.php:115
+msgid "Hide Widget if Empty"
+msgstr ""
+
+#: widgets/class-current-playlist-widget.php:100
 msgid "Display Playlist Title?"
 msgstr ""
 
-#: widgets/class-current-playlist-widget.php:113
+#: widgets/class-current-playlist-widget.php:108
+msgid "Link to Playlist?"
+msgstr ""
+
+#: widgets/class-current-playlist-widget.php:115
 msgid "No Playlist Text"
 msgstr ""
 
-#: widgets/class-current-show-widget.php:110
+#: widgets/class-current-playlist-widget.php:125
+#: widgets/class-current-show-widget.php:204
+#: widgets/class-upcoming-shows-widget.php:199
+msgid "Display Countdown Timer"
+msgstr ""
+
+#: widgets/class-current-playlist-widget.php:135
+msgid "Show Song Title"
+msgstr ""
+
+#: widgets/class-current-playlist-widget.php:143
+msgid "Show Artist Name"
+msgstr ""
+
+#: widgets/class-current-playlist-widget.php:151
+msgid " Show Album Name"
+msgstr ""
+
+#: widgets/class-current-playlist-widget.php:159
+msgid "Show Record Label Name"
+msgstr ""
+
+#: widgets/class-current-playlist-widget.php:167
+msgid "Show DJ Comments"
+msgstr ""
+
+#: widgets/class-current-show-widget.php:17
+msgid "The currently playing on-air Show."
+msgstr ""
+
+#: widgets/class-current-show-widget.php:19
+msgid "(Radio Station) Current Show On-Air"
+msgstr ""
+
+#: widgets/class-current-show-widget.php:105
 msgid "Empty for default. 0 for none."
 msgstr ""
 
-#: widgets/class-current-show-widget.php:127
-#: widgets/class-upcoming-shows-widget.php:130
+#: widgets/class-current-show-widget.php:122
+#: widgets/class-upcoming-shows-widget.php:125
 msgid "Link Show title to  Show page."
 msgstr ""
 
-#: widgets/class-current-show-widget.php:161
-#: widgets/class-upcoming-shows-widget.php:164
+#: widgets/class-current-show-widget.php:131
+#: widgets/class-upcoming-shows-widget.php:134
+msgid "Above"
+msgstr ""
+
+#: widgets/class-current-show-widget.php:134
+#: widgets/class-upcoming-shows-widget.php:137
+msgid "Below"
+msgstr ""
+
+#: widgets/class-current-show-widget.php:140
+#: widgets/class-upcoming-shows-widget.php:143
+msgid "Show Title Position (relative to Avatar)"
+msgstr ""
+
+#: widgets/class-current-show-widget.php:149
+msgid "Display Show Avatar"
+msgstr ""
+
+#: widgets/class-current-show-widget.php:156
+#: widgets/class-upcoming-shows-widget.php:159
 msgid "Avatar Image Size"
 msgstr ""
 
-#: widgets/class-current-show-widget.php:174
-#: widgets/class-upcoming-shows-widget.php:177
+#: widgets/class-current-show-widget.php:176
+#: widgets/class-upcoming-shows-widget.php:179
+msgid "Avatar Width"
+msgstr ""
+
+#: widgets/class-current-show-widget.php:179
+#: widgets/class-upcoming-shows-widget.php:182
 msgid "Show Avatar Width override. 0 or empty for none."
 msgstr ""
 
-#: widgets/class-current-show-widget.php:183
+#: widgets/class-current-show-widget.php:188
 msgid "Display Show Shift Info"
 msgstr ""
 
-#: widgets/class-current-show-widget.php:191
+#: widgets/class-current-show-widget.php:196
 msgid "Display All Show Shifts (if more than current.)"
 msgstr ""
 
-#: widgets/class-current-show-widget.php:205
-#: widgets/class-radio-clock-widget.php:85
-#: widgets/class-upcoming-shows-widget.php:200
+#: widgets/class-current-show-widget.php:210
+#: widgets/class-radio-clock-widget.php:87
+#: widgets/class-upcoming-shows-widget.php:205
 msgid "Time Format Display"
 msgstr ""
 
-#: widgets/class-current-show-widget.php:220
+#: widgets/class-current-show-widget.php:225
 msgid "Display Show Host names."
 msgstr ""
 
-#: widgets/class-current-show-widget.php:228
+#: widgets/class-current-show-widget.php:233
 msgid "Link Host names to author pages."
 msgstr ""
 
-#: widgets/class-current-show-widget.php:236
+#: widgets/class-current-show-widget.php:241
 msgid "Display Show description excerpt."
 msgstr ""
 
-#: widgets/class-current-show-widget.php:244
+#: widgets/class-current-show-widget.php:249
 msgid "Display link to Show playlist."
 msgstr ""
 
-#: widgets/class-radio-clock-widget.php:60
+#: widgets/class-current-show-widget.php:257
+#: widgets/class-upcoming-shows-widget.php:236
+msgid "Display encore presentation text for Show"
+msgstr ""
+
+#: widgets/class-radio-clock-widget.php:16
+msgid "Display current radio and user times."
+msgstr ""
+
+#: widgets/class-radio-clock-widget.php:18
+msgid "(Radio Station) Radio Clock"
+msgstr ""
+
+#: widgets/class-radio-clock-widget.php:62
 msgid "Include Date Display?"
 msgstr ""
 
-#: widgets/class-radio-clock-widget.php:79
+#: widgets/class-radio-clock-widget.php:81
 msgid "Include seconds display?"
 msgstr ""
 
-#: widgets/class-radio-clock-widget.php:98
+#: widgets/class-radio-clock-widget.php:100
 msgid "Include timezone display?"
 msgstr ""
 
-#: widgets/class-radio-player-widget.php:78
+#: widgets/class-radio-player-widget.php:18
+msgid "Radio Station Stream Player."
+msgstr ""
+
+#: widgets/class-radio-player-widget.php:20
+msgid "(Radio Station) Stream Player"
+msgstr ""
+
+#: widgets/class-radio-player-widget.php:77
+msgid "Stream or File URL"
+msgstr ""
+
+#: widgets/class-radio-player-widget.php:80
 msgid "Leave blank to use default stream URL."
 msgstr ""
 
-#: widgets/class-radio-player-widget.php:116
+#: widgets/class-radio-player-widget.php:86
+msgid "Player Station Text"
+msgstr ""
+
+#: widgets/class-radio-player-widget.php:102
+msgid "Do Not Display Image"
+msgstr ""
+
+#: widgets/class-radio-player-widget.php:118
 msgid "Default Player Script"
 msgstr ""
 
-#: widgets/class-radio-player-widget.php:156
+#: widgets/class-radio-player-widget.php:147
+msgid "Slider"
+msgstr ""
+
+#: widgets/class-radio-player-widget.php:148
+msgid "Up/Down"
+msgstr ""
+
+#: widgets/class-radio-player-widget.php:158
 msgid "Use as the default Player instance."
 msgstr ""
 
-#: widgets/class-radio-player-widget.php:162
+#: widgets/class-radio-player-widget.php:164
 msgid "Popup Player button available in Pro."
 msgstr ""
 
-#: widgets/class-radio-player-widget.php:168
+#: widgets/class-radio-player-widget.php:170
 msgid "Player Styles"
 msgstr ""
 
-#: widgets/class-radio-player-widget.php:173
+#: widgets/class-radio-player-widget.php:175
 msgid "Player Widget Layout"
 msgstr ""
 
-#: widgets/class-radio-player-widget.php:209
+#: widgets/class-radio-player-widget.php:178
+msgid "Vertical (Stacked)"
+msgstr ""
+
+#: widgets/class-radio-player-widget.php:179
+msgid "Horizontal (Inline)"
+msgstr ""
+
+#: widgets/class-radio-player-widget.php:191
+msgid "Player Theme Style"
+msgstr ""
+
+#: widgets/class-radio-player-widget.php:211
 msgid "Buttons Style"
 msgstr ""
 
-#: widgets/class-radio-player-widget.php:228
+#: widgets/class-radio-player-widget.php:231
 msgid "[Pro] Color Options"
 msgstr ""
 
-#: widgets/class-radio-player-widget.php:230
+#: widgets/class-radio-player-widget.php:233
 msgid "Color options available in Pro."
 msgstr ""
 
-#: widgets/class-radio-player-widget.php:237
+#: widgets/class-radio-player-widget.php:240
 msgid "[Pro] Advanced Options"
 msgstr ""
 
-#: widgets/class-radio-player-widget.php:239
+#: widgets/class-radio-player-widget.php:242
 msgid "Advanced options available in Pro."
 msgstr ""
 
-#: widgets/class-upcoming-shows-widget.php:186
+#: widgets/class-upcoming-shows-widget.php:17
+msgid "Display the upcoming Shows."
+msgstr ""
+
+#: widgets/class-upcoming-shows-widget.php:19
+msgid "(Radio Station) Upcoming Shows"
+msgstr ""
+
+#: widgets/class-upcoming-shows-widget.php:77
+msgid "Limit"
+msgstr ""
+
+#: widgets/class-upcoming-shows-widget.php:80
+msgid "Number of upcoming Shows to display."
+msgstr ""
+
+#: widgets/class-upcoming-shows-widget.php:152
+msgid "Display Show Avatars"
+msgstr ""
+
+#: widgets/class-upcoming-shows-widget.php:191
 msgid "Display shift info for this show"
 msgstr ""
 
-#: widgets/class-upcoming-shows-widget.php:215
+#: widgets/class-upcoming-shows-widget.php:220
 msgid "Display Show host names."
 msgstr ""
 
-#: widgets/class-upcoming-shows-widget.php:223
+#: widgets/class-upcoming-shows-widget.php:228
 msgid "Link host names to author pages"
 msgstr ""
 #. Plugin Name of the plugin/theme

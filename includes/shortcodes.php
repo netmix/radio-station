@@ -1039,8 +1039,10 @@ function radio_station_genre_archive_list( $atts ) {
 			// 2.5.6: fix to get genre by genre_slug
 			$genre = radio_station_get_genre( $genre_slug );
 			if ( $genre ) {
-				$genres[$genre['name']] = $genre;
-				$genre_ids[] = $genre['id'];
+				// 2.5.10: fix to get first array key
+				$name = array_key_first( $genre );
+				$genres[$name] = $genre[$name];
+				$genre_ids[] = $genre[$name]['id'];
 			}
 		}
 	} else {
@@ -1204,10 +1206,12 @@ function radio_station_genre_archive_list( $atts ) {
 				}
 
 				// --- genre title ---
-				$list .= '<div class="genre-title"><h3 class="genre-title">' . "\n";
+				// 2.5.10: change div class to genre-title-wrapper
+				$list .= '<div class="genre-title-wrapper"><h3 class="genre-title">' . "\n";
 				if ( $atts['link_genres'] ) {
-					$list .= '<a href="' . esc_url( $genre['url'] ) . '">';
-						$list .= esc_html( $genre['name'] ) . "\n";
+					// 2.5.10: added genre-link class
+					$list .= '<a class="genre-link" href="' . esc_url( $genre['url'] ) . '">';
+						$list .= esc_html( $genre['name'] );
 					$list .= '</a>' . "\n";
 				} else {
 					$list .= esc_html( $genre['name'] ) . "\n";
@@ -1237,10 +1241,12 @@ function radio_station_genre_archive_list( $atts ) {
 			}
 
 			// --- genre title ---
-			$heading .= '<div class="genre-title"><h3 class="genre-title">' . "\n";
+			// 2.5.10: change div class to genre-title-wrapper
+			$heading .= '<div class="genre-title-wrapper"><h3 class="genre-title">' . "\n";
 			if ( $atts['link_genres'] ) {
-				$heading .= '<a href="' . esc_url( $genre['url'] ) . '">';
-					$heading .= esc_html( $genre['name'] ) . "\n";
+				// 2.5.10: added genre-link class
+				$heading .= '<a class="genre-link" href="' . esc_url( $genre['url'] ) . '">';
+					$heading .= esc_html( $genre['name'] );
 				$heading .= '</a>' . "\n";
 			} else {
 				$heading .= esc_html( $genre['name'] ) . "\n";
@@ -1449,8 +1455,10 @@ function radio_station_language_archive_list( $atts ) {
 			}
 			$language = radio_station_get_language( $language_slug );
 			if ( $language ) {
-				$languages[$language['name']] = $language;
-				$language_ids[] = $language['id'];
+				// 2.5.10: fix to get first array key
+				$name = array_key_first( $language );
+				$languages[$name] = $language[$name];
+				$language_ids[] = $language[$name]['id'];
 			}
 		}
 	} else {
@@ -2414,7 +2422,8 @@ function radio_station_current_show_shortcode( $atts ) {
 	$atts = shortcode_atts( $defaults, $atts, 'current-show' );
 
 	// 2.3.2: enqueue countdown script earlier
-	if ( $atts['countdown'] ) {
+	// 2.5.10: enqueue countdown for dynamic reloading
+	if ( $atts['countdown'] || $atts['dynamic'] ) {
 		do_action( 'radio_station_countdown_enqueue' );
 	}
 
@@ -2478,6 +2487,11 @@ function radio_station_current_show_shortcode( $atts ) {
 
 			// --- enqueue shortcode styles ---
 			radio_station_enqueue_style( 'shortcodes' );
+			
+			// 2.6.7: filter to enqueue= reloader script in current window
+			if ( $atts['dynamic'] ) {
+				$dynamic = apply_filters( 'radio_station_countdown_dynamic', false, 'current-show', $atts, false );
+			}
 
 			return $html;
 		}
@@ -2514,10 +2528,12 @@ function radio_station_current_show_shortcode( $atts ) {
 	if ( $atts['for_time'] ) {
 		$current_shift = radio_station_get_current_show( $atts['for_time'] );
 		$time = radio_station_get_time( 'datetime', $atts['for_time'] );
-		echo '<span style="display:none;">' . "\n";
-			echo 'Current Shift For Time: ' . esc_html( $atts['for_time'] ) . ' : ' . esc_html( $time ) . "\n";
-			echo esc_html( print_r( $current_shift, true ) ) . "\n";
-		echo '</span>' . "\n";
+		if ( RADIO_STATION_DEBUG ) {
+			echo '<span style="display:none;">' . "\n";
+				echo 'Current Shift For Time: ' . esc_html( $atts['for_time'] ) . ' : ' . esc_html( $time ) . "\n";
+				echo esc_html( print_r( $current_shift, true ) ) . "\n";
+			echo '</span>' . "\n";
+		}
 	} else {
 		$current_shift = radio_station_get_current_show();
 	}
@@ -2546,8 +2562,9 @@ function radio_station_current_show_shortcode( $atts ) {
 
 	// --- open current show list ---
 	// 2.5.0: add countdown class for countdown script targeting
+	// 2.5.10: add countdown class for dynamic reloading
 	$classes = array( 'current-show-list', 'on-air-list' );
-	if ( $atts['countdown'] ) {
+	if ( $atts['countdown'] || $atts['dynamic'] ) {
 		$classes[] = 'countdown';
 	}
 	$class_list = implode( ' ', $classes );
@@ -2885,8 +2902,14 @@ function radio_station_current_show_shortcode( $atts ) {
 		}
 
 		// --- countdown timer display ---
-		if ( isset( $current_shift_end ) && $atts['countdown'] ) {
-			$html['countdown'] = '<div class="current-show-countdown rs-countdown"></div>' . "\n";
+		// 2.5.10: add countdown for dynamic reloading
+		if ( isset( $current_shift_end ) && ( $atts['countdown'] || $atts['dynamic'] ) ) {
+			$html['countdown'] = '<div class="current-show-countdown rs-countdown"';
+			// 2.5.10: hide countdown display if disabled but dynamic enabled
+			if ( $atts['dynamic'] && !$atts['countdown'] ) {
+				$html['countdown'] .= ' style="display:none;"';
+			}
+			$html['countdown'] .= '></div>' . "\n";
 		}
 
 		// --- show description ---
@@ -2997,8 +3020,14 @@ function radio_station_current_show_shortcode( $atts ) {
 		// --- countdown timer display ---
 		// 2.3.3.8: add countdown timer div regardless of no current show
 		// (so timer can update when a current show starts)
-		if ( $atts['countdown'] ) {
-		 	$output .= '<li><div class="current-show-countdown rs-countdown"></div></li>' . "\n";
+		// 2.5.10: add countdown for dynamic reloading
+		if ( $atts['countdown'] || $atts['dynamic'] ) {
+		 	$output .= '<li><div class="current-show-countdown rs-countdown"';
+			// 2.5.10: hide countdown if disabled but dynamic enabled
+			if ( $atts['dynamic'] && !$atts['countdown'] ) {
+				$output .= ' style="display:none;"';
+			}
+			$output .= '></div></li>' . "\n";
 		}
 
 	}
@@ -3097,7 +3126,8 @@ function radio_station_current_show() {
 			$js .= "parent.document.getElementById('rs-current-show-" . esc_js( $atts['instance'] ) . "').innerHTML = widget;" . PHP_EOL;
 
 			// --- maybe restart countdowns ---
-			if ( $atts['countdown'] ) {
+			// 2.5.10: also restart when dynamic enabled
+			if ( $atts['countdown'] || $atts['dynamic'] ) {
 				// 2.5.0: replace timeout with interval and function check
 				// $js .= "setTimeout(function() {parent.radio_countdown();}, 2000);" . "\n";
 				$js .= "countdown = setInterval(function() {" . "\n";
@@ -3227,7 +3257,8 @@ function radio_station_upcoming_shows_shortcode( $atts ) {
 	$atts = shortcode_atts( $defaults, $atts, 'upcoming-shows' );
 
 	// 2.3.2: enqueue countdown script earlier
-	if ( $atts['countdown'] ) {
+	// 2.5.10: enqueue when dynamic is enabled
+	if ( $atts['countdown'] || $atts['dynamic'] ) {
 		do_action( 'radio_station_countdown_enqueue' );
 	}
 
@@ -3292,6 +3323,11 @@ function radio_station_upcoming_shows_shortcode( $atts ) {
 			// --- enqueue shortcode styles ---
 			radio_station_enqueue_style( 'shortcodes' );
 
+			// 2.6.7: filter to enqueue reloader script in current window
+			if ( $atts['dynamic'] ) {
+				$dynamic = apply_filters( 'radio_station_countdown_dynamic', false, 'upcoming-shows', $atts, false );
+			}
+
 			// --- filter and return ---
 			$html = apply_filters( 'radio_station_upcoming_shows_shortcode_ajax', $html, $atts, $instance );
 			return $html;
@@ -3346,7 +3382,8 @@ function radio_station_upcoming_shows_shortcode( $atts ) {
 	// --- open upcoming show list ---
 	// 2.5.0: added countdown class for countdown script targeting
 	$classes = array( 'upcoming-shows-list', 'on-air-upcoming-list' );
-	if ( $atts['countdown'] ) {
+	// 2.5.10: also add class when dynamic is enabled
+	if ( $atts['countdown'] || $atts['dynamic'] ) {
 		$classes[] = 'countdown';
 	}
 	$class_list = implode( ' ', $classes );
@@ -3628,8 +3665,14 @@ function radio_station_upcoming_shows_shortcode( $atts ) {
 			}
 
 			// --- set countdown timer ---
-			if ( ( 0 == $i ) && isset( $next_start_time ) && $atts['countdown'] ) {
-				$html['countdown'] = '<div class="upcoming-show-countdown rs-countdown"></div>' . "\n";
+			// 2.5.10: add counter when dynamic is enabled
+			if ( ( 0 == $i ) && isset( $next_start_time ) && ( $atts['countdown'] || $atts['dynamic'] ) ) {
+				$html['countdown'] = '<div class="upcoming-show-countdown rs-countdown"';
+				// 2.5.10: hide countdown if disabled but dynamic enabled
+				if ( $atts['dynamic'] && !$atts['countdown'] ) {
+					$html['countdown'] .= ' style="display:none;"';
+				}
+				$html['countdown'] .= '></div>' . "\n";
 			}
 
 			// --- set show schedule ---
@@ -3780,7 +3823,8 @@ function radio_station_upcoming_shows() {
 			$js .= "parent.document.getElementById('rs-upcoming-shows-" . esc_js( $atts['instance'] ) . "').innerHTML = widget;" . "\n";
 
 			// --- restart countdowns ---
-			if ( $atts['countdown'] ) {
+			// 2.5.10: restart countdown if dynamic is enabled
+			if ( $atts['countdown'] || $atts['dynamic'] ) {
 				// 2.5.0: replace timeout with interval and function check
 				// $js .= "setTimeout(function() {parent.radio_countdown();}, 2000);" . "\n";
 				$js .= "countdown = setInterval(function() {" . "\n";
@@ -3871,7 +3915,8 @@ function radio_station_current_playlist_shortcode( $atts ) {
 	$atts = shortcode_atts( $defaults, $atts, 'current-playlist' );
 
 	// 2.3.2: enqueue countdown script earlier
-	if ( $atts['countdown'] ) {
+	// 2.5.10: enqueue countdown if dynamic is enabled
+	if ( $atts['countdown'] || $atts['dynamic'] ) {
 		do_action( 'radio_station_countdown_enqueue' );
 	}
 
@@ -3935,6 +3980,11 @@ function radio_station_current_playlist_shortcode( $atts ) {
 
 			// --- enqueue shortcode styles ---
 			radio_station_enqueue_style( 'shortcodes' );
+
+			// 2.6.7: filter to enqueue= reloader script in current window
+			if ( $atts['dynamic'] ) {
+				$dynamic = apply_filters( 'radio_station_countdown_dynamic', false, 'current-playlist', $atts, false );
+			}
 
 			// 2.5.0: added filter for shortcode output
 			$html = apply_filters( 'radio_station_current_playlist_shortcode_ajax', $html, $atts, $instance );
@@ -4065,8 +4115,14 @@ function radio_station_current_playlist_shortcode( $atts ) {
 						$html['countdown'] .= '<input type="hidden" class="current-playlist-end" value="' . esc_attr( $shift_end_time ) . '">' . "\n";
 
 						// --- for countdown timer display ---
-						if ( $atts['countdown'] ) {
-							$html['countdown'] .= '<div class="show-playlist-countdown rs-countdown"></div>' . "\n";
+						// 2.5.10: also output if dynamic enabled
+						if ( $atts['countdown'] || $atts['dynamic'] ) {
+							$html['countdown'] .= '<div class="show-playlist-countdown rs-countdown"';
+							// 2.5.10: hide if countdown disabled but dynamic enabled
+							if ( $atts['dynamic'] && !$atts['countdown'] ) {
+								$html['countdown'] .= ' style="display:none;"';
+							}
+							$html['countdown'] .= '></div>' . "\n";
 						}
 
 						// --- for dynamic reloading ---
@@ -4236,7 +4292,8 @@ function radio_station_current_playlist_shortcode( $atts ) {
 
 	// 2.5.0: added wrapper and countdown class for countdown script targeting
 	$classes = array( 'current-playlist show-playlist' );
-	if ( $atts['countdown'] ) {
+	// 2.5.10: also add class when dynamic is enabled
+	if ( $atts['countdown'] || $atts['dynamic'] ) {
 		$classes[] = 'countdown';
 	}
 	$class_list = implode( ' ', $classes );
@@ -4307,7 +4364,8 @@ function radio_station_current_playlist() {
 			$js .= "parent.document.getElementById('rs-current-playlist-" . esc_js( $atts['instance'] ) . "').innerHTML = widget;" . "\n";
 
 			// --- restart countdowns ---
-			if ( $atts['countdown'] ) {
+			// 2,5,10: also restart if dynamic is enabled
+			if ( $atts['countdown'] || $atts['dynamic'] ) {
 				// 2.5.0: replace timeout with interval and function check
 				// $js .= "setTimeout(function() {parent.radio_countdown();}, 2000);" . "\n";
 				$js .= "countdown = setInterval(function() {" . "\n";

@@ -590,7 +590,10 @@ function radio_station_get_show_data_meta( $show, $single = false ) {
 	$thumbnail_id = get_post_meta( $show->ID, '_thumbnail_id', true );
 	if ( $thumbnail_id ) {
 		$thumbnail = wp_get_attachment_image_src( $thumbnail_id, 'thumbnail' );
-		$thumbnail_url = $thumbnail[0];
+		// 2.5.10: handle failure of return value
+		if ( $thumbnail && is_array( $thumbnail ) && isset( $thumbnail[0] ) ) {
+			$thumbnail_url = $thumbnail[0];
+		}
 	}
 
 	// --- create array and return ---
@@ -1040,14 +1043,19 @@ function radio_station_get_show_playlists( $show_id = false, $args = array() ) {
 function radio_station_get_genre( $genre ) {
 
 	// 2.3.3.8: explicitly check for numberic genre term ID
-	$id = absint( $genre );
-	if ( $id < 1 ) {
+	// 2.5.9.10: fix to check with ctype_digit not absint
+	if ( !ctype_digit( $genre ) ) {
 		// $genre = sanitize_title( $genre );
 		$term = get_term_by( 'slug', $genre, RADIO_STATION_GENRES_SLUG );
+		// echo '<span style="display:none;">Genre slug ' . $genre. ' - Genre ' . print_r( $term, true ) . '</span>';
 		if ( !$term ) {
 			$term = get_term_by( 'name', $genre, RADIO_STATION_GENRES_SLUG );
 		}
 	} else {
+		$id = absint( $genre );
+		if ( $id < 1 ) {
+			return false;
+		}
 		$term = get_term_by( 'id', $genre, RADIO_STATION_GENRES_SLUG );
 	}
 	if ( !$term ) {
@@ -1312,7 +1320,10 @@ function radio_station_get_show_avatar_url( $show_id, $size = 'thumbnail' ) {
 		// 2.4.0.6: added show avatar size filter
 		$size = apply_filters( 'radio_station_show_avatar_size', $size );
 		$avatar_src = wp_get_attachment_image_src( $avatar_id, $size );
-		$avatar_url = $avatar_src[0];
+		// 2.5.10: handle failure to get image source
+		if ( $avatar_src && is_array( $avatar_src ) && isset( $avatar_src[0] ) ) {
+			$avatar_url = $avatar_src[0];
+		}
 	}
 
 	// --- filter and return ---
@@ -1357,9 +1368,12 @@ function radio_station_get_show_avatar( $show_id, $size = 'thumbnail', $attr = a
 function radio_station_get_stream_url() {
 	$streaming_url = '';
 	$stream = radio_station_get_setting( 'streaming_url' );
-	if ( RADIO_STATION_DEBUG ) {
-		echo '<span style="display:none;">Stream URL Setting: ' . esc_html( $stream ) . '</span>';
-	}
+	
+	// commented out: this breaks player settings
+	// if ( RADIO_STATION_DEBUG ) {
+		// echo '<span style="display:none;">Stream URL Setting: ' . esc_html( $stream ) . '</span>';
+	// }
+
 	if ( $stream && ( '' != $stream ) ) {
 		$streaming_url = $stream;
 	}
@@ -1378,9 +1392,12 @@ function radio_station_get_fallback_url() {
 	if ( $fallback && ( '' != $fallback ) ) {
 		$fallback_url = $fallback;
 	}
-	if ( RADIO_STATION_DEBUG ) {
-		echo '<span style="display:none;">Fallback URL Setting: ' . esc_html( $fallback_url ) . '</span>';
-	}
+	
+	// commented out: this breaks player settings
+	// if ( RADIO_STATION_DEBUG ) {
+	// 	echo '<span style="display:none;">Fallback URL Setting: ' . esc_html( $fallback_url ) . '</span>';
+	// }
+
 	$fallback_url = apply_filters( 'radio_station_fallback_url', $fallback_url );
 
 	return $fallback_url;
@@ -1878,14 +1895,17 @@ function radio_station_get_language( $lang = false ) {
 
 	// --- get the specified language term ---
 	// 2.3.3.8: explicitly check for numberic language term ID
-	$id = absint( $lang );
-	if ( $id < 1 ) {
+	// 2.5.10: fix to check for numeric digit
+	if ( !ctype_digit( $lang ) ) {
 		$term = get_term_by( 'slug', $lang, RADIO_STATION_LANGUAGES_SLUG );
 		if ( !$term ) {
 			$term = get_term_by( 'name', $lang, RADIO_STATION_LANGUAGES_SLUG );
 		}
 	} else {
-		$term = get_term_by( 'id', $lang, RADIO_STATION_LANGUAGES_SLUG );
+		$id = absint( $lang );
+		if ( $id < 1 ) {
+			$term = get_term_by( 'id', $lang, RADIO_STATION_LANGUAGES_SLUG );
+		}
 	}
 
 	// --- set language from term ---
@@ -2001,7 +2021,8 @@ function radio_station_sanitize_values( $data, $keys ) {
 	// echo 'Sanitize Keys: '; print_r( $keys );
 	// echo 'Sanitize Data: '; print_r( $data );
 	// echo 'Sanitized: '; print_r( $sanitized );
-
+	// 2.5.10: add filter for sanitized values (in case fixes needed)
+	$sanitized = apply_filters( 'radio_station_sanitized_values', $sanitized, $data, $keys );
 	return $sanitized;
 }
 
@@ -2504,3 +2525,56 @@ function radio_station_settings_allowed_html( $allowed, $type, $context ) {
 
 	return $allowed;
 }
+
+// --------------------------
+// Player Widget Allowed HTML
+// --------------------------
+// 2.5.10: added allowed HTML for player widget
+add_filter( 'radio_station_allowed_html', 'radio_station_widget_player_allowed_html', 10, 3 );
+function radio_station_widget_player_allowed_html( $allowed, $type, $context ) {
+
+	if ( ( 'widget' != $type ) || ( 'player' != $context ) ) {
+		return $allowed;
+	}
+
+	// --- link ---
+	$allowed['link'] = array(
+		'rel'         => array(),
+		'href'        => array(),
+	);
+
+	// --- button ---
+	$allowed['button'] = array(
+		'id'          => array(),
+		'class'       => array(),
+		'role'        => array(),
+		'title'       => array(),
+		'onclick'     => array(),
+		'tabindex'    => array(),
+		'aria-label'  => array(),
+		'style'       => array(),
+	);
+
+	// --- input ---
+	$allowed['input'] = array(
+		'id'          => array(),
+		'class'       => array(),
+		'name'        => array(),
+		'value'       => array(),
+		'type'        => array(),
+		'data'        => array(),
+		'placeholder' => array(),
+		'style'       => array(),
+		'checked'     => array(),
+		'onclick'     => array(),
+		'max'         => array(),
+		'min'         => array(),
+		'aria-label'  => array(),
+	);
+
+	// --- styles ---
+	$allowed['style'] = array();
+	
+	return $allowed;
+}
+
