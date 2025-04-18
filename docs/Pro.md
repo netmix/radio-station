@@ -96,7 +96,7 @@ Please note that the following features are *not* available in Radio Station Plu
 
 [Sitewide Bar Player](./Player.md#pro-sitewide-bar-player)
 
-[Responside Bar Display](./Player.md#pro-responsive-bar-display)
+[Responsive Bar Display](./Player.md#pro-responsive-bar-display)
 
 [Continous Player Integration](./Player.md#pro-continuous-player-integration)
 

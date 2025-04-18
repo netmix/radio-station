@@ -157,7 +157,9 @@ function radio_station_get_station_data() {
 	$fallback_format = radio_station_get_setting( 'fallback_format' );
 
 	// --- get station data ---
+	// 2.5.10: add station image URL
 	$station_url = radio_station_get_station_url();
+	$image_url = radio_station_get_station_image_url();
 	$schedule_url = radio_station_get_schedule_url();
 	$language = radio_station_get_language();
 
@@ -175,6 +177,7 @@ function radio_station_get_station_data() {
 	// --- set station data array ---
 	// 2.3.2: added schedule updated timestamp
 	// 2.3.3.9: enabled format and fallback data
+	// 2.5.10: add station image URL
 	$station_data = array(
 		'timezone'        => $timezone,
 		'stream_url'      => $stream_url,
@@ -182,6 +185,7 @@ function radio_station_get_station_data() {
 		'fallback_url'    => $fallback_url,
 		'fallback_format' => $fallback_format,
 		'station_url'     => $station_url,
+		'image_url'       => $image_url,
 		'schedule_url'    => $schedule_url,
 		'language'        => $language['slug'],
 		'timestamp'       => $now,

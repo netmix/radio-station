@@ -104,6 +104,8 @@ The Radio Player Block supports extra theming and color options matching to the 
 
 #### [Pro] Continous Player Integration
 
+Using our purpose-built Teleporter plugin, page transitions enable the audio player instance to remain open in the current window while navigating your website. Please note this means this feature is NOT compatible with other page transition scripts. One notable example, you will need to turn off Elementor page transition animations as these cause a conflict (by setting both before and after animations to None in your Elementor page transition settings.)
+
 Developers should note that the continous player page transitions are implemented by adding click event listeners to `a` link tags. This means that dynamic links - those that do not exist on page load but are added in content later - will need special treatment to preserve continuous playback. Some examples of these include some mobile menus or breadcrumbs that are created by javascript dynamically on hover, and AJAX loaded "more" or filtered content. 
 
 The solution to integrated these dynamic links is to use a filter to allow Teleporter (the page transition plugin) target the classes of the dynamic links. Knowing these claseses to target, Teleporter will then handle them via click event bubbling. Here's an example of how that can be done. (Note the format is just a comma separated list of classes without a `.` prefix:)
@@ -118,14 +120,9 @@ function my_custom_dynamic_link_classes( $classes ) {
 
 Similarly, if there are links that you wish to force to not transition for some reason, you can use the `teleporter_ignore_link_classes` filter in the same way. If you need to use selectors other than classes, you can use the filters `teleporter_dynamic_selectors` and `teleporter_ignore_selectors` to add those respectively also.
 
-
-
 #### [Pro] Smooth Page Transitions
 
-
-
-
-
+Page transitions are implemented by including the Teleporter plugin internally. If you want to access further controls or settings for page transitions you can install the Teleporter plugin separately from the WordPress repository. You can set things like page transition time, page loading bar color as well as dynamic and ignore classes via the Teleporter settings screen. These can also be changed via CSS and filters without needing the plugin, it simply provides an easy interface for changing these settings.
 
 #### [Pro] Extra Bar Color Options
 
@@ -139,7 +136,9 @@ And in addition to the existing Light and Dark button themes, you can also choos
 
 #### [Pro] Playback Autoresume
 
-#### [Pro] Popup Player window
+
+#### [Pro] Popup Player Window
+
 
 #### [Pro] Track Metadata
 

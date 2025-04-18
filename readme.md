@@ -12,9 +12,9 @@ Tags: dj, music, playlist, radio, shows, scheduling, broadcasting
 
 Requires at least: 3.3
 
-Tested up to: 6.7
+Tested up to: 6.8
 
-Stable tag: 2.5.9
+Stable tag: 2.5.10
 
 License: GPLv2 or later
 
