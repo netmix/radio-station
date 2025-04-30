@@ -6,7 +6,7 @@ License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires at least: 3.3
 Tested up to: 6.8
-Stable tag: 2.5.10
+Stable tag: 2.5.11
 
 Radio Station lets you build and manage a Show Schedule for a radio station or Internet broadcaster's WordPress website. 
 
@@ -404,8 +404,13 @@ We recommend you test these on a Staging site (or a development copy of your liv
 
 == Changelog ==
 
+= 2.5.11 =
+* Added: AJAX load of Schedule views for cachebusting
+* Fixed: instance validation for schedule loader shortcode
+* Fixed: mismatched function name in popup player
+
 = 2.5.10 =
-* Updated: Freemius SDK (2.8.0)
+* Updated: Freemius SDK (2.11.0)
 * Updated: reader.php with prefixed reader functions
 * Updated: Plugin Panel (1.3.5) with new reader function
 * Updated: Color Picker Alpha Library (3.0.4)

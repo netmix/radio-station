@@ -725,6 +725,18 @@ $options = array(
 		'section' => 'schedule',
 	),
 
+	// --- Schedule AJAX Load ---
+	// 2.5.10.1: added schedule AJAX load default
+	'schedule_ajax' => array(
+		'type'    => 'checkbox',
+		'label'   => __( 'AJAX Load?', 'radio-station' ),
+		'default' => 'yes',
+		'value'   => 'yes',
+		'helper'  => __( 'Whether to load schedule display via AJAX by default.', 'radio-station' ),
+		'tab'     => 'pages',
+		'section' => 'schedule',
+	),
+
 	// --- [Pro/Plus] Schedule Switcher ---
 	'schedule_switcher' => array(
 		'type'    => 'checkbox',

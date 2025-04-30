@@ -2344,11 +2344,6 @@ function radio_station_sanitize_shortcode_values( $type, $extras = false ) {
 		// 2.5.0: added active_date,
 		$keys = array(
 
-			// --- control display options ---
-			// 'selector' => 'boolean',
-			// 'clock' => 'boolean',
-			// 'timezone' => 'boolean',
-
 			// --- schedule display options ---
 			'view'              => 'text',
 			'days'              => 'text',
@@ -2386,8 +2381,11 @@ function radio_station_sanitize_shortcode_values( $type, $extras = false ) {
 			'previous_weeks'    => 'integer',
 
 			// --- shortcode data ---
+			'widget'			=> 'boolean',
 			'block'             => 'boolean',
-			'instance'          => 'boolean',
+			'ajax'				=> 'boolean',
+			// 2.5.10.1: fix instance type boolean to integer
+			'instance'          => 'integer',
 		);
 
 	}

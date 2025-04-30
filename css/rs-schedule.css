@@ -101,6 +101,11 @@
 	min-width: 80px;
 }
 
+.master-program-schedule .master-program-day {
+    min-width: 125px;
+    max-width: 250px;
+}
+
 .master-program-schedule th.master-program-hour {
 	min-width: 80px;
 }
@@ -364,7 +369,7 @@
 	list-style: none;
 	display: inline-block;
 	margin: 0;
-	padding: 0 10px;
+	padding: 0;
 	font-size: 50px;
 	line-height: 35px;
 	vertical-align: top;
@@ -375,6 +380,10 @@
 	width: 50px;
 	text-align: center;
 	padding-bottom: 15px;
+}
+
+.master-schedule-tabs-arrow-right {
+	margin-left: 5px;
 }
 
 .master-schedule-tabs-loader .master-schedule-tabs-arrow:hover {
@@ -498,7 +507,7 @@
 	border: 1px solid #333333; 
 	background-color: #ffffff;
 	/* border-top: 0; */
-	border-radius: 0 7px 7px 7px;
+	border-radius: 7px;
 }
 
 .master-schedule-tab-panels .master-schedule-tabs-show.before-current {
