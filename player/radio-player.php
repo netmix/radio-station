@@ -1027,13 +1027,14 @@ function radio_player_ajax() {
 	// 2.5.10: set document title with javascript
 	if ( isset( $atts['title'] ) && $atts['title'] && ( '' != $atts['title'] ) ) {
 		$js = "document.title = '" . esc_js( $atts['title'] ) . "';" . "\n";
-		radio_player_add_inline_script( $js );
+		// 2.5.10.1: fix to incorrect function name
+		radio_player_inline_script( $js );
 	}
 
 	// --- open HTML and head ---
+	// 2.5.10: set title with javascript instead to avoid output buffering entirely
 	// 2.5.0: buffer head content to maybe replace window title tag
 	// note: do not remove these span tags, they magically "fix" broken output buffering!?
-	// 2.5.10: set title with javascript instead to avoid output buffering entirely
 	echo '<html><head>' . "\n";
 	// echo '<span></span>';
 	// ob_start();
@@ -1572,7 +1573,7 @@ function radio_player_enqueue_script( $script ) {
 
 	// --- output script tag ---
 	if ( '' != $js ) {
-		radio_player_inline_script( $js, 'after' );
+		radio_player_inline_script( $js );
 	}
 	
 	// --- set specific script as enqueued ---

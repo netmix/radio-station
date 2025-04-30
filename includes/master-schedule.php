@@ -37,6 +37,12 @@ function radio_station_master_schedule( $atts ) {
 	$radio_station_data['schedules']['instances']++;
 	$instances = $radio_station_data['schedules']['instances'];
 
+	// 2.5.10.1: allow specifying instance value for AJAX loading
+	if ( isset( $atts['instance'] ) ) {
+		$instance = $atts['instance'];
+		unset( $atts['instance'] );
+	}
+
 	// --- make attributes backward compatible ---
 	// 2.3.0: convert old list attribute to view
 	if ( !isset( $atts['view'] ) && isset( $atts['list'] ) ) {
@@ -84,6 +90,9 @@ function radio_station_master_schedule( $atts ) {
 	if ( RADIO_STATION_DEBUG ) {
 		echo '<span style="display:none;">Master Schedule Shortcode Attributes: ' . esc_html( print_r( $atts, true ) ) . '</span>';
 	}
+
+	// 2.5.10.1: get default AJAX loading setting
+	$ajax = ( 'yes' == radio_station_get_setting( 'schedule_ajax' ) ) ? 1 : 0;
 
 	// --- get default clock display settings ---
 	$clock = radio_station_get_setting( 'schedule_clock' );
@@ -134,8 +143,11 @@ function radio_station_master_schedule( $atts ) {
 		'show_file'         => 0,
 
 		// --- instance values ---
+		// 2.5.10.1: add AJAX attribute value
+		'ajax'				=> $ajax,
 		'widget'            => 0,
 		'block'             => 0,
+		// 'instance'			=> $instance,
 
 		// --- converted and deprecated ---
 		// 'list'              => 0,
@@ -293,7 +305,8 @@ function radio_station_master_schedule( $atts ) {
 	// 2.3.3.9: added for schedule week change reloading
 	if ( isset( $atts['start_date'] ) && $atts['start_date'] ) {
 		// 2.5.6: use radio_station_get_time instead of date
-		if ( radio_station_get_time( 'Y-m-d', strtotime( $atts['start_date'] ) ) == $atts['start_date'] ) {
+		// 2.5.10.1: revert this change as causing incorrect invalidation
+		if ( date( 'Y-m-d', strtotime( $atts['start_date'] ) ) == $atts['start_date'] ) {
 			$start_date = $atts['start_date'];
 		}
 	}
@@ -322,6 +335,10 @@ function radio_station_master_schedule( $atts ) {
 	// --- schedule display override ---
 	// 2.3.1: add full schedule override filter
 	// 2.3.3.9: add existing controls output to filter
+	// 2.5.10.1: maybe merge instance ID back into atts value
+	if ( isset( $instance ) ) {
+		$atts = array_merge( $atts, array( 'instance' => $instance ) );
+	}
 	$override = apply_filters( 'radio_station_schedule_override', $output, $atts );
 	if ( strstr( $override, '<!-- SCHEDULE OVERRIDE -->' ) ) {
 		$override = str_replace( '<!-- SCHEDULE OVERRIDE -->', '', $override );
@@ -343,12 +360,15 @@ function radio_station_master_schedule( $atts ) {
 	// 2.3.3.9: get and enqueue scripts inline directly
 	if ( 'table' == $atts['view'] ) {
 
-		// 2.5.0: set view instance number
-		if ( !isset( $radio_station_data['schedules']['table'] ) ) {
-			$radio_station_data['schedules']['table'] = -1;
+		// 2.5.10.1: added check for specified instance
+		if ( !isset( $instance ) ) {
+			// 2.5.0: set view instance number
+			if ( !isset( $radio_station_data['schedules']['table'] ) ) {
+				$radio_station_data['schedules']['table'] = -1;
+			}
+			$radio_station_data['schedules']['table']++;
+			$instance = $radio_station_data['schedules']['table'];
 		}
-		$radio_station_data['schedules']['table']++;
-		$instance = $radio_station_data['schedules']['table'];
 		// 2.5.6: fix for missing id definition
 		$id = ( 0 == $instance ) ? '' : '-' . $instance;
 
@@ -375,12 +395,15 @@ function radio_station_master_schedule( $atts ) {
 
 	} elseif ( 'tabs' == $atts['view'] ) {
 
-		// 2.5.0: set view instance number
-		if ( !isset( $radio_station_data['schedules']['tabs'] ) ) {
-			$radio_station_data['schedules']['tabs'] = -1;
+		// 2.5.10.1: added check for specified instance
+		if ( !isset( $instance ) ) {
+			// 2.5.0: set view instance number
+			if ( !isset( $radio_station_data['schedules']['tabs'] ) ) {
+				$radio_station_data['schedules']['tabs'] = -1;
+			}
+			$radio_station_data['schedules']['tabs']++;
+			$instance = $radio_station_data['schedules']['tabs'];
 		}
-		$radio_station_data['schedules']['tabs']++;
-		$instance = $radio_station_data['schedules']['tabs'];
 		// 2.5.6: fix for missing id definition
 		$id = ( 0 == $instance ) ? '' : '-' . $instance;
 
@@ -407,12 +430,15 @@ function radio_station_master_schedule( $atts ) {
 
 	} elseif ( 'list' == $atts['view'] ) {
 
-		// 2.5.0: set view instance number
-		if ( !isset( $radio_station_data['schedules']['list'] ) ) {
-			$radio_station_data['schedules']['list'] = -1;
+		// 2.5.10.1: added check for specified instance
+		if ( !isset( $instance ) ) {
+			// 2.5.0: set view instance number
+			if ( !isset( $radio_station_data['schedules']['list'] ) ) {
+				$radio_station_data['schedules']['list'] = -1;
+			}
+			$radio_station_data['schedules']['list']++;
+			$instance = $radio_station_data['schedules']['list'];
 		}
-		$radio_station_data['schedules']['list']++;
-		$instance = $radio_station_data['schedules']['list'];
 		// 2.5.6: fix for missing id definition
 		$id = ( 0 == $instance ) ? '' : '-' . $instance;
 
@@ -607,7 +633,34 @@ function radio_station_master_schedule_loader_js( $atts ) {
 
 	// --- schedule loader function ---
 	// 2.5.0: added instance ID argument
+	// 2.5.10.1: reload multiviews to match direction change
 	$js = "function radio_load_schedule(instance,direction,view,clear) {
+		/* handle multi-views */
+		if (direction && view) {
+			if (view == 'table') {id = 'master-program-schedule';} else {id = 'master-schedule-'+view;}
+			if (instance > 0) {id += '-'+instance;}
+			container = jQuery('#'+id).closest('.master-schedule');
+			if ((view != 'table') && container.find('.master-program-schedule').length) {
+				i = container.find('.master-program-schedule').attr('id').replace('master-program-schedule','').replace('-','');
+				setTimeout(function(i,direction) {radio_load_schedule(i,direction,'table',false);}, 800);
+			}
+			if ((view != 'tabs') && container.find('.master-schedule-tabs').length) {
+				i = container.find('.master-schedule-tabs').attr('id').replace('master-schedule-tabs','').replace('-','');
+				setTimeout(function(i,direction) {radio_load_schedule(i,direction,'tabs',false);}, 900);
+			}
+			if ((view != 'list') && container.find('.master-schedule-list').length) {
+				i = container.find('.master-schedule-list').attr('id').replace('master-schedule-list','').replace('-','');
+				setTimeout(function(i,direction) {radio_load_schedule(i,direction,'list',false);}, 1000);
+			}
+			if ((view != 'grid') && container.find('.master-schedule-grid').length) {
+				i = container.find('.master-schedule-grid').attr('id').replace('master-schedule-grid','').replace('-','');
+				setTimeout(function(i,direction) {radio_load_schedule(i,direction,'grid',false);}, 1100);
+			}
+			if ((view != 'Calendar') && container.find('.master-schedule-calendar').length) {
+				i = container.find('.master-schedule-calendar').attr('id').replace('master-schedule-calendar','').replace('-','');
+				setTimeout(function(i,direction) {radio_load_schedule(i,direction,'calendar',false);}, 1200);
+			}
+		}
 		if (document.getElementById('schedule-loader-frame')) {
 			view = radio_cookie.get('admin_schedule_view'); radio_load_view(view); return;
 		}
@@ -615,9 +668,9 @@ function radio_station_master_schedule_loader_js( $atts ) {
 		startdate = document.getElementById('schedule-start-date').value;
 		activedate = document.getElementById('schedule-active-date').value;
 		if (!view) {
-			if (( 0 == instance) || ( false === instance)) {id = '';} else {id = '-'+instance;}
+			if ((0 == instance) || (false === instance)) {id = '';} else {id = '-'+instance;}
 			if (jQuery('.master-schedule-view-tab.current-view').length) {
-				view = jQuery('.master-schedule-view-tab.current-view').attr('id').replace('master-schedule-view-tab-','');
+				view = jQuery('.master-schedule-view-tab.current-view').attr('data');
 			} else {
 				if (jQuery('#master-program-schedule'+id).length) {view = 'table';}
 				else if (jQuery('#master-schedule-tabs'+id).length) {view = 'tabs';}
@@ -632,25 +685,74 @@ function radio_station_master_schedule_loader_js( $atts ) {
 		else if (direction == 'previous') {offset = -(7 * 24 * 60 * 60 * 1000);}
 		else if (direction == 'next') {offset = (7 * 24 * 60 * 60 * 1000);}
 		newdate = new Date(new Date(startdate).getTime() + offset).toISOString().substr(0,10);
+		timestamp = Math.floor((new Date()).getTime() / 1000);
 		url = '" . esc_url( $loader_url );
 		// 2.6.0: add args directly to avoid double escaping
-		$ignore_keys = array( 'start_date', 'view' );
+		$ignore_keys = array( 'start_date', 'view', 'ajax' );
 		foreach ( $atts as $key => $value ) {
 			if ( !in_array( $key, $ignore_keys ) ) {
 				$js .= '&' . esc_js( $key ) . '=' . esc_js( $value );
 			}
 		}
-		$js .= "&view='+view+'&instance='+instance;
-		timestamp = Math.floor((new Date()).getTime() / 1000);
-		url += '&timestamp='+timestamp+'&start_date='+newdate+'&active_date='+activedate;
+		$js .= "&view='+view+'&instance='+instance+'&timestamp='+timestamp+'&start_date='+newdate+'&active_date='+activedate;
 		if (startday != '') {url += '&start_day='+startday;}
 		if (clear) {url += '&clear=1';}
 		if (radio.debug) {url += '&rs-debug=1'; console.log('Reload View URL: '+url);}
-		if (document.getElementById('schedule-'+view+'-loader').src != url) {
+		/* if (document.getElementById('schedule-'+view+'-loader').src != url) {
 			document.getElementById('schedule-'+view+'-loader').src = url;
+		} */
+		iframe_id = 'master-schedule-'+view+'-'+instance+'-loader';
+		iframe = document.getElementById(iframe_id);
+		if (iframe) {
+			if (iframe.src == url) {return;}
+			iframe.src = url;
+		} else {
+			iframe = document.createElement('iframe');
+			iframe.id = iframe_id; iframe.src = url; iframe.style.display = 'none';
+			document.getElementsByTagName('head')[0].appendChild(iframe);
 		}
+		if (radio.debug) {console.log('Loading Schedule via Iframe '+iframe_id+' - URL: '+url);}
 	}" . "\n";
 
+	// 2.5.10.1: added multi-schedule reloader
+	$js .= "function radio_load_schedules() {
+		tables = jQuery('.master-program-schedule');
+		tabs = jQuery('.master-schedule-tabs');
+		lists = jQuery('.master-schedule-list');
+		grids = jQuery('.master-schedule-grid');
+		calendars = jQuery('.master-schedule-calendar');
+		if (tables.length) {tables.each(function() {
+			instance = jQuery(this).attr('id').replace('master-program-schedule-','');
+			if (radio.debug) {console.log('Refreshing Table Instance '+instance);}
+			radio_load_schedule(instance,false,'table',true);
+		}); }
+		if (tabs.length) {tabs.each(function() {
+			instance = jQuery(this).attr('id').replace('master-schedule-tabs-','');
+			if (radio.debug) {console.log('Refreshing Tabs Instance '+instance);}
+			radio_load_schedule(instance,false,'tabs',true);
+		}); }
+		if (lists.length) {lists.each(function() {
+			instance = jQuery(this).attr('id').replace('master-schedule-list-','');
+			if (radio.debug) {console.log('Refreshing List Instance '+instance);}
+			radio_load_schedule(instance,false,'list',true);
+		}); }
+		if (grids.length) {grids.each(function() {
+			instance = jQuery(this).attr('id').replace('master-schedule-grid-','');
+			if (radio.debug) {console.log('Refreshing Grid Instance '+instance);}
+			radio_load_schedule(instance,false,'grid',true);
+		}); }
+		if (calendars.length) {calendars.each(function() {				
+			instance = jQuery(this).attr('id').replace('master-schedule-calendar-','');
+			if (radio.debug) {console.log('Refreshing Calendar Instance '+instance);
+			radio_load_schedule(instance,false,'calendar',true);}
+		}); }			
+	}" . "\n";
+
+	// 2.5.10.1: check for AJAX attribute to refresh schedule on pageload
+	if ( isset( $atts['ajax'] ) && $atts['ajax'] ) {
+		$js .= "jQuery(document).ready(function() {radio_load_schedules();}, 500);" . "\n";
+	}
+	
 	// --- filter and return ---
 	$js = apply_filters( 'radio_station_master_schedule_loader_js', $js );
 	return $js;
@@ -670,6 +772,9 @@ function radio_station_ajax_schedule_loader() {
 
 	// 2.5.0: get schedule instance ID
 	$instance = absint( $_REQUEST['instance'] );
+	
+	$active_date = sanitize_text_field( $_REQUEST['active_date'] );
+	$day = strtolower( date( 'l', strtotime( $active_date ) ) );
 
 	// --- sanitize shortcode attributes ---
 	$debug = true;
@@ -678,6 +783,11 @@ function radio_station_ajax_schedule_loader() {
 		echo "Full Request Inputs: " . esc_html( print_r( array_map( 'sanitize_text_field', $_REQUEST ), true ) );
 		echo "Sanitized Master Schedule Shortcode Attributes: " . esc_html( print_r( $atts, true ) );
 	}
+	/* foreach ( array_keys( $_REQUEST ) as $key ) {
+		if ( !isset( $atts[$key] ) ) {
+			echo 'Possible missing key? ' . $key . "\n";
+		}
+	} */
 
 	// --- output schedule contents ---
 	// 2.5.0: remove unused schedule contents wrap
@@ -709,18 +819,19 @@ function radio_station_ajax_schedule_loader() {
 			$schedule_id = 'master-schedule-calendar';
 		}
 
+		// 2.5.0: maybe append instance ID
+		if ( $instance > 0 ) {
+			$schedule_id .= '-' . $instance;
+			// 2.5.10.1: fix to variable typo
+			if ( isset( $panels_id ) ) {
+				$panels_id .= '-' . $instance;
+			}
+		}
+
 		// --- get schedule shortcode output ---
 		$js .= "schedule = document.getElementById('" . esc_attr( $schedule_id ) . "').innerHTML;" . "\n";
 		if ( isset( $panels_id ) ) {
 			$js .= "panels = document.getElementById('" . esc_attr( $panels_id ) . "').innerHTML;" . "\n";
-		}
-
-		// 2.5.0: maybe append instance ID
-		if ( $instance > 0 ) {
-			$schedule_id .= '-' . $instance;
-			if ( isset( $panels_ids ) ) {
-				$panels_id .= ' ' . $instance;
-			}
 		}
 
 		// --- send new schedule to parent window ---
@@ -729,21 +840,23 @@ function radio_station_ajax_schedule_loader() {
 		$js .= "}" . "\n";
 		if ( isset( $panels_id ) ) {
 			$js .= "parent.document.getElementById('" . esc_attr( $panels_id ) . "').innerHTML = panels;" . "\n";
-			// 2.5.0: unset panels to prevent possible multiple view conflict
+			// 2.5.0: unset panels to prevent possible multiple views conflict
 			unset( $panels_id );
 		}
 
 		// --- copy the new start date value to the parent window ---
-		// TODO: get by child class of schedule_id!
+		// TODO: get by child class of schedule_id if multiview?
 		$js .= "start_date = document.getElementById('schedule-start-date').value;" . "\n";
 		$js .= "parent.document.getElementById('schedule-start-date').value = start_date;" . "\n";
+		// $js .= "console.log('New Start Date: '+start_date);" . "\n";
 
 	}
 
 	// --- maybe retrigger view(s) javascript in parent window ---
 	// (uses set interval cycle in case script not yet loaded)
 	$js .= "var genres_highlighted = false;" . "\n";
-	$js .= "schedule_loader = setInterval(function() {" . "\n";
+
+	$js .= "function radio_schedule_init() {" . "\n";
 
 		// --- genre highlighter ---
 		$js .= "if (!genres_highlighted && (typeof parent.radio_genre_highlight == 'function')) {" . "\n";
@@ -752,6 +865,7 @@ function radio_station_ajax_schedule_loader() {
 			$js .= "genres_highlighted = true;" . "\n";
 		$js .= "}" . "\n";
 
+		
 		// 2.5.0: loop views to add individual init scripts
 		foreach ( $views as $view ) {
 
@@ -761,13 +875,16 @@ function radio_station_ajax_schedule_loader() {
 					// 2.5.0: set table state to uninitialized
 					$init_js .= "parent.radio_table_init = false;" . "\n";
 					$init_js .= "parent.radio_table_initialize();" . "\n";
-					$init_js .= "if (parent.radio.debug) {console.log('Table Reinitialized');}" . "\n";
 				$init_js .= "}" . "\n";
 			} elseif ( 'tabs' == $view ) {
 				$init_js .= "if (typeof parent.radio_tabs_initialize == 'function') {" . "\n";
 					$init_js .= "parent.radio_tabs_init = false;" . "\n";
+					$schedule_id = 'master-schedule-tabs';
+					if ( $instance > 0 ) {
+						$schedule_id .= '-' . $instance;
+					}
+					$init_js .= "parent.radio_tabs_active_tab('" . esc_js( $day ) . "','" . esc_js( $schedule_id ) . "');" . "\n";
 					$init_js .= "parent.radio_tabs_initialize();" . "\n";
-					$init_js .= "if (parent.radio.debug) {console.log('Tabs Reinitialized');}" . "\n";
 				$init_js .= "}" . "\n";
 			} elseif ( 'list' == $view ) {
 				$init_js .= "if (typeof parent.radio_list_highlight == 'function') {" . "\n";
@@ -789,8 +906,12 @@ function radio_station_ajax_schedule_loader() {
 		$js .= "/* LOADER PLACEHOLDER */" . "\n";
 
 		$js .= "clearInterval(schedule_loader);" . "\n";
+		// $js .= "console.log('Schedule Reinitialization Complete');" . "\n";
 
-	$js .= "}, 2000);" . "\n";
+	$js .= "}" . "\n";
+
+	// --- loop until fired as complete ---
+	$js .= "schedule_loader = setInterval(radio_schedule_init, 2000);" . "\n";
 
 	// --- filter load script and output ---
 	$js = apply_filters( 'radio_station_master_schedule_load_script', $js, $atts );
@@ -807,7 +928,7 @@ function radio_station_ajax_schedule_loader() {
 // Show Genre Selector
 // -------------------
 // 2.3.3.9: change name from radio_station_master_schedule_selector
-function radio_station_master_schedule_genre_selector( $instances ) {
+function radio_station_master_schedule_genre_selector( $instance ) {
 
 	// --- get genres ---
 	// 2.5.6: add taxonomy to get_terms arguments
@@ -826,7 +947,7 @@ function radio_station_master_schedule_genre_selector( $instances ) {
 	}
 
 	// --- open genre highlighter div ---
-	$id = ( 0 == $instances ) ? '' : '-' . $instances;
+	$id = ( 0 == $instance ) ? '' : '-' . $instance;
 	$html = '<div id="master-genre-list' . esc_attr( $id ) . '" class="master-genre-list">';
 	$html .= '<span class="heading">' . esc_html( __( 'Genres', 'radio-station' ) ) . ': </span>';
 
@@ -837,7 +958,7 @@ function radio_station_master_schedule_genre_selector( $instances ) {
 	foreach ( $genres as $i => $genre ) {
 		$slug = sanitize_title_with_dashes( $genre->name );
 		// 2.5.0: added instance argument to genre highlight function
-		$onclick = "radio_genre_highlight(" . esc_js( $instances ) . ",'" . esc_js( $slug ) . "');";
+		$onclick = "radio_genre_highlight(" . esc_js( $instance ) . ",'" . esc_js( $slug ) . "');";
 		$title = __( 'Click to toggle Highlight of Shows with this Genre.', 'radio-station' );
 		// 2.5.0: remove element ID in favour of class
 		$genre_link = '<a class="genre-highlight genre-highlight-' . esc_attr( $slug ) . '" href="javascript:void(0);" onclick="' . $onclick . '" title="' . esc_attr( $title ) . '">';
@@ -1032,11 +1153,11 @@ function radio_station_master_schedule_table_js() {
 				}
 				if (radio.debug) {console.log('Selected Column: '+selected);}
 
-				totalwidth = jQuery(this).find('.master-program-hour-heading').width();
+				/* totalwidth = jQuery(this).find('.master-program-hour-heading').width(); */
 				jQuery(this).find('.master-program-day, .master-program-hour-row .show-info').removeClass('first-column').removeClass('last-column').hide();
 				jQuery(this).css('width','100%');
 				tablewidth = jQuery(this).width();
-				jQuery(this).css('width','auto');
+				jQuery(this).css('width','auto').css('overflow','visible');
 				columns = 0; firstcolumn = -1; lastcolumn = 7; endtable = false;
 				for (i = selected; i < 7; i++) {
 					if (!endtable && (jQuery(this).find('.master-program-day.day-'+i).length)) {
@@ -1044,7 +1165,8 @@ function radio_station_master_schedule_table_js() {
 						else if (i < 6) {jQuery(this).find('.master-program-day.day-'+i).addClass('last-column');}
 						jQuery(this).find('.master-program-day.day-'+i+', .master-program-hour-row .show-info.day-'+i).show();
 						colwidth = jQuery(this).find('.master-program-day.day-'+i).width();
-						totalwidth = totalwidth + colwidth;
+						/* totalwidth = totalwidth + colwidth; */
+						totalwidth = jQuery(this).width();
 						if (radio.debug) {console.log('('+colwidth+') : '+totalwidth+' / '+tablewidth);}
 						jQuery(this).find('.master-program-day.day-'+i).removeClass('last-column');
 						if (totalwidth > tablewidth) {
@@ -1057,9 +1179,9 @@ function radio_station_master_schedule_table_js() {
 							lastcolumn = i; columns++;
 						}
 					}
-
 				}
 				if (lastcolumn < 6) {jQuery(this).find('.master-program-day.day-'+lastcolumn).addClass('last-column');}
+				jQuery(this).css('overflow','');
 
 				if (leftright == 'right') {
 					for (i = (selected - 1); i > -1; i--) {
@@ -1175,15 +1297,15 @@ function radio_station_master_schedule_tabs_js() {
 	/* Set Day Tab on Load */
 	function radio_tabs_active_tab(day,scheduleid) {
 		if (radio_tabs_init) {return;}
-		if (!jQuery('.master-schedule-tabs').length) {return;}
-		jQuery(this).find('.master-schedule-tabs-day').removeClass('active-day-tab');
-		jQuery(this).find('.master-schedule-tabs-panel').removeClass('active-day-panel');
-		if (!day) {
-			jQuery('#'+scheduleid).find('.master-schedule-tabs-day').first().addClass('active-day-tab');
-			jQuery('#'+scheduleid).find('.master-schedule-tabs-panel').first().addClass('active-day-panel');
+		if (day) {
+			jQuery('#'+scheduleid+' .master-schedule-tabs-day').removeClass('active-day-tab');
+			jQuery('#'+scheduleid+' .master-schedule-tabs-day-'+day).addClass('active-day-tab');
+			panelid = scheduleid.replace('-tabs','-tab-panels');
+			jQuery('#'+panelid+' .master-schedule-tabs-panel').removeClass('active-day-panel');
+			jQuery('#'+panelid+' .master-schedule-tabs-panel-'+day).addClass('active-day-panel');
 		} else {
-			jQuery('#'+scheduleid).find('.master-schedule-tabs-day-'+day).addClass('active-day-tab');
-			jQuery('#'+scheduleid).find('.master-schedule-tabs-panel-'+day).addClass('active-day-panel');
+			jQuery('#'+scheduleid+' .master-schedule-tabs-day').first().addClass('active-day-tab');
+			jQuery('#'+scheduleid+' .master-schedule-tabs-panel').first().addClass('active-day-panel');
 		}
 		radio_tabs_init = true;
 	}
@@ -1281,6 +1403,7 @@ function radio_station_master_schedule_tabs_js() {
 				totalwidth = 0; tabs = 0; firsttab = -1; lasttab = 7; endtabs = false;
 				if (jQuery(this).find('.master-schedule-tabs-loader-left').length) {totalwidth = totalwidth + jQuery(this).find('.master-schedule-tabs-loader-left').width();}
 				if (jQuery(this).find('.master-schedule-tabs-loader-right').length) {totalwidth = totalwidth + jQuery(this).find('.master-schedule-tabs-loader-right').width();}
+				if (radio.debug) {console.log('Tabs Start Width: '+totalwidth);}
 				
 				for (i = selected; i < 7; i++) {
 					if (!endtabs && (jQuery(this).find('.master-schedule-tabs-day.day-'+i).length)) {
@@ -1289,7 +1412,15 @@ function radio_station_master_schedule_tabs_js() {
 						tabwidth = jQuery(this).find('.master-schedule-tabs-day.day-'+i).show().width();
 						mleft = parseInt(jQuery(this).find('.master-schedule-tabs-day.day-'+i).css('margin-left').replace('px',''));
 						mright = parseInt(jQuery(this).find('.master-schedule-tabs-day.day-'+i).css('margin-right').replace('px',''));
-						totalwidth = totalwidth + tabwidth + mleft + mright;
+						/* totalwidth = totalwidth + tabwidth + mleft + mright; */
+						totalwidth = 0;
+						jQuery(this).find('li').each(function() {
+							if (jQuery(this).is(':visible')) {
+								totalwidth += jQuery(this).width();
+								totalwidth += parseInt(jQuery(this).css('margin-left').replace('px',''));
+								totalwidth += parseInt(jQuery(this).css('margin-right').replace('px',''));
+							}
+						});
 						if (radio.debug) {console.log(tabwidth+' - ('+mleft+'/'+mright+') - '+totalwidth+' / '+tabswidth);}
 						if (totalwidth > tabswidth) {
 							if (radio.debug) {console.log('Hiding Tab '+i);}
