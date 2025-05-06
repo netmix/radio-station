@@ -4,12 +4,12 @@
 (() => {
 
 	const rs_el = window.wp.element.createElement;
+	const rs__ = window.wp.i18n.__;
 	const { serverSideRender: ServerSideRender } = window.wp;
 	const { registerBlockType } = window.wp.blocks;
 	const { InspectorControls } = window.wp.blockEditor;
 	const { Fragment } = window.wp.element;
 	const { BaseControl, TextControl, SelectControl, RadioControl, RangeControl, ToggleControl, Panel, PanelBody, PanelRow } = window.wp.components;
-	const { rs__ } = window.wp.i18n;
 
 	registerBlockType( 'radio-station/clock', {
 
@@ -42,7 +42,7 @@
 				rs_el( Fragment, {},
 					rs_el( ServerSideRender, { block: 'radio-station/clock', className: 'radio-clock-block', attributes: atts } ),
 					rs_el( InspectorControls, {},
-						el ( Panel, {},
+						rs_el( Panel, {},
 							rs_el( PanelBody, { title: rs__( 'Clock Display Options', 'radio-station' ), className: 'radio-block-controls', initialOpen: true },
 								/* Time Display Format */
 								rs_el( PanelRow, {},

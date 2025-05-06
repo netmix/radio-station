@@ -25,21 +25,21 @@ const { Icon } = wp.components;
 					/* --- Schedule Views --- */
 					schedule = true;
 					if ( !block.attributes.pro ) {
-						if ( block.attributes.view == 'table' ) {console.log('Table View Schedule Found'); s_table = true;}
-						else if ( block.attributes.view == 'tabs' ) {console.log('Tab View Schedule Found'); s_tabs = true;}
-						else if ( block.attributes.view == 'list' ) {console.log('List View Schedule Found'); s_list = true;}
-						else if ( block.attributes.view == 'grid' ) {console.log('Grid View Schedule Found'); s_grid = true;}
-						else if ( block.attributes.view == 'calendar' ) {console.log('Calendar View Schedule Found'); s_calendar = true;}
+						if ( block.attributes.view == 'table' ) {s_table = true;}
+						else if ( block.attributes.view == 'tabs' ) {s_tabs = true;}
+						else if ( block.attributes.view == 'list' ) {s_list = true;}
+						else if ( block.attributes.view == 'grid' ) {s_grid = true;}
+						else if ( block.attributes.view == 'calendar' ) {s_calendar = true;}
 					}
 					
 					/* --- [Pro] Multiple Views --- */
 					if ( block.attributes.pro ) {
 						s_multi = true;
-						if ( block.attributes.views.includes( 'table' ) ) {console.log('Table View Schedule Found'); s_table = true;}
-						if ( block.attributes.views.includes( 'tabs' ) ) {console.log('Tab View Schedule Found'); s_tabs = true;}
-						if ( block.attributes.views.includes( 'grid' ) ) {console.log('Grid View Schedule Found'); s_grid = true;}
-						if ( block.attributes.views.includes( 'calendar' ) ) {console.log('Calendar View Schedule Found'); s_calendar = true;}
-						if ( block.attributes.views.includes( 'list' ) ) {console.log('List View Schedule Found'); s_list = true;}
+						if ( block.attributes.views.includes( 'table' ) ) {s_table = true;}
+						if ( block.attributes.views.includes( 'tabs' ) ) {s_tabs = true;}
+						if ( block.attributes.views.includes( 'grid' ) ) {s_grid = true;}
+						if ( block.attributes.views.includes( 'calendar' ) ) {s_calendar = true;}
+						if ( block.attributes.views.includes( 'list' ) ) {s_list = true;}
 					}
 
 				} else if ( block.name == 'radio-station/player' ) {

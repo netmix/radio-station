@@ -5,13 +5,13 @@
 
 	/* --- Import Modules/Components --- */
 	const rs_el = window.wp.element.createElement;
+	const rs__ = window.wp.i18n.__;
 	const { serverSideRender: ServerSideRender } = window.wp;
 	const { registerBlockType } = window.wp.blocks;
 	const { getBlockType } = window.wp.blocks;
 	const { InspectorControls } = window.wp.blockEditor;
 	const { Fragment } = window.wp.element;
 	const { BaseControl, TextControl, SelectControl, RadioControl, RangeControl, ToggleControl, ColorPicker, Dropdown, Button, Panel, PanelBody, PanelRow } = window.wp.components;
-	const { __ } = window.wp.i18n;
 	
 	/* --- Register Block --- */
 	if ( !getBlockType('radio-station/player' ) ) {
@@ -279,7 +279,7 @@
 												),
 												renderToggle: (args) => (
 													rs_el( 'div', {className: 'color-dropdown-buttons'},
-														el ( Button, {
+														rs_el( Button, {
 															className: 'color-dropdown-text_color',
 															onClick: args.onToggle,
 															variant: 'secondary',
@@ -327,7 +327,7 @@
 												),
 												renderToggle: (args) => (
 													rs_el( 'div', {className: 'color-dropdown-buttons'},
-														el ( Button, {
+														rs_el( Button, {
 															className: 'color-dropdown-background_color',
 															onClick: args.onToggle,
 															variant: 'secondary',
@@ -375,7 +375,7 @@
 												),
 												renderToggle: (args) => (
 													rs_el( 'div', {className: 'color-dropdown-buttons'},
-														el ( Button, {
+														rs_el( Button, {
 															className: 'color-dropdown-playing_color',
 															onClick: args.onToggle,
 															variant: 'secondary',
@@ -423,7 +423,7 @@
 												),
 												renderToggle: (args) => (
 													rs_el( 'div', {className: 'color-dropdown-buttons'},
-														el ( Button, {
+														rs_el( Button, {
 															className: 'color-dropdown-buttons_color',
 															onClick: args.onToggle,
 															variant: 'secondary',
@@ -471,7 +471,7 @@
 												),
 												renderToggle: (args) => (
 													rs_el( 'div', {className: 'color-dropdown-buttons'},
-														el ( Button, {
+														rs_el( Button, {
 															className: 'color-dropdown-track_color',
 															onClick: args.onToggle,
 															variant: 'secondary',
@@ -519,7 +519,7 @@
 												),
 												renderToggle: (args) => (
 													rs_el( 'div', {className: 'color-dropdown-buttons'},
-														el ( Button, {
+														rs_el( Button, {
 															className: 'color-dropdown-thumb_color',
 															onClick: args.onToggle,
 															variant: 'secondary',
