@@ -343,6 +343,10 @@ function radio_station_block_editor_assets() {
 	$version = filemtime( $script_path );
 	wp_enqueue_script( 'radio-blockedit-js', $script_url, $deps, $version, true );
 
+	// --- 2.5.12: init radio player settings in editor
+	$js = radio_player_get_player_settings();
+	wp_add_inline_script( 'radio-blockedit-js', $js, 'before' );
+
 	// --- enqueue shortcode styles for blocks ---
 	// $deps = array( 'wp-edit-blocks' );
 	$stylesheets = array( 'shortcodes', 'schedule' ); // 'block-editor', 'blocks'
@@ -418,6 +422,8 @@ function radio_station_block_script() {
 	} elseif ( 'countdown' == $handle ) {
 		$js .= file_get_contents( RADIO_STATION_DIR . '/js/radio-station-countdown.js' );
 	} elseif ( 'player' == $handle ) {
+		// 2.5.12: prepend player settings to block loading
+		$js .= radio_player_get_player_settings();
 		$js .= file_get_contents( RADIO_STATION_DIR . '/player/js/radio-player.js' );
 	} elseif ( 'schedule-table' == $handle ) {
 		$js .= radio_station_master_schedule_table_js();

@@ -1778,10 +1778,10 @@ function radio_player_get_player_settings( $echo = false ) {
 
 	global $radio_player;
 	
-	if ( isset( $radio_player['localized-script'] ) ) {
+	/* if ( isset( $radio_player['localized-script'] ) ) {
 		return '';
 	}
-	$radio_player['localized-script'] = true;
+	$radio_player['localized-script'] = true; */
 	
 	$js = '';
 
@@ -2076,13 +2076,13 @@ function radio_player_get_player_settings( $echo = false ) {
 	}, 1000);" . "\n";
 
 	// --- periodic save to user meta ---
-	echo "rp_save_interval = radio_player.settings.saveinterval * 1000;
+	echo "radio_player_save_interval = radio_player.settings.saveinterval * 1000;
 	var radio_player_state_saver = setInterval(function() {
 		if (typeof radio_player_data.state != 'undefined') {
 			if (!radio_player_data.state.loggedin) {clearInterval(radio_player_state_saver); return;}
 			radio_player_save_user_state();
 		}
-	}, rp_save_interval);" . "\n";
+	}, radio_player_save_interval);" . "\n";
 
 	// 2.5.7: maybe return output buffer if not echoing
 	if ( !$echo ) {

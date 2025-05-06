@@ -4,12 +4,12 @@
 (() => {
 
 	const rs_el = window.wp.element.createElement;
+	const rs__ = window.wp.i18n.__;
 	const { serverSideRender: ServerSideRender } = window.wp;
 	const { registerBlockType } = window.wp.blocks;
 	const { InspectorControls } = window.wp.blockEditor;
 	const { Fragment } = window.wp.element;
 	const { BaseControl, TextControl, SelectControl, RadioControl, RangeControl, ToggleControl, Panel, PanelBody, PanelRow } = window.wp.components;
-	const { rs__ } = window.wp.i18n;
 
 	archive_options = [
 		{ label: rs__( 'Shows', 'radio-station' ), value: 'shows' },
