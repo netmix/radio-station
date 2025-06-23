@@ -278,7 +278,11 @@ function radio_player_output( $args = array(), $echo = false ) {
 	if ( RADIO_PLAYER_DEBUG ) {
 		echo '<span style="display:none;">Parsed Radio Player Output Arguments: ' . esc_html( print_r( $args, true ) ) . '</span>';
 	}
-		
+
+	// --- set allowed tags for KSES ---
+	// 2.5.13: added for output filtering
+	$allowed = function_exists( 'radio_station_allowed_html' ) ? radio_station_allowed_html( 'widget', 'player' ) : 'post';
+
 	// --- set instanced container IDs ---
 	$player_id = 'radio_player_' . $instance;
 	$container_id = 'radio_container_' . $instance;
@@ -366,27 +370,27 @@ function radio_player_output( $args = array(), $echo = false ) {
 		$html['station'] .= '	<div class="rp-station-text">' . "\n";
 
 			// --- station title ---
-			$station_text_html = '		<div class="rp-station-title" aria-label="' . esc_attr( __( 'Station Name', 'radio-station' ) ) . '">';
 			if ( ( '0' != (string)$args['title'] ) && ( 0 !== $args['title'] ) && ( '' != $args['title'] ) ) {
-				$station_text_html .= esc_html( $args['title'] );
+				$title_display .= esc_html( $args['title'] );
 			}
-			$station_text_html .= '		</div>' . "\n";
+			$title_display = apply_filters( 'radio_player_station_display', $title_display, $args, $instance );
+			$station_text_html .= '<div class="rp-station-title" aria-label="' . esc_attr( __( 'Station Name', 'radio-station' ) ) . '">' . wp_kses( $title_display, $allowed ) . '</div>' . "\n";
 
 			// --- station timezone / location / frequency ---
 			// 2.5.0: add filters for timezone / frequency / location display
 			// TODO: add timezone / frequency / location attributes ?
 			$timezone_display = isset( $args['timezone'] ) ? $args['timezone'] : '';
 			$timezone_display = apply_filters( 'radio_player_timezone_display', $timezone_display, $args, $instance );
-			$station_text_html .= '<div class="rp-station-timezone">' . esc_html( $timezone_display ) . '</div>' . "\n";
+			$station_text_html .= '<div class="rp-station-timezone">' . wp_kses( $timezone_display, $allowed ) . '</div>' . "\n";
 
 			$frequency_display = isset( $args['frequency'] ) ? $args['frequency'] : '';
 			$frequency_display = apply_filters( 'radio_player_frequency_display', $frequency_display, $args, $instance );
-			$station_text_html .= '<div class="rp-station-frequency"></div>' . "\n";
+			$station_text_html .= '<div class="rp-station-frequency">' . wp_kses( $frequency_display, $allowed ) . '</div>' . "\n";
 
 			// 2.5.0: fix to mismatched location variable and class
 			$location_display = isset( $args['location'] ) ? $args['location'] : '';
 			$location_display = apply_filters( 'radio_player_location_display', $location_display, $args, $instance );
-			$station_text_html .= '<div class="rp-station-location"></div>' . "\n";
+			$station_text_html .= '<div class="rp-station-location">' . wp_kses( $location_display, $allowed ) . '</div>' . "\n";
 			
 			$html['station'] .= $station_text_html;
 
@@ -579,9 +583,9 @@ function radio_player_output( $args = array(), $echo = false ) {
 	}
 
 	// 2.5.10: added direct output option
-	// note: wp_kses_post will disable switcher control in popup/ajax call
+	// 2.5.13: use wp_kses not wp_kses_post
 	if ( $echo ) {
-		echo wp_kses_post( $player );
+		echo wp_kses( $player, $allowed );
 	}
 	
 	return $player;
@@ -2053,12 +2057,18 @@ function radio_player_get_player_settings( $echo = false ) {
 		// 2.5.7: set currently playing data only if script supported
 		$set_data = false;
 		foreach ( $data as $key => $value ) {
-			if ( ( 'script' == $key ) && in_array( $value, array( 'jplayer', 'amplitude' ) ) ) {
+			if ( ( 'script' == $key ) && in_array( $value, array( 'jplayer', 'amplitude', 'howler' ) ) ) {
 				$set_data = true;
 			}
 		}
 		if ( $set_data ) {
 			foreach ( $data as $key => $value ) {
+				// TODO: attempt auto-fix for secure https stream?
+				/* if ( ( 'url' == $key ) || ( 'fallback' == $key ) ) {
+					if ( is_ssl() && strstr( $value, 'http://' ) ) {
+						$value = str_replace( 'http://', 'https://', $value );
+					}
+				} */
 				echo "radio_player_data.state.data['" . esc_js( $key ) . "'] = '" . esc_js( $value ) . "';" . "\n";
 			}
 		}

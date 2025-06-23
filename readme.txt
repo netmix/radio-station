@@ -6,7 +6,7 @@ License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires at least: 3.3
 Tested up to: 6.8.1
-Stable tag: 2.5.12
+Stable tag: 2.5.13
 
 Radio Station lets you build and manage a Show Schedule for a radio station or Internet broadcaster's WordPress website. 
 
@@ -403,6 +403,11 @@ We recommend you test these on a Staging site (or a development copy of your liv
 8. Show Conflict Display
 
 == Changelog ==
+
+= 2.5.13 =
+* Updated: Freemius SDK (2.12.0)
+* Fixed: load text domain too early notice
+* Fixed: added nonce checks to offer dismissals
 
 = 2.5.12 =
 * Updated: Block translation and element functions
