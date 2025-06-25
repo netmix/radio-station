@@ -2570,6 +2570,19 @@ function radio_station_widget_player_allowed_html( $allowed, $type, $context ) {
 		'aria-label'  => array(),
 	);
 
+	// --- select ---
+	// 2.5.13: add select tag
+	$allowed['select'] = array(
+		'id'          => array(),
+		'class'       => array(),
+		'name'        => array(),
+		'value'       => array(),
+		'type'        => array(),
+		'multiselect' => array(),
+		'style'       => array(),
+		'onchange'    => array(),
+	);
+
 	// --- styles ---
 	$allowed['style'] = array();
 	

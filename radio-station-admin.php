@@ -1310,8 +1310,12 @@ function radio_station_launch_offer_notice( $rspage = false ) {
 // 2.3.1: added free directory listing offer content
 function radio_station_listing_offer_content( $dismissable = true ) {
 
-	$dismiss_url = admin_url( 'admin-ajax.php?action=radio_station_listing_offer_dismiss' );
+	// 2.5.13: add nonce to dismiss action
+	$nonce = wp_create_nonce( 'offer_dismiss' );
+	$dismiss_url = add_query_arg( 'action', 'radio_station_listing_offer_dismiss', admin_url( 'admin-ajax.php' ) );
+	$dismiss_url = add_query_arg( '_wpnonce', $nonce, $dismiss_url );
 	$accept_dismiss_url = add_query_arg( 'accepted', '1', $dismiss_url );
+	
 	echo '<ul style="list-style:none;">' . "\n";
 
 		// --- directory logo image ---
@@ -1385,7 +1389,10 @@ function radio_station_listing_offer_content( $dismissable = true ) {
 // 2.3.3.9: added for Pro launch discount
 function radio_station_launch_offer_content( $dismissable = true, $prelaunch = false ) {
 
-	$dismiss_url = admin_url( 'admin-ajax.php?action=radio_station_launch_offer_dismiss' );
+	// 2.5.13: added offer dismiss nonce
+	$nonce = wp_create_nonce( 'offer_dismiss' );
+	$dismiss_url = add_query_arg( 'action', 'radio_station_launch_offer_dismiss', admin_url( 'admin-ajax.php' ) );
+	$dismiss_url = add_query_arg( '_wpnonce', $nonce, $dismiss_url );
 	$accept_dismiss_url = add_query_arg( 'accepted', '1', $dismiss_url );
 	echo '<ul style="list-style:none;">' . PHP_EOL;
 
@@ -1479,14 +1486,21 @@ function radio_station_listing_offer_dismiss() {
 		exit;
 	}
 
-	// --- set option to dismissed ---
-	update_option( 'radio_station_listing_offer_dismissed', true );
-	if ( isset( $_REQUEST['accept'] ) && ( '1' === sanitize_text_field( $_REQUEST['accept'] ) ) ) {
-		update_option( 'radio_station_listing_offer_accepted', true );
-	}
+	// 2.5.13: added nonce check
+	$nonce = sanitize_text_field( $_REQUEST['_wpnonce'] );
+	$checknonce = wp_verify_nonce( $nonce, 'offer_dismiss' );
+	if ( $checknonce ) {
 
-	// --- hide the announcement in parent frame ---
-	echo "<script>parent.document.getElementById('radio-station-listing-offer-notice').style.display = 'none';</script>" . "\n";
+		// --- set option to dismissed ---
+		update_option( 'radio_station_listing_offer_dismissed', true );
+		if ( isset( $_REQUEST['accept'] ) && ( '1' === sanitize_text_field( $_REQUEST['accept'] ) ) ) {
+			update_option( 'radio_station_listing_offer_accepted', true );
+		}
+
+		// --- hide the announcement in parent frame ---
+		echo "<script>parent.document.getElementById('radio-station-listing-offer-notice').style.display = 'none';</script>" . "\n";
+		
+	}
 	exit;
 }
 
@@ -1502,31 +1516,38 @@ function radio_station_launch_offer_dismiss() {
 		exit;
 	}
 
-	// --- get current user ID ---
-	$user_id = get_current_user_id();
+	// 2.5.13: added nonce check
+	$nonce = sanitize_text_field( $_REQUEST['_wpnonce'] );
+	$checknonce = wp_verify_nonce( $nonce, 'offer_dismiss' );
+	if ( $checknonce ) {
 
-	// --- set option to dismissed ---
-	$user_ids = get_option( 'radio_station_launch_offer_dismissed' );
-	if ( !$user_ids || !is_array( $user_ids ) ) {
-		$user_ids = array( $user_id );
-	} elseif ( !in_array( $user_id, $user_ids ) ) {
-		$user_ids[] = $user_id;
-	}
-	update_option( 'radio_station_launch_offer_dismissed', $user_ids );
+		// --- get current user ID ---
+		$user_id = get_current_user_id();
 
-	// --- maybe set option for accepted ---
-	if ( isset( $_REQUEST['accept'] ) && ( '1' === sanitize_text_field( $_REQUEST['accepted'] ) ) ) {
-		$user_ids = get_option( 'radio_station_launch_offer_accepted' );
+		// --- set option to dismissed ---
+		$user_ids = get_option( 'radio_station_launch_offer_dismissed' );
 		if ( !$user_ids || !is_array( $user_ids ) ) {
 			$user_ids = array( $user_id );
 		} elseif ( !in_array( $user_id, $user_ids ) ) {
 			$user_ids[] = $user_id;
 		}
-		update_option( 'radio_station_launch_offer_accepted', $user_ids );
+		update_option( 'radio_station_launch_offer_dismissed', $user_ids );
+
+		// --- maybe set option for accepted ---
+		if ( isset( $_REQUEST['accept'] ) && ( '1' === sanitize_text_field( $_REQUEST['accepted'] ) ) ) {
+			$user_ids = get_option( 'radio_station_launch_offer_accepted' );
+			if ( !$user_ids || !is_array( $user_ids ) ) {
+				$user_ids = array( $user_id );
+			} elseif ( !in_array( $user_id, $user_ids ) ) {
+				$user_ids[] = $user_id;
+			}
+			update_option( 'radio_station_launch_offer_accepted', $user_ids );
+		}
+
+		// --- hide the announcement in parent frame ---
+		echo "<script>parent.document.getElementById('radio-station-launch-offer-notice').style.display = 'none';</script>" . "\n";
 	}
 
-	// --- hide the announcement in parent frame ---
-	echo "<script>parent.document.getElementById('radio-station-launch-offer-notice').style.display = 'none';</script>" . "\n";
 	exit;
 }
 

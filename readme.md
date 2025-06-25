@@ -14,7 +14,7 @@ Requires at least: 3.3
 
 Tested up to: 6.8.1
 
-Stable tag: 2.5.12
+Stable tag: 2.5.13
 
 License: GPLv2 or later
 
