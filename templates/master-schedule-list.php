@@ -3,7 +3,7 @@
  * Template for master schedule shortcode list style.
  */
 
-echo '<span style="display:none;">LIST ATTS: ' . print_r( $atts, true ) . '</span>';
+// echo '<span style="display:none;">LIST ATTS: ' . print_r( $atts, true ) . '</span>';
 
 // --- get all the required info ---
 $hours = radio_station_get_hours();
@@ -340,7 +340,6 @@ foreach ( $weekdays as $weekday ) {
 							}
 						}
 					}
-					echo '<span style="display:none;">' . $show_hosts . '</span>';
 
 					// 2.3.3.5: fix to incorrect context value (tabs)
 					$show_hosts = apply_filters( 'radio_station_schedule_show_hosts', $show_hosts, $show_id, 'list' );

@@ -174,13 +174,13 @@ function radio_player_set_debug_mode() {
 		return;
 	}
 	$debug = false;
+	if ( function_exists( 'radio_station_get_setting' ) ) {
+		$debug = radio_station_get_setting( 'player_debug' );
+	} 
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 	if ( isset( $_REQUEST['player-debug'] ) && ( '1' === sanitize_text_field( wp_unslash( $_REQUEST['player-debug'] ) ) ) ) {
 		$debug = true;
 	}
-	if ( function_exists( 'radio_station_get_setting' ) ) {
-		$debug = radio_station_get_setting( 'player_debug' );
-	} 
 	if ( function_exists( 'apply_filters' ) ) {
 		$debug = apply_filters( 'radio_station_player_debug', $debug );
 		$debug = apply_filters( 'radio_player_debug', $debug );
@@ -370,6 +370,7 @@ function radio_player_output( $args = array(), $echo = false ) {
 		$html['station'] .= '	<div class="rp-station-text">' . "\n";
 
 			// --- station title ---
+			$title_display = '';
 			if ( ( '0' != (string)$args['title'] ) && ( 0 !== $args['title'] ) && ( '' != $args['title'] ) ) {
 				$title_display .= esc_html( $args['title'] );
 			}
@@ -1898,11 +1899,12 @@ function radio_player_get_player_settings( $echo = false ) {
 
 	// --- set radio player settings ---
 	// 2.5.7: disable swf fallback support
+	// 2.5.13: set swf_path to empty string to prevent jplayer error
 	echo "player_settings = {";
 		echo "'ajaxurl': '" . esc_url( $admin_ajax ) . "', ";
 		echo "'saveinterval':" . esc_js( $save_interval ) . ", ";
 		// echo "'swf_path': '" . esc_url( $swf_path ) . "', ";
-		echo "'swf_path': false, ";
+		echo "'swf_path': '', ";
 		echo "'script': '" . esc_js( $player_script ). "', ";
 		echo "'title': '" . esc_js( $player_title ) . "', ";
 		echo "'image': '" . esc_url( $player_image ) . "', ";
@@ -1985,9 +1987,9 @@ function radio_player_get_player_settings( $echo = false ) {
 	// [Media Elements] Audio: mp3, wma, wav +Video: mp4, ogg, webm, wmv
 	// 2.5.7: disable Howler format list
 	echo "formats = {";
-		// echo "'howler': ['mp3','opus','ogg','oga','wav','aac','m4a','mp4','webm','weba','flac'], ";
-		echo "'jplayer': ['mp3','m4a','webm','oga','rtmpa','wav','flac'], ";
 		echo "'amplitude': ['mp3','aac'], ";
+		echo "'jplayer': ['mp3','m4a','webm','oga','rtmpa','wav','flac'], ";
+		echo "'howler': ['mp3','opus','ogg','oga','wav','aac','m4a','mp4','webm','weba','flac'], ";
 		// $js .= "'mediaelements': ['mp3','wma','wav'], ";
 	echo "}" . "\n";
 
@@ -2063,7 +2065,7 @@ function radio_player_get_player_settings( $echo = false ) {
 		}
 		if ( $set_data ) {
 			foreach ( $data as $key => $value ) {
-				// TODO: attempt auto-fix for secure https stream?
+				// TODO: attempt auto-fix for secure https stream ?
 				/* if ( ( 'url' == $key ) || ( 'fallback' == $key ) ) {
 					if ( is_ssl() && strstr( $value, 'http://' ) ) {
 						$value = str_replace( 'http://', 'https://', $value );

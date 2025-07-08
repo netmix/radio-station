@@ -3996,10 +3996,12 @@ function radio_station_current_playlist_shortcode( $atts ) {
 	if ( $atts['for_time'] ) {
 		$playlist = radio_station_get_now_playing( $atts['for_time'] );
 		$time = radio_station_get_time( 'datetime', $atts['for_time'] );
-		echo '<span style="display:none;">';
-			echo 'Current Playlist For Time: ' . esc_html( $atts['for_time'] ) . ' : ' . esc_html( $time ) . "\n";;
-			echo esc_html( print_r( $playlist, true ) );
-		echo '</span>';
+		if ( RADIO_STATION_DEBUG ) {
+			echo '<span style="display:none;">';
+				echo 'Current Playlist For Time: ' . esc_html( $atts['for_time'] ) . ' : ' . esc_html( $time ) . "\n";;
+				echo esc_html( print_r( $playlist, true ) );
+			echo '</span>';
+		}
 	} else {
 		$playlist = radio_station_get_now_playing();
 	}
