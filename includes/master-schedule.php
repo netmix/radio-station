@@ -888,11 +888,12 @@ function radio_station_ajax_schedule_loader() {
 			} elseif ( 'tabs' == $view ) {
 				$init_js .= "if (typeof parent.radio_tabs_initialize == 'function') {" . "\n";
 					$init_js .= "parent.radio_tabs_init = false;" . "\n";
-					$schedule_id = 'master-schedule-tabs';
-					if ( $instance > 0 ) {
-						$schedule_id .= '-' . $instance;
-					}
-					$init_js .= "parent.radio_tabs_active_tab('" . esc_js( $day ) . "','" . esc_js( $schedule_id ) . "');" . "\n";
+					// 2.5.14: removed duplicate function as already called via initialize
+					// $schedule_id = 'master-schedule-tabs';
+					// if ( $instance > 0 ) {
+					//	$schedule_id .= '-' . $instance;
+					// }
+					// $init_js .= "parent.radio_tabs_active_tab('" . esc_js( $day ) . "','" . esc_js( $schedule_id ) . "');" . "\n";
 					$init_js .= "parent.radio_tabs_initialize();" . "\n";
 				$init_js .= "}" . "\n";
 			} elseif ( 'list' == $view ) {
@@ -1311,18 +1312,19 @@ function radio_station_master_schedule_tabs_js() {
 			radio.offset_time = radio.current_time + radio.timezone.offset;
 			if (radio.debug) {console.log(radio.current_time+' - '+radio.offset_time);}
 			if (radio.timezone.adjusted) {radio.offset_time = radio.current_time;}
+			day = false;
+			active_day = document.getElementById('schedule-active-day').value;
+			if (active_day != '') {day = active_day;}
 			jQuery(this).find('.master-schedule-tabs-day').each(function() {
 				start = parseInt(jQuery(this).find('.rs-start-time').attr('data'));
 				end = parseInt(jQuery(this).find('.rs-end-time').attr('data'));
 				if ((start < radio.offset_time) && (end > radio.offset_time)) {
 					jQuery(this).addClass('current-day');
-					day = jQuery(this).attr('id').replace('master-schedule-tabs-header-', '');
-					active_day = document.getElementById('schedule-active-day').value;
-					if (active_day != '') {radio_tabs_active_tab(active_day,scheduleid);}
-					else {radio_tabs_active_tab(day,scheduleid);}
+					tabday = jQuery(this).attr('id').replace('master-schedule-tabs-header-', '');
+					if (!day) {day = tabday;}
 				} else {jQuery(this).removeClass('current-day');}
 			});
-			radio_tabs_active_tab(false,scheduleid); /* fallback */
+			radio_tabs_active_tab(day,scheduleid);
 			var radio_tabs_split = false;
 			jQuery(this).parent().find('.master-schedule-tabs-show').each(function() {
 				start = parseInt(jQuery(this).find('.rs-start-time').attr('data'));
