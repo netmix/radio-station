@@ -1246,9 +1246,11 @@ function radio_station_master_schedule_tabs_js() {
 	// 2.5.13: change active day input value on tab change
 	$js = "function radio_tabs_clicks() {
 		if (radio.debug) {console.log('Binding Tabbed Schedule Tab Clicks');}
-		jQuery('.master-schedule-tabs-headings').bind('click', function (event) {
+		jQuery('.master-schedule-tabs-headings').on('click', function (event) {
+			event.preventDefault();
 			if (jQuery(event.target).hasClass('master-schedule-tabs-headings')) {day = jQuery(event.target).attr('data-href');}
 			else {day = jQuery(event.target).closest('.master-schedule-tabs-headings').attr('data-href');}
+			if (radio.debug) {console.log('Switching Tab to Day: '+day);}
 			document.getElementById('schedule-active-day').value = day;
 			schedule = jQuery(event.target).closest('.master-schedule-tabs');
 			panels = schedule.parent().find('.master-schedule-tab-panels');
@@ -1256,6 +1258,7 @@ function radio_station_master_schedule_tabs_js() {
 			schedule.find('.master-schedule-tabs-day-'+day).addClass('active-day-tab');
 			panels.find('.master-schedule-tabs-panel').removeClass('active-day-panel');
 			panels.find('.master-schedule-tabs-panel-'+day).addClass('active-day-panel');
+			return false;
 		});
 	}" . "\n";
 
@@ -1285,6 +1288,7 @@ function radio_station_master_schedule_tabs_js() {
 		radio_tabs_responsive(false,false);
 		radio_tabs_show_highlight();
 		if (typeof radio_tabs_start_hours != 'undefined') {radio_tabs_start_hours();}
+		radio_tabs_init = true;
 	}
 
 	/* Set Day Tab on Load */
@@ -1300,7 +1304,6 @@ function radio_station_master_schedule_tabs_js() {
 			jQuery('#'+scheduleid+' .master-schedule-tabs-day').first().addClass('active-day-tab');
 			jQuery('#'+scheduleid+' .master-schedule-tabs-panel').first().addClass('active-day-panel');
 		}
-		radio_tabs_init = true;
 	}
 
 	/* Current Show Highlighting */
