@@ -780,7 +780,7 @@ function radio_station_ajax_schedule_loader() {
 	// 2.5.0: get schedule instance ID
 	$instance = absint( $_REQUEST['instance'] );
 
-	// 2.5.13 use the start day if set
+	// 2.5.13 use the active day if set
 	$active_date = sanitize_text_field( $_REQUEST['active_date'] );
 	$active_day = sanitize_text_field( $_REQUEST['active_day'] );
 	$day = ( '' != $active_day ) ? $active_day : strtolower( date( 'l', strtotime( $active_date ) ) );
@@ -1245,7 +1245,8 @@ function radio_station_master_schedule_tabs_js() {
 	// 2.5.0: use relative traversal from click target instead of IDs
 	// 2.5.13: change active day input value on tab change
 	$js = "function radio_tabs_clicks() {
-		if (radio.debug) {console.log('Binding Tabbed Schedule Tab Clicks');}
+		if (radio_tabs_init) {return;}
+		if (radio.debug) {console.log('Adding Tabbed Schedule Tab Clicks');}
 		jQuery('.master-schedule-tabs-headings').on('click', function (event) {
 			event.preventDefault();
 			if (jQuery(event.target).hasClass('master-schedule-tabs-headings')) {day = jQuery(event.target).attr('data-href');}
@@ -1288,7 +1289,6 @@ function radio_station_master_schedule_tabs_js() {
 		radio_tabs_responsive(false,false);
 		radio_tabs_show_highlight();
 		if (typeof radio_tabs_start_hours != 'undefined') {radio_tabs_start_hours();}
-		radio_tabs_init = true;
 	}
 
 	/* Set Day Tab on Load */
@@ -1304,6 +1304,7 @@ function radio_station_master_schedule_tabs_js() {
 			jQuery('#'+scheduleid+' .master-schedule-tabs-day').first().addClass('active-day-tab');
 			jQuery('#'+scheduleid+' .master-schedule-tabs-panel').first().addClass('active-day-panel');
 		}
+		radio_tabs_init = true;
 	}
 
 	/* Current Show Highlighting */
@@ -1324,10 +1325,10 @@ function radio_station_master_schedule_tabs_js() {
 				if ((start < radio.offset_time) && (end > radio.offset_time)) {
 					jQuery(this).addClass('current-day');
 					tabday = jQuery(this).attr('id').replace('master-schedule-tabs-header-', '');
-					if (!day) {day = tabday;}
+					radio_tabs_active_tab(tabday,scheduleid);
 				} else {jQuery(this).removeClass('current-day');}
 			});
-			radio_tabs_active_tab(day,scheduleid);
+			radio_tabs_active_tab(day,scheduleid); /* fallback */
 			var radio_tabs_split = false;
 			jQuery(this).parent().find('.master-schedule-tabs-show').each(function() {
 				start = parseInt(jQuery(this).find('.rs-start-time').attr('data'));

@@ -10,7 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 = 2.5.14 =
 * Fixed: Player resume (play/pause/play) glitch for Amplitude
 * Fixed: Keep active day when changing schedule weeks on Grid view
-* Fixed: jPlayer old fallback SWF path to empty string
+* Fixed: Schedule Override list Override Date column display
+* Fixed: jPlayer change old fallback SWF path to empty string
 
 = 2.5.13 =
 * Updated: Freemius SDK (2.12.0)
