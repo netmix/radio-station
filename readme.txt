@@ -5,7 +5,7 @@ Tags: radio station, radio shows, radio station schedule, radio broadcasting, st
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires at least: 3.3
-Tested up to: 6.8.1
+Tested up to: 6.8.2
 Stable tag: 2.5.14
 
 Radio Station lets you build and manage a Show Schedule for a radio station or Internet broadcaster's WordPress website. 

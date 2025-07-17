@@ -897,8 +897,10 @@ function radio_station_ajax_schedule_loader() {
 					$init_js .= "parent.radio_tabs_initialize();" . "\n";
 				$init_js .= "}" . "\n";
 			} elseif ( 'list' == $view ) {
-				$init_js .= "if (typeof parent.radio_list_highlight == 'function') {" . "\n";
-					$init_js .= "parent.radio_list_highlight();" . "\n";
+				// 2.5.14: use radio list initialize for consistency
+				$init_js .= "if (typeof parent.radio_list_initialize == 'function') {" . "\n";
+					$init_js .= "parent.radio_list_init= false;" . "\n";
+					$init_js .= "parent.radio_list_initialize();" . "\n";
 				$init_js .= "}" . "\n";
 			}
 
@@ -1505,11 +1507,18 @@ function radio_station_master_schedule_list_js() {
 	// 2.3.3.9: check for required elements before executing functions
 	// 2.3.3.9: fix to check before and after current time not show
 	$js = "/* Initialize List */
+	var radio_list_init = false;
 	jQuery(document).ready(function() {
-		radio_list_highlight();
+		radio_list_initialize();
 		var radio_list_highlighting = setInterval(radio_list_highlight, 60000);
-		if (typeof radio_list_start_hours != 'undefined') {radio_list_start_hours();}
 	});
+
+	/* Initialize List */
+	function radio_list_initialize() {
+		radio_list_init = true;
+		radio_list_highlight();
+		if (typeof radio_list_start_hours != 'undefined') {radio_list_start_hours();}
+	}
 
 	/* Current Show Highlighting */
 	function radio_list_highlight() {
