@@ -314,6 +314,7 @@ function radio_station_master_schedule( $atts ) {
 		$now = radio_station_get_now();
 		$start_date = radio_station_get_time( 'date', $now );
 	}
+
 	$output .= '<input type="hidden" id="schedule-start-date" value="' . esc_attr( $start_date ) . '">';
 	$active_date = $start_date;
 	if ( isset( $atts['active_date'] ) && $atts['active_date'] ) {
@@ -323,8 +324,11 @@ function radio_station_master_schedule( $atts ) {
 		}
 	}
 	$output .= '<input type="hidden" id="schedule-active-date" value="' . esc_attr( $active_date ) . '">';
+
 	// 2.3.3.9: also added schedule start day input
-	$start_day = ( $atts['start_day'] ) ? $atts['start_day'] : '';
+	// 2.5.13: ensure start day string is lowercase
+	$start_day = ( $atts['start_day'] ) ? strtolower( $atts['start_day'] ) : '';
+	$output .= '<input type="hidden" id="schedule-active-day" value="' . esc_attr( $start_day ) . '">';
 	$output .= '<input type="hidden" id="schedule-start-day" value="' . esc_attr( $start_day ) . '">';
 
 	// --- enqueue schedule loader script ---
@@ -667,6 +671,7 @@ function radio_station_master_schedule_loader_js( $atts ) {
 		startday = document.getElementById('schedule-start-day').value;
 		startdate = document.getElementById('schedule-start-date').value;
 		activedate = document.getElementById('schedule-active-date').value;
+		activeday = document.getElementById('schedule-active-day').value;
 		if (!view) {
 			if ((0 == instance) || (false === instance)) {id = '';} else {id = '-'+instance;}
 			if (jQuery('.master-schedule-view-tab.current-view').length) {
@@ -696,6 +701,7 @@ function radio_station_master_schedule_loader_js( $atts ) {
 		}
 		$js .= "&view='+view+'&instance='+instance+'&timestamp='+timestamp+'&start_date='+newdate+'&active_date='+activedate;
 		if (startday != '') {url += '&start_day='+startday;}
+		if (activeday != '') {url += '&active_day='+activeday;}
 		if (clear) {url += '&clear=1';}
 		if (radio.debug) {url += '&rs-debug=1'; console.log('Reload View URL: '+url);}
 		/* if (document.getElementById('schedule-'+view+'-loader').src != url) {
@@ -754,7 +760,8 @@ function radio_station_master_schedule_loader_js( $atts ) {
 	}
 	
 	// --- filter and return ---
-	$js = apply_filters( 'radio_station_master_schedule_loader_js', $js );
+	// 2.5.14: added missing attributes argument to filter
+	$js = apply_filters( 'radio_station_master_schedule_loader_js', $js, $atts );
 	return $js;
 }
 
@@ -772,12 +779,14 @@ function radio_station_ajax_schedule_loader() {
 
 	// 2.5.0: get schedule instance ID
 	$instance = absint( $_REQUEST['instance'] );
-	
+
+	// 2.5.13 use the active day if set
 	$active_date = sanitize_text_field( $_REQUEST['active_date'] );
-	$day = strtolower( date( 'l', strtotime( $active_date ) ) );
+	$active_day = sanitize_text_field( $_REQUEST['active_day'] );
+	$day = ( '' != $active_day ) ? $active_day : strtolower( date( 'l', strtotime( $active_date ) ) );
 
 	// --- sanitize shortcode attributes ---
-	$debug = true;
+	$debug = false; // $debug = true;
 	$atts = radio_station_sanitize_shortcode_values( 'master-schedule' );
 	if ( RADIO_STATION_DEBUG || $debug ) {
 		echo "Full Request Inputs: " . esc_html( print_r( array_map( 'sanitize_text_field', $_REQUEST ), true ) );
@@ -879,16 +888,19 @@ function radio_station_ajax_schedule_loader() {
 			} elseif ( 'tabs' == $view ) {
 				$init_js .= "if (typeof parent.radio_tabs_initialize == 'function') {" . "\n";
 					$init_js .= "parent.radio_tabs_init = false;" . "\n";
-					$schedule_id = 'master-schedule-tabs';
-					if ( $instance > 0 ) {
-						$schedule_id .= '-' . $instance;
-					}
-					$init_js .= "parent.radio_tabs_active_tab('" . esc_js( $day ) . "','" . esc_js( $schedule_id ) . "');" . "\n";
+					// 2.5.14: removed duplicate function as already called via initialize
+					// $schedule_id = 'master-schedule-tabs';
+					// if ( $instance > 0 ) {
+					//	$schedule_id .= '-' . $instance;
+					// }
+					// $init_js .= "parent.radio_tabs_active_tab('" . esc_js( $day ) . "','" . esc_js( $schedule_id ) . "');" . "\n";
 					$init_js .= "parent.radio_tabs_initialize();" . "\n";
 				$init_js .= "}" . "\n";
 			} elseif ( 'list' == $view ) {
-				$init_js .= "if (typeof parent.radio_list_highlight == 'function') {" . "\n";
-					$init_js .= "parent.radio_list_highlight();" . "\n";
+				// 2.5.14: use radio list initialize for consistency
+				$init_js .= "if (typeof parent.radio_list_initialize == 'function') {" . "\n";
+					$init_js .= "parent.radio_list_init= false;" . "\n";
+					$init_js .= "parent.radio_list_initialize();" . "\n";
 				$init_js .= "}" . "\n";
 			}
 
@@ -1055,6 +1067,7 @@ function radio_station_master_schedule_table_js() {
 	function radio_table_initialize() {
 		radio_table_responsive(false,false);
 		radio_table_highlight();
+		if (typeof radio_table_start_hours != 'undefined') {radio_table_start_hours();}
 		radio_table_init = true;
 	}
 
@@ -1228,43 +1241,27 @@ function radio_station_master_schedule_tabs_js() {
 
 	// --- tab switching function ---
 	// 2.3.2: added fallback if current day is not viewed
-	// TODO: check current server time for onload display ?
-	/* date = new Date(); dayweek = date.getDay(); day = radio_get_weekday(dayweek);
-	if (jQuery('#master-schedule-tabs-header-'+day).length) {
-		id = jQuery('.master-schedule-tabs-day.selected-day').first().attr('id');
-		day = id.replace('master-schedule-tabs-header-','');
-		jQuery('#master-schedule-tabs-header-'+day).addClass('active-day-tab');
-		jQuery('#master-schedule-tabs-day-'+day).addClass('active-day-panel');
-	} else {
-		jQuery('.master-schedule-tabs-day').first().addClass('active-day-tab');
-		jQuery('.master-schedule-tabs-panel').first().addClass('active-day-panel');
-	} */
-
 	// 2.3.3.6: allow for clicking on date to change days
 	// 2.3.3.8: make entire heading label div clickable to change tabs
 	// 2.3.3.9: make into function and add to document ready code block
-	/* $js = "function radio_tabs_clicks() {
-		jQuery('.master-schedule-tabs-headings').bind('click', function (event) {
-			headerID = jQuery(event.target).closest('li').attr('id');
-			panelID = headerID.replace('header', 'day');
-			jQuery('.master-schedule-tabs-day').removeClass('active-day-tab');
-			jQuery('#'+headerID).addClass('active-day-tab');
-			jQuery('.master-schedule-tabs-panel').removeClass('active-day-panel');
-			jQuery('#'+panelID).addClass('active-day-panel');
-		});
-	}" . "\n"; */
 	// 2.5.0: use relative traversal from click target instead of IDs
+	// 2.5.13: change active day input value on tab change
 	$js = "function radio_tabs_clicks() {
-		if (radio.debug) {console.log('Binding Tabbed Schedule Tab Clicks');}
-		jQuery('.master-schedule-tabs-headings').bind('click', function (event) {
+		if (radio_tabs_init) {return;}
+		if (radio.debug) {console.log('Adding Tabbed Schedule Tab Clicks');}
+		jQuery('.master-schedule-tabs-headings').on('click', function (event) {
+			event.preventDefault();
 			if (jQuery(event.target).hasClass('master-schedule-tabs-headings')) {day = jQuery(event.target).attr('data-href');}
 			else {day = jQuery(event.target).closest('.master-schedule-tabs-headings').attr('data-href');}
+			if (radio.debug) {console.log('Switching Tab to Day: '+day);}
+			document.getElementById('schedule-active-day').value = day;
 			schedule = jQuery(event.target).closest('.master-schedule-tabs');
 			panels = schedule.parent().find('.master-schedule-tab-panels');
 			schedule.find('.master-schedule-tabs-day').removeClass('active-day-tab');
 			schedule.find('.master-schedule-tabs-day-'+day).addClass('active-day-tab');
 			panels.find('.master-schedule-tabs-panel').removeClass('active-day-panel');
 			panels.find('.master-schedule-tabs-panel-'+day).addClass('active-day-panel');
+			return false;
 		});
 	}" . "\n";
 
@@ -1277,6 +1274,7 @@ function radio_station_master_schedule_tabs_js() {
 	// 2.3.3.9: check for required elements before executing functions
 	// 2.3.3.9: fix to check before and after current time not show
 	// 2.3.3.9: adjust responsive tabs for possible loader control presence
+	// 2.5.13: set active tab to active day value if set
 	$js .= "/* Initialize Tabs */
 	var radio_tabs_init = false;
 	jQuery(document).ready(function() {
@@ -1292,6 +1290,7 @@ function radio_station_master_schedule_tabs_js() {
 		radio_tabs_clicks();
 		radio_tabs_responsive(false,false);
 		radio_tabs_show_highlight();
+		if (typeof radio_tabs_start_hours != 'undefined') {radio_tabs_start_hours();}
 	}
 
 	/* Set Day Tab on Load */
@@ -1319,16 +1318,19 @@ function radio_station_master_schedule_tabs_js() {
 			radio.offset_time = radio.current_time + radio.timezone.offset;
 			if (radio.debug) {console.log(radio.current_time+' - '+radio.offset_time);}
 			if (radio.timezone.adjusted) {radio.offset_time = radio.current_time;}
+			day = false;
+			active_day = document.getElementById('schedule-active-day').value;
+			if (active_day != '') {day = active_day;}
 			jQuery(this).find('.master-schedule-tabs-day').each(function() {
 				start = parseInt(jQuery(this).find('.rs-start-time').attr('data'));
 				end = parseInt(jQuery(this).find('.rs-end-time').attr('data'));
 				if ((start < radio.offset_time) && (end > radio.offset_time)) {
 					jQuery(this).addClass('current-day');
-					day = jQuery(this).attr('id').replace('master-schedule-tabs-header-', '');
-					radio_tabs_active_tab(day,scheduleid);
+					tabday = jQuery(this).attr('id').replace('master-schedule-tabs-header-', '');
+					radio_tabs_active_tab(tabday,scheduleid);
 				} else {jQuery(this).removeClass('current-day');}
 			});
-			radio_tabs_active_tab(false,scheduleid); /* fallback */
+			radio_tabs_active_tab(day,scheduleid); /* fallback */
 			var radio_tabs_split = false;
 			jQuery(this).parent().find('.master-schedule-tabs-show').each(function() {
 				start = parseInt(jQuery(this).find('.rs-start-time').attr('data'));
@@ -1505,10 +1507,18 @@ function radio_station_master_schedule_list_js() {
 	// 2.3.3.9: check for required elements before executing functions
 	// 2.3.3.9: fix to check before and after current time not show
 	$js = "/* Initialize List */
+	var radio_list_init = false;
 	jQuery(document).ready(function() {
-		radio_list_highlight();
+		radio_list_initialize();
 		var radio_list_highlighting = setInterval(radio_list_highlight, 60000);
 	});
+
+	/* Initialize List */
+	function radio_list_initialize() {
+		radio_list_init = true;
+		radio_list_highlight();
+		if (typeof radio_list_start_hours != 'undefined') {radio_list_start_hours();}
+	}
 
 	/* Current Show Highlighting */
 	function radio_list_highlight() {

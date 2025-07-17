@@ -345,7 +345,8 @@ foreach ( $weekdays as $i => $weekday ) {
 
 				// --- open list item ---
 				$classlist = implode( ' ', $classes );
-				$panels .= '<li class="' . esc_attr( $classlist ) . '">' . "\n";
+				$hour = date( 'H', strtotime( $shift['start'] ) );
+				$panels .= '<li class="' . esc_attr( $classlist ) . '" data="' . esc_attr( $hour ) . '">' . "\n";
 
 				// --- Show Image ---
 				// (defaults to display on)

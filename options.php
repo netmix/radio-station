@@ -57,6 +57,23 @@ $options = array(
 		'section' => 'broadcast',
 	),
 
+	// --- [Player] Stream GeoBlocking ---
+	'stream_geo_blocking' => array(
+		'label'		=> __( 'GeoIP Stream Blocking', 'radio-station' ),
+		'type'		=> 'select',
+		'options' => array(
+			''			=> __( 'No GeoIP Blocking', 'radio-station' ),
+			'live365'	=> __( 'Live365 (only US, UK, Canada, Mexico)', 'radio-station' ),
+			// 'blacklist' => __( 'Custom Country Blacklist', 'radio-station' ),
+			// 'whitelist' => __( 'Custom Country Whitelist', 'radio-station' ),
+		),
+		'default' => '',
+		'helper'  => __( 'Block streaming according to country, detected by user IP address.', 'radio-station' ),
+		'tab'     => 'general',
+		'section' => 'broadcast',
+		'pro'     => true,
+	),
+		
 	// --- Main Radio Language ---
 	'radio_language'    => array(
 		'type'    => 'select',
@@ -294,9 +311,9 @@ $options = array(
 		'label'   => __( 'Player Script', 'radio-station' ),
 		'default' => 'jplayer',
 		'options' => array(
+			'amplitude' => __( 'Amplitude', 'radio-station' ),
 			'jplayer'   => __( 'jPlayer', 'radio-station' ),
 			// 'howler'    => __( 'Howler', 'radio-station' ),
-			'amplitude' => __( 'Amplitude', 'radio-station' ),
 		),
 		'helper'  => __( 'Default audio script to use for playback in the Player.', 'radio-station' ),
 		'tab'     => 'player',
@@ -312,9 +329,9 @@ $options = array(
 		'label'   => __( 'Fallback Scripts', 'radio-station' ),
 		'default' => array( 'amplitude', 'howler', 'jplayer' ),
 		'options' => array(
+			'amplitude' => __( 'Amplitude', 'radio-station' ),
 			'jplayer'   => __( 'jPlayer', 'radio-station' ),
 			// 'howler'    => __( 'Howler', 'radio-station' ),
-			'amplitude' => __( 'Amplitude', 'radio-station' ),
 		),
 		'helper'  => __( 'Enabled fallback audio scripts to try when the default Player script fails.', 'radio-station' ),
 		'tab'     => 'player',

@@ -4825,12 +4825,17 @@ function radio_station_override_column_data( $column, $post_id ) {
 
 			// 2.3.2: no need to apply timezone conversions here
 			// 2.5.6: use radio_station_get_time instead of date
-			$datetime = strtotime( $override['date'] );
-			$month = radio_station_get_time( 'F', $datetime );
-			$month = radio_station_translate_month( $month, true );
-			$weekday = radio_station_get_time( 'l', $datetime );
+			// 2.5.14: fix to convert full override date and time not just date
+			$start = $override['start_hour'] . ':' . $override['start_min'] . ' ' . $override['start_meridian'];
+			$start = radio_station_convert_shift_time( $start );
+			$timestamp = radio_station_to_time( $override['date'] . ' ' . $start );
+			$date = radio_station_get_time( 'j', $timestamp );
+			$weekday = radio_station_get_time( 'l', $timestamp );
 			$weekday = radio_station_translate_weekday( $weekday );
-			echo esc_html( $weekday ) . ' ' . esc_html( radio_station_get_time( 'j', $datetime ) ) . ' ' . esc_html( $month ) . ' ' . esc_html( radio_station_get_time( 'Y', $datetime ) ) . "\n";
+			$month = radio_station_get_time( 'F', $timestamp );
+			$month = radio_station_translate_month( $month, true );
+			$year = radio_station_get_time( 'Y', $timestamp );
+			echo esc_html( $weekday ) . ' ' . esc_html( $date ) . ' ' . esc_html( $month ) . ' ' . esc_html( $year ) . "\n";
 			echo '<br>' . "\n";
 
 			// 2.3.3.9: merge override times into this columns
