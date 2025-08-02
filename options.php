@@ -353,10 +353,11 @@ $options = array(
 	),
 
 	// --- [Player] Player Buttons ---
+	// 2.5.15: change default to circular
 	'player_buttons' => array(
 		'type'    => 'select',
 		'label'   => __( 'Default Player Buttons', 'radio-station' ),
-		'default' => 'rounded',
+		'default' => 'circular',
 		'options' => array(
 			'circular' => __( 'Circular Buttons', 'radio-station' ),
 			'rounded'  => __( 'Rounded Buttons', 'radio-station' ),
@@ -471,11 +472,12 @@ $options = array(
 	),
 
 	// --- [Pro/Player] Player Autoresume ---
+	// 2.5.15: change autoresume default to off so activated manually
 	'player_autoresume' => array(
 		'type'    => 'checkbox',
 		'label'   => __( 'Autoresume Playback', 'radio-station' ),
-		'default' => 'yes',
-		'value'   => 'yes',
+		'default' => '',
+		'value'   => 'on',
 		'helper'  => __( 'Attempt to resume playback if visitor was playing. Only triggered when the user first interacts with the page.', 'radio-station' ),
 		'tab'     => 'player',
 		'section' => 'advanced',
@@ -524,6 +526,7 @@ $options = array(
 	),
 
 	// --- [Pro/Player] Player Bar Height ---
+	// 2.5.15: add px suffix
 	'player_bar_height' => array(
 		'type'    => 'number',
 		'min'     => 40,
@@ -531,6 +534,7 @@ $options = array(
 		'step'    => 1,
 		'label'   => __( 'Player Bar Height', 'radio-station' ),
 		'default' => 80,
+		'suffix'  => 'px',
 		'tab'     => 'player',
 		'section' => 'bar',
 		'helper'  => __( 'Set the height of the Sitewide Player Bar in pixels.', 'radio-station' ),
@@ -831,6 +835,37 @@ $options = array(
 		'section' => 'show',
 	),
 
+	// ---- Show Player ---
+	// 2.5.15: added show player selection
+	'show_player' => array(
+		'type'    => 'select',
+		'label'   => __( 'Latest Show Player', 'radio-station' ),
+		'options' => array(
+			'radio_player'   => __( 'Radio Station Stream Player', 'radio-station' ),
+			'media_elements' => __( 'MediaElements (WordPress)', 'radio-station' ),
+		),
+		'default' => 'media_elements',
+		'helper'  => __( 'Which player to use on the Show pages for the latest show recording.', 'radio-station' ),
+		'tab'     => 'pages',
+		'section' => 'show',
+	),
+
+	// --- Show Player Theme ---
+	// 2.5.15: added show player theme selection
+	'show_player_theme' => array(
+		'type'    => 'select',
+		'label'   => __( 'Show Player Theme', 'radio-station' ),
+		'default' => '',
+		'options' => array(
+			''		=> __( 'Player Default', 'radio-station' ),
+			'light' => __( 'Light', 'radio-station' ),
+			'dark'  => __( 'Dark', 'radio-station' ),
+		),
+		'helper'  => __( 'Show Player Controls theme style (Radio Station Stream Player only,)', 'radio-station' ),
+		'tab'     => 'pages',
+		'section' => 'show',
+	),
+
 	// --- Show Header Image ---
 	// 2.3.2: added plural to option label
 	'show_header_image' => array(
@@ -978,6 +1013,39 @@ $options = array(
 		),
 		'default' => 'tabbed',
 		'helper'  => __( 'How to display extra sections below Episode description. In content tabs or standard layout down the page.', 'radio-station' ),
+		'tab'     => 'pages',
+		'section' => 'episode',
+		'pro'     => true,
+	),
+
+	// ---- [Pro] Episode Player ---
+	// 2.5.15: added episode player selection
+	'episode_player' => array(
+		'type'    => 'select',
+		'label'   => __( 'Episode Player', 'radio-station' ),
+		'options' => array(
+			'radio_player'   => __( 'Radio Station Stream Player', 'radio-station' ),
+			'media_elements' => __( 'MediaElements (WordPress)', 'radio-station' ),
+		),
+		'default' => 'radio_player',
+		'helper'  => __( 'Which player to use on the Episode pages for the Episode recording.', 'radio-station' ),
+		'tab'     => 'pages',
+		'section' => 'episode',
+		'pro'     => true,
+	),
+
+	// --- [Pro] Episode Player Theme ---
+	// 2.5.15: added episode player theme selection
+	'episode_player_theme' => array(
+		'type'    => 'select',
+		'label'   => __( 'Episode Player Theme', 'radio-station' ),
+		'default' => '',
+		'options' => array(
+			''		=> __( 'Player Default', 'radio-station' ),
+			'light' => __( 'Light', 'radio-station' ),
+			'dark'  => __( 'Dark', 'radio-station' ),
+		),
+		'helper'  => __( 'Episode Player Controls theme style (Radio Station Stream Player only,)', 'radio-station' ),
 		'tab'     => 'pages',
 		'section' => 'episode',
 		'pro'     => true,
