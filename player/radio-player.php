@@ -319,6 +319,8 @@ function radio_player_output( $args = array(), $echo = false ) {
 			$html['player_open'] .= '<link rel="dns-prefetch" href="' . esc_url( $url_host ) . '">' . "\n";
 		}
 		$classes[] = 'rp-audio-stream';
+	} elseif ( 'file' == $args['media'] ) {
+		$classes[] = 'rp-media-file';
 	}
 
 	// 2.5.0: added filter for radio container class
@@ -375,7 +377,7 @@ function radio_player_output( $args = array(), $echo = false ) {
 				$title_display .= esc_html( $args['title'] );
 			}
 			$title_display = apply_filters( 'radio_player_station_display', $title_display, $args, $instance );
-			$station_text_html .= '<div class="rp-station-title" aria-label="' . esc_attr( __( 'Station Name', 'radio-station' ) ) . '">' . wp_kses( $title_display, $allowed ) . '</div>' . "\n";
+			$station_text_html = '<div class="rp-station-title" aria-label="' . esc_attr( __( 'Station Name', 'radio-station' ) ) . '">' . wp_kses( $title_display, $allowed ) . '</div>' . "\n";
 
 			// --- station timezone / location / frequency ---
 			// 2.5.0: add filters for timezone / frequency / location display
@@ -983,7 +985,8 @@ function radio_player_ajax() {
 		$text_color = $atts['text'];
 		unset( $atts['text_color'] );
 	} elseif ( function_exists( 'apply_filters' ) ) {
-		$text_color = apply_filters( 'radio_player_text_color', $text_color );
+		// 2.5.14: add instance argument for consistency
+		$text_color = apply_filters( 'radio_player_text_color', $text_color, false );
 	}
 
 	// 2.5.0: strip background color attribute (applied to window body)
@@ -998,36 +1001,32 @@ function radio_player_ajax() {
 		$background_color = $atts['background'];
 		unset( $atts['background'] );
 	} elseif ( function_exists( 'apply_filters' ) ) {
-		// 2.5.0: fallaback to apply_filters
-		$background_color = apply_filters( 'radio_player_background_color', $background_color );
+		// 2.5.0: fallback to apply_filters
+		// 2.5.14: add instance argument for consistency
+		$background_color = apply_filters( 'radio_player_background_color', $background_color, false );
 	}
 
 	// --- maybe add text color ---
 	// 2.5.0: added for matching with background color
 	// 2.5.6: fix for undefined variable css
 	// 2.5.10: moved up so that inline style can be in header
+	// 2.5.14: add body prefix to selector
 	$css = '';
 	if ( '' != $text_color ) {
 		if ( ( 'rgb' != substr( $text_color, 0, 3 ) ) && ( '#' != substr( $text_color, 0, 1 ) ) ) {
 			$text_color = '#' . $text_color;
 		}
-		$css .= '#player-contents {color: ' . esc_attr( $text_color ) . ';}' . "\n";
+		$css .= 'body #player-contents {color: ' . esc_attr( $text_color ) . ';}' . "\n";
 	}
 
 	// --- maybe add background color ---
+	// 2.5.14: add body prefix to selector
 	if ( '' != $background_color ) {
 		if ( ( 'rgb' != substr( $background_color, 0, 3 ) ) && ( '#' != substr( $background_color, 0, 1 ) ) ) {
 			$background_color = '#' . $background_color;
 		}
-		$css .= 'body {background: ' . esc_attr( $background_color ) . ';}' . "\n";
+		$css .= 'body, body #player-contents {background-color: ' . esc_attr( $background_color ) . ';}' . "\n";
 	}
-
-	// --- output extra player styles ---
-	$css = apply_filters( 'radio_station_player_ajax_styles', $css, $atts );
-	$css = apply_filters( 'radio_player_ajax_styles', $css, $atts );
-	// 2.5.6: use wp_kses_post instead of wp_strip_all_tags
-	// 2.5.6: use radio_player_add_inline_style (with fallback)
-	radio_player_add_inline_style( $css );
 
 	// 2.5.10: set document title with javascript
 	if ( isset( $atts['title'] ) && $atts['title'] && ( '' != $atts['title'] ) ) {
@@ -1094,6 +1093,14 @@ function radio_player_ajax() {
 
 	// --- output (hidden) footer for scripts ---
 	echo '<div style="display:none;">' . "\n";
+
+		// --- output extra player styles ---
+		// 2.5.14: move add inline style to before footer
+		$css = apply_filters( 'radio_station_player_ajax_styles', $css, $atts );
+		$css = apply_filters( 'radio_player_ajax_styles', $css, $atts );
+		// 2.5.6: use wp_kses_post instead of wp_strip_all_tags
+		// 2.5.6: use radio_player_add_inline_style (with fallback)
+		radio_player_add_inline_style( $css );
 
 		// --- call wp_footer actions ---
 		wp_footer();
@@ -1550,7 +1557,7 @@ function radio_player_enqueue_script( $script ) {
 	// --- set specific script as enqueued ---
 	$radio_player['enqeued_' . $script] = true;
 
-	if ( isset( $radio_player['enqueue_inline_scripts'] ) && $radio_player['enqueue_inline_scripts'] ) {
+	if ( isset( $radio_player['enqueued_inline_scripts'] ) && $radio_player['enqueued_inline_scripts'] ) {
 		return;
 	}
 
@@ -1582,7 +1589,8 @@ function radio_player_enqueue_script( $script ) {
 	}
 	
 	// --- set specific script as enqueued ---
-	$radio_player['enqeued_inline_scripts'] = true;
+	// 2.5.15: fix to mismatching enqueued flag
+	$radio_player['enqueued_inline_scripts'] = true;
 
 }
 

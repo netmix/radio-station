@@ -268,19 +268,41 @@ if ( $show_file ) {
 		$image_blocks['player'] .= '<span class="show-player-label show-label">' . esc_html( $label ) . '</span><br>';
 	}
 	
-	// 2.5.8: run embed shortcode to embed external audio URLs
-	$wp_embed = $GLOBALS['wp_embed'];
-	$embed = '[embed]' . $show_file . '[/embed]';
-	add_filter( 'embed_maybe_make_link', '__return_false' );
-	$player_embed = $wp_embed->run_shortcode( $embed );
-	remove_filter( 'embed_maybe_make_link', '__return_false' );
-
-	$embedded = false;
-	if ( $player_embed && !stristr( $player_embed, '[audio' ) ) {
-		$embedded = true;
-	} else {
-		$shortcode = '[audio src="' . $show_file . '" preload="metadata"]';
-		$player_embed = do_shortcode( $shortcode );
+	// 2.5.15: maybe use radio player instead of media elements
+	$show_player = radio_station_get_setting( 'show_player' );
+	if ( 'radio_player' == $show_player ) {
+		$player_theme = radio_station_get_setting( 'show_player_theme' );
+		if ( '' == $player_theme ) {
+			$player_theme = radio_station_get_setting( 'player_theme' );
+		}
+		$player_buttons = radio_station_get_setting( 'player_buttons' );
+		$atts = array( 
+			'media'	   => 'file',
+			'url'	   => $show_file,
+			'layout'   => 'horizontal',
+			'theme'    => $player_theme,
+			'buttons'  => $player_buttons,
+			'volumes'  => array( 'slider', 'mute' ),
+			'default'  => false, // TODO: test true here
+		);
+		$atts = apply_filters( 'radio_station_show_player_atts', $atts );
+		$player_embed = radio_player_shortcode( $atts );
+	} elseif ( 'media_elements' == $show_player ) {
+		// 2.5.8: run embed shortcode to embed external audio URLs
+		global $wp_embed;
+		$embed = '[embed]' . $show_file . '[/embed]';
+		add_filter( 'embed_maybe_make_link', '__return_false' );
+		$player_embed = $wp_embed->run_shortcode( $embed );
+		remove_filter( 'embed_maybe_make_link', '__return_false' );
+		
+		if ( $player_embed && !stristr( $player_embed, '[audio' ) ) {
+			// 2.5.8: full width and height fix for embeds
+			// 2.5.15: move style next to embedded player
+			$player_embed .= '<style>.show-embed iframe {width: 100%; height: 100%;</style>' . "\n";
+		} else {
+			$shortcode = '[audio src="' . $show_file . '" preload="metadata"]';
+			$player_embed = do_shortcode( $shortcode );
+		}
 	}
 
 	$image_blocks['player'] .= '<div class="show-embed">' . "\n";
@@ -302,10 +324,6 @@ if ( $show_file ) {
 
 	$image_blocks['player'] .= '</div>' . "\n";
 
-	// 2.5.8: full width and height fix for embeds
-	if ( $embedded ) {
-		$image_blocks['player'] .= '<style>.show-embed iframe {width: 100%; height: 100%;</style>' . "\n";
-	}
 }
 
 // 2.3.3.6: allow subblock order to be changed

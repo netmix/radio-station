@@ -38,7 +38,11 @@
 .rp-interface {
 	position: relative;
 	background-color: transparent;
+}
+
+.rp-audio-stream .rp-interface {
 	width: 35%;
+	display: inline-block;
 }
 
 .rp-station-info, .rp-interface, .rp-volume-controls, .rp-controls-holder , .rp-script-switcher, .rp-show-info {
@@ -52,7 +56,12 @@
 }
 
 .rp-station-info, .rp-show-info {
+	display: none;
+}
+
+.rp-audio-stream .rp-station-info, .rp-audio-stream .rp-show-info {
 	width: 32%;
+	display: inline-block;
 }
 
 .rp-station-text-alt, .rp-show-text-alt {
