@@ -7,10 +7,9 @@
 	const rs_el = window.wp.element.createElement;
 	const rs__ = window.wp.i18n.__;
 	const { serverSideRender: ServerSideRender } = window.wp;
-	const { registerBlockType } = window.wp.blocks;
-	const { getBlockType } = window.wp.blocks;
-	const { InspectorControls } = window.wp.blockEditor;
-	const { Fragment } = window.wp.element;
+	const { registerBlockType, getBlockType } = window.wp.blocks;
+	const { InspectorControls, useBlockProps } = window.wp.blockEditor;
+	const { Fragment, useEffect, createRef, useRef } = window.wp.element;
 	const { BaseControl, TextControl, SelectControl, RadioControl, RangeControl, ToggleControl, ColorPicker, Dropdown, Button, Panel, PanelBody, PanelRow } = window.wp.components;
 	
 	/* --- Register Block --- */
@@ -47,6 +46,15 @@
 		 */
 		edit: (props) => {
 			const atts = props.attributes;
+			let blockRef = createRef(null);
+			const blockProps = useBlockProps({ ref: blockRef });
+
+			/* load control colors on render */
+			useEffect(() => {
+				/* console.log('Player block rendered.', atts, blockProps); */
+				radio_player_control_colors(blockProps.id, atts);
+			}, [atts.text_color, atts.background_color, atts.playing_color, atts.button_color, atts.track_color, atts.thumb_color]);
+
 			return (
 				rs_el( Fragment, {},
 					rs_el( ServerSideRender, { block: 'radio-station/player', className: 'radio-player-block', attributes: atts } ),
@@ -630,3 +638,33 @@
 	 });
 	}
 })();
+
+/* Load Player Controls Colors */
+function radio_player_control_colors(id, atts) {
+	container = jQuery('#'+id+' .radio-container'); /* console.log(container); */
+	if (!container.length) { setTimeout(function() {radio_player_control_colors(id,atts);}, 1000); return; }
+	instance = container.attr('id').replace('radio_container_','');
+	url = radio_player.settings.ajaxurl+'?action=player_control_styles&instance='+instance+'&text='+encodeURIComponent(atts.text_color)+'&background='+encodeURIComponent(atts.background_color)+'&playing='+encodeURIComponent(atts.playing_color)+'&buttons='+encodeURIComponent(atts.buttons_color)+'&track='+encodeURIComponent(atts.track_color)+'&thumb='+encodeURIComponent(atts.thumb_color);
+	jQuery.ajax({
+		type: 'GET',
+		url: url,
+		data: {'action':'player_control_styles', 'instance':instance, 'text':atts.text_color, 'background':atts.background_color, 'playing':atts.playing_color, 'buttons':atts.buttons_color, 'track':atts.track_color, 'thumb':atts.thumb_color},
+		processData: false,
+		beforeSend: function(request, settings) {
+			request._data = settings.data; 
+		},
+		success: function(data, success, request) {
+			if (data.success) {
+				console.log('Load Control Styles Success: '+data.message);
+				if (jQuery('#radio-player-control-styles-'+data.instance).length) {jQuery('#radio-player-control-styles-'+data.instance).remove();}
+				jQuery('body').append('<style id="radio-player-control-styles-'+data.instance+'">'+data.css+'</style>');
+			} else {console.log('Load Control Styles Failed: '+data.message); console.log(request);}
+		},
+		fail: function(request, textStatus, errorThrown) {
+			console.log(request); console.log(textStatus); console.log(errorThrown);
+		}
+	}).catch(function(error) {
+		console.log(error); console.log(jQuery(this));
+	});
+}
+

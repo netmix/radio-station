@@ -473,12 +473,13 @@ $options = array(
 
 	// --- [Pro/Player] Player Autoresume ---
 	// 2.5.15: change autoresume default to off so activated manually
+	// 2.5.16: updated helper text
 	'player_autoresume' => array(
 		'type'    => 'checkbox',
 		'label'   => __( 'Autoresume Playback', 'radio-station' ),
 		'default' => '',
 		'value'   => 'on',
-		'helper'  => __( 'Attempt to resume playback if visitor was playing. Only triggered when the user first interacts with the page.', 'radio-station' ),
+		'helper'  => __( 'On return to site or page reload, ask the user to resume stream playback if they were playing the stream previously, using a popup a modal dialogue box.', 'radio-station' ),
 		'tab'     => 'player',
 		'section' => 'advanced',
 		'pro'     => true,

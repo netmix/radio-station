@@ -7,6 +7,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+= 2.5.16 =
+* Fixed: Player Block control color style preview / loading
+
+= 2.5.15 =
+* Improved: AJAX player style output moved to footer
+* Option: Use Stream Player for latest Show file playback
+* Option: Use Stream Player for Episode file playback (Pro)
+
 = 2.5.14 =
 * Fixed: Player resume (play/pause/play) glitch for Amplitude
 * Fixed: Keep active day when changing schedule weeks on Grid view

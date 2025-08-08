@@ -58,7 +58,7 @@ function radio_station_get_block_callbacks() {
 		// 'timezone'         => 'radio_station_timezone_shortcode',
 		'clock'            => 'radio_station_clock_shortcode',
 		// --- Stream Player ---
-		'player'           => 'radio_player_shortcode',
+		'player'           => 'radio_player_block_shortcode',
 		// --- Master Schedule ---
 		'schedule'         => 'radio_station_master_schedule',
 		// --- Archive Lists ---
