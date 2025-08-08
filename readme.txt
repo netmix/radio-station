@@ -6,7 +6,7 @@ License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires at least: 3.3
 Tested up to: 6.8.2
-Stable tag: 2.5.14
+Stable tag: 2.5.16
 
 Radio Station lets you build and manage a Show Schedule for a radio station or Internet broadcaster's WordPress website. 
 
@@ -403,6 +403,14 @@ We recommend you test these on a Staging site (or a development copy of your liv
 8. Show Conflict Display
 
 == Changelog ==
+
+= 2.5.16 =
+* Fixed: Player Block control color style preview / loading
+
+= 2.5.15 =
+* Improved: AJAX player style output moved to footer
+* Option: Use Stream Player for latest Show file playback
+* Option: Use Stream Player for Episode file playback (Pro)
 
 = 2.5.14 =
 * Fixed: Player resume (play/pause/play) glitch for Amplitude

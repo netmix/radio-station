@@ -13,7 +13,7 @@ if ( !defined( 'ABSPATH' ) ) exit;
 // - Player Output
 // - Store Player Instance Args
 // - Player Shortcode
-// - Player AJAX Display
+// - AJAX: Player Display
 // - Add Inline Styles
 // - Print Footer Styles
 // - Sanitize Shortcode Values
@@ -30,7 +30,7 @@ if ( !defined( 'ABSPATH' ) ) exit;
 // - Dynamic Load Script via AJAX
 // - Get Player Settings
 // - User State Iframe
-// - AJAX Update User State
+// - AJAX: Update User State
 // - Load Amplitude Function
 // - Load JPlayer Function
 // - Load Howler Function
@@ -38,6 +38,7 @@ if ( !defined( 'ABSPATH' ) ) exit;
 // - Get Default Player Script
 // - Enqueue Player Styles
 // - Player Control Styles
+// - AJAX: Control Styles
 // === Standalone Compatibility ===
 // x Output Script Tag
 // x Output Style Tag
@@ -622,6 +623,75 @@ if ( function_exists( 'add_shortcode' ) ) {
 function radio_player_shortcode_output( $atts, $content, $tag ) {
 	return radio_player_shortcode( $atts );
 }
+// 2.5.16: add shortcode block function with wrapper
+function radio_player_block_shortcode( $atts, $content ) {
+	
+	global $radio_player;
+	
+	// --- get block output with wrapper ---
+	$block = '<div class="radio-player-block"';
+	$colors = array( 'text', 'background', 'playing', 'buttons', 'track', 'thumb' );
+	$found = false;
+	foreach ( $colors as $color ) {
+		if ( isset( $atts[$color . '_color'] ) && ( '' != $atts[$color . '_color'] ) ) {
+			$found = true;
+			$block .= ' data-' . $color . '="' . $atts[$color . '_color'] . '"';
+		}
+	}
+	if ( $found ) {
+		$block .= ' data="colors"';
+	}
+	$block .= '>' . "\n";
+		$block .= radio_player_shortcode( $atts );
+	$block .= '</div>' . "\n";
+
+	// --- javascript to load control colors ---
+	if ( $found && !isset( $radio_player['control_styles_script'] ) ) {
+		$js = "document.addEventListener('DOMContentLoaded', function() {
+			playerblocks = document.querySelectorAll('.radio-player-block');
+			playerblocks.forEach(block => {
+				if (block.getAttribute('data') == 'colors') {
+					atts = {}
+					atts.text = block.getAttribute('data-text');
+					atts.background = block.getAttribute('data-background');
+					atts.playing = block.getAttribute('data-playing');
+					atts.buttons = block.getAttribute('data-buttons');
+					atts.track = block.getAttribute('data-track');
+					atts.thumb = block.getAttribute('data-thumb');
+
+					container = block.querySelector('.radio-container');
+					instance = container.getAttribute('id').replace('radio_container_','');
+					url = radio_player.settings.ajaxurl+'?action=player_control_styles&instance='+instance+'&text='+encodeURIComponent(atts.text)+'&background='+encodeURIComponent(atts.background)+'&playing='+encodeURIComponent(atts.playing)+'&buttons='+encodeURIComponent(atts.buttons)+'&track='+encodeURIComponent(atts.track)+'&thumb='+encodeURIComponent(atts.thumb);
+					jQuery.ajax({
+						type: 'GET',
+						url: url,
+						data: {'action':'player_control_styles', 'instance':instance, 'text':atts.text, 'background':atts.background, 'playing':atts.playing, 'buttons':atts.buttons, 'track':atts.track, 'thumb':atts.thumb},
+						processData: false,
+						beforeSend: function(request, settings) {
+							request._data = settings.data; 
+						},
+						success: function(data, success, request) {
+							if (data.success) {
+								console.log('Load Control Styles Success: '+data.message);
+								if (jQuery('#radio-player-control-styles-'+data.instance).length) {jQuery('#radio-player-control-styles-'+data.instance).remove();}
+								jQuery('body').append('<style id=\"radio-player-control-styles-'+data.instance+'\">'+data.css+'</style>');
+							} else {console.log('Load Control Styles Failed: '+data.message); console.log(request);}
+						},
+						fail: function(request, textStatus, errorThrown) {
+							console.log(request); console.log(textStatus); console.log(errorThrown);
+						}
+					}).catch(function(error) {
+						console.log(error); console.log(jQuery(this));
+					});
+				}
+			});
+		});";
+		radio_player_inline_script( $js );
+		$radio_player['control_styles_script'] = true;
+	}
+
+	return $block;
+}
 // 2.5.10: added optional echo argument
 function radio_player_shortcode( $atts, $echo = false ) {
 
@@ -941,9 +1011,9 @@ function radio_player_default_colors( $atts ) {
 	return $atts;
 }
 
-// -------------------
-// Player AJAX Display
-// -------------------
+// --------------------
+// AJAX: Player Display
+// --------------------
 add_action( 'wp_ajax_radio_player', 'radio_player_ajax' );
 add_action( 'wp_ajax_nopriv_radio_player', 'radio_player_ajax' );
 function radio_player_ajax() {
@@ -2124,9 +2194,9 @@ function radio_player_get_player_settings( $echo = false ) {
 	// }
 // }
 
-// ----------------------
-// AJAX Update User State
-// ----------------------
+// -----------------------
+// AJAX: Update User State
+// -----------------------
 // note: only triggered for WordPress logged in users
 if ( function_exists( 'add_action' ) ) {
 	add_action( 'wp_ajax_radio_player_state', 'radio_player_state' );
@@ -3013,7 +3083,8 @@ function radio_player_enqueue_styles( $script = false, $skin = false ) {
 // ---------------------
 // Player Control Styles
 // ---------------------
-function radio_player_control_styles( $instance ) {
+// 2.5.16: add optional attribute overrides argument
+function radio_player_control_styles( $instance, $atts = false ) {
 
 	global $radio_player;
 
@@ -3035,6 +3106,14 @@ function radio_player_control_styles( $instance ) {
 		$colors['thumb'] = radio_station_get_setting( 'player_thumb_color' );
 		$colors['track'] = radio_station_get_setting( 'player_range_color' );
 	}
+
+	// 2.5.16: maybe apply override attributes
+	if ( $atts ) {
+		foreach ( $atts as $key => $value ) {
+			$colors[$key] = $value;
+		}
+	}
+
 	if ( function_exists( 'apply_filters' ) ) {
 		$colors['text'] = apply_filters( 'radio_station_player_text_color', $colors['text'], $instance );
 		$colors['text'] = apply_filters( 'radio_player_text_color', $colors['text'], $instance );
@@ -3228,6 +3307,44 @@ function radio_player_control_styles( $instance ) {
 	}
 
 	return $css;
+}
+
+// --------------------
+// AJAX: Control Styles
+// --------------------
+// 2.5.16: added separate control styles load for block editor
+add_action( 'wp_ajax_player_control_styles', 'radio_player_control_styles_ajax' );
+add_action( 'wp_ajax_nopriv_player_control_styles', 'radio_player_control_styles_ajax' );
+function radio_player_control_styles_ajax() {
+
+	// --- get provided parameters ---
+	$instance = absint( $_REQUEST['instance'] );
+	$atts['text'] = sanitize_text_field( wp_unslash( $_REQUEST['text'] ) );
+	$atts['background'] = sanitize_text_field( wp_unslash( $_REQUEST['background'] ) );
+	$atts['playing'] = sanitize_text_field( wp_unslash( $_REQUEST['playing'] ) );
+	$atts['buttons'] = sanitize_text_field( wp_unslash( $_REQUEST['buttons'] ) );
+	$atts['thumb'] = sanitize_text_field( wp_unslash( $_REQUEST['thumb'] ) );
+	$atts['track'] = sanitize_text_field( wp_unslash( $_REQUEST['track'] ) );
+	
+	// --- generate control styles ---
+	$css = radio_player_control_styles( $instance, $atts );
+	
+	// --- return result ---
+	if ( '' != $css ) {
+		$data = array(
+			'success'	=> 1,
+			'message'	=> 'Generated Control Colors for Player Instance ' . $instance,
+			'instance'	=> $instance,
+			'css'		=> $css
+		);
+	} else {
+		$data = array(
+			'success'	=> 0,
+			'message'	=> 'Empty Styles for Player Instance ' . $instance,
+			'instance'	=> $instance,
+		);
+	}
+	wp_send_json( $data );
 }
 
 // ------------------
