@@ -1,7 +1,7 @@
-=== Radio Station by netmix® - Manage and play your Show Schedule in WordPress! ===
+=== Radio Station - Manage your Show Schedule, Playlists, and Live Streaming ===
 Contributors: tonyzeoli, majick
 Donate link: https://netmix.org
-Tags: radio station, radio shows, radio station schedule, radio broadcasting, streaming radio player
+Tags: radio station, live streaming, show schedule, webcasting, internet radio
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires at least: 3.3
@@ -16,7 +16,7 @@ Radio Station lets you build and manage a Show Schedule for a radio station or I
 
 This plugin can be downloaded for free without any paid subscription from the [official WordPress repository](https://wordpress.org/plugins/radio-station/).
 
-#### RADIO STATION by netmix®† - THE BEST WORDPRESS PLUGIN FOR BROADCASTERS!
+#### Radio Station & Live Streaming Plugin – Manage a Show Schedule, Playlists, and Live Stream your radio station.
 
 **Radio Station** *by netmix®* is the most comprehensive WordPress plugin for broadcasters of all types, to manage your Show schedule and play your audio stream on a WordPress website. Thousands of broadcasters worldwide use **Radio Station** *by netmix®* to manage their schedules, showcase their shows, attach playlists, and feature broadcast teams.
 
