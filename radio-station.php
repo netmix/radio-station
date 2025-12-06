@@ -6,7 +6,7 @@ Plugin Name: Radio Station
 Plugin URI: https://radiostation.pro/radio-station
 Description: Adds Show pages, DJ role, playlist and on-air programming functionality to your site.
 Author: Tony Zeoli, Tony Hayes
-Version: 2.5.16
+Version: 2.5.18
 Requires at least: 3.3.1
 Text Domain: radio-station
 Domain Path: /languages
@@ -211,11 +211,13 @@ function radio_station_back_compat_player() {
 // 2.3.0: added plugin options
 // 2.4.0.8: moved options array to separate file
 // 2.5.0: move plan options check to separate function
+// 2.5.18: get options via function
+require RADIO_STATION_DIR . '/options.php';
 $timezones = radio_station_get_timezone_options( true );
 $languages = radio_station_get_language_options( true );
 $formats = radio_station_get_stream_formats();
 $plan_options = radio_station_check_plan_options();
-require RADIO_STATION_DIR . '/options.php';
+$options = radio_station_plugin_options();
 
 // ----------------------
 // Plugin Loader Settings
@@ -580,9 +582,16 @@ function radio_station_enqueue_plugin_scripts() {
 	// 2.3.0: added for automatic custom style loading
 	radio_station_enqueue_style( 'custom' );
 
+	// --- register moment js ---
+	// 2.5.0: move to separate function for reusability
+	// 2.5.18: move earlier to add as radio station dependency
+	radio_station_register_moment();
+	wp_enqueue_script( 'moment' );
+
 	// --- enqueue plugin script ---
 	// 2.3.0: added jquery dependency for inline script fragments
-	radio_station_enqueue_script( 'radio-station', array( 'jquery' ), true );
+	// 2.5.18: add moment as a dependency to prevent pageload conflicts
+	radio_station_enqueue_script( 'radio-station', array( 'jquery', 'moment' ), true );
 
 	// --- set script suffix ---
 	$suffix = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
@@ -593,10 +602,6 @@ function radio_station_enqueue_plugin_scripts() {
 	$jstz_url = plugins_url( 'js/jstz' . $suffix . '.js', RADIO_STATION_FILE );
 	wp_enqueue_script( 'jstz', $jstz_url, array(), '1.0.6', false );
 
-	// --- register moment js ---
-	// 2.5.0: move to separate function for reusability
-	radio_station_register_moment();
-	wp_enqueue_script( 'moment' );
 }
 
 // ------------------

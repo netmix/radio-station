@@ -222,7 +222,8 @@ function radio_station_add_admin_menus() {
 	add_submenu_page( 'radio-station', $rs . ' ' . __( 'Playlists', 'radio-station' ), __( 'Playlists', 'radio-station' ), 'edit_playlists', 'playlists' );
 	// add_submenu_page( 'radio-station', $rs . ' ' .  __( 'Add Playlist', 'radio-station' ), __( 'Add Playlist', 'radio-station' ), 'publish_playlists', 'add-playlist' );
 	add_submenu_page( 'radio-station', $rs . ' ' . __( 'Genres', 'radio-station' ), __( 'Genres', 'radio-station' ), 'publish_playlists', 'genres' );
-	add_submenu_page( 'radio-station', $rs . ' ' . __( 'Schedule Overrides', 'radio-station' ), __( 'Schedule Overrides', 'radio-station' ), 'edit_shows', 'schedule-overrides' );
+	// 2.5.18: change label from Schedule Overrides
+	add_submenu_page( 'radio-station', $rs . ' ' . __( 'Special Overrides', 'radio-station' ), __( 'Special Overrides', 'radio-station' ), 'edit_shows', 'schedule-overrides' );
 	// add_submenu_page( 'radio-station', $rs . ' ' .  __( 'Add Override', 'radio-station' ), __( 'Add Override', 'radio-station' ), 'publish_shows', 'add-override' );
 	do_action( 'radio_station_admin_submenu_middle' );
 	// add_submenu_page( 'radio-station', $rs . ' ' . __( 'Hosts', 'radio-station' ), __( 'Hosts', 'radio-station' ), 'edit_hosts', 'hosts' );

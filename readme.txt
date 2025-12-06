@@ -5,8 +5,8 @@ Tags: radio station, radio shows, radio station schedule, radio broadcasting, st
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires at least: 3.3
-Tested up to: 6.8.2
-Stable tag: 2.5.16
+Tested up to: 6.9
+Stable tag: 2.5.18
 
 Radio Station lets you build and manage a Show Schedule for a radio station or Internet broadcaster's WordPress website. 
 
@@ -403,6 +403,19 @@ We recommend you test these on a Staging site (or a development copy of your liv
 8. Show Conflict Display
 
 == Changelog ==
+
+= 2.5.18 =
+* Changed: display label of Overrides to Specials
+* Changed: handle of radio-player assets to stream-player
+* Improved: Related Show and Linked Show select Show ordering
+* Improved: handle Special/Override meta in Archive shortcode
+* Improved: edit Special/Override permissions for linked Shows
+* Added: Station Frequency and Location options
+* Added: Channel inputs for Shifts and Overrides
+* Fixed: Radio Player plugin conflicts
+
+= 2.5.17 =
+* Fixed: Current Show widget reloading when Shift display is off
 
 = 2.5.16 =
 * Fixed: Player Block control color style preview / loading

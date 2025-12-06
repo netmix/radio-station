@@ -382,12 +382,14 @@ function radio_station_block_editor_assets() {
 		$style_path = RADIO_STATION_DIR . 'player/css/radio-player' . $suffix . '.css';
 		$style_url = plugins_url( '/player/css/radio-player' . $suffix . '.css', RADIO_STATION_FILE );
 		$version = filemtime( $style_path );
-		wp_enqueue_style( 'radio-player', $style_url, array(), $version, 'all' );
+		// 2.5.18: change radio-player style handle to stream-player
+		wp_enqueue_style( 'stream-player', $style_url, array(), $version, 'all' );
 
 		// --- enqueue player control styles inline ---
 		$control_styles = radio_player_control_styles( false );
 		// 2.5.0: use radio_station_add_inline_style
-		radio_station_add_inline_style( 'radio-player', $control_styles );
+		// 2.5.18: change radio-player style handle to stream-player
+		radio_station_add_inline_style( 'stream-player', $control_styles );
 	}
 }
 

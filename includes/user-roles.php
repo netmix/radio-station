@@ -35,22 +35,32 @@ function radio_station_set_roles() {
 
 	// --- set only necessary capabilities for DJs ---
 	$caps = array(
+		// --- shows ---
 		'edit_shows'               => true,
 		'edit_published_shows'     => true,
 		'edit_others_shows'        => true,
 		'read_shows'               => true,
-		'edit_playlists'           => true,
-		'edit_published_playlists' => true,
+		// --- overrides ---
+		// 2.5.18: add override edit capability
+		'edit_overrides'           => true,
+		'edit_published_overrides' => true,
+		'edit_others_overrides'    => true,
+		'read_overrides'           => true,
+		// --- playlists ---
 		// by default DJs cannot edit others playlists
 		// 'edit_others_playlists'    => false,
+		'edit_playlists'           => true,
+		'edit_published_playlists' => true,
 		'read_playlists'           => true,
 		'publish_playlists'        => true,
-		'read'                     => true,
-		'upload_files'             => true,
+		// --- posts ---
 		'edit_posts'               => true,
 		'edit_published_posts'     => true,
 		'publish_posts'            => true,
 		'delete_posts'             => true,
+		// --- misc ---
+		'read'                     => true,
+		'upload_files'             => true,
 	);
 
 	// --- add the DJ role ---
@@ -103,6 +113,7 @@ function radio_station_set_roles() {
 	// --- grant all capabilities to Show Editors ---
 	// 2.3.0: set Show Editor role capabilities
 	$caps = array(
+		// --- shows ---
 		'edit_shows'             => true,
 		'edit_published_shows'   => true,
 		'edit_others_shows'      => true,
@@ -113,18 +124,7 @@ function radio_station_set_roles() {
 		'delete_private_shows'   => true,
 		'read_shows'             => true,
 		'publish_shows'          => true,
-
-		'edit_playlists'             => true,
-		'edit_published_playlists'   => true,
-		'edit_others_playlists'      => true,
-		'edit_private_playlists'     => true,
-		'delete_playlists'           => true,
-		'delete_published_playlists' => true,
-		'delete_others_playlists'    => true,
-		'delete_private_playlists'   => true,
-		'read_playlists'             => true,
-		'publish_playlists'          => true,
-
+		// --- overrides ---
 		'edit_overrides'             => true,
 		'edit_overrides_playlists'   => true,
 		'edit_others_overrides'      => true,
@@ -135,28 +135,40 @@ function radio_station_set_roles() {
 		'delete_private_overrides'   => true,
 		'read_overrides'             => true,
 		'publish_overrides'          => true,
-
+		// --- playlists ---
+		'edit_playlists'             => true,
+		'edit_published_playlists'   => true,
+		'edit_others_playlists'      => true,
+		'edit_private_playlists'     => true,
+		'delete_playlists'           => true,
+		'delete_published_playlists' => true,
+		'delete_others_playlists'    => true,
+		'delete_private_playlists'   => true,
+		'read_playlists'             => true,
+		'publish_playlists'          => true,
+		// --- hosts ---
 		'edit_hosts'           => true,
 		'edit_published_hosts' => true,
 		'edit_others_hosts'    => true,
 		'delete_hosts'         => true,
 		'read_hosts'           => true,
 		'publish_hosts'        => true,
-
+		// --- producers ---
 		'edit_producers'           => true,
 		'edit_published_producers' => true,
 		'edit_others_producers'    => true,
 		'delete_producers'         => true,
 		'read_producers'           => true,
 		'publish_producers'        => true,
-
-		'read'                 => true,
-		'upload_files'         => true,
+		// --- posts ---
 		'edit_posts'           => true,
 		'edit_others_posts'    => true,
 		'edit_published_posts' => true,
 		'publish_posts'        => true,
 		'delete_posts'         => true,
+		// --- misc ---
+		'read'                 => true,
+		'upload_files'         => true,
 	);
 
 	// --- add the Show Editor role ---
@@ -174,20 +186,21 @@ function radio_station_set_roles() {
 			$author_caps = array();
 		}
 		$extra_caps = array(
+			// --- shows ---
 			'edit_shows',
 			'edit_published_shows',
 			'read_shows',
 			'publish_shows',
-
-			'edit_playlists',
-			'edit_published_playlists',
-			'read_playlists',
-			'publish_playlists',
-
+			// --- overrides ---
 			'edit_overrides',
 			'edit_published_overrides',
 			'read_overrides',
 			'publish_overrides',
+			// --- playlists ---
+			'edit_playlists',
+			'edit_published_playlists',
+			'read_playlists',
+			'publish_playlists',
 		);
 		foreach ( $extra_caps as $cap ) {
 			if ( !array_key_exists( $cap, $author_caps ) || ( !$author_caps[$cap] ) ) {
@@ -199,6 +212,7 @@ function radio_station_set_roles() {
 	// --- specify edit caps (for editors and admins) ---
 	// 2.3.0: added show override, host and producer capabilities
 	$edit_caps = array(
+		// --- shows ---
 		'edit_shows',
 		'edit_published_shows',
 		'edit_others_shows',
@@ -209,18 +223,7 @@ function radio_station_set_roles() {
 		'delete_private_shows',
 		'read_shows',
 		'publish_shows',
-
-		'edit_playlists',
-		'edit_published_playlists',
-		'edit_others_playlists',
-		'edit_private_playlists',
-		'delete_playlists',
-		'delete_published_playlists',
-		'delete_others_playlists',
-		'delete_private_playlists',
-		'read_playlists',
-		'publish_playlists',
-
+		// --- overrides ---
 		'edit_overrides',
 		'edit_published_overrides',
 		'edit_others_overrides',
@@ -231,7 +234,18 @@ function radio_station_set_roles() {
 		'delete_private_overrides',
 		'read_overrides',
 		'publish_overrides',
-
+		// --- playlists ---
+		'edit_playlists',
+		'edit_published_playlists',
+		'edit_others_playlists',
+		'edit_private_playlists',
+		'delete_playlists',
+		'delete_published_playlists',
+		'delete_others_playlists',
+		'delete_private_playlists',
+		'read_playlists',
+		'publish_playlists',
+		// --- hosts ---
 		'edit_hosts',
 		'edit_published_hosts',
 		'edit_others_hosts',
@@ -239,7 +253,7 @@ function radio_station_set_roles() {
 		'delete_others_hosts',
 		'read_hosts',
 		'publish_hosts',
-
+		// --- producers ---
 		'edit_producers',
 		'edit_published_producers',
 		'edit_others_producers',
@@ -335,58 +349,62 @@ function radio_station_revoke_show_edit_cap( $allcaps, $caps, $args, $user ) {
 		}
 	}
 
-	// --- get roles with edit shows capability ---
-	$edit_show_roles = $edit_others_shows_roles = array();
-	if ( isset( $wp_roles->roles ) && is_array( $wp_roles->roles ) ) {
-		foreach ( $wp_roles->roles as $name => $role ) {
-			// 2.3.0: fix to skip roles with no capabilities assigned
-			if ( isset( $role['capabilities'] ) ) {
-				foreach ( $role['capabilities'] as $capname => $capstatus ) {
-					// 2.3.0: change publish_shows cap check to edit_shows
-					if ( ( 'edit_shows' === $capname ) && (bool) $capstatus ) {
-						if ( !in_array( $name, $edit_show_roles ) ) {
-							$edit_show_roles[] = $name;
+	// --- show capabilities check ---
+	// 2.5.18: moved check for show slug outside
+	if ( RADIO_STATION_SHOW_SLUG == $post->post_type ) {
+
+		// --- get roles with edit shows capability ---
+		$edit_show_roles = $edit_others_shows_roles = array();
+		if ( isset( $wp_roles->roles ) && is_array( $wp_roles->roles ) ) {
+			foreach ( $wp_roles->roles as $name => $role ) {
+				// 2.3.0: fix to skip roles with no capabilities assigned
+				if ( isset( $role['capabilities'] ) ) {
+					foreach ( $role['capabilities'] as $capname => $capstatus ) {
+						// 2.3.0: change publish_shows cap check to edit_shows
+						if ( ( 'edit_shows' === $capname ) && (bool) $capstatus ) {
+							if ( !in_array( $name, $edit_show_roles ) ) {
+								$edit_show_roles[] = $name;
+							}
 						}
-					}
-					// 2.3.3.6: add check for edit-others_shows capability
-					if ( ( 'edit_others_shows' === $capname ) && (bool) $capstatus ) {
-						if ( !in_array( $name, $edit_others_shows_roles ) ) {
-							$edit_others_shows_roles[] = $name;
+						// 2.3.3.6: add check for edit_others_shows capability
+						if ( ( 'edit_others_shows' === $capname ) && (bool) $capstatus ) {
+							if ( !in_array( $name, $edit_others_shows_roles ) ) {
+								$edit_others_shows_roles[] = $name;
+							}
 						}
 					}
 				}
 			}
 		}
-	}
 
-	// 2.3.3.6: preserve if user has edit_others_shows capability
-	foreach ( $edit_others_shows_roles as $role ) {
-		if ( in_array( $role, $user->roles ) ) {
-			// 2.4.0.4: do not automatically assume capability match
-			// return $allcaps;
-			$found = true;
+		// 2.5.18: fix to move false before edit others show check
+		$found = false;
+		// 2.3.3.6: preserve if user has edit_others_shows capability
+		foreach ( $edit_others_shows_roles as $role ) {
+			if ( in_array( $role, $user->roles ) ) {
+				// 2.4.0.4: do not automatically assume capability match
+				// return $allcaps;
+				$found = true;
+			}
 		}
-	}
-
-	// 2.2.8: remove strict in_array checking
-	$found = false;
-	foreach ( $edit_show_roles as $role ) {
-		if ( in_array( $role, $user->roles ) ) {
-			$found = true;
+		if ( !$found ) {
+			// 2.2.8: remove strict in_array checking
+			foreach ( $edit_show_roles as $role ) {
+				if ( in_array( $role, $user->roles ) ) {
+					$found = true;
+				}
+			}
 		}
-	}
 
-	// --- maybe revoke edit show capability for post ---
-	// 2.3.3.6: fix to incorrect logic for removing edit show capability
-	if ( $found ) {
+		// --- maybe revoke edit show capability for post ---
+		// 2.3.3.6: fix to incorrect logic for removing edit show capability
+		if ( $found ) {
 
-		// --- limit this to published shows ---
-		// 2.3.0: added object and property_exists check to be safe
-		if ( isset( $post ) && is_object( $post ) && property_exists( $post, 'post_type' ) && isset( $post->post_type ) ) {
+			// --- limit this to published shows ---
+			// 2.3.0: added object and property_exists check to be safe
+			if ( isset( $post ) && is_object( $post ) && property_exists( $post, 'post_type' ) && isset( $post->post_type ) ) {
 
-			// 2.3.0: removed is_admin check (so works with frontend edit show link)
-			// 2.3.0: moved check if show is published inside
-			if ( RADIO_STATION_SHOW_SLUG == $post->post_type ) {
+				// 2.3.0: removed is_admin check (so works with frontend edit show link)
 
 				// --- get show hosts and producers ---
 				$hosts = get_post_meta( $post->ID, 'show_user_list', true );
@@ -432,7 +450,108 @@ function radio_station_revoke_show_edit_cap( $allcaps, $caps, $args, $user ) {
 				}
 			}
 		}
+
+	}
+
+	// --- override capabilites check ---
+	// 2.5.18: added override post type handling
+	if ( RADIO_STATION_OVERRIDE_SLUG == $post->post_type ) {
+
+		// --- get roles with edit shows capability ---
+		$edit_show_roles = $edit_others_shows_roles = array();
+		if ( isset( $wp_roles->roles ) && is_array( $wp_roles->roles ) ) {
+			foreach ( $wp_roles->roles as $name => $role ) {
+				if ( isset( $role['capabilities'] ) ) {
+					foreach ( $role['capabilities'] as $capname => $capstatus ) {
+						if ( ( 'edit_overrides' === $capname ) && (bool) $capstatus ) {
+							if ( !in_array( $name, $edit_override_roles ) ) {
+								$edit_override_roles[] = $name;
+							}
+						}
+						if ( ( 'edit_others_overrides' === $capname ) && (bool) $capstatus ) {
+							if ( !in_array( $name, $edit_others_overrides_roles ) ) {
+								$edit_others_overrides_roles[] = $name;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		// --- check if capability found ---
+		$found = false;
+		foreach ( $edit_others_overrides_roles as $role ) {
+			if ( in_array( $role, $user->roles ) ) {
+				$found = true;
+			}
+		}
+		if ( !$found ) {
+			foreach ( $edit_override_roles as $role ) {
+				if ( in_array( $role, $user->roles ) ) {
+					$found = true;
+				}
+			}
+		}
+
+		// --- maybe revoke edit override capability for post ---
+		if ( $found ) {
+
+			// --- limit this to published shows ---
+			if ( isset( $post ) && is_object( $post ) && property_exists( $post, 'post_type' ) && isset( $post->post_type ) ) {
+
+				$show_id = get_post_meta( $post->ID, 'linked_show_id', true );
+				$linked_fields = get_post_meta( $post->ID, 'linked_show_fields', true );
+				
+				if ( $show_id && $linked_fields['show_user_list'] ) {
+					$hosts = get_post_meta( $show_id, 'show_user_list', true );
+				} else {
+					$hosts = get_post_meta( $post->ID, 'show_user_list', true );
+				}
+				if ( $show_id && $linked_fields['show_producer_list'] ) {
+					$producers = get_post_meta( $show_id, 'show_producer_list', true );
+				} else {
+					$producers = get_post_meta( $post->ID, 'show_producer_list', true );
+				}
+
+				// --- get show hosts and producers ---
+				if ( !$hosts || empty( $hosts ) ) {
+					$hosts = array();
+				} elseif ( !is_array( $hosts ) ) {
+					$hosts = array( $hosts );
+				}
+				if ( !$producers || empty( $producers ) ) {
+					$producers = array();
+				} elseif ( !is_array( $producers ) ) {
+					$producers = array( $producers );
+				}
+
+				// ---- revoke editing capability if not assigned to this show ---
+				if ( !in_array( $user->ID, $hosts ) && !in_array( $user->ID, $producers ) ) {
+
+					// --- remove the edit_overrides capability ---
+					// $allcaps['edit_overrides'] = false;
+					$allcaps['edit_others_overrides'] = false;
+					if ( RADIO_STATION_DEBUG ) {
+						echo '<span style="display:none;">Removed Edit Override Caps for Post ID ' . esc_html( $post->ID ) . '</span>';
+					}
+					if ( 'publish' == $post->post_status ) {
+						$allcaps['edit_published_overrides'] = false;
+					}
+
+				} else {
+					$allcaps['edit_overrides'] = true;
+					$allcaps['edit_others_overrides'] = true;
+					if ( RADIO_STATION_DEBUG ) {
+						echo '<span style="display:none;">Added Edit Override Caps for Post ID ' . esc_html( $post->ID ) . '</span>';
+					}
+
+				}
+
+			}
+		}
+
 	}
 
 	return $allcaps;
 }
+

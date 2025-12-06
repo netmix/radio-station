@@ -73,11 +73,7 @@ $social_icons = apply_filters( 'radio_station_show_social_icons', false, $post_i
 // --- get data format ---
 // 2.3.2: set filterable time formats
 // 2.3.3.9: moved out of show times block
-if ( 24 == (int) $time_format ) {
-	$start_data_format = $end_data_format = 'H:i';
-} else {
-	$start_data_format = $end_data_format = 'g:i a';
-}
+$start_data_format = $end_data_format = ( 24 == (int) $time_format ) ? 'H:i' : 'g:i a';
 $start_data_format = apply_filters( 'radio_station_time_format_start', $start_data_format, 'show-template', $post_id );
 $end_data_format = apply_filters( 'radio_station_time_format_end', $end_data_format, 'show-template', $post_id );
 
@@ -456,7 +452,7 @@ if ( $show_phone || $hosts || $producers || $genres || $languages ) {
 		$genre_links = array();
 		foreach ( $genres as $genre ) {
 			$genre_link = get_term_link( $genre );
-			$genre_links[] = '<a href="' . esc_url( $genre_link ) . '">' . esc_html( $genre->name ) . '</a>' . "\n";
+			$genre_links[] = '<a href="' . esc_url( $genre_link ) . '">' . esc_html( $genre->name ) . '</a>';
 		}
 		$meta_blocks['genres'] .= implode( ', ', $genre_links ) . "\n";
 		$meta_blocks['genres'] .= '</div>' . "\n";
@@ -547,6 +543,11 @@ if ( !$active || !$shifts ) {
 	$label = __( 'Not Currently Scheduled.', 'radio-station' );
 	$label = apply_filters( 'radio_station_show_no_shifts_label', $label, $post_id );
 	$blocks['show_times'] .= esc_html( $label );
+	
+	// 2.5.18: clear show times block for override display
+	if ( $post_type == RADIO_STATION_OVERRIDE_SLUG ) {
+		$blocks['show_times'] = '';
+	}
 
 } else {
 
@@ -704,14 +705,14 @@ if ( !$active || !$shifts ) {
 // 2.3.3.9: maybe output linked override times
 $date_format = apply_filters( 'radio_station_override_date_format', 'j F' );
 $show_past_dates = apply_filters( 'radio_station_override_show_past_dates', false );
-$overrides = radio_station_get_linked_override_times( $post_id );
+$overrides = radio_station_get_linked_override_times( $post_id, $show_past_dates );
 $scheduled = '';
 if ( $overrides && is_array( $overrides ) && ( count( $overrides ) > 0 ) ) {
 	if ( RADIO_STATION_DEBUG ) {
 		echo '<span style="display:none;">LINKED OVERRIDES: ' . esc_html( print_r( $overrides, true ) ) . '</span>' . "\n";
 	}
 	$now = radio_station_get_now();
-	foreach ( $overrides as $override ) {
+	foreach ( $overrides as $i => $override ) {
 		// 2.5.8: added isset check for override disabled key
 		if ( !isset( $override['disabled'] ) || ( 'yes' != $override['disabled'] ) ) {
 			// 2.5.6: added check that override keys are not empty
@@ -725,41 +726,49 @@ if ( $overrides && is_array( $overrides ) && ( count( $overrides ) > 0 ) ) {
 					$override_end_time = $override_end_time + ( 24 * 60 * 60 );
 				}
 
-				// --- maybe filter out past scheduled dates ---
-				if ( $show_past_dates || ( $override_end_time > $now ) ) {
+				// --- maybe filter out past scheduled dates
+				// 2.5.18: moved past date check to within radio_station_get_linked_override_times
 
-					$start_display = radio_station_get_time( $start_data_format, $override_start_time );
-					$end_display = radio_station_get_time( $end_data_format, $override_end_time );
-					$start_display = radio_station_translate_time( $start_display );
-					$end_display = radio_station_translate_time( $end_display );
-					$date_time = radio_station_to_time( $override['date'] . ' 00:00' );
-					$date = radio_station_get_time( $date_format, $date_time );
+				$start_display = radio_station_get_time( $start_data_format, $override_start_time );
+				$end_display = radio_station_get_time( $end_data_format, $override_end_time );
+				$start_display = radio_station_translate_time( $start_display );
+				$end_display = radio_station_translate_time( $end_display );
+				$date_time = radio_station_to_time( $override['date'] . ' 00:00' );
+				$date = radio_station_get_time( $date_format, $date_time );
 
-					// 2.4.0.6: use filtered shift separator
-					$separator = ' - ';
-					$separator = apply_filters( 'radio_station_show_times_separator', $separator, 'override-content' );
+				// 2.4.0.6: use filtered shift separator
+				$separator = ' - ';
+				$separator = apply_filters( 'radio_station_show_times_separator', $separator, 'override-content' );
 
-					$scheduled .= '<div class="override-time">' . "\n";
-						$scheduled .= '<span class="rs-date rs-start-date" data-format="' . esc_attr( $date_format ) . '" data="' . esc_attr( $date_time ) . '">' . esc_html( $date ) . '</span>' . "\n";
-						$scheduled .= '<span class="rs-time rs-start-time" data-format="' . esc_attr( $start_data_format ) . '" data="' . esc_attr( $override_start_time ) . '">' . esc_html( $start_display ) . '</span>' . "\n";
-						$scheduled .= '<span class="rs-sep">' . esc_html( $separator ) . '</span>' . "\n";
-						$scheduled .= '<span class="rs-time rs-end-time" data-format="' . esc_attr( $end_data_format ) . '" data="' . esc_attr( $override_end_time ) . '">' . esc_html( $end_display ) . '</span>' . "\n";
-					$scheduled .= '</div>' . "\n";
+				// TODO: link time to override in list ?
+				$schedule = '<div class="override-time">' . "\n";
+					$schedule .= '<span class="rs-date rs-start-date" data-format="' . esc_attr( $date_format ) . '" data="' . esc_attr( $date_time ) . '">' . esc_html( $date ) . '</span>' . "\n";
+					$schedule .= '<span class="rs-time rs-start-time" data-format="' . esc_attr( $start_data_format ) . '" data="' . esc_attr( $override_start_time ) . '">' . esc_html( $start_display ) . '</span>' . "\n";
+					$schedule .= '<span class="rs-sep">' . esc_html( $separator ) . '</span>' . "\n";
+					$schedule .= '<span class="rs-time rs-end-time" data-format="' . esc_attr( $end_data_format ) . '" data="' . esc_attr( $override_end_time ) . '">' . esc_html( $end_display ) . '</span>' . "\n";
+				$schedule .= '</div>' . "\n";
 
-					$scheduled .= '<div class="show-user-time">' . "\n";
-						$scheduled .= '[<span class="rs-date rs-start-date"></span>' . "\n";
-						$scheduled .= '<span class="rs-time rs-start-time"></span>' . "\n";
-						$scheduled .= '<span class="rs-sep">' . esc_html( $separator ) . '</span>' . "\n";
-						$scheduled .= '<span class="rs-time rs-end-time"></span>]' . "\n";
-					$scheduled .= '</div>' . "\n";
-				}
+				$schedule .= '<div class="show-user-time">' . "\n";
+					$schedule .= '[<span class="rs-date rs-start-date"></span>' . "\n";
+					$schedule .= '<span class="rs-time rs-start-time"></span>' . "\n";
+					$schedule .= '<span class="rs-sep">' . esc_html( $separator ) . '</span>' . "\n";
+					$schedule .= '<span class="rs-time rs-end-time"></span>]' . "\n";
+				$schedule .= '</div>' . "\n";
+
+				// 2.5.18: added show override display filter
+				$schedule = apply_filters( 'radio_station_show_override_display', $schedule, $override, $show_id );
+				$scheduled .= $schedule;
 			}
 		}
 	}
 }
 if ( '' != $scheduled ) {
-	$blocks['show_times'] .= '<h5>' . esc_html( __( 'Scheduled Dates', 'radio-station' ) ) . '</h5>' . "\n";
+	// 2.5.18: change test from scheduled dates to special dates
+	// 2.5.18: change h5 to h4 for display consistency
+	$blocks['show_times'] .= '<h4>' . esc_html( __( 'Special Dates', 'radio-station' ) ) . '</h4>' . "\n";
 	$blocks['show_times'] .= $scheduled . '<br>' . "\n";
+} else {
+	$overrides = false;
 }
 
 // --- maybe add link to full schedule page ---
@@ -840,6 +849,26 @@ if ( $show_description ) {
 	$sections['about']['content'] .= '</div>' . "\n";
 	$sections['about']['content'] .= $show_desc_buttons;
 	$sections['about']['content'] .= '</div>' . "\n";
+}
+
+// --- Show Overrides (Specials) ---
+// 2.5.18: add linked overrides section (but do not duplicate on override pages)
+if ( $overrides && ( $post_type != RADIO_STATION_OVERRIDE_SLUG ) ) {
+	$override_type = get_post_type_object( RADIO_STATION_OVERRIDE_SLUG );
+	$override_label = $override_type->labels->name;
+	$sections['overrides']['heading'] = '<a name="show-overrides">';
+	$label = $show_label . ' ' . $override_label;
+	$label = apply_filters( 'radio_station_show_overrides_label', $label, $post_id );
+	$sections['overrides']['heading'] .= '<h3 id="show-section-overrides">' . esc_html( $label ) . '</h3>' . "\n";
+	$anchor = apply_filters( 'radio_station_show_overrides_anchor', $override_label, $post_id );
+	$sections['overrides']['anchor'] = $anchor;
+
+	// $radio_station_data['show-overrides'] = $overrides; // do NOT do this
+	$sections['overrides']['content'] = '<div id="show-overrides" class="show-section-content"><br>' . "\n";
+	$shortcode = '[show-overrides-archive per_page="' . $posts_per_page . '" show="' . $post_id . '"]';
+	$shortcode = apply_filters( 'radio_station_show_page_overrides_shortcode', $shortcode, $post_id );
+	$sections['overrides']['content'] .= do_shortcode( $shortcode );
+	$sections['overrides']['content'] .= '</div>' . "\n";
 }
 
 // --- Show Episodes Tab ---
@@ -989,8 +1018,10 @@ echo '<input type="hidden" id="radio-page-type" value="show">' . "\n";
 	}
 
 	// --- filter section order ---
-	$section_order = array( 'about', 'episodes', 'posts', 'playlists', 'hosts', 'producers' );
+	$section_order = array( 'about', 'overrides', 'posts', 'episodes', 'playlists', 'hosts', 'producers' );
 	$section_order = apply_filters( 'radio_station_show_page_section_order', $section_order, $post_id );
+
+	echo '<div style="display:none;">SECTION ORDER: ' . print_r( $section_order, true ) . '</div>' . "\n";
 
 	// --- Display Show Sections ---
 	// 2.3.0: filter show sections for display

@@ -7,6 +7,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+= 2.5.18 =
+* Changed: display label of Overrides to Specials
+* Changed: handle of radio-player assets to stream-player
+* Improved: Related Show and Linked Show select Show ordering
+* Improved: handle Special/Override meta in Archive shortcode
+* Improved: edit Special/Override permissions for linked Shows
+* Added: Station Frequency and Location options
+* Added: hidden Channel inputs for Shifts and Overrides
+* Fixed: Radio Player plugin conflicts
+
+= 2.5.17 =
+* Fixed: Current Show widget reloading when Shift display is off
+
 = 2.5.16 =
 * Fixed: Player Block control color style preview / loading
 

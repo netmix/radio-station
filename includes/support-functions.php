@@ -930,8 +930,10 @@ function radio_station_get_linked_overrides( $post_id ) {
 // Get Linked Override Times
 // -------------------------
 // 2.3.3.9: added for show page display
-function radio_station_get_linked_override_times( $post_id ) {
+// 2.5.18: added option to filter past overrides by default
+function radio_station_get_linked_override_times( $post_id, $include_past = false ) {
 
+	$now = radio_station_get_now();
 	$override_ids = radio_station_get_linked_overrides( $post_id );
 	$overrides = array();
 	if ( $override_ids && is_array( $override_ids ) && ( count( $override_ids ) > 0 ) ) {
@@ -942,9 +944,23 @@ function radio_station_get_linked_override_times( $post_id ) {
 					$schedule = array( $schedule );
 				}
 				foreach ( $schedule as $override ) {
-					// 2.5.6: add check if override is disabled
-					if ( 'yes' != $override['disabled'] ) {
-						$overrides[] = $override;
+					if ( !isset( $override['disabled'] ) || ( 'yes' != $override['disabled'] ) ) {
+						if ( !empty( $override['date'] ) && !empty( $override['start_hour'] ) && !empty( $override['start_min'] ) && !empty( $override['start_meridian'] ) && !empty( $override['end_hour'] ) && !empty( $override['end_min'] ) && !empty( $override['end_meridian'] ) ) {
+
+							$start = $override['date'] . ' ' . $override['start_hour'] . ':' . $override['start_min'] . ' ' . $override['start_meridian'];
+							$end = $override['date'] . ' ' . $override['end_hour'] . ':' . $override['end_min'] . ' ' . $override['end_meridian'];
+							$override_start_time = radio_station_to_time( $start );
+							$override_end_time = radio_station_to_time( $end );
+							if ( $override_end_time <= $override_start_time ) {
+								$override_end_time = $override_end_time + ( 24 * 60 * 60 );
+							}
+
+							// --- maybe filter out past scheduled dates ---
+							if ( $include_past || ( $override_end_time > $now ) ) {
+								$override['override_id'] = $override_id;
+								$overrides[] = $override;
+							}
+						}
 					}
 				}
 			}
@@ -2510,6 +2526,9 @@ function radio_station_settings_allowed_html( $allowed, $type, $context ) {
 	$allowed['option'] = array(
 		'selected' => array(),
 		'value'    => array(),
+		// 2.5.18: added disabled and class attributes
+		'disabled' => array(),
+		'class'    => array(),
 	);
 
 	// --- option group ---

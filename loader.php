@@ -5,7 +5,7 @@
 // =================================
 
 // -------------
-// Loader v1.3.5
+// Loader v1.3.6
 // -------------
 // Note: Changelog at end of file.
 
@@ -2392,7 +2392,6 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 
 					$sectionheadings = array();
 					foreach ( $sections as $section => $sectionlabel ) {
-
 						if ( array_key_exists( $section, $taboptions[$tab] ) ) {
 
 							// --- section top ---
@@ -2425,7 +2424,6 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 							echo '</td></tr>' . "\n";
 
 						}
-
 					}
 				} else {
 					foreach ( $taboptions[$tab]['general'] as $key => $option ) {
@@ -2509,6 +2507,9 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 				'value'			=> array(),
 				'type'			=> array(),
 				'placeholder'	=> array(),
+				// 1.3.6: add rows and cols
+				'rows'			=> array(),
+				'cols'			=> array(),
 			);
 
 			// --- select ---
@@ -2586,7 +2587,7 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 		// -----------
 		// 1.0.9: added for automatic Settings table generation
 		public function setting_row( $option ) {
-
+			
 			// --- prepare setting keys ---
 			$args = $this->args;
 			$namespace = $this->namespace;
@@ -2637,6 +2638,7 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 				$type = 'multiselect';
 				$option['options'] = 'POSTIDS';
 			}
+			// TODO: password and multitoggle
 
 			// --- prepare row output ---
 			$row = '<tr class="settings-row">' . "\n";
@@ -2926,11 +2928,8 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 						if ( 'text' != $type ) {
 							$class .= ' setting-' . $type;
 						}
-						if ( isset( $option['placeholder'] ) ) {
-							$placeholder = $option['placeholder'];
-						} else {
-							$placeholder = '';
-						}
+						$placeholder = isset( $option['placeholder'] ) ? $option['placeholder'] : '';
+
 						// 1.1.7: fix to attribute quoting output
 						$row .= '<input type="text" name="' . esc_attr( $name ) . '" class="' . esc_attr( $class ) . '" value="' . esc_attr( $setting ) . '" placeholder="' . esc_attr( $placeholder ) . '">' . "\n";
 						if ( isset( $option['suffix'] ) ) {
@@ -2940,43 +2939,22 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 					} elseif ( 'textarea' == $type ) {
 
 						// --- textarea input ---
-						if ( isset( $option['rows'] ) ) {
-							$rows = $option['rows'];
-						} else {
-							$rows = '6';
-						}
-						if ( isset( $option['placeholder'] ) ) {
-							$placeholder = $option['placeholder'];
-						} else {
-							$placeholder = '';
-						}
+						$rows = isset( $option['rows'] ) ? $option['rows'] : '6';
+						$cols = isset( $option['cols'] ) ? $option['cols'] : '80';
+						$placeholder = isset( $option['placeholder'] ) ? $option['placeholder'] : '';
+
 						// 1.2.4: added missing esc_textarea on value
-						$row .= '<textarea class="setting-textarea" name="' . esc_attr( $name ) . '" rows="' . esc_attr( $rows ) . '" placeholder="' . esc_attr( $placeholder ) . '">' . esc_textarea( $setting ) . '</textarea>' . "\n";
+						// 1.3.6: fixed rows attribute, added cols attribute
+						$row .= '<textarea class="setting-textarea" name="' . esc_attr( $name ) . '" rows="' . esc_attr( $rows ) . '" cols="' . esc_attr( $cols ) . '" placeholder="' . esc_attr( $placeholder ) . '">' . esc_textarea( $setting ) . '</textarea>' . "\n";
 
 					} elseif ( ( 'numeric' == $type ) || ( 'number' == $type ) ) {
 
 						// --- numeric text input ---
 						// note: step key is only used for controls, not for validation
-						if ( isset( $option['placeholder'] ) ) {
-							$placeholder = $option['placeholder'];
-						} else {
-							$placeholder = '';
-						}
-						if ( isset( $option['min'] ) ) {
-							$min = $option['min'];
-						} else {
-							$min = 'false';
-						}
-						if ( isset( $option['max'] ) ) {
-							$max = $option['max'];
-						} else {
-							$max = 'false';
-						}
-						if ( isset( $option['step'] ) ) {
-							$step = $option['step'];
-						} else {
-							$step = 1;
-						}
+						$placeholder = isset( $option['placeholder'] ) ? $option['placeholder'] : '';
+						$min =  isset( $option['min'] ) ? $option['min'] : 'false';
+						$max = isset( $option['max'] ) ? $option['max'] : 'false';
+						$step = isset( $option['step'] ) ? $option['step'] : 1;
 
 						// 1.1.7: remove esc_js from onclick attributes
 						// $onclickdown = "plugin_panel_number_step('down', '" . esc_attr( $name ) . "', " . esc_attr( $min ) . ", " . esc_attr( $max ) . ", " . esc_attr( $step ) . ");" . "\n";
@@ -3593,11 +3571,13 @@ if ( !function_exists( 'radio_station_load_prefixed_functions' ) ) {
 		// Settings Row
 		// ------------
 		// 1.0.9: added for standalone setting row output
-		if ( !function_exists( 'radio_station_settings_row' ) ) {
-			function radio_station_settings_row( $option, $setting ) {
+		// 1.3.6: fix to incorrect plural function name _settings_row
+		if ( !function_exists( 'radio_station_setting_row' ) ) {
+			function radio_station_setting_row( $option, $setting ) {
 				$namespace = radio_station_get_namespace_from_function( __FUNCTION__ );
 				$instance = $GLOBALS[$namespace . '_instance'];
-				$instance->settings_row( $option, $setting );
+				// 1.3.6: fix to incorrect plural function name settings_row
+				$instance->setting_row( $option, $setting );
 			}
 		}
 

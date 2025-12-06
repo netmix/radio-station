@@ -144,30 +144,35 @@
 	float: none;
 }
 
+.show-archive-item-description, .override-archive-item-description {
+	overflow-wrap: break-word; word-break: normal;
+}
+
 /* Show Subarchive Shortcodes */
 /* -------------------------- */
-.show-post, .show-playlist, .show-host, .show-producer, .show-episode {
+.show-post, .show-override, .show-playlist, .show-host, .show-producer, .show-episode {
 	padding-top: 10px;
 	padding-bottom: 10px;
 }
 
-.show-post-thumbnail, .show-playlist-thumbnail, .show-host-thumbnail, .show-producer-thumbnail, .show-episode-thumbnail,
-.show-post-info, .show-playlist-info, .show-host-info, .show-producer-info, .show-episode-info {
+.show-post-thumbnail, .show-override-thumbnail, show-playlist-thumbnail, .show-host-thumbnail, .show-producer-thumbnail, .show-episode-thumbnail,
+.show-post-info, .show-override-info, .show-playlist-info, .show-host-info, .show-producer-info, .show-episode-info {
 	display: table-cell;
 	vertical-align: top;
 }
 
-.show-post-thumbnail, .show-playlist-thumbnail, .show-host-thumbnail, .show-producer-thumbnail, .show-episode-thumbnail {
+.show-post-thumbnail, .show-override-thumbnail, .show-playlist-thumbnail, .show-host-thumbnail, .show-producer-thumbnail, .show-episode-thumbnail {
 	padding-right: 30px;
 	margin-top: 10px;
 	min-width: 150px;
 }
 
-.show-post-info, .show-playlist-info, .show-host-info, .show-producer-info, .show-episode-info {
+.show-post-info, .show-override-info, .show-playlist-info, .show-host-info, .show-producer-info, .show-episode-info {
 	max-width: 600px;
 }
 
-.show-post-title, .show-playlist-title, .show-host-title, .show-producer-title, .show-episode-title {
+.show-post-title, .show-override-title, .show-playlist-title, .show-host-title, .show-producer-title, .show-episode-title,
+.show-post-meta, .show-override-meta, .show-playlist-meta, .show-host-meta, .show-producer-meta, .show-episode-meta {
 	margin-bottom: 10px;
 }
 

@@ -40,6 +40,13 @@ if ( !function_exists( 'sanitize_text_field' ) ) {
  }
 }
 
+// ----------------------------
+// Backwards Compatible Defines
+// ----------------------------
+// 2.5.18: added for Radio Player no-conflict backwards compatibility
+if ( !defined( 'RADIO_PLAYER_URL' ) && defined( 'RADIO_PLAYER_DIR_URL' ) ) {
+	define( 'RADIO_PLAYER_URL', RADIO_PLAYER_DIR_URL );
+}
 
 // ----------------------------------------
 // Player Backwards Compatibility Functions
