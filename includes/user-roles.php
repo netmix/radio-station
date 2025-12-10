@@ -349,60 +349,59 @@ function radio_station_revoke_show_edit_cap( $allcaps, $caps, $args, $user ) {
 		}
 	}
 
-	// --- show capabilities check ---
-	// 2.5.18: moved check for show slug outside
-	if ( RADIO_STATION_SHOW_SLUG == $post->post_type ) {
+	// 2.3.0: added object and property_exists check to be safe
+	if ( isset( $post ) && is_object( $post ) && property_exists( $post, 'post_type' ) && isset( $post->post_type ) ) {
 
-		// --- get roles with edit shows capability ---
-		$edit_show_roles = $edit_others_shows_roles = array();
-		if ( isset( $wp_roles->roles ) && is_array( $wp_roles->roles ) ) {
-			foreach ( $wp_roles->roles as $name => $role ) {
-				// 2.3.0: fix to skip roles with no capabilities assigned
-				if ( isset( $role['capabilities'] ) ) {
-					foreach ( $role['capabilities'] as $capname => $capstatus ) {
-						// 2.3.0: change publish_shows cap check to edit_shows
-						if ( ( 'edit_shows' === $capname ) && (bool) $capstatus ) {
-							if ( !in_array( $name, $edit_show_roles ) ) {
-								$edit_show_roles[] = $name;
+		// --- show capabilities check ---
+		// 2.5.18: moved check for show slug outside
+		if ( RADIO_STATION_SHOW_SLUG == $post->post_type ) {
+
+			// --- get roles with edit shows capability ---
+			$edit_show_roles = $edit_others_shows_roles = array();
+			if ( isset( $wp_roles->roles ) && is_array( $wp_roles->roles ) ) {
+				foreach ( $wp_roles->roles as $name => $role ) {
+					// 2.3.0: fix to skip roles with no capabilities assigned
+					if ( isset( $role['capabilities'] ) ) {
+						foreach ( $role['capabilities'] as $capname => $capstatus ) {
+							// 2.3.0: change publish_shows cap check to edit_shows
+							if ( ( 'edit_shows' === $capname ) && (bool) $capstatus ) {
+								if ( !in_array( $name, $edit_show_roles ) ) {
+									$edit_show_roles[] = $name;
+								}
 							}
-						}
-						// 2.3.3.6: add check for edit_others_shows capability
-						if ( ( 'edit_others_shows' === $capname ) && (bool) $capstatus ) {
-							if ( !in_array( $name, $edit_others_shows_roles ) ) {
-								$edit_others_shows_roles[] = $name;
+							// 2.3.3.6: add check for edit_others_shows capability
+							if ( ( 'edit_others_shows' === $capname ) && (bool) $capstatus ) {
+								if ( !in_array( $name, $edit_others_shows_roles ) ) {
+									$edit_others_shows_roles[] = $name;
+								}
 							}
 						}
 					}
 				}
 			}
-		}
 
-		// 2.5.18: fix to move false before edit others show check
-		$found = false;
-		// 2.3.3.6: preserve if user has edit_others_shows capability
-		foreach ( $edit_others_shows_roles as $role ) {
-			if ( in_array( $role, $user->roles ) ) {
-				// 2.4.0.4: do not automatically assume capability match
-				// return $allcaps;
-				$found = true;
-			}
-		}
-		if ( !$found ) {
-			// 2.2.8: remove strict in_array checking
-			foreach ( $edit_show_roles as $role ) {
+			// 2.5.18: fix to move false before edit others show check
+			$found = false;
+			// 2.3.3.6: preserve if user has edit_others_shows capability
+			foreach ( $edit_others_shows_roles as $role ) {
 				if ( in_array( $role, $user->roles ) ) {
+					// 2.4.0.4: do not automatically assume capability match
+					// return $allcaps;
 					$found = true;
 				}
 			}
-		}
+			if ( !$found ) {
+				// 2.2.8: remove strict in_array checking
+				foreach ( $edit_show_roles as $role ) {
+					if ( in_array( $role, $user->roles ) ) {
+						$found = true;
+					}
+				}
+			}
 
-		// --- maybe revoke edit show capability for post ---
-		// 2.3.3.6: fix to incorrect logic for removing edit show capability
-		if ( $found ) {
-
-			// --- limit this to published shows ---
-			// 2.3.0: added object and property_exists check to be safe
-			if ( isset( $post ) && is_object( $post ) && property_exists( $post, 'post_type' ) && isset( $post->post_type ) ) {
+			// --- maybe revoke edit show capability for post ---
+			// 2.3.3.6: fix to incorrect logic for removing edit show capability
+			if ( $found ) {
 
 				// 2.3.0: removed is_admin check (so works with frontend edit show link)
 
@@ -449,55 +448,51 @@ function radio_station_revoke_show_edit_cap( $allcaps, $caps, $args, $user ) {
 
 				}
 			}
+
 		}
 
-	}
+		// --- override capabilites check ---
+		// 2.5.18: added override post type handling
+		if ( RADIO_STATION_OVERRIDE_SLUG == $post->post_type ) {
 
-	// --- override capabilites check ---
-	// 2.5.18: added override post type handling
-	if ( RADIO_STATION_OVERRIDE_SLUG == $post->post_type ) {
-
-		// --- get roles with edit shows capability ---
-		$edit_show_roles = $edit_others_shows_roles = array();
-		if ( isset( $wp_roles->roles ) && is_array( $wp_roles->roles ) ) {
-			foreach ( $wp_roles->roles as $name => $role ) {
-				if ( isset( $role['capabilities'] ) ) {
-					foreach ( $role['capabilities'] as $capname => $capstatus ) {
-						if ( ( 'edit_overrides' === $capname ) && (bool) $capstatus ) {
-							if ( !in_array( $name, $edit_override_roles ) ) {
-								$edit_override_roles[] = $name;
+			// --- get roles with edit shows capability ---
+			$edit_show_roles = $edit_others_shows_roles = array();
+			if ( isset( $wp_roles->roles ) && is_array( $wp_roles->roles ) ) {
+				foreach ( $wp_roles->roles as $name => $role ) {
+					if ( isset( $role['capabilities'] ) ) {
+						foreach ( $role['capabilities'] as $capname => $capstatus ) {
+							if ( ( 'edit_overrides' === $capname ) && (bool) $capstatus ) {
+								if ( !in_array( $name, $edit_override_roles ) ) {
+									$edit_override_roles[] = $name;
+								}
 							}
-						}
-						if ( ( 'edit_others_overrides' === $capname ) && (bool) $capstatus ) {
-							if ( !in_array( $name, $edit_others_overrides_roles ) ) {
-								$edit_others_overrides_roles[] = $name;
+							if ( ( 'edit_others_overrides' === $capname ) && (bool) $capstatus ) {
+								if ( !in_array( $name, $edit_others_overrides_roles ) ) {
+									$edit_others_overrides_roles[] = $name;
+								}
 							}
 						}
 					}
 				}
 			}
-		}
 
-		// --- check if capability found ---
-		$found = false;
-		foreach ( $edit_others_overrides_roles as $role ) {
-			if ( in_array( $role, $user->roles ) ) {
-				$found = true;
-			}
-		}
-		if ( !$found ) {
-			foreach ( $edit_override_roles as $role ) {
+			// --- check if capability found ---
+			$found = false;
+			foreach ( $edit_others_overrides_roles as $role ) {
 				if ( in_array( $role, $user->roles ) ) {
 					$found = true;
 				}
 			}
-		}
+			if ( !$found ) {
+				foreach ( $edit_override_roles as $role ) {
+					if ( in_array( $role, $user->roles ) ) {
+						$found = true;
+					}
+				}
+			}
 
-		// --- maybe revoke edit override capability for post ---
-		if ( $found ) {
-
-			// --- limit this to published shows ---
-			if ( isset( $post ) && is_object( $post ) && property_exists( $post, 'post_type' ) && isset( $post->post_type ) ) {
+			// --- maybe revoke edit override capability for post ---
+			if ( $found ) {
 
 				$show_id = get_post_meta( $post->ID, 'linked_show_id', true );
 				$linked_fields = get_post_meta( $post->ID, 'linked_show_fields', true );
@@ -548,8 +543,8 @@ function radio_station_revoke_show_edit_cap( $allcaps, $caps, $args, $user ) {
 				}
 
 			}
-		}
 
+		}
 	}
 
 	return $allcaps;

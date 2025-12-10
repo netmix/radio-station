@@ -187,17 +187,6 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 			// --- set plugin options ---
 			// 1.0.6: added options filter
 			$args['options'] = apply_filters( $args['namespace'] . '_options', $args['options'] );
-			// 1.0.9: maybe get tabs and sections from options array
-			if ( isset( $args['options']['tabs'] ) ) {
-				$this->tabs = $args['options']['tabs'];
-				unset( $args['options']['tabs'] );
-			}
-			if ( isset( $args['options']['sections'] ) ) {
-				$this->sections = $args['options']['sections'];
-				unset( $args['options']['sections'] );
-			}
-			$this->options = $args['options'];
-			unset( $args['options'] );
 
 			// --- set plugin args and namespace ---
 			// 1.1.9: filter all arguments
@@ -222,6 +211,32 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 
 			// --- autoset class instance global for accessibility ---
 			$GLOBALS[$args['namespace'] . '_instance'] = $this;
+		}
+
+		// -------------
+		// Admin Options
+		// -------------
+		// 1.3.7: added method for loading delayed translation strings
+		function admin_options() {
+			
+			$namespace = $this->namespace;
+			$args = $this->args;
+			$args = apply_filters( $args['namespace'] . '_admin_args', $args );
+			$this->args = $args;
+
+			$options = $this->options;
+			$options = apply_filters( $namespace . '_options', $options );
+
+			// 1.0.9: maybe get tabs and sections from options array
+			if ( isset( $options['tabs'] ) ) {
+				$this->tabs = $options['tabs'];
+				unset( $options['tabs'] );
+			}
+			if ( isset( $options['sections'] ) ) {
+				$this->sections = $options['sections'];
+				unset( $options['sections'] );
+			}
+			$this->options = $options;
 		}
 
 		// ------------
@@ -347,7 +362,7 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 			// 1.1.2: fix to apply options filter
 			$namespace = $this->namespace;
 			$options = $this->options;
-			$options = apply_filters( $namespace . '_options', $options );
+			$options = apply_filters( $namespace . '_plugin_options', $options );
 			$defaults = array();
 			foreach ( $options as $key => $values ) {
 				// 1.0.9: set default to null if default value not set
@@ -1326,6 +1341,9 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 			// --- add settings on activation ---
 			register_activation_hook( $args['file'], array( $this, 'add_settings' ) );
 
+			// 1.3.7: added for admin options filtering
+			add_action( 'init', array( $this, 'admin_options' ) );
+
 			// --- always check for update and reset of settings ---
 			add_action( 'admin_init', array( $this, 'update_settings' ) );
 			add_action( 'admin_init', array( $this, 'reset_settings' ) );
@@ -1781,20 +1799,22 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 				// --- get plugin options and default settings ---
 				// 1.1.2: fix for filtering of plugin options
 				$options = $this->options;
-				$options = apply_filters( $namespace . '_options', $options );
+				$options = apply_filters( $namespace . '_plugin_options', $options );
 
 				// --- maybe enqueue media scripts ---
 				// 1.1.7: added media gallery script enqueueing for image field
 				// 1.1.7: added color picker and color picker alpha script enqueueing
 				$enqueued_media = $enqueued_color_picker = $enqueue_color_picker = $enqueue_color_picker_alpha = false;
 				foreach ( $options as $option ) {
-					if ( ( 'image' == $option['type'] ) && !$enqueued_media ) {
-						wp_enqueue_media();
-						$enqueued_media = true;
-					} elseif ( 'color' == $option['type'] ) { 
-						$enqueue_color_picker = true;
-					} elseif ( 'coloralpha' == $option['type'] ) {
-						$enqueue_color_picker_alpha = true;
+					if ( isset( $option['type'] ) ) {
+						if ( ( 'image' == $option['type'] ) && !$enqueued_media ) {
+							wp_enqueue_media();
+							$enqueued_media = true;
+						} elseif ( 'color' == $option['type'] ) { 
+							$enqueue_color_picker = true;
+						} elseif ( 'coloralpha' == $option['type'] ) {
+							$enqueue_color_picker_alpha = true;
+						}
 					}
 				}
 

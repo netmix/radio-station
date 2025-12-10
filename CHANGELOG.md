@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 = 2.5.18 =
+* Updated: Plugin Panel (1.3.7) for delayed translations
 * Changed: display label of Overrides to Specials
 * Changed: handle of radio-player assets to stream-player
 * Improved: Related Show and Linked Show select Show ordering

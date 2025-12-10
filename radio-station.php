@@ -213,9 +213,6 @@ function radio_station_back_compat_player() {
 // 2.5.0: move plan options check to separate function
 // 2.5.18: get options via function
 require RADIO_STATION_DIR . '/options.php';
-$timezones = radio_station_get_timezone_options( true );
-$languages = radio_station_get_language_options( true );
-$formats = radio_station_get_stream_formats();
 $plan_options = radio_station_check_plan_options();
 $options = radio_station_plugin_options();
 
@@ -238,11 +235,8 @@ $settings = array(
 	'home'         => RADIO_STATION_HOME_URL,
 	'docs'         => RADIO_STATION_DOCS_URL,
 	'support'      => 'https://github.com/netmix/radio-station/issues/',
-	'ratetext'     => __( 'Rate on WordPress.org', 'radio-station' ),
 	'share'        => RADIO_STATION_HOME_URL . '#share',
-	'sharetext'    => __( 'Share the Plugin Love', 'radio-station' ),
 	'donate'       => 'https://patreon.com/radiostation',
-	'donatetext'   => __( 'Support this Plugin', 'radio-station' ),
 	'readme'       => false,
 	'settingsmenu' => false,
 
@@ -274,6 +268,21 @@ $settings = array(
 	'affiliation'  => 'selected',
 
 );
+
+// ---------------------
+// Settings Text Filters
+// ---------------------
+// 2.5.18: added to avoid translations loading early
+add_filter( 'radio_station_admin_args', 'radio_station_settings_texts' );
+function radio_station_settings_texts( $args ) {
+	$texts = array(
+		'sharetext'    => __( 'Share the Plugin Love', 'radio-station' ),
+		'ratetext'     => __( 'Rate on WordPress.org', 'radio-station' ),
+		'donatetext'   => __( 'Support this Plugin', 'radio-station' ),
+	);
+	$args = array_merge( $args, $texts );
+	return $args;
+}
 
 // ---------------------------
 // Bundle Plan Settings Filter
@@ -315,8 +324,8 @@ if ( is_admin() ) {
 
 	// --- Admin Includes ---
 	require RADIO_STATION_DIR . '/radio-station-admin.php';
-	// require RADIO_STATION_DIR . '/includes/onboarding.php';
 	require RADIO_STATION_DIR . '/includes/post-types-admin.php';
+	require RADIO_STATION_DIR . '/includes/onboarding.php';
 
 	// --- Contextual Help ---
 	// 2.3.0: maybe load contextual help config

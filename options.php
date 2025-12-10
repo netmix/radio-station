@@ -4,10 +4,24 @@
 // === Radio Station Options ===
 // =============================
 
+// ---------------------------
+// Plugin Admin Options Filter
+// ---------------------------
+// 2.5.18: added filter for admin options
+add_filter( 'radio_station_options', 'radio_station_admin_options' );
+function radio_station_admin_options( $options ) {
+	$options = radio_station_plugin_options( true );
+	return $options;
+}
+
 // ------------------
 // Set Plugin Options
 // ------------------
-function radio_station_plugin_options() {
+function radio_station_plugin_options( $admin = false ) {
+
+	$timezones = radio_station_get_timezone_options( true, $admin );
+	$languages = radio_station_get_language_options( true, $admin );
+	$formats = radio_station_get_stream_formats();
 
 	$options = array(
 
@@ -17,9 +31,9 @@ function radio_station_plugin_options() {
 		'streaming_url' => array(
 			'type'    => 'text',
 			'options' => 'URL',
-			'label'   => __( 'Streaming URL', 'radio-station' ),
+			'label'   => $admin ? __( 'Streaming URL', 'radio-station' ) : '',
 			'default' => '',
-			'helper'  => __( 'Enter the Streaming URL for your Radio Station. This is used in the Radio Player and discoverable via Data Feeds.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Enter the Streaming URL for your Radio Station. This is used in the Radio Player and discoverable via Data Feeds.', 'radio-station' ) : '',
 			'tab'     => 'general',
 			'section' => 'stream',
 		),
@@ -28,9 +42,9 @@ function radio_station_plugin_options() {
 		'streaming_format' => array(
 			'type'    => 'select',
 			'options' => $formats,
-			'label'   => __( 'Streaming Format', 'radio-station' ),
+			'label'   => $admin ? __( 'Streaming Format', 'radio-station' ) : '',
 			'default' => 'aac',
-			'helper'  => __( 'Select streaming format for streaming URL.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Select streaming format for streaming URL.', 'radio-station' ) : '',
 			'tab'     => 'general',
 			'section' => 'stream',
 		),
@@ -39,9 +53,9 @@ function radio_station_plugin_options() {
 		'fallback_url' => array(
 			'type'    => 'text',
 			'options' => 'URL',
-			'label'   => __( 'Fallback Stream URL', 'radio-station' ),
+			'label'   => $admin ? __( 'Fallback Stream URL', 'radio-station' ) : '',
 			'default' => '',
-			'helper'  => __( 'Enter an alternative Streaming URL for Player fallback.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Enter an alternative Streaming URL for Player fallback.', 'radio-station' ) : '',
 			'tab'     => 'general',
 			'section' => 'stream',
 		),
@@ -50,25 +64,25 @@ function radio_station_plugin_options() {
 		'fallback_format' => array(
 			'type'    => 'select',
 			'options' => $formats,
-			'label'   => __( 'Fallback Format', 'radio-station' ),
+			'label'   => $admin ? __( 'Fallback Format', 'radio-station' ) : '',
 			'default' => 'ogg',
-			'helper'  => __( 'Select streaming fallback for fallback URL.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Select streaming fallback for fallback URL.', 'radio-station' ) : '',
 			'tab'     => 'general',
 			'section' => 'stream',
 		),
 
 		// --- [Player] Stream GeoBlocking ---
 		'stream_geo_blocking' => array(
-			'label'		=> __( 'GeoIP Stream Blocking', 'radio-station' ),
+			'label'		=> $admin ? __( 'GeoIP Stream Blocking', 'radio-station' ) : '',
 			'type'		=> 'select',
 			'options' => array(
-				''			=> __( 'No GeoIP Blocking', 'radio-station' ),
-				'live365'	=> __( 'Live365 (only US, UK, Canada, Mexico)', 'radio-station' ),
-				// 'blacklist' => __( 'Custom Country Blacklist', 'radio-station' ),
-				// 'whitelist' => __( 'Custom Country Whitelist', 'radio-station' ),
+				''			=> $admin ? __( 'No GeoIP Blocking', 'radio-station' ) : '',
+				'live365'	=> $admin ? __( 'Live365 (only US, UK, Canada, Mexico)', 'radio-station' ) : '',
+				// 'blacklist' => $admin ? __( 'Custom Country Blacklist', 'radio-station' ) : '',
+				// 'whitelist' => $admin ? __( 'Custom Country Whitelist', 'radio-station' ) : '',
 			),
 			'default' => '',
-			'helper'  => __( 'Block streaming according to country, detected by user IP address.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Block streaming according to country, detected by user IP address.', 'radio-station' ) : '',
 			'tab'     => 'general',
 			'section' => 'stream',
 			'pro'     => true,
@@ -80,9 +94,9 @@ function radio_station_plugin_options() {
 		'radio_language'    => array(
 			'type'    => 'select',
 			'options' => $languages,
-			'label'   => __( 'Main Broadcast Language', 'radio-station' ),
+			'label'   => $admin ? __( 'Main Broadcast Language', 'radio-station' ) : '',
 			'default' => '',
-			'helper'  => __( 'Select the main language used on your Radio Station.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Select the main language used on your Radio Station.', 'radio-station' ) : '',
 			'tab'     => 'general',
 			'section' => 'broadcast',
 		),
@@ -91,9 +105,9 @@ function radio_station_plugin_options() {
 		'timezone_location' => array(
 			'type'    => 'select',
 			'options' => $timezones,
-			'label'   => __( 'Location Timezone', 'radio-station' ),
+			'label'   => $admin ? __( 'Location Timezone', 'radio-station' ) : '',
 			'default' => '',
-			'helper'  => __( 'Select your Broadcast Location for Radio Timezone display.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Select your Broadcast Location for Radio Timezone display.', 'radio-station' ) : '',
 			'tab'     => 'general',
 			'section' => 'broadcast',
 		),
@@ -102,12 +116,12 @@ function radio_station_plugin_options() {
 		'clock_time_format' => array(
 			'type'    => 'select',
 			'options' => array(
-				'12' => __( '12 Hour Format', 'radio-station' ),
-				'24' => __( '24 Hour Format', 'radio-station' ),
+				'12' => $admin ? __( '12 Hour Format', 'radio-station' ) : '',
+				'24' => $admin ? __( '24 Hour Format', 'radio-station' ) : '',
 			),
-			'label'   => __( 'Clock Time Format', 'radio-station' ),
+			'label'   => $admin ? __( 'Clock Time Format', 'radio-station' ) : '',
 			'default' => '12',
-			'helper'  => __( 'Default Time Format for display output. Can be overridden in each shortcode or widget.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Default Time Format for display output. Can be overridden in each shortcode or widget.', 'radio-station' ) : '',
 			'tab'     => 'general',
 			'section' => 'broadcast',
 		),
@@ -118,9 +132,9 @@ function radio_station_plugin_options() {
 		// 2.3.3.8: added station title field
 		'station_title' => array(
 			'type'    => 'text',
-			'label'   => __( 'Station Title', 'radio-station' ),
+			'label'   => $admin ? __( 'Station Title', 'radio-station' ) : '',
 			'default' => '',
-			'helper'  => __( 'Name of your Radio Station. For use in Stream Player and Data Feeds.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Name of your Radio Station. For use in Stream Player and Data Feeds.', 'radio-station' ) : '',
 			'tab'     => 'general',
 			'section' => 'station',
 		),
@@ -129,9 +143,9 @@ function radio_station_plugin_options() {
 		// 2.3.3.8: added station logo image field
 		'station_image' => array(
 			'type'    => 'image',
-			'label'   => __( 'Station Logo Image', 'radio-station' ),
+			'label'   => $admin ? __( 'Station Logo Image', 'radio-station' ) : '',
 			'default' => '',
-			'helper'  => __( 'Add a logo image for your Radio Station. Please ensure image is square before uploading. Recommended size 256 x 256', 'radio-station' ),
+			'helper'  => $admin ? __( 'Add a logo image for your Radio Station. Please ensure image is square before uploading. Recommended size 256 x 256', 'radio-station' ) : '',
 			'tab'     => 'general',
 			'section' => 'station',
 		),
@@ -140,9 +154,9 @@ function radio_station_plugin_options() {
 		// 2.5.18: added station frequency option
 		'station_frequency' => array(
 			'type'    => 'text',
-			'label'   => __( 'Station Frequency', 'radio-station' ),
+			'label'   => $admin ? __( 'Station Frequency', 'radio-station' ) : '',
 			'default' => '',
-			'helper'  => __( 'Text display to inform users of your main station frequency.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Text display to inform users of your main station frequency.', 'radio-station' ) : '',
 			'tab'     => 'general',
 			'section' => 'station',
 		),
@@ -151,9 +165,9 @@ function radio_station_plugin_options() {
 		// 2.5.18: added station location option
 		'station_location' => array(
 			'type'    => 'text',
-			'label'   => __( 'Station Location', 'radio-station' ),
+			'label'   => $admin ? __( 'Station Location', 'radio-station' ) : '',
 			'default' => '',
-			'helper'  => __( 'Text display to inform users of your main station location.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Text display to inform users of your main station location.', 'radio-station' ) : '',
 			'tab'     => 'general',
 			'section' => 'station',
 		),
@@ -163,9 +177,9 @@ function radio_station_plugin_options() {
 		'station_phone' => array(
 			'type'    => 'text',
 			'options' => 'PHONE',
-			'label'   => __( 'Station Phone', 'radio-station' ),
+			'label'   => $admin ? __( 'Station Phone', 'radio-station' ) : '',
 			'default' => '',
-			'helper'  => __( 'Main call in phone number for the Station (for requests etc.)', 'radio-station' ),
+			'helper'  => $admin ? __( 'Main call in phone number for the Station (for requests etc.)', 'radio-station' ) : '',
 			'tab'     => 'general',
 			'section' => 'station',
 		),
@@ -176,8 +190,8 @@ function radio_station_plugin_options() {
 			'type'    => 'checkbox',
 			'default' => '',
 			'value'   => 'yes',
-			'label'   => __( 'Show Phone Display', 'radio-station' ),
-			'helper'  => __( 'Display Station phone number on Shows where a Show phone number is not set.', 'radio-station' ),
+			'label'   => $admin ? __( 'Show Phone Display', 'radio-station' ) : '',
+			'helper'  => $admin ? __( 'Display Station phone number on Shows where a Show phone number is not set.', 'radio-station' ) : '',
 			'tab'     => 'general',
 			'section' => 'station',
 		),
@@ -187,8 +201,8 @@ function radio_station_plugin_options() {
 		'station_email' => array(
 			'type'    => 'email',
 			'default' => '',
-			'label'   => __( 'Station Email', 'radio-station' ),
-			'helper'  => __( 'Main email address for the Station (for requests etc.)', 'radio-station' ),
+			'label'   => $admin ? __( 'Station Email', 'radio-station' ) : '',
+			'helper'  => $admin ? __( 'Main email address for the Station (for requests etc.)', 'radio-station' ) : '',
 			'tab'     => 'general',
 			'section' => 'station',
 		),
@@ -199,8 +213,8 @@ function radio_station_plugin_options() {
 			'type'    => 'checkbox',
 			'default' => '',
 			'value'   => 'yes',
-			'label'   => __( 'Show Email Display', 'radio-station' ),
-			'helper'  => __( 'Display Station email address on Shows where a Show email address is not set.', 'radio-station' ),
+			'label'   => $admin ? __( 'Show Email Display', 'radio-station' ) : '',
+			'helper'  => $admin ? __( 'Display Station email address on Shows where a Show email address is not set.', 'radio-station' ) : '',
 			'tab'     => 'general',
 			'section' => 'station',
 		),
@@ -210,10 +224,10 @@ function radio_station_plugin_options() {
 		// --- REST Data Routes ---
 		'enable_data_routes' => array(
 			'type'    => 'checkbox',
-			'label'   => __( 'Enable Data Routes', 'radio-station' ),
+			'label'   => $admin ? __( 'Enable Data Routes', 'radio-station' ) : '',
 			'default' => 'yes',
 			'value'   => 'yes',
-			'helper'  => __( 'Enables Station Data Routes via WordPress REST API.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Enables Station Data Routes via WordPress REST API.', 'radio-station' ) : '',
 			'tab'     => 'general',
 			'section' => 'feeds',
 		),
@@ -221,10 +235,10 @@ function radio_station_plugin_options() {
 		// --- Data Feed Links ---
 		'enable_data_feeds' => array(
 			'type'    => 'checkbox',
-			'label'   => __( 'Enable Data Feeds', 'radio-station' ),
+			'label'   => $admin ? __( 'Enable Data Feeds', 'radio-station' ) : '',
 			'default' => 'yes',
 			'value'   => 'yes',
-			'helper'  => __( 'Enable Station Data Feeds via WordPress Feed links.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Enable Station Data Feeds via WordPress Feed links.', 'radio-station' ) : '',
 			'tab'     => 'general',
 			'section' => 'feeds',
 		),
@@ -233,10 +247,10 @@ function radio_station_plugin_options() {
 		// note: disabled by default for WordPress.org repository compliance
 		'ping_netmix_directory' => array(
 			'type'    => 'checkbox',
-			'label'   => __( 'Ping Netmix Directory', 'radio-station' ),
+			'label'   => $admin ? __( 'Ping Netmix Directory', 'radio-station' ) : '',
 			'default' => '',
 			'value'   => 'yes',
-			'helper'  => __( 'If you have a Netmix Directory listing, enable this to ping the directory whenever you update your schedule.', 'radio-station' ),
+			'helper'  => $admin ? __( 'If you have a Netmix Directory listing, enable this to ping the directory whenever you update your schedule.', 'radio-station' ) : '',
 			'tab'     => 'general',
 			'section' => 'broadcast',
 		),
@@ -248,10 +262,10 @@ function radio_station_plugin_options() {
 		// 2.5.6: added setting for conflict checker
 		'conflict_checker' => array(
 			'type'    => 'checkbox',
-			'label'   => __( 'Shift Conflict Checker', 'radio-station' ),
+			'label'   => $admin ? __( 'Shift Conflict Checker', 'radio-station' ) : '',
 			'default' => 'yes',
 			'value'   => 'yes',
-			'helper'  => __( 'Check for Shift conflicts when saving Show shift times.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Check for Shift conflicts when saving Show shift times.', 'radio-station' ) : '',
 			'tab'     => 'general',
 			'section' => 'performance',
 		),
@@ -260,10 +274,10 @@ function radio_station_plugin_options() {
 		// 2.4.0.6: change label from Clear Transients
 		'clear_transients' => array(
 			'type'    => 'checkbox',
-			'label'   => __( 'Disable Transients', 'radio-station' ),
+			'label'   => $admin ? __( 'Disable Transients', 'radio-station' ) : '',
 			'default' => '',
 			'value'   => 'yes',
-			'helper'  => __( 'Clear Schedule transients with every pageload. Less efficient but more reliable.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Clear Schedule transients with every pageload. Less efficient but more reliable.', 'radio-station' ) : '',
 			'tab'     => 'general',
 			'section' => 'performance',
 		),
@@ -271,10 +285,10 @@ function radio_station_plugin_options() {
 		// --- Transient Caching ---
 		'transient_caching' => array(
 			'type'    => 'checkbox',
-			'label'   => __( 'Show Transients', 'radio-station' ),
+			'label'   => $admin ? __( 'Show Transients', 'radio-station' ) : '',
 			'default' => 'yes',
 			'value'   => 'yes',
-			'helper'  => __( 'Use Show Transient Data to improve Schedule calculation performance.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Use Show Transient Data to improve Schedule calculation performance.', 'radio-station' ) : '',
 			'tab'     => 'general',
 			'section' => 'performance',
 			'pro'     => true,
@@ -283,10 +297,10 @@ function radio_station_plugin_options() {
 		// --- Show Shift Feeds ---
 		/* 'show_shift_feeds' => array(
 			'type'    => 'checkbox',
-			'label'   => __( 'Show Shift Feeds', 'radio-station' ),
+			'label'   => $admin ? __( 'Show Shift Feeds', 'radio-station' ) : '',
 			'default' => 'yes',
 			'value'   => 'yes',
-			'helper'  => __( 'Convert RSS Feeds for a single Show to a Show shift feed, allowing a visitor to subscribe to a Show feed to be notified of Show shifts.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Convert RSS Feeds for a single Show to a Show shift feed, allowing a visitor to subscribe to a Show feed to be notified of Show shifts.', 'radio-station' ) : '',
 			'tab'     => 'general',
 			'section' => 'feeds',
 			'pro'     => true,
@@ -298,8 +312,8 @@ function radio_station_plugin_options() {
 		// 2.5.0: added note about defaults being overrideable in widgets
 		'player_defaults_note' => array(
 			'type'    => 'note',
-			'label'   => __( 'Player Defaults Note', 'radio-station' ),
-			'helper'  => __( 'Note that you can override these defaults in specific Player Widgets.', 'radio-station' ),
+			'label'   => $admin ? __( 'Player Defaults Note', 'radio-station' ) : '',
+			'helper'  => $admin ? __( 'Note that you can override these defaults in specific Player Widgets.', 'radio-station' ) : '',
 			'tab'     => 'player',
 			'section' => 'basic',
 		),
@@ -307,10 +321,10 @@ function radio_station_plugin_options() {
 		// --- [Player] Player Title ---
 		'player_title' => array(
 			'type'    => 'checkbox',
-			'label'   => __( 'Display Station Title', 'radio-station' ),
+			'label'   => $admin ? __( 'Display Station Title', 'radio-station' ) : '',
 			'default' => 'yes',
 			'value'   => 'yes',
-			'helper'  => __( 'Display your Radio Station Title in Player by default.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Display your Radio Station Title in Player by default.', 'radio-station' ) : '',
 			'tab'     => 'player',
 			'section' => 'basic',
 		),
@@ -318,10 +332,10 @@ function radio_station_plugin_options() {
 		// --- [Player] Player Image ---
 		'player_image' => array(
 			'type'    => 'checkbox',
-			'label'   => __( 'Display Station Image', 'radio-station' ),
+			'label'   => $admin ? __( 'Display Station Image', 'radio-station' ) : '',
 			'default' => 'yes',
 			'value'   => 'yes',
-			'helper'  => __( 'Display your Radio Station Image in Player by default.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Display your Radio Station Image in Player by default.', 'radio-station' ) : '',
 			'tab'     => 'player',
 			'section' => 'basic',
 		),
@@ -331,14 +345,14 @@ function radio_station_plugin_options() {
 		// 2.5.7: disable howler script (browser incompatibilities)
 		'player_script' => array(
 			'type'    => 'select',
-			'label'   => __( 'Player Script', 'radio-station' ),
+			'label'   => $admin ? __( 'Player Script', 'radio-station' ) : '',
 			'default' => 'jplayer',
 			'options' => array(
-				'amplitude' => __( 'Amplitude', 'radio-station' ),
-				'jplayer'   => __( 'jPlayer', 'radio-station' ),
-				// 'howler'    => __( 'Howler', 'radio-station' ),
+				'amplitude' => $admin ? __( 'Amplitude', 'radio-station' ) : '',
+				'jplayer'   => $admin ? __( 'jPlayer', 'radio-station' ) : '',
+				// 'howler'    => $admin ? __( 'Howler', 'radio-station' ) : '',
 			),
-			'helper'  => __( 'Default audio script to use for playback in the Player.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Default audio script to use for playback in the Player.', 'radio-station' ) : '',
 			'tab'     => 'player',
 			'section' => 'basic',
 		),
@@ -349,14 +363,14 @@ function radio_station_plugin_options() {
 		// 2.5.7: disable howler script (browser incompatibilities)
 		'player_fallbacks' => array(
 			'type'    => 'multicheck',
-			'label'   => __( 'Fallback Scripts', 'radio-station' ),
+			'label'   => $admin ? __( 'Fallback Scripts', 'radio-station' ) : '',
 			'default' => array( 'amplitude', 'howler', 'jplayer' ),
 			'options' => array(
-				'amplitude' => __( 'Amplitude', 'radio-station' ),
-				'jplayer'   => __( 'jPlayer', 'radio-station' ),
-				// 'howler'    => __( 'Howler', 'radio-station' ),
+				'amplitude' => $admin ? __( 'Amplitude', 'radio-station' ) : '',
+				'jplayer'   => $admin ? __( 'jPlayer', 'radio-station' ) : '',
+				// 'howler'    => $admin ? __( 'Howler', 'radio-station' ) : '',
 			),
-			'helper'  => __( 'Enabled fallback audio scripts to try when the default Player script fails.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Enabled fallback audio scripts to try when the default Player script fails.', 'radio-station' ) : '',
 			'tab'     => 'player',
 			'section' => 'basic',
 		),
@@ -364,13 +378,13 @@ function radio_station_plugin_options() {
 		// --- [Player] Player Theme ---
 		'player_theme' => array(
 			'type'    => 'select',
-			'label'   => __( 'Default Player Theme', 'radio-station' ),
+			'label'   => $admin ? __( 'Default Player Theme', 'radio-station' ) : '',
 			'default' => 'light',
 			'options' => array(
-				'light' => __( 'Light', 'radio-station' ),
-				'dark'  => __( 'Dark', 'radio-station' ),
+				'light' => $admin ? __( 'Light', 'radio-station' ) : '',
+				'dark'  => $admin ? __( 'Dark', 'radio-station' ) : '',
 			),
-			'helper'  => __( 'Default Player Controls theme style.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Default Player Controls theme style.', 'radio-station' ) : '',
 			'tab'     => 'player',
 			'section' => 'basic',
 		),
@@ -379,14 +393,14 @@ function radio_station_plugin_options() {
 		// 2.5.15: change default to circular
 		'player_buttons' => array(
 			'type'    => 'select',
-			'label'   => __( 'Default Player Buttons', 'radio-station' ),
+			'label'   => $admin ? __( 'Default Player Buttons', 'radio-station' ) : '',
 			'default' => 'circular',
 			'options' => array(
-				'circular' => __( 'Circular Buttons', 'radio-station' ),
-				'rounded'  => __( 'Rounded Buttons', 'radio-station' ),
-				'square'   => __( 'Square Buttons', 'radio-station' ),
+				'circular' => $admin ? __( 'Circular Buttons', 'radio-station' ) : '',
+				'rounded'  => $admin ? __( 'Rounded Buttons', 'radio-station' ) : '',
+				'square'   => $admin ? __( 'Square Buttons', 'radio-station' ) : '',
 			),
-			'helper'  => __( 'Default Player Buttons shape style.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Default Player Buttons shape style.', 'radio-station' ) : '',
 			'tab'     => 'player',
 			'section' => 'basic',
 		),
@@ -396,15 +410,15 @@ function radio_station_plugin_options() {
 		// 2.5.0: default to volume slider only
 		'player_volumes' => array(
 			'type'    => 'multicheck',
-			'label'   => __( 'Volume Controls', 'radio-station' ),
+			'label'   => $admin ? __( 'Volume Controls', 'radio-station' ) : '',
 			'default' => array( 'slider' ),
 			'options' => array(
-				'slider'   => __( 'Volume Slider', 'radio-station' ),
-				'updown'   => __( 'Volume Plus / Minus', 'radio-station' ),
-				'mute'     => __( 'Mute Volume Toggle', 'radio-station' ),
-				'max'      => __( 'Maximize Volume', 'radio-station' ),
+				'slider'   => $admin ? __( 'Volume Slider', 'radio-station' ) : '',
+				'updown'   => $admin ? __( 'Volume Plus / Minus', 'radio-station' ) : '',
+				'mute'     => $admin ? __( 'Mute Volume Toggle', 'radio-station' ) : '',
+				'max'      => $admin ? __( 'Maximize Volume', 'radio-station' ) : '',
 			),
-			'helper'  => __( 'Which volume controls to display in the Player by default.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Which volume controls to display in the Player by default.', 'radio-station' ) : '',
 			'tab'     => 'player',
 			'section' => 'basic',
 		),
@@ -412,10 +426,10 @@ function radio_station_plugin_options() {
 		// --- [Player] Player Debug Mode ---
 		'player_debug' => array(
 			'type'    => 'checkbox',
-			'label'   => __( 'Player Debug Mode', 'radio-station' ),
+			'label'   => $admin ? __( 'Player Debug Mode', 'radio-station' ) : '',
 			'default' => '',
 			'value'   => 'yes',
-			'helper'  => __( 'Output player debug information in browser javascript console.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Output player debug information in browser javascript console.', 'radio-station' ) : '',
 			'tab'     => 'player',
 			'section' => 'basic',
 		),
@@ -425,9 +439,9 @@ function radio_station_plugin_options() {
 		// --- [Pro/Player] Playing Highlight Color ---
 		'player_playing_color' => array(
 			'type'    => 'color',
-			'label'   => __( 'Playing Icon Highlight Color', 'radio-station' ),
+			'label'   => $admin ? __( 'Playing Icon Highlight Color', 'radio-station' ) : '',
 			'default' => '#70E070',
-			'helper'  => __( 'Default highlight color to use for Play button icon when playing.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Default highlight color to use for Play button icon when playing.', 'radio-station' ) : '',
 			'tab'     => 'player',
 			'section' => 'colors',
 			'pro'     => true,
@@ -436,9 +450,9 @@ function radio_station_plugin_options() {
 		// --- [Pro/Player] Control Icons Highlight Color ---
 		'player_buttons_color' => array(
 			'type'    => 'color',
-			'label'   => __( 'Control Icons Highlight Color', 'radio-station' ),
+			'label'   => $admin ? __( 'Control Icons Highlight Color', 'radio-station' ) : '',
 			'default' => '#00A0E0',
-			'helper'  => __( 'Default highlight color to use for Control button icons when active.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Default highlight color to use for Control button icons when active.', 'radio-station' ) : '',
 			'tab'     => 'player',
 			'section' => 'colors',
 			'pro'     => true,
@@ -447,9 +461,9 @@ function radio_station_plugin_options() {
 		// --- [Pro/Player] Volume Knob Color ---
 		'player_thumb_color' => array(
 			'type'    => 'color',
-			'label'   => __( 'Volume Knob Color', 'radio-station' ),
+			'label'   => $admin ? __( 'Volume Knob Color', 'radio-station' ) : '',
 			'default' => '#80C080',
-			'helper'  => __( 'Default Knob Color for Player Volume Slider.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Default Knob Color for Player Volume Slider.', 'radio-station' ) : '',
 			'tab'     => 'player',
 			'section' => 'colors',
 			'pro'     => true,
@@ -458,9 +472,9 @@ function radio_station_plugin_options() {
 		// --- [Pro/Player] Volume Track Color ---
 		'player_range_color' => array(
 			'type'    => 'coloralpha',
-			'label'   => __( 'Volume Track Color', 'radio-station' ),
+			'label'   => $admin ? __( 'Volume Track Color', 'radio-station' ) : '',
 			'default' => '#80C080',
-			'helper'  => __( 'Default Track Color for Player Volume Slider.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Default Track Color for Player Volume Slider.', 'radio-station' ) : '',
 			'tab'     => 'player',
 			'section' => 'colors',
 			'pro'     => true,
@@ -471,12 +485,12 @@ function radio_station_plugin_options() {
 		// --- [Player] Player Volume ---
 		'player_volume' => array(
 			'type'    => 'number',
-			'label'   => __( 'Player Start Volume', 'radio-station' ),
+			'label'   => $admin ? __( 'Player Start Volume', 'radio-station' ) : '',
 			'default' => 77,
 			'min'     => 0,
 			'step'    => 1,
 			'max'     => 100,
-			'helper'  => __( 'Initial volume for when the Player starts playback.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Initial volume for when the Player starts playback.', 'radio-station' ) : '',
 			'tab'     => 'player',
 			'section' => 'advanced',
 			'pro'     => false,
@@ -485,10 +499,10 @@ function radio_station_plugin_options() {
 		// --- [Player] Single Player ---
 		'player_single' => array(
 			'type'    => 'checkbox',
-			'label'   => __( 'Single Player at Once', 'radio-station' ),
+			'label'   => $admin ? __( 'Single Player at Once', 'radio-station' ) : '',
 			'default' => 'yes',
 			'value'   => 'yes',
-			'helper'  => __( 'Stop any existing Player instances on the page or in other windows or tabs when a Player is started.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Stop any existing Player instances on the page or in other windows or tabs when a Player is started.', 'radio-station' ) : '',
 			'tab'     => 'player',
 			'section' => 'advanced',
 			'pro'     => false,
@@ -499,10 +513,10 @@ function radio_station_plugin_options() {
 		// 2.5.16: updated helper text
 		'player_autoresume' => array(
 			'type'    => 'checkbox',
-			'label'   => __( 'Autoresume Playback', 'radio-station' ),
+			'label'   => $admin ? __( 'Autoresume Playback', 'radio-station' ) : '',
 			'default' => '',
 			'value'   => 'on',
-			'helper'  => __( 'On return to site or page reload, ask the user to resume stream playback if they were playing the stream previously, using a popup a modal dialogue box.', 'radio-station' ),
+			'helper'  => $admin ? __( 'On return to site or page reload, ask the user to resume stream playback if they were playing the stream previously, using a popup a modal dialogue box.', 'radio-station' ) : '',
 			'tab'     => 'player',
 			'section' => 'advanced',
 			'pro'     => true,
@@ -512,10 +526,10 @@ function radio_station_plugin_options() {
 		// 2.5.0: enabled popup player button
 		'player_popup' => array(
 			'type'    => 'checkbox',
-			'label'   => __( 'Popup Player Button', 'radio-station' ),
+			'label'   => $admin ? __( 'Popup Player Button', 'radio-station' ) : '',
 			'default' => '',
 			'value'   => 'yes',
-			'helper'  => __( 'Add button to open Popup Player in separate window.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Add button to open Popup Player in separate window.', 'radio-station' ) : '',
 			'tab'     => 'player',
 			'section' => 'advanced',
 			'pro'     => true,
@@ -526,9 +540,9 @@ function radio_station_plugin_options() {
 		// --- Player Bar Note ---
 		'player_bar_note' => array(
 			'type'    => 'note',
-			'label'   => __( 'Bar Defaults Note', 'radio-station' ),
-			'helper'  => __( 'The Bar Player uses the default configurations set above.', 'radio-station' )
-						. ' ' . __( 'You can override these in specific Player Widgets.', 'radio-station' ),
+			'label'   => $admin ? __( 'Bar Defaults Note', 'radio-station' ) : '',
+			'helper'  => $admin ? __( 'The Bar Player uses the default configurations set above.', 'radio-station' )
+						. ' ' . __( 'You can override these in specific Player Widgets.', 'radio-station' ) : '',
 			'tab'     => 'player',
 			'section' => 'bar',
 		),
@@ -536,16 +550,16 @@ function radio_station_plugin_options() {
 		// --- [Pro/Player] Sitewide Player Bar ---
 		'player_bar' => array(
 			'type'    => 'select',
-			'label'   => __( 'Sitewide Player Bar', 'radio-station' ),
+			'label'   => $admin ? __( 'Sitewide Player Bar', 'radio-station' ) : '',
 			'default' => 'off',
 			'options' => array(
-				'off'    => __( 'No Player Bar', 'radio-station' ),
-				'top'    => __( 'Top Player Bar', 'radio-station' ),
-				'bottom' => __( 'Bottom Player Bar', 'radio-station' ),
+				'off'    => $admin ? __( 'No Player Bar', 'radio-station' ) : '',
+				'top'    => $admin ? __( 'Top Player Bar', 'radio-station' ) : '',
+				'bottom' => $admin ? __( 'Bottom Player Bar', 'radio-station' ) : '',
 			),
 			'tab'     => 'player',
 			'section' => 'bar',
-			'helper'  => __( 'Add a fixed position Player Bar which displays Sitewide.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Add a fixed position Player Bar which displays Sitewide.', 'radio-station' ) : '',
 			'pro'     => true,
 		),
 
@@ -556,24 +570,24 @@ function radio_station_plugin_options() {
 			'min'     => 40,
 			'max'     => 400,
 			'step'    => 1,
-			'label'   => __( 'Player Bar Height', 'radio-station' ),
+			'label'   => $admin ? __( 'Player Bar Height', 'radio-station' ) : '',
 			'default' => 80,
 			'suffix'  => 'px',
 			'tab'     => 'player',
 			'section' => 'bar',
-			'helper'  => __( 'Set the height of the Sitewide Player Bar in pixels.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Set the height of the Sitewide Player Bar in pixels.', 'radio-station' ) : '',
 			'pro'     => true,
 		),
 
 		// --- [Pro/Player] Fade In Player Bar ---
 		'player_bar_fadein' => array(
 			'type'    => 'number',
-			'label'   => __( 'Fade In Player Bar', 'radio-station' ),
+			'label'   => $admin ? __( 'Fade In Player Bar', 'radio-station' ) : '',
 			'default' => 2500,
 			'min'     => 0,
 			'step'    => 100,
 			'max'     => 10000,
-			'helper'  => __( 'Number of milliseconds after Page load over which to fade in Player Bar. Use 0 for instant display.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Number of milliseconds after Page load over which to fade in Player Bar. Use 0 for instant display.', 'radio-station' ) : '',
 			'tab'     => 'player',
 			'section' => 'bar',
 			'pro'     => true,
@@ -583,11 +597,10 @@ function radio_station_plugin_options() {
 		// 2.4.0.1: fix for missing value field
 		'player_bar_continuous' => array(
 			'type'    => 'checkbox',
-			'label'   => __( 'Continuous Playback', 'radio-station' ),
+			'label'   => $admin ? __( 'Continuous Playback', 'radio-station' ) : '',
 			'default' => 'yes',
 			'value'   => 'yes',
-			'helper'  => __( 'Uninterrupted Sitewide Bar playback while user is navigating between pages! Pages are loaded in background and faded in while Player Bar persists.', 'radio-station' )
-				. ' <a href="' . RADIO_STATION_DOCS_URL . 'player/#pro-continous-player-integration" target="_blank">' . __( 'Click here for setup notes.', 'radio-station' ) . '</a>',
+			'helper'  => $admin ? __( 'Uninterrupted Sitewide Bar playback while user is navigating between pages! Pages are loaded in background and faded in while Player Bar persists.', 'radio-station' ) . ' <a href="' . RADIO_STATION_DOCS_URL . 'player/#pro-continous-player-integration" target="_blank">' . __( 'Click here for setup notes.', 'radio-station' ) . '</a>' : '',
 			'tab'     => 'player',
 			'section' => 'bar',
 			'pro'     => true,
@@ -596,12 +609,12 @@ function radio_station_plugin_options() {
 		// --- [Pro/Player] Player Page Fade ---
 		'player_bar_pagefade' => array(
 			'type'    => 'number',
-			'label'   => __( 'Page Fade Time', 'radio-station' ),
+			'label'   => $admin ? __( 'Page Fade Time', 'radio-station' ) : '',
 			'default' => 2000,
 			'min'     => 0,
 			'step'    => 100,
 			'max'     => 10000,
-			'helper'  => __( 'Number of milliseconds over which to fade in new Pages (when continuous playback is enabled.) Use 0 for instant display.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Number of milliseconds over which to fade in new Pages (when continuous playback is enabled.) Use 0 for instant display.', 'radio-station' ) : '',
 			'tab'     => 'player',
 			'section' => 'bar',
 			'pro'     => true,
@@ -611,12 +624,12 @@ function radio_station_plugin_options() {
 		// 2.4.0.3: add page load timeout option
 		'player_bar_timeout' => array(
 			'type'    => 'number',
-			'label'   => __( 'Page Load Timeout', 'teleporter' ),
+			'label'   => $admin ? __( 'Page Load Timeout', 'teleporter' ) : '',
 			'default' => 7000,
 			'min'     => 0,
 			'step'    => 500,
 			'max'     => 20000,
-			'helper'  => __( 'Number of milliseconds to wait for new Page to load before fading in anyway (when continuous playback is enabled.)', 'radio-station' ),
+			'helper'  => $admin ? __( 'Number of milliseconds to wait for new Page to load before fading in anyway (when continuous playback is enabled.)', 'radio-station' ) : '',
 			'tab'     => 'player',
 			'section' => 'bar',
 			'pro'     => true,
@@ -625,9 +638,9 @@ function radio_station_plugin_options() {
 		// --- [Pro/Player] Bar Player Text Color ---
 		'player_bar_text' => array(
 			'type'    => 'color',
-			'label'   => __( 'Bar Player Text Color', 'radio-station' ),
+			'label'   => $admin ? __( 'Bar Player Text Color', 'radio-station' ) : '',
 			'default' => '#FFFFFF',
-			'helper'  => __( 'Text color for the fixed position Sitewide Bar Player.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Text color for the fixed position Sitewide Bar Player.', 'radio-station' ) : '',
 			'tab'     => 'player',
 			'section' => 'bar',
 			'pro'     => true,
@@ -636,9 +649,9 @@ function radio_station_plugin_options() {
 		// --- [Pro/Player] Bar Player Background Color ---
 		'player_bar_background' => array(
 			'type'    => 'coloralpha',
-			'label'   => __( 'Bar Player Background Color', 'radio-station' ),
+			'label'   => $admin ? __( 'Bar Player Background Color', 'radio-station' ) : '',
 			'default' => 'rgba(0,0,0,255)',
-			'helper'  => __( 'Background color for the fixed position Sitewide Bar Player.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Background color for the fixed position Sitewide Bar Player.', 'radio-station' ) : '',
 			'tab'     => 'player',
 			'section' => 'bar',
 			'pro'     => true,
@@ -648,12 +661,12 @@ function radio_station_plugin_options() {
 		// 2.4.0.3: added for current show display
 		'player_bar_currentshow' => array(
 			'type'    => 'checkbox',
-			'label'   => __( 'Display Current Show', 'radio-station' ),
+			'label'   => $admin ? __( 'Display Current Show', 'radio-station' ) : '',
 			'value'   => 'yes',
 			'default' => 'yes',
 			'tab'     => 'player',
 			'section' => 'bar',
-			'helper'  => __( 'Display the Current Show in the Player Bar.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Display the Current Show in the Player Bar.', 'radio-station' ) : '',
 			'pro'     => true,
 		),
 
@@ -661,12 +674,12 @@ function radio_station_plugin_options() {
 		// 2.4.0.3: added for now playing metadata display
 		'player_bar_nowplaying' => array(
 			'type'    => 'checkbox',
-			'label'   => __( 'Display Now Playing', 'radio-station' ),
+			'label'   => $admin ? __( 'Display Now Playing', 'radio-station' ) : '',
 			'value'   => 'yes',
 			'default' => 'yes',
 			'tab'     => 'player',
 			'section' => 'bar',
-			'helper'  => __( 'Display the currently playing song in the Player Bar, if a supported metadata format is available. (Icy Meta, Icecast, Shoutcast 1/2, Current Playlist)', 'radio-station' ),
+			'helper'  => $admin ? __( 'Display the currently playing song in the Player Bar, if a supported metadata format is available. (Icy Meta, Icecast, Shoutcast 1/2, Current Playlist)', 'radio-station' ) : '',
 			'pro'     => true,
 		),
 
@@ -674,17 +687,17 @@ function radio_station_plugin_options() {
 		// 2.5.0: added track animation option
 		'player_bar_track_animation' => array(
 			'type'    => 'select',
-			'label'   => __( 'Track Animation', 'radio-station' ),
+			'label'   => $admin ? __( 'Track Animation', 'radio-station' ) : '',
 			'default' => 'backandforth',
 			'options' => array(
-				'none'         => __( 'No Animation', 'radio-station' ),
-				'lefttoright'  => __( 'Left to Right Ticker', 'radio-station' ),
-				'righttoleft'  => __( 'Right to Left Ticker', 'radio-station' ),
-				'backandforth' => __( 'Back and Forth', 'radio-station' ),
+				'none'         => $admin ? __( 'No Animation', 'radio-station' ) : '',
+				'lefttoright'  => $admin ? __( 'Left to Right Ticker', 'radio-station' ) : '',
+				'righttoleft'  => $admin ? __( 'Right to Left Ticker', 'radio-station' ) : '',
+				'backandforth' => $admin ? __( 'Back and Forth', 'radio-station' ) : '',
 			),
 			'tab'     => 'player',
 			'section' => 'bar',
-			'helper'  => __( 'How to animate the currently playing track display.', 'radio-station' ),
+			'helper'  => $admin ? __( 'How to animate the currently playing track display.', 'radio-station' ) : '',
 			'pro'     => true,
 		),
 
@@ -693,11 +706,11 @@ function radio_station_plugin_options() {
 		'player_bar_metadata' => array(
 			'type'    => 'text',
 			'options' => 'URL',
-			'label'   => __( 'Metadata URL', 'radio-station' ),
+			'label'   => $admin ? __( 'Metadata URL', 'radio-station' ) : '',
 			'default' => '',
 			'tab'     => 'player',
 			'section' => 'bar',
-			'helper'  => __( 'Now playing metadata is normally retrieved via the Stream URL. Use this setting if you need to provide an alternative metadata location.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Now playing metadata is normally retrieved via the Stream URL. Use this setting if you need to provide an alternative metadata location.', 'radio-station' ) : '',
 			'pro'     => true,
 		),
 
@@ -705,12 +718,12 @@ function radio_station_plugin_options() {
 		// 2.5.6: added option to store stream
 		'player_store_metadata' => array(
 			'type'    => 'checkbox',
-			'label'   => __( 'Store Track Metadata?', 'radio-station' ),
+			'label'   => $admin ? __( 'Store Track Metadata?', 'radio-station' ) : '',
 			'default' => 'yes',
 			'value'   => 'yes',
 			'tab'     => 'player',
 			'section' => 'bar',
-			'helper'  => __( 'Save now playing track metadata in a separate database table for later use.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Save now playing track metadata in a separate database table for later use.', 'radio-station' ) : '',
 			'pro'     => true,
 		),
 
@@ -720,9 +733,9 @@ function radio_station_plugin_options() {
 		'schedule_page' => array(
 			'type'    => 'select',
 			'options' => 'PAGEID',
-			'label'   => __( 'Master Schedule Page', 'radio-station' ),
+			'label'   => $admin ? __( 'Master Schedule Page', 'radio-station' ) : '',
 			'default' => '',
-			'helper'  => __( 'Select the Page you are displaying the Master Schedule on.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Select the Page you are displaying the Master Schedule on.', 'radio-station' ) : '',
 			'tab'     => 'pages',
 			'section' => 'schedule',
 		),
@@ -730,10 +743,10 @@ function radio_station_plugin_options() {
 		// --- Automatic Schedule Display ---
 		'schedule_auto' => array(
 			'type'    => 'checkbox',
-			'label'   => __( 'Automatic Display', 'radio-station' ),
+			'label'   => $admin ? __( 'Automatic Display', 'radio-station' ) : '',
 			'default' => 'yes',
 			'value'   => 'yes',
-			'helper'  => __( 'Replaces selected page content with Master Schedule. Alternatively customize with the shortcode: ', 'radio-station' ) . ' [master-schedule]',
+			'helper'  => $admin ? __( 'Replaces selected page content with Master Schedule. Alternatively customize with the shortcode: ', 'radio-station' ) . ' [master-schedule]' : '',
 			'tab'     => 'pages',
 			'section' => 'schedule',
 		),
@@ -741,16 +754,16 @@ function radio_station_plugin_options() {
 		// --- Default Schedule View ---
 		'schedule_view' => array(
 			'type'    => 'select',
-			'label'   => __( 'Schedule View Default', 'radio-station' ),
+			'label'   => $admin ? __( 'Schedule View Default', 'radio-station' ) : '',
 			'default' => 'table',
 			'options' => array(
-				'table'   => __( 'Table View', 'radio-station' ),
-				'list'    => __( 'List View', 'radio-station' ),
-				'div'     => __( 'Divs View', 'radio-station' ),
-				'tabs'    => __( 'Tabbed View', 'radio-station' ),
-				'default' => __( 'Legacy Table', 'radio-station' ),
+				'table'   => $admin ? __( 'Table View', 'radio-station' ) : '',
+				'list'    => $admin ? __( 'List View', 'radio-station' ) : '',
+				'div'     => $admin ? __( 'Divs View', 'radio-station' ) : '',
+				'tabs'    => $admin ? __( 'Tabbed View', 'radio-station' ) : '',
+				'default' => $admin ? __( 'Legacy Table', 'radio-station' ) : '',
 			),
-			'helper'  => __( 'View type to use for automatic display on Master Schedule Page.', 'radio-station' ),
+			'helper'  => $admin ? __( 'View type to use for automatic display on Master Schedule Page.', 'radio-station' ) : '',
 			'tab'     => 'pages',
 			'section' => 'schedule',
 		),
@@ -758,14 +771,14 @@ function radio_station_plugin_options() {
 		// --- Schedule Clock Display ---
 		'schedule_clock' => array(
 			'type'    => 'select',
-			'label'   => __( 'Schedule Clock?', 'radio-station' ),
+			'label'   => $admin ? __( 'Schedule Clock?', 'radio-station' ) : '',
 			'default' => 'clock',
 			'options' => array(
-				''         => __( 'None', 'radio-station' ),
-				'clock'    => __( 'Clock', 'radio-station' ),
-				'timezone' => __( 'Timezone', 'radio-station' ),
+				''         => $admin ? __( 'None', 'radio-station' ) : '',
+				'clock'    => $admin ? __( 'Clock', 'radio-station' ) : '',
+				'timezone' => $admin ? __( 'Timezone', 'radio-station' ) : '',
 			),
-			'helper'  => __( 'Radio Time section display above program Schedule.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Radio Time section display above program Schedule.', 'radio-station' ) : '',
 			'tab'     => 'pages',
 			'section' => 'schedule',
 		),
@@ -774,10 +787,10 @@ function radio_station_plugin_options() {
 		// 2.5.10.1: added schedule AJAX load default
 		'schedule_ajax' => array(
 			'type'    => 'checkbox',
-			'label'   => __( 'AJAX Load?', 'radio-station' ),
+			'label'   => $admin ? __( 'AJAX Load?', 'radio-station' ) : '',
 			'default' => 'yes',
 			'value'   => 'yes',
-			'helper'  => __( 'Whether to load schedule display via AJAX by default.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Whether to load schedule display via AJAX by default.', 'radio-station' ) : '',
 			'tab'     => 'pages',
 			'section' => 'schedule',
 		),
@@ -785,10 +798,10 @@ function radio_station_plugin_options() {
 		// --- [Pro/Plus] Schedule Switcher ---
 		'schedule_switcher' => array(
 			'type'    => 'checkbox',
-			'label'   => __( 'View Switching', 'radio-station' ),
+			'label'   => $admin ? __( 'View Switching', 'radio-station' ) : '',
 			'default' => '',
 			'value'   => 'yes',
-			'helper'  => __( 'Enable View Switching on the automatic Master Schedule page.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Enable View Switching on the automatic Master Schedule page.', 'radio-station' ) : '',
 			'tab'     => 'pages',
 			'section' => 'schedule',
 			'pro'     => true,
@@ -798,18 +811,18 @@ function radio_station_plugin_options() {
 		// 2.3.2: added additional views option
 		'schedule_views' => array(
 			'type'    => 'multicheck',
-			'label'   => __( 'Available Views', 'radio-station' ),
+			'label'   => $admin ? __( 'Available Views', 'radio-station' ) : '',
 			// note: unstyled list view not included in defaults
 			'default' => array( 'table', 'calendar' ),
 			'value'   => 'yes',
 			'options' => array(
-				'table'    => __( 'Table View', 'radio-station' ),
-				'tabs'     => __( 'Tabbed View', 'radio-station' ),
-				'list'     => __( 'List View', 'radio-station' ),
-				'grid'     => __( 'Grid View', 'radio-station' ),
-				'calendar' => __( 'Calendar View', 'radio-station' ),
+				'table'    => $admin ? __( 'Table View', 'radio-station' ) : '',
+				'tabs'     => $admin ? __( 'Tabbed View', 'radio-station' ) : '',
+				'list'     => $admin ? __( 'List View', 'radio-station' ) : '',
+				'grid'     => $admin ? __( 'Grid View', 'radio-station' ) : '',
+				'calendar' => $admin ? __( 'Calendar View', 'radio-station' ) : '',
 			),
-			'helper'  => __( 'Switcher Views available on automatic Master Schedule page.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Switcher Views available on automatic Master Schedule page.', 'radio-station' ) : '',
 			'tab'     => 'pages',
 			'section' => 'schedule',
 			'pro'     => true,
@@ -819,10 +832,10 @@ function radio_station_plugin_options() {
 		// 2.4.0.4: added grid view time spacing option
 		'schedule_timegrid' => array(
 			'type'    => 'checkbox',
-			'label'   => __( 'Time Spaced Grid', 'radio-station' ),
+			'label'   => $admin ? __( 'Time Spaced Grid', 'radio-station' ) : '',
 			'default' => '',
 			'value'   => 'yes',
-			'helper'  => __( 'Enable Grid View option for equalized time spacing and background imsges.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Enable Grid View option for equalized time spacing and background imsges.', 'radio-station' ) : '',
 			'tab'     => 'pages',
 			'section' => 'schedule',
 			'pro'     => true,
@@ -833,14 +846,14 @@ function radio_station_plugin_options() {
 		// --- Show Blocks Position ---
 		'show_block_position' => array(
 			'type'    => 'select',
-			'label'   => __( 'Info Blocks Position', 'radio-station' ),
+			'label'   => $admin ? __( 'Info Blocks Position', 'radio-station' ) : '',
 			'options' => array(
-				'left'  => __( 'Float Left', 'radio-station' ),
-				'right' => __( 'Float Right', 'radio-station' ),
-				'top'   => __( 'Float Top', 'radio-station' ),
+				'left'  => $admin ? __( 'Float Left', 'radio-station' ) : '',
+				'right' => $admin ? __( 'Float Right', 'radio-station' ) : '',
+				'top'   => $admin ? __( 'Float Top', 'radio-station' ) : '',
 			),
 			'default' => 'left',
-			'helper'  => __( 'Where to position Show info blocks relative to Show Page content.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Where to position Show info blocks relative to Show Page content.', 'radio-station' ) : '',
 			'tab'     => 'pages',
 			'section' => 'show',
 		),
@@ -848,13 +861,13 @@ function radio_station_plugin_options() {
 		// ---- Show Section Layout ---
 		'show_section_layout' => array(
 			'type'    => 'select',
-			'label'   => __( 'Show Content Layout', 'radio-station' ),
+			'label'   => $admin ? __( 'Show Content Layout', 'radio-station' ) : '',
 			'options' => array(
-				'tabbed'   => __( 'Tabbed', 'radio-station' ),
-				'standard' => __( 'Standard', 'radio-station' ),
+				'tabbed'   => $admin ? __( 'Tabbed', 'radio-station' ) : '',
+				'standard' => $admin ? __( 'Standard', 'radio-station' ) : '',
 			),
 			'default' => 'tabbed',
-			'helper'  => __( 'How to display extra sections below Show description. In content tabs or standard layout down the page.', 'radio-station' ),
+			'helper'  => $admin ? __( 'How to display extra sections below Show description. In content tabs or standard layout down the page.', 'radio-station' ) : '',
 			'tab'     => 'pages',
 			'section' => 'show',
 		),
@@ -863,13 +876,13 @@ function radio_station_plugin_options() {
 		// 2.5.15: added show player selection
 		'show_player' => array(
 			'type'    => 'select',
-			'label'   => __( 'Latest Show Player', 'radio-station' ),
+			'label'   => $admin ? __( 'Latest Show Player', 'radio-station' ) : '',
 			'options' => array(
-				'radio_player'   => __( 'Radio Station Stream Player', 'radio-station' ),
-				'media_elements' => __( 'MediaElements (WordPress)', 'radio-station' ),
+				'radio_player'   => $admin ? __( 'Radio Station Stream Player', 'radio-station' ) : '',
+				'media_elements' => $admin ? __( 'MediaElements (WordPress)', 'radio-station' ) : '',
 			),
 			'default' => 'media_elements',
-			'helper'  => __( 'Which player to use on the Show pages for the latest show recording.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Which player to use on the Show pages for the latest show recording.', 'radio-station' ) : '',
 			'tab'     => 'pages',
 			'section' => 'show',
 		),
@@ -878,14 +891,14 @@ function radio_station_plugin_options() {
 		// 2.5.15: added show player theme selection
 		'show_player_theme' => array(
 			'type'    => 'select',
-			'label'   => __( 'Show Player Theme', 'radio-station' ),
+			'label'   => $admin ? __( 'Show Player Theme', 'radio-station' ) : '',
 			'default' => '',
 			'options' => array(
-				''		=> __( 'Player Default', 'radio-station' ),
-				'light' => __( 'Light', 'radio-station' ),
-				'dark'  => __( 'Dark', 'radio-station' ),
+				''		=> $admin ? __( 'Player Default', 'radio-station' ) : '',
+				'light' => $admin ? __( 'Light', 'radio-station' ) : '',
+				'dark'  => $admin ? __( 'Dark', 'radio-station' ) : '',
 			),
-			'helper'  => __( 'Show Player Controls theme style (Radio Station Stream Player only,)', 'radio-station' ),
+			'helper'  => $admin ? __( 'Show Player Controls theme style (Radio Station Stream Player only,)', 'radio-station' ) : '',
 			'tab'     => 'pages',
 			'section' => 'show',
 		),
@@ -894,10 +907,10 @@ function radio_station_plugin_options() {
 		// 2.3.2: added plural to option label
 		'show_header_image' => array(
 			'type'    => 'checkbox',
-			'label'   => __( 'Content Header Images', 'radio-station' ),
+			'label'   => $admin ? __( 'Content Header Images', 'radio-station' ) : '',
 			'value'   => 'yes',
 			'default' => '',
-			'helper'  => __( 'If your chosen template does not display the Featured Image, enable this and use the Content Header Image box on the Show edit screen instead.', 'radio-station' ),
+			'helper'  => $admin ? __( 'If your chosen template does not display the Featured Image, enable this and use the Content Header Image box on the Show edit screen instead.', 'radio-station' ) : '',
 			'tab'     => 'pages',
 			'section' => 'show',
 		),
@@ -905,12 +918,12 @@ function radio_station_plugin_options() {
 		// --- Latest Show Posts ---
 		// 'show_latest_posts' => array(
 		// 	'type'    => 'numeric',
-		// 	'label'   => __( 'Latest Show Posts', 'radio-station' ),
+		// 	'label'   => $admin ? __( 'Latest Show Posts', 'radio-station' ) : '',
 		// 	'step'    => 1,
 		// 	'min'     => 0,
 		// 	'max'     => 100,
 		// 	'default' => 3,
-		// 	'helper'  => __( 'Number of Latest Blog Posts to display above Show Page tabs.', 'radio-station' ),
+		// 	'helper'  => $admin ? __( 'Number of Latest Blog Posts to display above Show Page tabs.', 'radio-station' ) : '',
 		// 	'tab'     => 'pages',
 		// 	'section' => 'show',
 		// ),
@@ -918,12 +931,12 @@ function radio_station_plugin_options() {
 		// --- Show Posts Per Page ---
 		'show_posts_per_page' => array(
 			'type'    => 'numeric',
-			'label'   => __( 'Posts per Page', 'radio-station' ),
+			'label'   => $admin ? __( 'Posts per Page', 'radio-station' ) : '',
 			'step'    => 1,
 			'min'     => 0,
 			'max'     => 1000,
 			'default' => 10,
-			'helper'  => __( 'Linked Show Posts per page on the Show Page tab/display.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Linked Show Posts per page on the Show Page tab/display.', 'radio-station' ) : '',
 			'tab'     => 'pages',
 			'section' => 'show',
 		),
@@ -934,9 +947,9 @@ function radio_station_plugin_options() {
 			'step'    => 1,
 			'min'     => 0,
 			'max'     => 1000,
-			'label'   => __( 'Playlists per Page', 'radio-station' ),
+			'label'   => $admin ? __( 'Playlists per Page', 'radio-station' ) : '',
 			'default' => 10,
-			'helper'  => __( 'Playlists per page on the Show Page tab/display', 'radio-station' ),
+			'helper'  => $admin ? __( 'Playlists per page on the Show Page tab/display', 'radio-station' ) : '',
 			'tab'     => 'pages',
 			'section' => 'show',
 		),
@@ -944,12 +957,12 @@ function radio_station_plugin_options() {
 		// --- [Pro] Show Episodes per Page ---
 		'show_episodes_per_page' => array(
 			'type'    => 'number',
-			'label'   => __( 'Episodes per Page', 'radio-station' ),
+			'label'   => $admin ? __( 'Episodes per Page', 'radio-station' ) : '',
 			'step'    => 1,
 			'min'     => 1,
 			'max'     => 1000,
 			'default' => 10,
-			'helper'  => __( 'Number of Show Episodes per page on the Show page tab/display.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Number of Show Episodes per page on the Show page tab/display.', 'radio-station' ) : '',
 			'tab'     => 'pages',
 			'section' => 'show',
 			'pro'     => true,
@@ -960,15 +973,15 @@ function radio_station_plugin_options() {
 		// 2.5.7: updated to add option to remove team display
 		'combined_team_tab' => array(
 			'type'    => 'select',
-			'label'   => __( 'Team Tab Display', 'radio-station' ),
+			'label'   => $admin ? __( 'Team Tab Display', 'radio-station' ) : '',
 			'default' => 'yes',
 			'options' => array(
-				'off'  => __( 'No Team Display', 'radio-station' ),
-				''     => __( 'Separate Role Tabs', 'radio-station' ),
-				'yes'  => __( 'Combined Team List', 'radio-station' ),
-				// 'grid' => __( 'Combined Team Grid', 'radio-station' ),
+				'off'  => $admin ? __( 'No Team Display', 'radio-station' ) : '',
+				''     => $admin ? __( 'Separate Role Tabs', 'radio-station' ) : '',
+				'yes'  => $admin ? __( 'Combined Team List', 'radio-station' ) : '',
+				// 'grid' => $admin ? __( 'Combined Team Grid', 'radio-station' ) : '',
 			),
-			'helper'  => __( 'How to display Show team members (eg. hosts, producers) on a Show page.', 'radio-station' ),
+			'helper'  => $admin ? __( 'How to display Show team members (eg. hosts, producers) on a Show page.', 'radio-station' ) : '',
 			'tab'     => 'pages',
 			'section' => 'show',
 			'pro'     => true,
@@ -980,14 +993,14 @@ function radio_station_plugin_options() {
 		// --- [Pro/Plus] Profile Blocks Position ---
 		'profile_block_position' => array(
 			'type'    => 'select',
-			'label'   => __( 'Info Blocks Position', 'radio-station' ),
+			'label'   => $admin ? __( 'Info Blocks Position', 'radio-station' ) : '',
 			'options' => array(
-				'left'  => __( 'Float Left', 'radio-station' ),
-				'right' => __( 'Float Right', 'radio-station' ),
-				'top'   => __( 'Float Top', 'radio-station' ),
+				'left'  => $admin ? __( 'Float Left', 'radio-station' ) : '',
+				'right' => $admin ? __( 'Float Right', 'radio-station' ) : '',
+				'top'   => $admin ? __( 'Float Top', 'radio-station' ) : '',
 			),
 			'default' => 'left',
-			'helper'  => __( 'Where to position Profile info blocks relative to Profile Page content.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Where to position Profile info blocks relative to Profile Page content.', 'radio-station' ) : '',
 			'tab'     => 'pages',
 			'section' => 'profile',
 			'pro'     => true,
@@ -996,13 +1009,13 @@ function radio_station_plugin_options() {
 		// ---- [Pro/Plus] Profile Section Layout ---
 		'profile_section_layout' => array(
 			'type'    => 'select',
-			'label'   => __( 'Profile Content Layout', 'radio-station' ),
+			'label'   => $admin ? __( 'Profile Content Layout', 'radio-station' ) : '',
 			'options' => array(
-				'tabbed'   => __( 'Tabbed', 'radio-station' ),
-				'standard' => __( 'Standard', 'radio-station' ),
+				'tabbed'   => $admin ? __( 'Tabbed', 'radio-station' ) : '',
+				'standard' => $admin ? __( 'Standard', 'radio-station' ) : '',
 			),
 			'default' => 'tabbed',
-			'helper'  => __( 'How to display extra sections below Profile description. In content tabs or standard layout down the page.', 'radio-station' ),
+			'helper'  => $admin ? __( 'How to display extra sections below Profile description. In content tabs or standard layout down the page.', 'radio-station' ) : '',
 			'tab'     => 'pages',
 			'section' => 'profile',
 			'pro'     => true,
@@ -1014,14 +1027,14 @@ function radio_station_plugin_options() {
 		// --- [Pro] Episode Blocks Position ---
 		'episode_block_position' => array(
 			'type'    => 'select',
-			'label'   => __( 'Info Blocks Position', 'radio-station' ),
+			'label'   => $admin ? __( 'Info Blocks Position', 'radio-station' ) : '',
 			'options' => array(
-				'left'  => __( 'Float Left', 'radio-station' ),
-				'right' => __( 'Float Right', 'radio-station' ),
-				'top'   => __( 'Float Top', 'radio-station' ),
+				'left'  => $admin ? __( 'Float Left', 'radio-station' ) : '',
+				'right' => $admin ? __( 'Float Right', 'radio-station' ) : '',
+				'top'   => $admin ? __( 'Float Top', 'radio-station' ) : '',
 			),
 			'default' => 'left',
-			'helper'  => __( 'Where to position Episode info blocks relative to Episode Page content.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Where to position Episode info blocks relative to Episode Page content.', 'radio-station' ) : '',
 			'tab'     => 'pages',
 			'section' => 'episode',
 			'pro'     => true,
@@ -1030,13 +1043,13 @@ function radio_station_plugin_options() {
 		// ---- [Pro] Episode Section Layout ---
 		'episode_section_layout' => array(
 			'type'    => 'select',
-			'label'   => __( 'Episode Content Layout', 'radio-station' ),
+			'label'   => $admin ? __( 'Episode Content Layout', 'radio-station' ) : '',
 			'options' => array(
-				'tabbed'   => __( 'Tabbed', 'radio-station' ),
-				'standard' => __( 'Standard', 'radio-station' ),
+				'tabbed'   => $admin ? __( 'Tabbed', 'radio-station' ) : '',
+				'standard' => $admin ? __( 'Standard', 'radio-station' ) : '',
 			),
 			'default' => 'tabbed',
-			'helper'  => __( 'How to display extra sections below Episode description. In content tabs or standard layout down the page.', 'radio-station' ),
+			'helper'  => $admin ? __( 'How to display extra sections below Episode description. In content tabs or standard layout down the page.', 'radio-station' ) : '',
 			'tab'     => 'pages',
 			'section' => 'episode',
 			'pro'     => true,
@@ -1046,13 +1059,13 @@ function radio_station_plugin_options() {
 		// 2.5.15: added episode player selection
 		'episode_player' => array(
 			'type'    => 'select',
-			'label'   => __( 'Episode Player', 'radio-station' ),
+			'label'   => $admin ? __( 'Episode Player', 'radio-station' ) : '',
 			'options' => array(
-				'radio_player'   => __( 'Radio Station Stream Player', 'radio-station' ),
-				'media_elements' => __( 'MediaElements (WordPress)', 'radio-station' ),
+				'radio_player'   => $admin ? __( 'Radio Station Stream Player', 'radio-station' ) : '',
+				'media_elements' => $admin ? __( 'MediaElements (WordPress)', 'radio-station' ) : '',
 			),
 			'default' => 'radio_player',
-			'helper'  => __( 'Which player to use on the Episode pages for the Episode recording.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Which player to use on the Episode pages for the Episode recording.', 'radio-station' ) : '',
 			'tab'     => 'pages',
 			'section' => 'episode',
 			'pro'     => true,
@@ -1062,14 +1075,14 @@ function radio_station_plugin_options() {
 		// 2.5.15: added episode player theme selection
 		'episode_player_theme' => array(
 			'type'    => 'select',
-			'label'   => __( 'Episode Player Theme', 'radio-station' ),
+			'label'   => $admin ? __( 'Episode Player Theme', 'radio-station' ) : '',
 			'default' => '',
 			'options' => array(
-				''		=> __( 'Player Default', 'radio-station' ),
-				'light' => __( 'Light', 'radio-station' ),
-				'dark'  => __( 'Dark', 'radio-station' ),
+				''		=> $admin ? __( 'Player Default', 'radio-station' ) : '',
+				'light' => $admin ? __( 'Light', 'radio-station' ) : '',
+				'dark'  => $admin ? __( 'Dark', 'radio-station' ) : '',
 			),
-			'helper'  => __( 'Episode Player Controls theme style (Radio Station Stream Player only,)', 'radio-station' ),
+			'helper'  => $admin ? __( 'Episode Player Controls theme style (Radio Station Stream Player only,)', 'radio-station' ) : '',
 			'tab'     => 'pages',
 			'section' => 'episode',
 			'pro'     => true,
@@ -1078,10 +1091,10 @@ function radio_station_plugin_options() {
 		// --- [Pro] Use Latest Episode ---
 		'episode_use_latest' => array(
 			'type'    => 'checkbox',
-			'label'   => __( 'Use Latest Episode', 'radio-station' ),
+			'label'   => $admin ? __( 'Use Latest Episode', 'radio-station' ) : '',
 			'value'   => 'yes',
 			'default' => 'yes',
-			'helper'  => __( 'Automatically use the latest Episode URL for the player embed on the Show page.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Automatically use the latest Episode URL for the player embed on the Show page.', 'radio-station' ) : '',
 			'tab'     => 'pages',
 			'section' => 'episode',
 			'pro'     => true,
@@ -1093,99 +1106,99 @@ function radio_station_plugin_options() {
 
 		// --- Shows Archive Page ---
 		'show_archive_page' => array(
-			'label'   => __( 'Shows Archive Page', 'radio-station' ),
+			'label'   => $admin ? __( 'Shows Archive Page', 'radio-station' ) : '',
 			'type'    => 'select',
 			'options' => 'PAGEID',
 			'default' => '',
-			'helper'  => __( 'Select the Page for displaying the Show archive list.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Select the Page for displaying the Show archive list.', 'radio-station' ) : '',
 			'tab'     => 'archives',
 			'section' => 'posttypes',
 		),
 
 		// --- Automatic Display ---
 		'show_archive_auto' => array(
-			'label'   => __( 'Automatic Display', 'radio-station' ),
+			'label'   => $admin ? __( 'Automatic Display', 'radio-station' ) : '',
 			'type'    => 'checkbox',
 			'value'   => 'yes',
 			'default' => 'yes',
-			'helper'  => __( 'Replaces selected page content with default Show Archive. Alternatively customize display using the shortcode:', 'radio-station' ) . ' [shows-archive]',
+			'helper'  => $admin ? __( 'Replaces selected page content with default Show Archive. Alternatively customize display using the shortcode:', 'radio-station' ) . ' [shows-archive]' : '',
 			'tab'     => 'archives',
 			'section' => 'posttypes',
 		),
 
 		// ? --- Redirect Shows Archive --- ?
 		// 'show_archive_override' => array(
-		// 	'label'   => __( 'Redirect Shows Archive', 'radio-station' ),
+		// 	'label'   => $admin ? __( 'Redirect Shows Archive', 'radio-station' ) : '',
 		// 	'type'    => 'checkbox',
 		// 	'value'   => 'yes',
 		// 	'default' => '',
-		// 	'helper'  => __( 'Redirect Custom Post Type Archive for Shows to Shows Archive Page.', 'radio-station' ),
+		// 	'helper'  => $admin ? __( 'Redirect Custom Post Type Archive for Shows to Shows Archive Page.', 'radio-station' ) : '',
 		// 	'tab'     => 'archives',
 		// 	'section' => 'posttypes',
 		// ),
 
 		// --- Overrides Archive Page ---
 		'override_archive_page' => array(
-			'label'   => __( 'Overrides Archive Page', 'radio-station' ),
+			'label'   => $admin ? __( 'Overrides Archive Page', 'radio-station' ) : '',
 			'type'    => 'select',
 			'options' => 'PAGEID',
 			'default' => '',
-			'helper'  => __( 'Select the Page for displaying the Override archive list.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Select the Page for displaying the Override archive list.', 'radio-station' ) : '',
 			'tab'     => 'archives',
 			'section' => 'posttypes',
 		),
 
 		// --- Automatic Display ---
 		'override_archive_auto' => array(
-			'label'   => __( 'Automatic Display', 'radio-station' ),
+			'label'   => $admin ? __( 'Automatic Display', 'radio-station' ) : '',
 			'type'    => 'checkbox',
 			'value'   => 'yes',
 			'default' => 'yes',
-			'helper'  => __( 'Replaces selected page content with default Override Archive. Alternatively customize display using the shortcode:', 'radio-station' ) . ' [overrides-archive]',
+			'helper'  => $admin ? __( 'Replaces selected page content with default Override Archive. Alternatively customize display using the shortcode:', 'radio-station' ) . ' [overrides-archive]' : '',
 			'tab'     => 'archives',
 			'section' => 'posttypes',
 		),
 
 		// ? --- Redirect Overrides Archive --- ?
 		// 'override_archive_override' => array(
-		// 	'label'   => __( 'Redirect Overrides Archive', 'radio-station' ),
+		// 	'label'   => $admin ? __( 'Redirect Overrides Archive', 'radio-station' ) : '',
 		// 	'type'    => 'checkbox',
 		// 	'value'   => 'yes',
 		// 	'default' => '',
-		// 	'helper'  => __( 'Redirect Custom Post Type Archive for Overrides to Overrides Archive Page.', 'radio-station' ),
+		// 	'helper'  => $admin ? __( 'Redirect Custom Post Type Archive for Overrides to Overrides Archive Page.', 'radio-station' ) : '',
 		// 	'tab'     => 'archives',
 		// 	'section' => 'posttypes',
 		// ),
 
 		// --- Playlists Archive Page ---
 		'playlist_archive_page' => array(
-			'label'   => __( 'Playlists Archive Page', 'radio-station' ),
+			'label'   => $admin ? __( 'Playlists Archive Page', 'radio-station' ) : '',
 			'type'    => 'select',
 			'options' => 'PAGEID',
 			'default' => '',
-			'helper'  => __( 'Select the Page for displaying the Playlist archive list.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Select the Page for displaying the Playlist archive list.', 'radio-station' ) : '',
 			'tab'     => 'archives',
 			'section' => 'posttypes',
 		),
 
 		// --- Automatic Display ---
 		'playlist_archive_auto' => array(
-			'label'   => __( 'Automatic Display', 'radio-station' ),
+			'label'   => $admin ? __( 'Automatic Display', 'radio-station' ) : '',
 			'type'    => 'checkbox',
 			'value'   => 'yes',
 			'default' => 'yes',
-			'helper'  => __( 'Replaces selected page content with default Playlist Archive. Alternatively customize display using the shortcode:', 'radio-station' ) . ' [playlists-archive]',
+			'helper'  => $admin ? __( 'Replaces selected page content with default Playlist Archive. Alternatively customize display using the shortcode:', 'radio-station' ) . ' [playlists-archive]' : '',
 			'tab'     => 'archives',
 			'section' => 'posttypes',
 		),
 
 		// ? --- Redirect Playlists Archive --- ?
 		// 'playlist_archive_override' => array(
-		// 	'label'   => __( 'Redirect Playlists Archive', 'radio-station' ),
+		// 	'label'   => $admin ? __( 'Redirect Playlists Archive', 'radio-station' ) : '',
 		// 	'type'    => 'checkbox',
 		// 	'value'   => 'yes',
 		// 	'default' => '',
-		// 	'helper'  => __( 'Redirect Custom Post Type Archive for Playlists to Playlist Archive Page.', 'radio-station' ),
+		// 	'helper'  => $admin ? __( 'Redirect Custom Post Type Archive for Playlists to Playlist Archive Page.', 'radio-station' ) : '',
 		// 	'tab'     => 'archives',
 		// 	'section' => 'posttypes',
 		// ),
@@ -1193,11 +1206,11 @@ function radio_station_plugin_options() {
 		// --- [Pro] Episodes Archive Page ---
 		// 2.5.8: added episodes archive page option
 		'episode_archive_page' => array(
-			'label'   => __( 'Episodes Archive Page', 'radio-station' ),
+			'label'   => $admin ? __( 'Episodes Archive Page', 'radio-station' ) : '',
 			'type'    => 'select',
 			'options' => 'PAGEID',
 			'default' => '',
-			'helper'  => __( 'Select the Page for displaying the Episode archive list.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Select the Page for displaying the Episode archive list.', 'radio-station' ) : '',
 			'tab'     => 'archives',
 			'section' => 'posttypes',
 			'pro'     => true,
@@ -1206,11 +1219,11 @@ function radio_station_plugin_options() {
 		// --- [Pro] Automatic Display ---
 		// 2.5.8: added episodes archive automatic display option
 		'episode_archive_auto' => array(
-			'label'   => __( 'Automatic Display', 'radio-station' ),
+			'label'   => $admin ? __( 'Automatic Display', 'radio-station' ) : '',
 			'type'    => 'checkbox',
 			'value'   => 'yes',
 			'default' => 'yes',
-			'helper'  => __( 'Replaces selected page content with default Episode Archive. Alternatively customize display using the shortcode:', 'radio-station' ) . ' [episodes-archive]',
+			'helper'  => $admin ? __( 'Replaces selected page content with default Episode Archive. Alternatively customize display using the shortcode:', 'radio-station' ) . ' [episodes-archive]' : '',
 			'tab'     => 'archives',
 			'section' => 'posttypes',
 			'pro'     => true,
@@ -1219,11 +1232,11 @@ function radio_station_plugin_options() {
 		// --- [Pro] Team Archive Page ---
 		// 2.4.0.6: added option for team archive page
 		'team_archive_page' => array(
-			'label'   => __( 'Team Archive Page', 'radio-station' ),
+			'label'   => $admin ? __( 'Team Archive Page', 'radio-station' ) : '',
 			'type'    => 'select',
 			'options' => 'PAGEID',
 			'default' => '',
-			'helper'  => __( 'Select the Page for displaying the Team archive list.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Select the Page for displaying the Team archive list.', 'radio-station' ) : '',
 			'tab'     => 'archives',
 			'section' => 'posttypes',
 			'pro'     => true,
@@ -1232,16 +1245,16 @@ function radio_station_plugin_options() {
 		// --- [Pro] Automatic Display ---
 		// 2.4.0.6: added option for team archive page
 		'team_archive_auto' => array(
-			'label'   => __( 'Automatic Display', 'radio-station' ),
+			'label'   => $admin ? __( 'Automatic Display', 'radio-station' ) : '',
 			'type'    => 'select',
 			'options' => array(
-				''     => __( 'Off', 'radio-station' ),
-				'yes'  => __( 'List', 'radio-station' ),
-				'grid' => __( 'Grid', 'radio-station' ),
+				''     => $admin ? __( 'Off', 'radio-station' ) : '',
+				'yes'  => $admin ? __( 'List', 'radio-station' ) : '',
+				'grid' => $admin ? __( 'Grid', 'radio-station' ) : '',
 			),
 			'value'   => 'yes',
 			'default' => 'yes',
-			'helper'  => __( 'Replaces selected page content with default Team Archive. Alternatively customize display using the shortcode:', 'radio-station' ) . ' [teams-archive]',
+			'helper'  => $admin ? __( 'Replaces selected page content with default Team Archive. Alternatively customize display using the shortcode:', 'radio-station' ) . ' [teams-archive]' : '',
 			'tab'     => 'archives',
 			'section' => 'posttypes',
 			'pro'     => true,
@@ -1252,33 +1265,33 @@ function radio_station_plugin_options() {
 
 		// --- Genres Archive Page ---
 		'genre_archive_page' => array(
-			'label'   => __( 'Genres Archive Page', 'radio-station' ),
+			'label'   => $admin ? __( 'Genres Archive Page', 'radio-station' ) : '',
 			'type'    => 'select',
 			'options' => 'PAGEID',
 			'default' => '',
-			'helper'  => __( 'Select the Page for displaying the Genre archive list.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Select the Page for displaying the Genre archive list.', 'radio-station' ) : '',
 			'tab'     => 'archives',
 			'section' => 'taxonomies',
 		),
 
 		// --- Automatic Display ---
 		'genre_archive_auto' => array(
-			'label'   => __( 'Automatic Display', 'radio-station' ),
+			'label'   => $admin ? __( 'Automatic Display', 'radio-station' ) : '',
 			'type'    => 'checkbox',
 			'value'   => 'yes',
 			'default' => 'yes',
-			'helper'  => __( 'Replaces selected page content with default Genre Archive. Alternatively customize display using the shortcode:', 'radio-station' ) . ' [genres-archive]',
+			'helper'  => $admin ? __( 'Replaces selected page content with default Genre Archive. Alternatively customize display using the shortcode:', 'radio-station' ) . ' [genres-archive]' : '',
 			'tab'     => 'archives',
 			'section' => 'taxonomies',
 		),
 
 		// ? --- Redirect Genres Archives --- ?
 		// 'genre_archive_override' => array(
-		//  'label'   => __( 'Redirect Genres Archive', 'radio-station' ),
+		//  'label'   => $admin ? __( 'Redirect Genres Archive', 'radio-station' ) : '',
 		//	'type'    => 'checkbox',
 		//	'value'   => 'yes',
 		//	'default' => '',
-		//	'helper'  => __( 'Redirect Taxonomy Archive for Genres to Genres Archive Page.', 'radio-station' ),
+		//	'helper'  => $admin ? __( 'Redirect Taxonomy Archive for Genres to Genres Archive Page.', 'radio-station' ) : '',
 		//	'tab'     => 'archives',
 		//	'section' => 'taxonomies',
 		// ),
@@ -1286,11 +1299,11 @@ function radio_station_plugin_options() {
 		// --- Languages Archive Page ---
 		// 2.3.3.9: added language archive page
 		'language_archive_page' => array(
-			'label'   => __( 'Languages Archive Page', 'radio-station' ),
+			'label'   => $admin ? __( 'Languages Archive Page', 'radio-station' ) : '',
 			'type'    => 'select',
 			'options' => 'PAGEID',
 			'default' => '',
-			'helper'  => __( 'Select the Page for displaying the Language archive list.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Select the Page for displaying the Language archive list.', 'radio-station' ) : '',
 			'tab'     => 'archives',
 			'section' => 'taxonomies',
 		),
@@ -1298,22 +1311,22 @@ function radio_station_plugin_options() {
 		// --- Automatic Display ---
 		// 2.3.3.9: added language archive automatic page
 		'language_archive_auto' => array(
-			'label'   => __( 'Automatic Display', 'radio-station' ),
+			'label'   => $admin ? __( 'Automatic Display', 'radio-station' ) : '',
 			'type'    => 'checkbox',
 			'value'   => 'yes',
 			'default' => 'yes',
-			'helper'  => __( 'Replaces selected page content with default Language Archive. Alternatively customize display using the shortcode:', 'radio-station' ) . ' [languages-archive]',
+			'helper'  => $admin ? __( 'Replaces selected page content with default Language Archive. Alternatively customize display using the shortcode:', 'radio-station' ) . ' [languages-archive]' : '',
 			'tab'     => 'archives',
 			'section' => 'taxonomies',
 		),
 
 		// ? --- Redirect Languages Archives --- ?
 		// 'language_archive_override' => array(
-		//  'label'   => __( 'Redirect Genres Archive', 'radio-station' ),
+		//  'label'   => $admin ? __( 'Redirect Genres Archive', 'radio-station' ) : '',
 		//	'type'    => 'checkbox',
 		//	'value'   => 'yes',
 		//	'default' => '',
-		//	'helper'  => __( 'Redirect Taxonomy Archive for Languages to Languages Archive Page.', 'radio-station' ),
+		//	'helper'  => $admin ? __( 'Redirect Taxonomy Archive for Languages to Languages Archive Page.', 'radio-station' ) : '',
 		//	'tab'     => 'archives',
 		//	'section' => 'taxonomies',
 		// ),
@@ -1326,37 +1339,37 @@ function radio_station_plugin_options() {
 		// --- Templates Change Note ---
 		'templates_change_note' => array(
 			'type'    => 'note',
-			'label'   => __( 'Templates Change Note', 'radio-station' ),
-			'helper'  => __( 'Since 2.3.0, the way that Templates are implemented has changed.', 'radio-station' )
+			'label'   => $admin ? __( 'Templates Change Note', 'radio-station' ) : '',
+			'helper'  => $admin ? __( 'Since 2.3.0, the way that Templates are implemented has changed.', 'radio-station' )
 						. ' ' . __( 'See the Documentation for more information:', 'radio-station' )
-						. ' <a href="' . RADIO_STATION_DOCS_URL . 'display/#page-templates" target="_blank">' . __( 'Templates Documentation', 'radio-station' ) . '</a>',
+						. ' <a href="' . RADIO_STATION_DOCS_URL . 'display/#page-templates" target="_blank">' . __( 'Templates Documentation', 'radio-station' ) . '</a>' : '',
 			'tab'     => 'pages',
 			'section' => 'single',
 		),
 
 		// --- Show Template ---
 		'show_template' => array(
-			'label'   => __( 'Show Template', 'radio-station' ),
+			'label'   => $admin ? __( 'Show Template', 'radio-station' ) : '',
 			'type'    => 'select',
 			'options' => array(
-				'page'     => __( 'Theme Page Template (page.php)', 'radio-station' ),
-				'post'     => __( 'Theme Post Template (single.php)', 'radio-station' ),
-				'singular' => __( 'Theme Singular Template (singular.php)', 'radio-station' ),
-				'legacy'   => __( 'Legacy Plugin Template', 'radio-station' ),
+				'page'     => $admin ? __( 'Theme Page Template (page.php)', 'radio-station' ) : '',
+				'post'     => $admin ? __( 'Theme Post Template (single.php)', 'radio-station' ) : '',
+				'singular' => $admin ? __( 'Theme Singular Template (singular.php)', 'radio-station' ) : '',
+				'legacy'   => $admin ? __( 'Legacy Plugin Template', 'radio-station' ) : '',
 			),
 			'default' => 'page',
-			'helper'  => __( 'Which template to use for displaying Show content.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Which template to use for displaying Show content.', 'radio-station' ) : '',
 			'tab'     => 'pages',
 			'section' => 'single',
 		),
 
 		// --- Combined Template Method ---
 		'show_template_combined' => array(
-			'label'   => __( 'Combined Method', 'radio-station' ),
+			'label'   => $admin ? __( 'Combined Method', 'radio-station' ) : '',
 			'type'    => 'checkbox',
 			'value'   => 'yes',
 			'default' => '',
-			'helper'  => __( 'Advanced usage. Use both a custom template AND content filtering for a Show. (Not compatible with Legacy templates.)', 'radio-station' ),
+			'helper'  => $admin ? __( 'Advanced usage. Use both a custom template AND content filtering for a Show. (Not compatible with Legacy templates.)', 'radio-station' ) : '',
 			'tab'     => 'pages',
 			'section' => 'single',
 		),
@@ -1364,27 +1377,27 @@ function radio_station_plugin_options() {
 		// --- Playlist Template ---
 		// 2.3.3.8: added missing singular.php option to match show_template
 		'playlist_template' => array(
-			'label'   => __( 'Playlist Template', 'radio-station' ),
+			'label'   => $admin ? __( 'Playlist Template', 'radio-station' ) : '',
 			'type'    => 'select',
 			'options' => array(
-				'page'     => __( 'Theme Page Template (page.php)', 'radio-station' ),
-				'post'     => __( 'Theme Post Template (single.php)', 'radio-station' ),
-				'singular' => __( 'Theme Singular Template (singular.php)', 'radio-station' ),
-				'legacy'   => __( 'Legacy Plugin Template', 'radio-station' ),
+				'page'     => $admin ? __( 'Theme Page Template (page.php)', 'radio-station' ) : '',
+				'post'     => $admin ? __( 'Theme Post Template (single.php)', 'radio-station' ) : '',
+				'singular' => $admin ? __( 'Theme Singular Template (singular.php)', 'radio-station' ) : '',
+				'legacy'   => $admin ? __( 'Legacy Plugin Template', 'radio-station' ) : '',
 			),
 			'default' => 'page',
-			'helper'  => __( 'Which template to use for displaying Playlist content.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Which template to use for displaying Playlist content.', 'radio-station' ) : '',
 			'tab'     => 'pages',
 			'section' => 'single',
 		),
 
 		// --- Combined Template Method ---
 		'playlist_template_combined' => array(
-			'label'   => __( 'Combined Method', 'radio-station' ),
+			'label'   => $admin ? __( 'Combined Method', 'radio-station' ) : '',
 			'type'    => 'checkbox',
 			'value'   => 'yes',
 			'default' => '',
-			'helper'  => __( 'Advanced usage. Use both a custom template AND content filtering for a Playlist. (Not compatible with Legacy templates.)', 'radio-station' ),
+			'helper'  => $admin ? __( 'Advanced usage. Use both a custom template AND content filtering for a Playlist. (Not compatible with Legacy templates.)', 'radio-station' ) : '',
 			'tab'     => 'pages',
 			'section' => 'single',
 		),
@@ -1395,10 +1408,10 @@ function radio_station_plugin_options() {
 		// 2.3.3: fix to value of value key
 		'ajax_widgets' => array(
 			'type'    => 'checkbox',
-			'label'   => __( 'AJAX Load Widgets?', 'radio-station' ),
+			'label'   => $admin ? __( 'AJAX Load Widgets?', 'radio-station' ) : '',
 			'default' => 'yes',
 			'value'   => 'yes',
-			'helper'  => __( 'Defaults plugin widgets to AJAX loading. Can also be set on individual widgets.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Defaults plugin widgets to AJAX loading. Can also be set on individual widgets.', 'radio-station' ) : '',
 			'tab'     => 'widgets',
 			'section' => 'loading',
 		),
@@ -1406,10 +1419,10 @@ function radio_station_plugin_options() {
 		// --- [Pro/Plus] Dynamic Reloading ---
 		'dynamic_reload' => array(
 			'type'    => 'checkbox',
-			'label'   => __( 'Dynamic Reloading?', 'radio-station' ),
+			'label'   => $admin ? __( 'Dynamic Reloading?', 'radio-station' ) : '',
 			'default' => 'yes',
 			'value'   => 'yes',
-			'helper'  => __( 'Automatically reload all plugin widgets on change of current Show. Can also be set on individual widgets.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Automatically reload all plugin widgets on change of current Show. Can also be set on individual widgets.', 'radio-station' ) : '',
 			'tab'     => 'widgets',
 			'section' => 'loading',
 			'pro'     => true,
@@ -1418,10 +1431,10 @@ function radio_station_plugin_options() {
 		// --- [Pro/Plus] Translate User Times ---
 		'convert_show_times' => array(
 			'type'    => 'checkbox',
-			'label'   => __( 'Convert Show Times', 'radio-station' ),
+			'label'   => $admin ? __( 'Convert Show Times', 'radio-station' ) : '',
 			'default' => 'yes',
 			'value'   => 'yes',
-			'helper'  => __( 'Automatically display Show times converted into the visitor timezone, based on their browser setting.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Automatically display Show times converted into the visitor timezone, based on their browser setting.', 'radio-station' ) : '',
 			'tab'     => 'widgets',
 			'section' => 'loading',
 			'pro'     => true,
@@ -1430,10 +1443,10 @@ function radio_station_plugin_options() {
 		// --- [Pro/Plus] Timezone Switching ---
 		'timezone_switching' => array(
 			'type'    => 'checkbox',
-			'label'   => __( 'User Timezone Switching', 'radio-station' ),
+			'label'   => $admin ? __( 'User Timezone Switching', 'radio-station' ) : '',
 			'default' => 'yes',
 			'value'   => 'yes',
-			'helper'  => __( 'Allow visitors to select their Timezone manually for Show time conversions.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Allow visitors to select their Timezone manually for Show time conversions.', 'radio-station' ) : '',
 			'tab'     => 'widgets',
 			'section' => 'loading',
 			'pro'     => true,
@@ -1446,9 +1459,8 @@ function radio_station_plugin_options() {
 		// 2.4.0.3: added role to show assignment note
 		'permissions_show_role_note' => array(
 			'type'    => 'note',
-			'label'   => __( 'Show Editing Permissions', 'radio-station' ),
-			'helper'  => __( 'By default, only Hosts and Producers that are assigned to a Show can edit that Show.', 'radio-station' )
-						. ' ' . __( 'This means an Administrator or Show Editor must assign these users to the Show first.', 'radio-station' ),
+			'label'   => $admin ? __( 'Show Editing Permissions', 'radio-station' ) : '',
+			'helper'  => $admin ? __( 'By default, only Hosts and Producers that are assigned to a Show can edit that Show.', 'radio-station' ) . ' ' . __( 'This means an Administrator or Show Editor must assign these users to the Show first.', 'radio-station' ) : '',
 			'tab'     => 'roles',
 			'section' => 'permissions',
 		),
@@ -1457,8 +1469,8 @@ function radio_station_plugin_options() {
 		// 2.4.0.3: added role to playlist assignment note
 		'permissions_playlist_role_note' => array(
 			'type'    => 'note',
-			'label'   => __( 'Playlist Permissions', 'radio-station' ),
-			'helper'  => __( 'Any user with a Host or Producer role can create Playlists.', 'radio-station' ),
+			'label'   => $admin ? __( 'Playlist Permissions', 'radio-station' ) : '',
+			'helper'  => $admin ? __( 'Any user with a Host or Producer role can create Playlists.', 'radio-station' ) : '',
 			'tab'     => 'roles',
 			'section' => 'permissions',
 		),
@@ -1466,10 +1478,8 @@ function radio_station_plugin_options() {
 		// --- Show Editor Role Note ---
 		'show_editor_role_note' => array(
 			'type'    => 'note',
-			'label'   => __( 'Show Editor Role', 'radio-station' ),
-			'helper'  => __( 'Since 2.3.0, a new Show Editor role has been added with Publish and Edit capabilities for all Radio Station Post Types.', 'radio-station' )
-						. ' ' . __( 'You can assign this Role to any user to give them full Station Schedule updating permissions.', 'radio-station' )
-						. ' ' . __( 'This is so a manager can edit the schedule without requiring full site administration role.', 'radio-station' ),
+			'label'   => $admin ? __( 'Show Editor Role', 'radio-station' ) : '',
+			'helper'  => $admin ? __( 'Since 2.3.0, a new Show Editor role has been added with Publish and Edit capabilities for all Radio Station Post Types.', 'radio-station' ) . ' ' . __( 'You can assign this Role to any user to give them full Station Schedule updating permissions.', 'radio-station' ) . ' ' . __( 'This is so a manager can edit the schedule without requiring full site administration role.', 'radio-station' ) : '',
 			'tab'     => 'roles',
 			'section' => 'permissions',
 		),
@@ -1477,10 +1487,10 @@ function radio_station_plugin_options() {
 		// --- Author Role Capabilities ---
 		'add_author_capabilities' => array(
 			'type'    => 'checkbox',
-			'label'   => __( 'Add to Author Capabilities', 'radio-station' ),
+			'label'   => $admin ? __( 'Add to Author Capabilities', 'radio-station' ) : '',
 			'default' => 'yes',
 			'value'   => 'yes',
-			'helper'  => __( 'Allow users with WordPress Author role to publish and edit their own Shows and Playlists.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Allow users with WordPress Author role to publish and edit their own Shows and Playlists.', 'radio-station' ) : '',
 			'tab'     => 'roles',
 			'section' => 'permissions',
 		),
@@ -1488,10 +1498,10 @@ function radio_station_plugin_options() {
 		// --- Editor Role Capabilities ---
 		'add_editor_capabilities' => array(
 			'type'    => 'checkbox',
-			'label'   => __( 'Add to Editor Capabilities', 'radio-station' ),
+			'label'   => $admin ? __( 'Add to Editor Capabilities', 'radio-station' ) : '',
 			'default' => 'yes',
 			'value'   => 'yes',
-			'helper'  => __( 'Allow users with WordPress Editor role to edit all Radio Station post types.', 'radio-station' ),
+			'helper'  => $admin ? __( 'Allow users with WordPress Editor role to edit all Radio Station post types.', 'radio-station' ) : '',
 			'tab'     => 'roles',
 			'section' => 'permissions',
 		),
@@ -1499,15 +1509,15 @@ function radio_station_plugin_options() {
 		// ? --- Disallow Shift Changes --- ?
 		// 'disallow_shift_changes' => array(
 		// 	'type'    => 'checkbox',
-		// 	'label'   => __( 'Disallow Shift Changes', 'radio-station' ),
+		// 	'label'   => $admin ? __( 'Disallow Shift Changes', 'radio-station' ) : '',
 		// 	'default' => array(),
 		// 	'options' => array(
-		// 		'authors'   => __( 'WordPress Authors', 'radio-station' ),
-		// 		'editors'   => __( 'WorddPress Editors', 'radio-station' ),
-		// 		'hosts'     => __( 'Assigned DJs / Hosts', 'radio-station' ),
-		// 		'producers' => __( 'Assigned Producers', 'radio-station' ),
+		// 		'authors'   => $admin ? __( 'WordPress Authors', 'radio-station' ) : '',
+		// 		'editors'   => $admin ? __( 'WorddPress Editors', 'radio-station' ) : '',
+		// 		'hosts'     => $admin ? __( 'Assigned DJs / Hosts', 'radio-station' ) : '',
+		// 		'producers' => $admin ? __( 'Assigned Producers', 'radio-station' ) : '',
 		// 	),
-		// 	'helper'  => __( 'Prevents users of these Roles changing Show Shift times.', 'radio-station' ),
+		// 	'helper'  => $admin ? __( 'Prevents users of these Roles changing Show Shift times.', 'radio-station' ) : '',
 		// 	'tab'     => 'roles',
 		// 	'section' => 'permissions',
 		// 	'pro'     => true,
@@ -1522,15 +1532,15 @@ function radio_station_plugin_options() {
 		// 2.4.0.6: added separate archives tab
 		// 2.7.0: add subscribe and app tabs
 		'tabs' => array(
-			'general'   => __( 'General', 'radio-station' ),
-			'player'    => __( 'Player', 'radio-station' ),
-			'subscribe'	=> __( 'Subscribe', 'radio-station' ),
-			'pages'     => __( 'Pages', 'radio-station' ),
-			'archives'  => __( 'Archives', 'radio-station' ),
-			// 'templates' => __( 'Templates', 'radio-station' ),
-			'widgets'   => __( 'Widgets', 'radio-station' ),
-			'roles'     => __( 'Roles', 'radio-station' ),
-			'app'	    => __( 'App', 'radio-station' ),
+			'general'   => $admin ? __( 'General', 'radio-station' ) : '',
+			'player'    => $admin ? __( 'Player', 'radio-station' ) : '',
+			'subscribe'	=> $admin ? __( 'Subscribe', 'radio-station' ) : '',
+			'pages'     => $admin ? __( 'Pages', 'radio-station' ) : '',
+			'archives'  => $admin ? __( 'Archives', 'radio-station' ) : '',
+			// 'templates' => $admin ? __( 'Templates', 'radio-station' ) : '',
+			'widgets'   => $admin ? __( 'Widgets', 'radio-station' ) : '',
+			'roles'     => $admin ? __( 'Roles', 'radio-station' ) : '',
+			'app'	    => $admin ? __( 'App', 'radio-station' ) : '',
 		),
 
 		// --- Section Labels ---
@@ -1541,31 +1551,31 @@ function radio_station_plugin_options() {
 		// 2.7.0: add subscribe sections
 		'sections' => array(
 			// --- general ---
-			'stream'      => __( 'Stream', 'radio-station' ),
-			'broadcast'   => __( 'Broadcast', 'radio-station' ),
-			'station'     => __( 'Station', 'radio-station' ),
-			'feeds'       => __( 'Feeds', 'radio-station' ),
-			'performance' => __( 'Performance', 'radio-station' ),
+			'stream'      => $admin ? __( 'Stream', 'radio-station' ) : '',
+			'broadcast'   => $admin ? __( 'Broadcast', 'radio-station' ) : '',
+			'station'     => $admin ? __( 'Station', 'radio-station' ) : '',
+			'feeds'       => $admin ? __( 'Feeds', 'radio-station' ) : '',
+			'performance' => $admin ? __( 'Performance', 'radio-station' ) : '',
 			// --- player ---
-			'basic'       => __( 'Basic Defaults', 'radio-station' ),
-			'advanced'    => __( 'Advanced Defaults', 'radio-station' ),
-			'colors'      => __( 'Player Colors', 'radio-station' ),
-			'bar'         => __( 'Sitewide Bar Player', 'radio-station' ),
+			'basic'       => $admin ? __( 'Basic Defaults', 'radio-station' ) : '',
+			'advanced'    => $admin ? __( 'Advanced Defaults', 'radio-station' ) : '',
+			'colors'      => $admin ? __( 'Player Colors', 'radio-station' ) : '',
+			'bar'         => $admin ? __( 'Sitewide Bar Player', 'radio-station' ) : '',
 			// --- pages ---
-			'schedule'    => __( 'Schedule Page', 'radio-station' ),
-			'single'      => __( 'Single Templates', 'radio-station' ),
-			// 'archive'     => __( 'Archive Templates', 'radio-station' ),
-			'show'        => __( 'Show Pages', 'radio-station' ),
-			'profile'     => __( 'Profile Pages', 'radio-station' ),
-			'episode'     => __( 'Episode Pages', 'radio-station' ),
+			'schedule'    => $admin ? __( 'Schedule Page', 'radio-station' ) : '',
+			'single'      => $admin ? __( 'Single Templates', 'radio-station' ) : '',
+			// 'archive'     => $admin ? __( 'Archive Templates', 'radio-station' ) : '',
+			'show'        => $admin ? __( 'Show Pages', 'radio-station' ) : '',
+			'profile'     => $admin ? __( 'Profile Pages', 'radio-station' ) : '',
+			'episode'     => $admin ? __( 'Episode Pages', 'radio-station' ) : '',
 			// --- archives ---
-			'archives'    => __( 'Archives', 'radio-station' ),
-			'posttypes'   => __( 'Post Types', 'radio-station' ),
-			'taxonomies'  => __( 'Taxonomies', 'radio-station' ),
+			'archives'    => $admin ? __( 'Archives', 'radio-station' ) : '',
+			'posttypes'   => $admin ? __( 'Post Types', 'radio-station' ) : '',
+			'taxonomies'  => $admin ? __( 'Taxonomies', 'radio-station' ) : '',
 			// --- widgets ---
-			'loading'     => __( 'Widget Loading', 'radio-station' ),
+			'loading'     => $admin ? __( 'Widget Loading', 'radio-station' ) : '',
 			// --- roles ---
-			'permissions' => __( 'Permissions', 'radio-station' ),
+			'permissions' => $admin ? __( 'Permissions', 'radio-station' ) : '',
 		),
 	);
 

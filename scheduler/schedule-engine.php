@@ -3451,6 +3451,12 @@ class radio_station_schedule_engine {
 
 		// --- get translated meridiem ---
 		global $wp_locale;
+		if ( !is_object( $wp_locale ) ) {
+			if ( !class_exists( 'WP_Locale' ) ) {
+				require_once ABSPATH . WPINC . '/locale.php';
+			}
+			$wp_locale = new WP_Locale();
+		}	
 		$meridiem = $wp_locale->get_meridiem( $meridiem );
 
 		// --- maybe switch back to original locale ---

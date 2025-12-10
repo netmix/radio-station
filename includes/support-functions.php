@@ -1858,7 +1858,8 @@ function radio_station_get_languages() {
 // --------------------
 // Get Language Options
 // --------------------
-function radio_station_get_language_options( $include_wp_default = false ) {
+// 2.5.18: add admin argument for optional translation
+function radio_station_get_language_options( $include_wp_default = false, $admin = false ) {
 
 	// --- maybe get stored timezone options ---
 	$languages = get_transient( 'radio-station-language-options' );
@@ -1877,7 +1878,7 @@ function radio_station_get_language_options( $include_wp_default = false ) {
 	// --- maybe include WordPress default language ---
 	if ( $include_wp_default ) {
 		// 2.3.3.6: fix to array for WordPress language setting
-		$wp_language = array( '' => __( 'WordPress Setting', 'radio-station' ) );
+		$wp_language = array( '' => $admin ? __( 'WordPress Setting', 'radio-station' ) : '' );
 		$languages = array_merge( $wp_language, $languages );
 	}
 
