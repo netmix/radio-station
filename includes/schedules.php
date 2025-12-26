@@ -138,7 +138,7 @@ function radio_station_get_all_overrides( $start_date = false, $end_date = false
 
 	// --- get overrides ---
 	$overrides = radio_station_get_overrides();
-	// echo '<span style="display:none;">OVERRIDES! ' . print_r( $overrides, true ) . '</span>';
+	// echo '<span style="display:none;">ALL OVERRIDES: ' . print_r( $overrides, true ) . '</span>';
 
 	$timezone = $timezone ? $timezone : radio_station_get_timezone();
 	$override_data = array();
@@ -207,6 +207,7 @@ function radio_station_get_all_overrides( $start_date = false, $end_date = false
 	$overrides = $override_data;
 
 	// --- get all overrides list ---
+	// echo '<span style="display:none;">ALL OVERRIDE DATA: ' . print_r( $overrides, true ) . '</span>';
 	$overrides = $rs_se->process_overrides( $overrides, $start_date, $end_date, $timezone );
 	// 2.5.0: keep filter for backwards compatibility
 	$overrides = apply_filters( 'radio_station_get_overrides', $overrides, $start_date, $end_date, $timezone );

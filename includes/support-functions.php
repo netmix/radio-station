@@ -730,8 +730,9 @@ function radio_station_get_override_data_meta( $override ) {
 	}
 
 	// --- get override user data ---
-	$override_hosts = get_post_meta( $override_id, 'override_user_list', true );
-	$override_producers = get_post_meta( $override_id, 'override_producer_list', true );
+	// 2.5.18: fix to incorrect host and producer metakey prefix
+	$override_hosts = get_post_meta( $override_id, 'show_user_list', true );
+	$override_producers = get_post_meta( $override_id, 'show_producer_list', true );
 	$hosts = $producers = array();
 	if ( is_array( $override_hosts ) && ( count( $override_hosts ) > 0 ) ) {
 		foreach ( $override_hosts as $host ) {
@@ -741,8 +742,11 @@ function radio_station_get_override_data_meta( $override ) {
 				$user = get_user_by( 'ID', $host );
 				$radio_station_data['user-' . $host] = $user;
 			}
-			$hosts[]['name'] = $user->display_name;
-			$hosts[]['url'] = radio_station_get_host_url( $host );
+			// 2.5.18: fix to host array
+			$hosts[] = array(
+				'name' => $user->display_name,
+				'url'  => radio_station_get_host_url( $host )
+			);
 		}
 	}
 	if ( is_array( $override_producers ) && ( count( $override_producers ) > 0 ) ) {
@@ -753,8 +757,11 @@ function radio_station_get_override_data_meta( $override ) {
 				$user = get_user_by( 'ID', $producer );
 				$radio_station_data['user-' . $producer] = $user;
 			}
-			$producers[]['name'] = $user->display_name;
-			$producers[]['url'] = radio_station_get_producer_url( $producer );
+			// 2.5.18: fix to producer array
+			$producers[] = array(
+				'name' => $user->display_name,
+				'url'  => radio_station_get_producer_url( $producer )
+			);
 		}
 	}
 
@@ -820,6 +827,7 @@ function radio_station_get_override_data_meta( $override ) {
 	}
 
 	// --- filter and return ---
+	// echo 'OVERRIDE DATA META: ' . print_r( $override_data, true ) . "\n";
 	$override_data = apply_filters( 'radio_station_override_data', $override_data, $override_id );
 	return $override_data;
 }

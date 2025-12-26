@@ -2,6 +2,10 @@
 /* Radio Station Script */
 /* -------------------- */
 
+/* Shortened Helpers */
+function radio_el(id) {return document.getElementById(id);}
+function radio_els(classname) {return document.getElementsByClassName(classname);}
+
 /* Smooth Scrolling */
 function radio_scroll_to(id) {
 	elem = document.getElementById(id);

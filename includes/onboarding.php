@@ -52,13 +52,6 @@ function radio_station_quicklinks_panel() {
 	// --- quicklinks menu ---
 	echo '<ul class="progress-list">' . "\n";
 
-		// --- schedule page ---
-		$schedule_url = add_query_arg( 'post_type', RADIO_STATION_SHOW_SLUG, admin_url( 'edit.php' ) );
-		echo '<li class="progress-list-item">' . "\n";
-			echo '<span class="progress-icon progress-settings dashicons dashicons-calendar"></span>' . "\n";
-			echo '<a href="' . esc_url( $schedule_url ) . '">' . esc_html( __( 'Schedule Editor', 'radio-station' ) ) . '</a>' . "\n";
-		echo '</li>' . "\n";
-
 		// --- settings page ---
 		$settings_url = add_query_arg( 'page', 'radio-station', admin_url( 'admin.php' ) );
 		echo '<li class="progress-list-item">' . "\n";
@@ -145,6 +138,14 @@ function radio_station_quicklinks_panel() {
 		// --- pro features ---
 		if ( defined( 'RADIO_STATION_PRO_FILE' ) ) {
 
+			// --- schedule editor ---
+			// TODO: improve link to schedule editor page
+			$schedule_url = add_query_arg( 'post_type', RADIO_STATION_SHOW_SLUG, admin_url( 'edit.php' ) );
+			echo '<li class="progress-list-item">' . "\n";
+				echo '<span class="progress-icon progress-settings dashicons dashicons-calendar"></span>' . "\n";
+				echo '<a href="' . esc_url( $schedule_url ) . '">' . esc_html( __( 'Schedule Editor', 'radio-station' ) ) . '</a>' . "\n";
+			echo '</li>' . "\n";
+
 			// --- episodes ---
 			$episodes_url = add_query_arg( 'post_type', RADIO_STATION_EPISODE_SLUG, admin_url( 'edit.php' ) );
 			echo '<li class="progress-list-item">' . "\n";
@@ -170,7 +171,7 @@ function radio_station_quicklinks_panel() {
 
 			// --- pro feature message ---
 			echo '<li class="progress-list-item">' . "\n";
-				echo esc_html( __( 'Episodes, Host and Producer Profiles available in Pro.', 'radio-station' ) );
+				echo esc_html( __( 'Schedule Editor, Episodes, Host and Producer Profiles available in Pro.', 'radio-station' ) );
 			echo '</li>' . "\n";
 			
 			// --- upgrade link ---
@@ -1191,7 +1192,7 @@ function radio_station_enqueue_onboarding_styles() {
 function radio_station_onboarding_styles() {
 	$css = ".progress-heading {text-align:center; font-size:16px; font-variant:small-caps; letter-spacing:3px; margin-bottom:5px;}
 	.progress-list {margin-bottom:7px;}
-	.progress-list-item {display:inline-block; margin-right:20px;}
+	.progress-list-item {display:inline-block; margin-right:25px;}
 	.progress-list-item:last-child {margin-right:0;}
 	.progress-list-item a {text-decoration:none;}
 	.progress-list-item a:hover {text-decoration:underline; font-weight:bold;}

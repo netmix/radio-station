@@ -5,7 +5,7 @@
 // =================================
 
 // -------------
-// Loader v1.3.6
+// Loader v1.3.7
 // -------------
 // Note: Changelog at end of file.
 
@@ -108,7 +108,7 @@ if ( !defined( 'ABSPATH' ) ) exit;
 //	'settingsmenu'	=> false,			// to not automatically add a settings menu [non-WQ]
 //
 //	// --- Options ---
-//	'namespace'		=> 'plugin_name',	// plugin namespace (function prefix)
+//	'namespace'		=> 'PLUGIN_PREFIX',	// plugin namespace (function prefix, minus trailing _)
 //	'settings'		=> 'pn',			// input settings prefix
 //	'option'		=> 'plugin_key',	// plugin option key
 //	'options'		=> $options,		// plugin options array set above
@@ -116,7 +116,7 @@ if ( !defined( 'ABSPATH' ) ) exit;
 //	// --- WordPress.Org ---
 //	'wporgslug'		=> 'plugin-slug',	// WordPress.org plugin slug
 //	'wporg'			=> false, 			// * rechecked later (via presence of updatechecker.php) *
-//	'textdomain'	=> 'radio-station',	// translation text domain (usually same as plugin slug)
+//	'textdomain'	=> 'plugin-domain',	// translation text domain (usually same as plugin slug)
 //
 //	// --- Freemius ---
 //	'freemius_id'	=> '',				// Freemius plugin ID
@@ -125,7 +125,23 @@ if ( !defined( 'ABSPATH' ) ) exit;
 //	'hasaddons'		=> false,			// if plugin has add ons
 //	'plan'			=> 'free',	 		// * rechecked later (if premium version found) *
 // );
-//
+
+// 1.3.7: Translated String Settings Update Note
+// ---------------------------------------------
+// Since loader is typically initiated directly within a plugin, this means string translations are too early.
+// Fix is to remove the translated strings (ratetext, sharetext, donatetext) to a later filter added for this purpose:
+/*
+add_filter( 'radio_station_admin_args', 'radio_station_settings_texts' );
+function radio_station_settings_texts( $args ) {
+	$texts = array(
+		'sharetext'    => __( 'Share the Plugin Love', 'radio-station' ),
+		'ratetext'     => __( 'Rate on WordPress.org', 'radio-station' ),
+		'donatetext'   => __( 'Support this Plugin', 'radio-station' ),
+	);
+	$args = array_merge( $args, $texts );
+	return $args;
+} */
+
 // ------------------------------------
 // Example Start Plugin Loader Instance
 // ------------------------------------
@@ -133,6 +149,7 @@ if ( !defined( 'ABSPATH' ) ) exit;
 // require(dirname(__FILE__).'/loader.php');				// requires this file!
 // $instance = new radio_station_loader($args);				// instantiates loader class
 // (ie. search and replace 'radio_station_' with 'my_plugin_' function namespace)
+// and then search and replace 'text-domain' with your plugin's text domain.
 
 
 // ===========================
@@ -3623,6 +3640,19 @@ if ( !function_exists( 'radio_station_load_prefixed_functions' ) ) {
 // =========
 // CHANGELOG
 // =========
+
+// == 1.3.7 ==
+// - updates for loading delayed string translations
+
+// == 1.3.6 ==
+// - delayed support forum redirect to admin_init
+// - added rows and cols attributes to textarea input
+// - enqueue scripts via dummy admin script
+// - change to return style string instead of echo
+// - fix to plural function for settings row
+
+// == 1.3.5 ==
+// - fix to default script enqueueing
 
 // == 1.3.4 ==
 // - switch to settings tab via querystring

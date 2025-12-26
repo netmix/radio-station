@@ -405,6 +405,7 @@ We recommend you test these on a Staging site (or a development copy of your liv
 == Changelog ==
 
 = 2.5.18 =
+* Updated: Freemius SDK (2.13.0)
 * Updated: Plugin Panel (1.3.7) for delayed translations
 * Changed: display label of Overrides to Specials
 * Changed: handle of radio-player assets to stream-player
