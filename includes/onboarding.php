@@ -513,12 +513,13 @@ function radio_station_statistics_panel() {
 			echo ' ' . esc_html( __( 'Shifts', 'radio-station' ) ) . ' ' . esc_html( __( 'and', 'radio-station' ) );
 
 			echo ' <span style="progress-count">' . esc_html( $specials_count ) . '</span>';
-			echo ' ' . esc_html( __( 'Specials', 'radio-station' ) ) . ' ' . esc_html( __( 'with', 'radio-station' ) );
+			echo ' ' . esc_html( __( 'Specials', 'radio-station' ) );
 
 			// --- show active percentage ---
-			// TODO: add schedule editor link
-			echo ' ' . esc_html( $schedule_percent ) . '% ' . esc_html( __( 'Schedule coverage', 'radio-station' ) );
-			echo '.' . "\n";
+			// TODO: maybe add schedule editor link
+			// echo ' ' . esc_html( __( 'with', 'radio-station' ) );
+			// echo ' ' . esc_html( $schedule_percent ) . '% ' . esc_html( __( 'Schedule coverage', 'radio-station' ) );
+			// echo '.' . "\n";
 
 		echo '</div>' . "\n";
 
@@ -1179,6 +1180,7 @@ function radio_station_enqueue_onboarding_styles() {
 	
 	// --- add onboarding styles ---
 	if ( ( 'dashboard' == $current_screen->base )
+	  || ( isset( $_REQUEST['page'] ) && ( 'radio-content' == $_REQUEST['page'] ) )
 	  || ( isset( $_REQUEST['page'] ) && ( 'radio-station' == $_REQUEST['page'] ) ) ) {
 		radio_station_enqueue_style( 'admin' );
 		$css = radio_station_onboarding_styles();

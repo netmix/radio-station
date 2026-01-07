@@ -10,9 +10,11 @@ if ( !defined( 'ABSPATH' ) ) exit;
 // - Enqueue Admin Scripts
 // - Admin Style Fixes
 // - Filter Plugin Action Links
+// - Content Dashboard Admin Page
 // === Admin Menu ===
 // - Setting Page Capability Check
 // - Add Admin Menu and Submenu Items
+// - Content Dashboard Admin Page
 // - Fix to Expand Main Menu for Submenu Items
 // - Taxonomy Submenu Item Fix
 // - Fix to Redirect Plugin Settings Menu Link
@@ -88,8 +90,10 @@ add_action( 'admin_print_styles', 'radio_station_admin_styles' );
 function radio_station_admin_styles() {
 
 	// --- hide first admin submenu item to prevent duplicate of main menu item ---
-	$css = '#toplevel_page_radio-station .wp-first-item {display: none;}' . "\n";
-	$css .= '#toplevel_page_radio-station-pro .wp-first-item {display: none;}' . "\n";
+	// 2.5.18: add hide first item for radio-content menu
+	$css = '#toplevel_page_radio-content .wp-first-item {display: none;}' . "\n";
+	// $css .= '#toplevel_page_radio-station .wp-first-item {display: none;}' . "\n";
+	// $css .= '#toplevel_page_radio-station-pro .wp-first-item {display: none;}' . "\n";
 
 	// --- reduce the height of the playlist editor area ---
 	// 2.3.0: also reduce height of override editor area
@@ -172,6 +176,20 @@ function radio_station_plugin_page_links( $links, $file ) {
 	return $links;
 }
 
+// ----------------------------
+// Content Dashboard Admin Page
+// ----------------------------
+function radio_station_content_page() {
+	
+	echo '<div id="pagewrap" class="wrap" style="width:100%;margin-right:0 !important;">' . "\n";
+	
+		radio_station_quicklinks_panel();
+		radio_station_statistics_panel();
+		radio_station_settings_panel();
+	
+	echo '</div>' . "\n";
+}
+
 
 // ------------------
 // === Admin Menu ===
@@ -184,8 +202,8 @@ function radio_station_plugin_page_links( $links, $file ) {
 add_action( 'admin_init', 'radio_station_settings_cap_check' );
 function radio_station_settings_cap_check() {
 	if ( isset( $_REQUEST['page'] ) && ( RADIO_STATION_SLUG == sanitize_text_field( $_REQUEST['page'] ) ) ) {
-		$settingscap = apply_filters( 'radio_station_settings_capability', 'manage_options' );
-		if ( !current_user_can( $settingscap ) ) {
+		$settings_cap = apply_filters( 'radio_station_settings_capability', 'manage_options' );
+		if ( !current_user_can( $settings_cap ) ) {
 			wp_die( esc_html( __( 'You do not have permissions to access that page.', 'radio-station' ) ) );
 		}
 	}
@@ -197,42 +215,55 @@ function radio_station_settings_cap_check() {
 add_action( 'admin_menu', 'radio_station_add_admin_menus' );
 function radio_station_add_admin_menus() {
 
-	$icon = plugins_url( 'images/radio-station-icon.png', RADIO_STATION_FILE );
-	$position = apply_filters( 'radio_station_menu_position', 5 );
-	$settingscap = apply_filters( 'radio_station_manage_options_capability', 'manage_options' );
+	// 2.5.18: added split content and settings menus
 	$rs = __( 'Radio Station', 'radio-station' );
+	$settings_icon = plugins_url( 'images/radio-station-icon.png', RADIO_STATION_FILE );
+	$content_icon = apply_filters( 'radio_station_content_menu_icon', 'dashicons-format-audio' );
+	$content_position = apply_filters( 'radio_station_content_menu_position', 4 );
+	$settings_position = apply_filters( 'radio_station_menu_position', 5 );
+	$settings_cap = apply_filters( 'radio_station_manage_options_capability', 'manage_options' );
 
-	// ---- main menu item ----
+	// ---- main menu items ----
+	// 2.5.18: split settings and content menus
 	// 2.3.0: set to new plugin admin page (via plugin loader class)
 	// (added with publish_playlists capability so that other submenu items remain accessible)
-	add_menu_page( $rs . ' ' . __( 'Settings', 'radio-station' ), $rs, 'publish_playlists', 'radio-station', 'radio_station_settings_page', $icon, $position );
+	add_menu_page( $rs . ' ' . __( 'Settings', 'radio-station' ), $rs, 'publish_playlists', 'radio-station', 'radio_station_settings_page', $settings_icon, $settings_position );
+	add_menu_page( $rs . ' ' . __( 'Content', 'radio-station' ), __( 'Station Content', 'radio-station' ), 'publish_playlists', 'radio-content', 'radio_station_content_page', $content_icon, $content_position );
 
 	// --- settings submenu item ---
-	// 2.3.0: added for ease of access to plugin settings
-	add_options_page( $rs . ' ' . __( 'Settings', 'radio-station' ), $rs, $settingscap, 'radio-station', 'radio_station_settings_page' );
+	// 2.3.0: added for ease of access via plugin settings menu
+	add_options_page( $rs . ' ' . __( 'Settings', 'radio-station' ), $rs, $settings_cap, 'radio-station', 'radio_station_settings_page' );
 
-	// --- submenu items ---
+	// --- content submenu items ---
 	// 2.3.0: prefix plugin name on page titles (but not menu items)
 	// 2.3.0: remove add playlist and add override to reduce clutter
 	// 2.3.0: added actions for adding of other plugin submenu items in position
 	// 2.5.0: disabled Add Show submenu item to reduce clutter
-	add_submenu_page( 'radio-station', $rs . ' ' . __( 'Shows', 'radio-station' ), __( 'Shows', 'radio-station' ), 'edit_shows', 'shows' );
+	do_action( 'radio_station_admin_submenu_content_top' );
+	add_submenu_page( 'radio-content', $rs . ' ' . __( 'Shows', 'radio-station' ), __( 'Shows', 'radio-station' ), 'edit_shows', 'shows' );
 	// add_submenu_page( 'radio-station', $rs . ' ' . __( 'Add Show', 'radio-station' ), __( 'Add Show', 'radio-station' ), 'publish_shows', 'add-show' );
-	do_action( 'radio_station_admin_submenu_top' );
-	add_submenu_page( 'radio-station', $rs . ' ' . __( 'Playlists', 'radio-station' ), __( 'Playlists', 'radio-station' ), 'edit_playlists', 'playlists' );
-	// add_submenu_page( 'radio-station', $rs . ' ' .  __( 'Add Playlist', 'radio-station' ), __( 'Add Playlist', 'radio-station' ), 'publish_playlists', 'add-playlist' );
-	add_submenu_page( 'radio-station', $rs . ' ' . __( 'Genres', 'radio-station' ), __( 'Genres', 'radio-station' ), 'publish_playlists', 'genres' );
 	// 2.5.18: change label from Schedule Overrides
-	add_submenu_page( 'radio-station', $rs . ' ' . __( 'Special Overrides', 'radio-station' ), __( 'Special Overrides', 'radio-station' ), 'edit_shows', 'schedule-overrides' );
-	// add_submenu_page( 'radio-station', $rs . ' ' .  __( 'Add Override', 'radio-station' ), __( 'Add Override', 'radio-station' ), 'publish_shows', 'add-override' );
-	do_action( 'radio_station_admin_submenu_middle' );
-	// add_submenu_page( 'radio-station', $rs . ' ' . __( 'Hosts', 'radio-station' ), __( 'Hosts', 'radio-station' ), 'edit_hosts', 'hosts' );
-	// add_submenu_page( 'radio-station', $rs . ' ' . __( 'Producers', 'radio-station' ), __( 'Producers', 'radio-station' ), 'edit_producers', 'producers' );
+	add_submenu_page( 'radio-content', $rs . ' ' . __( 'Special Overrides', 'radio-station' ), __( 'Special Overrides', 'radio-station' ), 'edit_shows', 'schedule-overrides' );
 
-	// 2.3.2: as temporarily disabled, allow enabling export playlists via filter
+	do_action( 'radio_station_admin_submenu_content_middle' );
+
+	add_submenu_page( 'radio-content', $rs . ' ' . __( 'Playlists', 'radio-station' ), __( 'Playlists', 'radio-station' ), 'edit_playlists', 'playlists' );
+	add_submenu_page( 'radio-content', $rs . ' ' . __( 'Genres', 'radio-station' ), __( 'Genres', 'radio-station' ), 'publish_playlists', 'genres' );
+	// add_submenu_page( 'radio-content', $rs . ' ' . __( 'Languages', 'radio-station' ), __( 'Languages', 'radio-station' ), 'publish_playlists', 'languages' );
+	do_action( 'radio_station_admin_submenu_content_bottom' );
+	
+	// --- settings submenu items ---
+	do_action( 'radio_station_admin_submenu_settings_top' );
+	add_submenu_page( 'radio-station', $rs . ' ' . __( 'Settings', 'radio-station' ), __( 'Settings', 'radio-station' ), $settings_cap, 'radio-station', 'radio_station_settings_page' );
+	// 2.3.0: rename Help page to Documentation
+	add_submenu_page( 'radio-station', $rs . ' ' . __( 'Documentation', 'radio-station' ), __( 'Help', 'radio-station' ), 'publish_playlists', 'radio-station-docs', 'radio_station_plugin_docs_page' );
+
+	do_action( 'radio_station_admin_submenu_settings_middle' );
+
+	// 2.3.2: temporarily disabled, allows enabling old export playlists feature via filter
 	$export_playlists = apply_filters( 'radio_station_export_playlists', false );
 	if ( $export_playlists ) {
-		add_submenu_page( 'radio-station', $rs . ' ' . __( 'Export Playlists', 'radio-station' ), __( 'Export Playlists', 'radio-station' ), $settingscap, 'playlist-export', 'radio_station_playlist_export_page' );
+		add_submenu_page( 'radio-station', $rs . ' ' . __( 'Export Playlists', 'radio-station' ), __( 'Export Playlists', 'radio-station' ), $settings_cap, 'playlist-export', 'radio_station_playlist_export_page' );
 	}
 
 	// --- import / export shows feature ---
@@ -241,16 +272,13 @@ function radio_station_add_admin_menus() {
 		add_submenu_page( 'radio-station', $rs . ' ' . __( 'Import/Export Shows', 'radio-station' ), __( 'Import/Export', 'radio-station' ), 'manage_options', 'import-export-shows', 'radio_station_import_export_show_page' );
 	}
 
-	add_submenu_page( 'radio-station', $rs . ' ' . __( 'Settings', 'radio-station' ), __( 'Settings', 'radio-station' ), $settingscap, 'radio-station', 'radio_station_settings_page' );
-	// 2.3.0: rename Help page to Documentation
-	add_submenu_page( 'radio-station', $rs . ' ' . __( 'Documentation', 'radio-station' ), __( 'Help', 'radio-station' ), 'publish_playlists', 'radio-station-docs', 'radio_station_plugin_docs_page' );
-
-	do_action( 'radio_station_admin_submenu_bottom' );
+	do_action( 'radio_station_admin_submenu_settings_bottom' );
+	
 
 	// --- hack the submenu global to add post type add/edit URLs ---
 	global $submenu;
 	foreach ( $submenu as $i => $menu ) {
-		if ( 'radio-station' === $i ) {
+		if ( ( 'radio-station' === $i ) || ( 'radio-content' === $i ) ) {
 			foreach ( $menu as $j => $item ) {
 				switch ( $item[2] ) {
 					case 'add-show':
@@ -301,12 +329,13 @@ add_filter( 'parent_file', 'radio_station_fix_genre_parent', 11 );
 function radio_station_fix_genre_parent( $parent_file = '' ) {
 	global $pagenow, $post;
 	$post_types = array( RADIO_STATION_SHOW_SLUG, RADIO_STATION_PLAYLIST_SLUG, RADIO_STATION_OVERRIDE_SLUG );
+	// 2.3.0: also apply to language taxonomy
 	$taxonomies = array( RADIO_STATION_GENRES_SLUG, RADIO_STATION_LANGUAGES_SLUG );
+	// 2.5.18: change parent file slug to radio-content
 	if ( ( 'edit-tags.php' === $pagenow ) && isset( $_GET['taxonomy'] ) && in_array( sanitize_text_field( $_GET['taxonomy'] ), $taxonomies ) ) {
-		// 2.3.0: also apply to language taxonomy
-		$parent_file = 'radio-station';
+		$parent_file = 'radio-content';
 	} elseif ( ( 'post.php' === $pagenow ) && in_array( $post->post_type, $post_types ) ) {
-		$parent_file = 'radio-station';
+		$parent_file = 'radio-content';
 	}
 
 	return $parent_file;
@@ -325,7 +354,8 @@ function radio_station_taxonomy_submenu_fix() {
 
 		$js = '';
 		if ( RADIO_STATION_GENRES_SLUG == sanitize_text_field( $_GET['taxonomy'] ) ) {
-			$js = "jQuery('#toplevel_page_radio-station ul li').each(function() {
+			// 2.5.18: change top level page slug to radio-content
+			$js = "jQuery('#toplevel_page_radio-content ul li').each(function() {
 	    		if (jQuery(this).find('a').attr('href') == 'edit-tags.php?taxonomy=" . esc_js( RADIO_STATION_GENRES_SLUG ) . "') {
 		    		jQuery(this).addClass('current').find('a').addClass('current').attr('aria-current', 'page');
 			    }
@@ -334,7 +364,8 @@ function radio_station_taxonomy_submenu_fix() {
 
 		// 2.3.0: add fix for language taxonomy also
 		if ( RADIO_STATION_LANGUAGES_SLUG == sanitize_text_field( $_GET['taxonomy'] ) ) {
-			$js = "jQuery('#toplevel_page_radio-station ul li').each(function() {
+			// 2.5.18: change top level page slug to radio-content
+			$js = "jQuery('#toplevel_page_radio-content ul li').each(function() {
 	    		if (jQuery(this).find('a').attr('href') == 'edit-tags.php?taxonomy=" . esc_js( RADIO_STATION_LANGUAGES_SLUG ) . "') {
 		    		jQuery(this).addClass('current').find('a').addClass('current').attr('aria-current', 'page');
 			    }

@@ -407,14 +407,19 @@ We recommend you test these on a Staging site (or a development copy of your liv
 = 2.5.18 =
 * Updated: Freemius SDK (2.13.0)
 * Updated: Plugin Panel (1.3.7) for delayed translations
+* Changed: split station content and settings Admin menus
 * Changed: display label of Overrides to Specials
 * Changed: handle of radio-player assets to stream-player
 * Improved: Related Show and Linked Show select Show ordering
 * Improved: handle Special/Override meta in Archive shortcode
 * Improved: edit Special/Override permissions for linked Shows
+* Added: Dashboard overview widget and Content Dashboard page
 * Added: Station Frequency and Location options
 * Added: Channel inputs for Shifts and Overrides
+* Fixed: Special/Override (non-linked) Host/Producer data
 * Fixed: Radio Player plugin conflicts
+* Fixed: Override Drafts without dates not listing in Admin
+* Removed: Freemius Pricing v2 filter (merged in Freemius)
 
 = 2.5.17 =
 * Fixed: Current Show widget reloading when Shift display is off

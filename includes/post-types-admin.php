@@ -7218,7 +7218,7 @@ function radio_station_columns_query_filter( $query ) {
 	if ( RADIO_STATION_OVERRIDE_SLUG === $query->get( 'post_type' ) ) {
 
 		// unless order by published date is explicitly chosen
-		if ( 'date' !== $query->get( 'orderby' ) ) {
+		// if ( 'date' !== $query->get( 'orderby' ) ) {
 
 			// need to loop and sync a separate meta key to enable orderby sorting
 			// (not really efficient but at least it makes it possible!)
@@ -7245,11 +7245,6 @@ function radio_station_columns_query_filter( $query ) {
 				}
 			}
 
-			// --- now we can set the orderby meta query to the synced key ---
-			$query->set( 'orderby', 'meta_value' );
-			$query->set( 'meta_key', 'show_override_date' );
-			$query->set( 'meta_type', 'date' );
-
 			// --- apply override year/month filtering ---
 			if ( isset( $_GET['month'] ) && ( '0' != sanitize_text_field( $_GET['month'] ) ) ) {
 				$yearmonth = sanitize_text_field( $_GET['month'] );
@@ -7263,6 +7258,11 @@ function radio_station_columns_query_filter( $query ) {
 					'type'    => 'DATE',
 				) );
 				$query->set( 'meta_query', $meta_query );
+
+				// --- now we can set the orderby meta query to the synced key ---
+				$query->set( 'orderby', 'meta_value' );
+				$query->set( 'meta_key', 'show_override_date' );
+				$query->set( 'meta_type', 'date' );
 			}
 
 			// --- meta query for past / future overrides filter ---
@@ -7305,9 +7305,14 @@ function radio_station_columns_query_filter( $query ) {
 					$meta_query = array( $pastfuture_query );
 				}
 				$query->set( 'meta_query', $meta_query );
+
+				// --- now we can set the orderby meta query to the synced key ---
+				$query->set( 'orderby', 'meta_value' );
+				$query->set( 'meta_key', 'show_override_date' );
+				$query->set( 'meta_type', 'date' );
 			}
 
-		}
+		// }
 	}
 }
 

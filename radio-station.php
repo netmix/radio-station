@@ -42,6 +42,8 @@ if ( !defined( 'ABSPATH' ) ) exit;
 // - Start Plugin Loader Instance
 // - Include Plugin Admin Files
 // - Load Plugin Text Domain
+// x Add Pricing Page Path Filter
+// x Freemius Pricing Page Path Filter
 // === Plugin Functions ===
 // - Check Plan Options
 // - Check Plugin Version
@@ -348,22 +350,24 @@ function radio_station_init() {
 // Add Pricing Page Path Filter
 // ----------------------------
 // 2.5.0: added for Freemius Pricing Page v2
-add_action( 'radio_station_loaded', 'radio_station_add_pricing_path_filter' );
-function radio_station_add_pricing_path_filter() {
-	global $radio_station_freemius;
-	if ( method_exists( $radio_station_freemius, 'add_filter' ) ) {
-		$radio_station_freemius->add_filter( 'freemius_pricing_js_path', 'radio_station_pricing_page_path' );
-	}
-}
+// 2.5.18: disabled as since included in Freemius by default
+// add_action( 'radio_station_loaded', 'radio_station_add_pricing_path_filter' );
+// function radio_station_add_pricing_path_filter() {
+//	global $radio_station_freemius;
+//	if ( method_exists( $radio_station_freemius, 'add_filter' ) ) {
+//		$radio_station_freemius->add_filter( 'freemius_pricing_js_path', 'radio_station_pricing_page_path' );
+//	}
+// }
 
 // ---------------------------------
 // Freemius Pricing Page Path Filter
 // ---------------------------------
 // 2.5.0: added for Freemius Pricing Page v2
-function radio_station_pricing_page_path( $default_pricing_js_path ) {
-	$suffix = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) || RADIO_STATION_DEBUG ? '' : '.min';
-	return RADIO_STATION_DIR . '/freemius-pricing/freemius-pricing' . $suffix . '.js';
-}
+// 2.5.18: disabled as since included in Freemius by default
+// function radio_station_pricing_page_path( $default_pricing_js_path ) {
+//	$suffix = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) || RADIO_STATION_DEBUG ? '' : '.min';
+//	return RADIO_STATION_DIR . '/freemius-pricing/freemius-pricing' . $suffix . '.js';
+// }
 
 
 // ------------------------
