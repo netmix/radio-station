@@ -301,8 +301,9 @@ function radio_station_block_editor_assets() {
 	$deps = array( 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-components', 'wp-editor' );
 
 	// --- set base block URL and path ---
+	$plugin_dir = trailingslashit( RADIO_STATION_DIR );
 	$blocks_url = plugins_url( '/blocks/', RADIO_STATION_FILE );
-	$blocks_path = RADIO_STATION_DIR . '/blocks/';
+	$blocks_path = $plugin_dir . 'blocks/';
 
 	// --- loop callbacks to enqueue scripts ---
 	$block_scripts = array();
@@ -330,8 +331,12 @@ function radio_station_block_editor_assets() {
 
 	// --- enqueue admin script for localized variables ---
 	$script_url = plugins_url( '/js/radio-station-admin.js', RADIO_STATION_FILE );
-	$script_path = RADIO_STATION_DIR . 'js/radio-station-admin.js';
-	$version = filemtime( $script_path );
+	$script_path = $plugin_dir . 'js/radio-station-admin.js';
+	if ( file_exists( $script_path ) ) {
+		$version = filemtime( $script_path );
+	} else {
+		$version = time();
+	}
 	wp_enqueue_script( 'radio-station-admin', $script_url, $deps, $version, true );
 	$js = radio_station_localization_script();
 	// 2.5.0: use radio_station_add_inline_script
@@ -339,8 +344,12 @@ function radio_station_block_editor_assets() {
 
 	// --- block editor support for conditional loading ---
 	$script_url = plugins_url( '/blocks/editor.js', RADIO_STATION_FILE );
-	$script_path = RADIO_STATION_DIR . 'blocks/editor.js';
-	$version = filemtime( $script_path );
+	$script_path = $plugin_dir . 'blocks/editor.js';
+	if ( file_exists( $script_path ) ) {
+		$version = filemtime( $script_path );
+	} else {
+		$version = time();
+	}
 	wp_enqueue_script( 'radio-blockedit-js', $script_url, $deps, $version, true );
 
 	// --- 2.5.12: init radio player settings in editor
@@ -351,9 +360,13 @@ function radio_station_block_editor_assets() {
 	// $deps = array( 'wp-edit-blocks' );
 	$stylesheets = array( 'shortcodes', 'schedule' ); // 'block-editor', 'blocks'
 	foreach ( $stylesheets as $stylekey ) {
-		$style_path = RADIO_STATION_DIR . 'css/rs-' . $stylekey . '.css';
+		$style_path = $plugin_dir . 'css/rs-' . $stylekey . '.css';
 		$style_url = plugins_url( 'css/rs-' . $stylekey . '.css', RADIO_STATION_FILE );
-		$version = filemtime( $style_path );
+		if ( file_exists( $style_path ) ) {
+			$version = filemtime( $style_path );
+		} else {
+			$version = time();
+		}
 		wp_enqueue_style( 'rs-' . $stylekey, $style_url, array(), $version, 'all' );
 	}
 
@@ -379,9 +392,13 @@ function radio_station_block_editor_assets() {
 	// --- enqueue radio player styles ---
 	if ( array_key_exists( 'player', $callbacks ) ) {
 		$suffix = ''; // dev temp
-		$style_path = RADIO_STATION_DIR . 'player/css/radio-player' . $suffix . '.css';
+		$style_path = $plugin_dir . 'player/css/radio-player' . $suffix . '.css';
 		$style_url = plugins_url( '/player/css/radio-player' . $suffix . '.css', RADIO_STATION_FILE );
-		$version = filemtime( $style_path );
+		if ( file_exists( $style_path ) ) {
+			$version = filemtime( $style_path );
+		} else {
+			$version = time();
+		}
 		wp_enqueue_style( 'radio-player', $style_url, array(), $version, 'all' );
 
 		// --- enqueue player control styles inline ---
