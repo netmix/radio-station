@@ -638,30 +638,42 @@ function radio_station_get_next_shows( $limit = 3, $show_shifts = false, $time =
 // -------------------------
 // (checks all existing show shifts for schedule)
 // 2.3.0: added show shift conflict checker
-function radio_station_check_shifts( $all_shifts ) {
+// 2.5.18: rewrite unusued conflict checker function
+function radio_station_check_shifts() {
 
 	global $radio_station_data, $rs_se;
 	$channel = $rs_se->channel = $radio_station_data['channel'];
 
-	// --- get times ---
-	// 2.3.3.9: fix weekday/dates code to match radio_station_get_show_shifts
-	// 2.5.0: set times array for conflict checking
-	$now = radio_station_get_now();
-	$timezone = radio_station_get_timezone();
-	$today = radio_station_get_time( 'l', $now, $timezone );
-	$weekdays = radio_station_get_schedule_weekdays( $today, $now, $timezone );
-	$weekdates = radio_station_get_schedule_weekdates( $weekdays, $now, $timezone );
-	$times = array(
-		'now'       => $now,
-		'today'     => $today,
-		'weekdays'  => $weekdays,
-		'weekdates' => $weekdates,
-		'timezone'  => $timezone,
-	);
+	// --- get all show data ---
+	$shows = radio_station_get_shows();
 
-	// --- check for shift conflicts ---
-	$checked_shifts = $rs_se->check_shifts( $all_shifts, $times );
-	return $checked_shifts;
+	$records = array();
+	if ( count( $shows ) > 0 ) {
+		foreach ( $shows as $show ) {
+
+			// 2.5.0: get metadata early (maybe via cached)
+			if ( isset( $radio_station_data['show-' . $show->ID] ) ) {
+				$metadata = $radio_station_data['show-' . $show->ID];
+			} else {
+				$metadata = radio_station_get_show_data_meta( $show );
+				$radio_station_data['show-' . $show->ID] = $metadata;
+			}
+
+			$shifts = $metadata['schedule'];
+			unset( $metadata['schedule'] );
+			$records[] = array(
+				'ID'      => $show->ID,
+				'updated' => $show->post_modified_gmt,
+				'shifts'  => $shifts,
+				'show'    => $metadata,
+			);
+		}
+	}
+
+	// 2.5.18: return any conflicts found instead of shifts
+	$checked_shifts = $rs_se->check_all_shifts( $records );
+	$conflicts = $rs_se->conflicts;
+	return $conflicts;
 }
 
 // ------------------

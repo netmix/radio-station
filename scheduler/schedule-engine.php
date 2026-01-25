@@ -89,10 +89,12 @@ class radio_station_schedule_engine {
 	// --- set default arguments ---
 	public $channel = '';
 	public $context = '';
+
 	public $locale = '';
 	public $now = '';
 	public $expires = 1800;
 
+	public $conflicts = false;
 	public $debug = false;
 	public $debug_log = false;
 	
@@ -1697,6 +1699,36 @@ class radio_station_schedule_engine {
 	// === Shift Checking ===
 	// ----------------------
 
+	// ----------------
+	// Check All Shifts
+	// ----------------
+	// 2.5.18: added all shift checker
+	public function check_all_shifts( $records ) {
+		
+		// --- get weekdates for checking ---
+		$now = $this->get_now();
+		$timezone = $this->get_timezone();
+		$today = $this->get_time( 'l', $now, $timezone );
+		$weekdays = $this->get_schedule_weekdays( $today, $now, $timezone );
+		$weekdates = $this->get_schedule_weekdates( $weekdays, $now, $timezone );
+		$times = array(
+			'now'       => $now,
+			'today'     => $today,
+			'weekdays'  => $weekdays,
+			'weekdates' => $weekdates,
+			'timezone'  => $timezone,
+		);
+
+		// --- process records into shift data ---
+		$split = false;
+		$all_shifts = $this->get_shift_data( $records, $split, $times );
+		$all_shifts = $this->sort_shifts( $all_shifts, $weekdays );
+
+		// --- check for shift conflicts ---
+		$checked_shifts = $this->check_shifts( $all_shifts, $times );
+		return $checked_shifts;
+	}
+	
 	// -------------------------
 	// Schedule Conflict Checker
 	// -------------------------
@@ -2055,6 +2087,7 @@ class radio_station_schedule_engine {
 		}
 
 		// --- do shift conflict action ---
+		$this->conflicts = $conflicts;
 		do_action( 'schedule_engine_set_shift_conflicts', $conflicts, $channel, $context );
 		if ( ( '' != $context ) && is_string( $context ) ) {
 			do_action( $context . '_set_shift_conflicts', $conflicts, $channel );

@@ -413,12 +413,16 @@ We recommend you test these on a Staging site (or a development copy of your liv
 * Improved: Related Show and Linked Show select Show ordering
 * Improved: handle Special/Override meta in Archive shortcode
 * Improved: edit Special/Override permissions for linked Shows
+* Improved: Timezone and Clock Timezone display formatting
 * Added: Dashboard overview widget and Content Dashboard page
 * Added: Station Frequency and Location options
 * Added: Channel inputs for Shifts and Overrides
+* Added: Link main language term to filtered show archive
 * Fixed: Special/Override (non-linked) Host/Producer data
 * Fixed: Radio Player plugin conflicts
 * Fixed: Override Drafts without dates not listing in Admin
+* Fixed: Block asset paths for script/style file versions
+* Fixed: Display user timezone for timezone shortcode
 * Removed: Freemius Pricing v2 filter (merged in Freemius)
 
 = 2.5.17 =

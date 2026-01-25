@@ -10,6 +10,7 @@
 .show-user-time {
 	display: none;
 	font-style: italic;
+	font-size: 0.95em;
 }
 
 /* Edit / Add Links */

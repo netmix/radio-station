@@ -1948,13 +1948,16 @@ function radio_station_get_language( $lang = false ) {
 			$languages = radio_station_get_languages();
 			foreach ( $languages as $i => $lang_data ) {
 				if ( $lang_data['language'] == $lang ) {
+					// 2.5.18: set show archive link with query filter
+					$show_archive = get_post_type_archive_link( RADIO_STATION_SHOW_SLUG );
+					$show_archive = add_query_arg( 'language', 'main', $show_archive );
 					$language = array(
 						'id'          => 0,
 						'slug'        => $lang,
 						'name'        => $lang_data['native_name'],
 						'description' => $lang_data['english_name'],
-						// TODO: set URL for main language and filter archive page results ?
-						// 'url'      => '',
+						// 2.5.18: use show archive page link as main language URL
+						'url'         => $show_archive,
 					);
 				}
 			}

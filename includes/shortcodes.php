@@ -41,29 +41,13 @@
 // === Time Shortcodes ===
 // -----------------------
 
-// ------------------------
-// Radio Timezone Shortcode
-// ------------------------
-add_shortcode( 'radio-timezone', 'radio_station_timezone_shortcode' );
-function radio_station_timezone_shortcode( $atts = array() ) {
-
-	global $radio_station_data;
-	
-	// 2.5.0: added shortcode_atts call for filtering
-	$defaults = array();
-	$atts = shortcode_atts( $defaults, $atts, 'radio-timezone' );
-
-	// --- set shortcode instance ---
-	// 2.5.0: simplified instance data
-	if ( !isset( $radio_station_data['instances']['timezone_shortcode'] ) ) {
-		$radio_station_data['instances']['timezone_shortcode'] = 0;
-	}
-	$radio_station_data['instances']['timezone_shortcode']++;
-	$instance = $radio_station_data['instances']['timezone_shortcode'];
+// --------------------
+// Get Timezone Display
+// --------------------
+// 2.5.18: added for use by both clock and timezone shortcodes
+function radio_station_get_timezone_display( $timezone, $atts ) {
 
 	// --- get radio timezone values ---
-	// $timezone = radio_station_get_setting( 'timezone_location' );
-	$timezone = radio_station_get_timezone();
 	if ( !$timezone || ( '' == $timezone ) ) {
 		// --- fallback to WordPress timezone ---
 		$timezone = get_option( 'timezone_string' );
@@ -116,35 +100,96 @@ function radio_station_timezone_shortcode( $atts = array() ) {
 		}
 		$code = radio_station_get_timezone_code( $timezone );
 		// 2.3.2: display full timezone location as well
-		$location = str_replace( '/', ', ', $timezone );
-		$location = str_replace( '_', ' ', $location );
-		$timezone_display = $code . ' (' . $location . ') ' . $utc_offset;
+		// $location = str_replace( '/', ', ', $timezone );
+		$loc = explode( '/', $timezone );
+		$region = str_replace( '_', ' ', $loc[0] );
+		$location = str_replace( '_', ' ', $loc[1] );
+		
+		// 2.5.18: display based on specified attributes
+		$timezone_display = '';
+		if ( $atts['code'] ) {
+			$timezone_display .= $code . ' ';
+		}
+		if ( $atts['region'] || $atts['location'] ) {
+			if ( $atts['code'] ) {
+				$timezone_display .= '(';
+			}
+			if ( $atts['location'] ) {
+				$timezone_display .= $location;
+			}
+			if ( $atts['region'] && $atts['location'] ) {
+				$timezone_display .= ', ';
+			}
+			if ( $atts['region'] ) {
+				$timezone_display .= $region;
+			}
+			if ( $atts['code'] ) {
+				$timezone_display .= ')';
+			}
+		}
+		if ( $atts['offset'] ) {
+			$timezone_display .= ' ' . $utc_offset;
+		}
 	}
+	
+	return $timezone_display;
+}
+
+// ------------------------
+// Radio Timezone Shortcode
+// ------------------------
+add_shortcode( 'radio-timezone', 'radio_station_timezone_shortcode' );
+function radio_station_timezone_shortcode( $atts = array() ) {
+
+	global $radio_station_data;
+	
+	// 2.5.0: added shortcode_atts call for filtering
+	$defaults = array();
+	$atts = shortcode_atts( $defaults, $atts, 'radio-timezone' );
+
+	// --- set shortcode instance ---
+	// 2.5.0: simplified instance data
+	if ( !isset( $radio_station_data['instances']['timezone_shortcode'] ) ) {
+		$radio_station_data['instances']['timezone_shortcode'] = 0;
+	}
+	$radio_station_data['instances']['timezone_shortcode']++;
+	$instance = $radio_station_data['instances']['timezone_shortcode'];
+
+	// 2.5.18: allow for timezone attribute override
+	$timezone = radio_station_get_timezone();
+	$defaults = array(
+		'timezone' => $timezone,
+		'code'     => 1,
+		'region'   => 1,
+		'location' => 1,
+		'offset'   => 1,
+	);
+	$atts = shortcode_atts( $defaults, $atts, 'radio-timezone' );
+	$timezone = $atts['timezone'];
+
+	// --- set timezone display and format ---
+	// 2.5.18: added for display consistency
+	$timezone_display = radio_station_get_timezone_display( $timezone, $atts );
+	$timezone_format = (string) $atts['code'] . '-' . (string) $atts['region'] . '-' . (string) $atts['location'] . '-' . (string) $atts['offset'];
 
 	// --- set shortcode output ---
 	// 2.5.0: added instance ID to timezone div wrapper 
 	$output = '<div id="radio-timezone-' . esc_attr( $instance ) . '" class="radio-timezone-wrapper">' . "\n";
 
-	// --- radio timezone ---
-	$output .= '<div class="radio-timezone-title">' . "\n";
-		$output .= esc_html( __( 'Radio Timezone', 'radio-station' ) ) . "\n";
-	$output .= ':</div> ' . "\n";
-	$output .= '<div class="radio-timezone">' . "\n";
-		$output .= esc_html( $timezone_display ) . "\n";
-	$output .= '</div><br>' . "\n";
+		// --- radio timezone ---
+		$output .= '<div class="radio-timezone-title">' . "\n";
+			$output .= esc_html( __( 'Radio Timezone', 'radio-station' ) ) . "\n";
+		$output .= ':</div> ' . "\n";
+		$output .= '<div class="radio-timezone" data-format="' . esc_attr( $timezone_format ) . '">' . "\n";
+			$output .= esc_html( $timezone_display ) . "\n";
+		$output .= '</div><br>' . "\n";
 
-	// --- user timezone ---
-	// 2.3.3.9: change span elements to divs
-	$output .= '<div class="radio-user-timezone-title">' . "\n";
-		$output .= esc_html( __( 'Your Timezone', 'radio-station' ) ) . "\n";
-	$output .= ':</div> ' . "\n";
-	$output .= '<div class="radio-user-timezone"></div>' . "\n";
-
-	// 2.3.2 allow for timezone selector test
-	// $select = apply_filters( 'radio_station_timezone_select', '', 'radio-station-timezone-' . $instance, $atts );
-	// if ( '' != $select ) {
-	// 	$output .= $select;
-	// }
+		// --- user timezone ---
+		// 2.3.3.9: change span elements to divs
+		$output .= '<div class="radio-user-timezone-title">' . "\n";
+			$output .= esc_html( __( 'Your Timezone', 'radio-station' ) ) . "\n";
+		$output .= ':</div> ' . "\n";
+		$output .= '<div class="radio-user-timezone" data-format="' . esc_attr( $timezone_format ) . '"></div>' . "\n";
 
 	$output .= '</div>' . "\n";
 
@@ -184,9 +229,17 @@ function radio_station_clock_shortcode( $atts = array() ) {
 
 	// --- merge default attributes ---
 	// 2.3.3: fix to incorrect setting key (clock_format)
+	// 2.5.18: add optional timezone attribute override
+	// 2.5.18: added optional timezone display attributes
 	$time_format = radio_station_get_setting( 'clock_time_format' );
+	$timezone = radio_station_get_timezone();
 	$defaults = array(
 		'time_format' => $time_format,
+		'timezone'    => $timezone,
+		'code'        => 1,
+		'region'      => 1,
+		'location'    => 1,
+		'offset'      => 1,
 		'day'         => 'full', // full / short / none
 		'date'        => 1,
 		'month'       => 'full', // full / short / none
@@ -195,6 +248,11 @@ function radio_station_clock_shortcode( $atts = array() ) {
 		'widget'      => 0,
 	);
 	$atts = shortcode_atts( $defaults, $atts, 'radio-clock' );
+
+	// --- set timezone display and format ---
+	// 2.5.18: added for display consistency
+	$timezone_display = radio_station_get_timezone_display( $timezone, $atts );
+	$timezone_format = (string) $atts['code'] . '-' . (string) $atts['region'] . '-' . (string) $atts['location'] . '-' . (string) $atts['offset'];
 
 	// --- set clock display classes ---
 	$classes = array( 'radio-station-clock' );
@@ -243,7 +301,7 @@ function radio_station_clock_shortcode( $atts = array() ) {
 			$clock .= ':</div>' . "\n";
 			$clock .= '<div class="radio-server-time" data-format="' . esc_attr( $atts['time_format'] ) . '"></div>' . "\n";
 			$clock .= '<div class="radio-server-date"></div>' . "\n";
-			$clock .= '<div class="radio-server-zone"></div>' . "\n";
+			$clock .= '<div class="radio-server-zone" data-format="' . esc_attr( $timezone_format ) . '"></div>' . "\n";
 		$clock .= '</div>' . "\n";
 
 		// --- user clock ---
@@ -253,7 +311,7 @@ function radio_station_clock_shortcode( $atts = array() ) {
 			$clock .= ':</div>' . "\n";
 			$clock .= '<div class="radio-user-time" data-format="' . esc_attr( $atts['time_format'] ) . '"></div>' . "\n";
 			$clock .= '<div class="radio-user-date"></div>' . "\n";
-			$clock .= '<div class="radio-user-zone"></div>' . "\n";
+			$clock .= '<div class="radio-user-zone" data-format="' . esc_attr( $timezone_format ) . '"></div>' . "\n";
 		$clock .= '</div>' . "\n";
 
 	$clock .= '</div>' . "\n";
@@ -1041,7 +1099,9 @@ function radio_station_genre_archive_list( $atts ) {
 			$genre = radio_station_get_genre( $genre_slug );
 			if ( $genre ) {
 				// 2.5.10: fix to get first array key
-				$name = array_key_first( $genre );
+				// 2.5.18: make backwards compatible
+				reset( $genre );
+				$name = key( $genre );
 				$genres[$name] = $genre[$name];
 				$genre_ids[] = $genre[$name]['id'];
 			}
@@ -1457,7 +1517,9 @@ function radio_station_language_archive_list( $atts ) {
 			$language = radio_station_get_language( $language_slug );
 			if ( $language ) {
 				// 2.5.10: fix to get first array key
-				$name = array_key_first( $language );
+				// 2.5.18: make backwards compatible
+				reset( $language );
+				$name = key( $language );
 				$languages[$name] = $language[$name];
 				$language_ids[] = $language[$name]['id'];
 			}

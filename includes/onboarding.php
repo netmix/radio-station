@@ -16,8 +16,13 @@
 // --------------------
 // Add Dashboard Widget
 // --------------------
-add_action( 'wp_dashboard_setup', 'radio_station_add_dashboard_widget' );
+add_action( 'wp_dashboard_setup', 'radio_station_add_dashboard_widget', 0 );
 function radio_station_add_dashboard_widget() {
+
+	if ( isset( $_REQUEST['reset-dashboard-widgets'] ) && ( '1' == sanitize_text_field( wp_unslash( $_REQUEST['reset-dashboard-widgets'] ) ) ) ) {
+		$current_user_id = get_current_user_id();
+		delete_user_meta( $current_user_id, 'meta-box-order_dashboard' );
+	}
 
 	// --- add dashboard widget ---
 	// wp_add_dashboard_widget( 'radio-station-stats', __( 'Radio Station', 'radio-station' ), 'radio_station_dashboard_widget' );
@@ -30,6 +35,15 @@ function radio_station_add_dashboard_widget() {
 		'normal',
 		'high'
     );
+	
+	// --- move to top ---
+	/* global $wp_meta_boxes;
+    $widgets = $wp_meta_boxes['dashboard']['normal']['high'];
+	$widget = array( 'radio-station-stats' => $widgets['radio-station-stats'] );
+	unset( $widgets['radio-station-stats'] );
+	$widgets = array_merge( $widget, $widgets );
+	$wp_meta_boxes['dashboard']['normal']['high'] = $widgets; */
+
 }
 
 // ----------------
@@ -60,10 +74,11 @@ function radio_station_quicklinks_panel() {
 		echo '</li>' . "\n";
 		
 		// --- quickstart ---
-		// TODO: quickstart link / dropdown ?
-		$quickstart_url = '';
+		// TODO: quickstart dropdown ?
+		$quickstart_url = add_query_arg( 'page', 'radio-station-docs', admin_url( 'admin.php' ) );
+		$quickstart_url .= '#quickstart-guide';
 		echo '<li class="progress-list-item">';
-			echo '<span class="progress-icon progress-quickstart dashicons dashicons-album"></span>' . "\n";
+			echo '<span class="progress-icon progress-quickstart dashicons dashicons-superhero"></span>' . "\n";
 			echo '<a href="' . esc_url( $quickstart_url ) . '">' . esc_html( __( 'Quickstart', 'radio-station' ) ) . '</a>';
 		echo '</li>' . "\n";
 		
@@ -139,7 +154,7 @@ function radio_station_quicklinks_panel() {
 		if ( defined( 'RADIO_STATION_PRO_FILE' ) ) {
 
 			// --- schedule editor ---
-			// TODO: improve link to schedule editor page
+			// TODO: link to schedule editor page
 			$schedule_url = add_query_arg( 'post_type', RADIO_STATION_SHOW_SLUG, admin_url( 'edit.php' ) );
 			echo '<li class="progress-list-item">' . "\n";
 				echo '<span class="progress-icon progress-settings dashicons dashicons-calendar"></span>' . "\n";
@@ -192,8 +207,11 @@ function radio_station_statistics_panel() {
 
 	global $wpdb;
 
+	// --- schedule progress ---
+	$schedule_items = $schedule_notdone = $schedule_progress = 0;
+
 	// --- content progress ---
-	$progress_items = $content_notdone = $content_progress = 0;
+	$content_items = $content_notdone = $content_progress = 0;
 
 	// --- get show counts ---
 	$show_count = $shift_count = $active_count = $publish_count = $draft_count = $active_show_count = 0;
@@ -342,11 +360,101 @@ function radio_station_statistics_panel() {
 	$episode_show_count = count( $episode_show_ids );
 	$episode_playlist_count = count( $episode_playlist_ids );
 
+	// --- Schedule heading ---
+	echo '<div class="progress-heading">' . esc_html( 'Station Schedule', 'radio-station' ) . '</div>' . "\n";
+
+	// --- Schedule percentage line  ---
+	$schedule_percent = $total_times = 0;
+	$schedule = radio_station_get_current_schedule();
+	if ( $schedule && is_array( $schedule ) && ( count( $schedule ) > 0 ) ) {
+		// print_r( $schedule );
+		foreach ( $schedule as $day => $shifts ) {
+			foreach ( $shifts as $time => $shift ) {
+				$start_time = strtotime( $shift['date'] . ' ' . $shift['start'] );
+				$end_time = strtotime( $shift['date'] . ' ' . $shift['end'] );
+				if ( $start_time > $end_time ) {
+					$end_time = $end_time + 86400;
+				}
+				$shift_length = $end_time - $start_time;
+				// echo $shift['start'] . ' - ' . $shift['end'] . ' - ' . $start_time . ' - ' . $end_time . ' - ';
+				// echo $shift_length . '<br>';
+				$total_times = $total_times + $shift_length;
+			}
+		}
+		$week_in_seconds = 86400 * 7;
+		// echo 'TOTAL:' . $total_times . ' of ' . $week_in_seconds . '<br>';
+		$schedule_percent = round( ( $total_times / $week_in_seconds ), 2, PHP_ROUND_HALF_DOWN ) * 100;
+	}
+
+	echo '<div class="progress-line">' . "\n";
+
+		// --- progress icon ---
+		echo '<div class="progress-icon dashicons ';
+		if ( ( 0 == $shift_count ) || ( 0 == $schedule_percent ) ) {
+			echo 'progress-cross dashicons-dismiss';
+		} elseif ( 100 == $schedule_percent ) {
+			echo 'progress-tick dashicons-yes-alt';
+		} else {
+			echo 'progress-alert dashicons-warning';
+		}
+		echo '"></div>' . "\n";
+
+		echo '<div class="progress-text">' . "\n";
+		
+			// --- show count ---
+			echo '<span style="progress-count">' . esc_html( $shift_count ) . '</span>';
+			echo ' ' . esc_html( __( 'Shifts', 'radio-station' ) ) . ' ' . esc_html( __( 'and', 'radio-station' ) );
+
+			echo ' <span style="progress-count">' . esc_html( $specials_count ) . '</span>';
+			echo ' ' . esc_html( __( 'Specials', 'radio-station' ) );
+
+			// --- coverage percentage ---
+			echo ' ' . esc_html( __( 'with', 'radio-station' ) );
+			echo ' ' . esc_html( $schedule_percent ) . '% ' . esc_html( __( 'Schedule coverage', 'radio-station' ) );
+			echo '.' . "\n";
+
+		echo '</div>' . "\n";
+
+		// --- schedule editor ---
+		if ( defined( 'RADIO_STATION_PRO_FILE' ) ) {
+			$schedule_url = add_query_arg( 'page', 'radio-schedule', admin_url( 'admin.php' ) );
+			$schedule_title = __( 'Visual Schedule Editor', 'radio-station' );
+			$schedule_text = __( 'Schedule', 'radio-station' );
+		} else {
+			$schedule_url = add_query_arg( 'post_type', RADIO_STATION_SHOW_SLUG, admin_url( 'edit.php' ) );
+			$schedule_title = __( 'Edit Shows', 'radio-station' );
+			$schedule_text = __( 'Shows', 'radio-station' );
+		}
+		echo '<a class="progress-icon-link" href="' . esc_url( $schedule_url ) . '">' . "\n";
+			echo '<div class="progress-icon progress-add dashicons dashicons-calendar"></div>' . "\n";
+		echo '</a>' . "\n";
+		echo '<a class="progress-label-link" href="' . esc_url( $schedule_url ) . '">' . "\n";
+			echo '<div class="progress-label" title="' . esc_attr( $schedule_title ) . '">' . esc_html( $schedule_text ) . '</div>' . "\n";
+		echo '</a>' . "\n";
+			
+	echo '</div>' . "\n";
+
+	// --- shift conflicts line ---
+	/* $conflict_percent = 0; // TEMP
+	
+	$conflicts = radio_station_check_shifts();
+	echo 'Conflicts: ' . print_r( $conflicts, true ) . '<br>';
+	
+	// TODO: check for shift conflicts and convert to %
+	$schedule_percent = $schedule_percent - $conflict_percent;
+
+	echo '<div class="progress-line">' . "\n";
+	echo '</div>' . "\n";
+
+	// --- schedule progress bar ---
+	radio_station_progress_bar( $schedule_percent, $conflict_percent );
+	*/
+
 	// --- Content heading ---
 	echo '<div class="progress-heading">' . esc_html( 'Station Content', 'radio-station' ) . '</div>' . "\n";
 
 	// --- Shows ---
-	$progress_items++;
+	$content_items++;
 	// $active_percent = round( ( $active_count / $show_count ), 2, PHP_ROUND_HALF_DOWN ) * 100;
 	// $publish_percent = round( ( $publish_count / $show_count ), 2, PHP_ROUND_HALF_DOWN ) * 100;
 	$active_publish_percent = round( ( $active_count / $publish_count ), 2, PHP_ROUND_HALF_DOWN ) * 100;
@@ -424,7 +532,7 @@ function radio_station_statistics_panel() {
 	echo '</div>' . "\n";
 
 	// --- Descriptions ---
-	$progress_items++;
+	$content_items++;
 
 	// --- check shows and override description percentage ---
 	if ( ( 0 == $show_desc_empty ) && ( 0 == $override_desc_empty ) ) {
@@ -483,59 +591,9 @@ function radio_station_statistics_panel() {
 		echo '</a>' . "\n";
 		
 	echo '</div>' . "\n";
-
-	// --- Shifts ---
-	$progress_items++;
-	// TODO: calculate % schedule coverage!
-	$schedule_percent = 100; // ???
-	
-
-	echo '<div class="progress-line">' . "\n";
-
-		// --- progress icon ---
-		echo '<div class="progress-icon dashicons ';
-		if ( ( 0 == $shift_count ) || ( 0 == $schedule_percent ) ) {
-			echo 'progress-cross dashicons-dismiss';
-			$content_notdone++;
-		} elseif ( 100 == $schedule_percent ) {
-			echo 'progress-tick dashicons-yes-alt';
-			$content_progress++;
-		} else {
-			echo 'progress-alert dashicons-warning';
-			$content_progress = $content_progress + 0.5;
-		}
-		echo '"></div>' . "\n";
-
-		echo '<div class="progress-text">' . "\n";
-		
-			// --- show count ---
-			echo '<span style="progress-count">' . esc_html( $shift_count ) . '</span>';
-			echo ' ' . esc_html( __( 'Shifts', 'radio-station' ) ) . ' ' . esc_html( __( 'and', 'radio-station' ) );
-
-			echo ' <span style="progress-count">' . esc_html( $specials_count ) . '</span>';
-			echo ' ' . esc_html( __( 'Specials', 'radio-station' ) );
-
-			// --- show active percentage ---
-			// TODO: maybe add schedule editor link
-			// echo ' ' . esc_html( __( 'with', 'radio-station' ) );
-			// echo ' ' . esc_html( $schedule_percent ) . '% ' . esc_html( __( 'Schedule coverage', 'radio-station' ) );
-			// echo '.' . "\n";
-
-		echo '</div>' . "\n";
-
-		// --- add shift icon ---
-		$add_shift_url = add_query_arg( 'post_type', RADIO_STATION_SHOW_SLUG, admin_url( 'edit.php' ) );
-		echo '<a class="progress-icon-link" href="' . esc_url( $add_shift_url ) . '">' . "\n";
-			echo '<div class="progress-icon progress-add dashicons dashicons-plus-alt"></div>' . "\n";
-		echo '</a>' . "\n";
-		echo '<a class="progress-label-link" href="' . esc_url( $add_shift_url ) . '">' . "\n";
-			echo '<div class="progress-label" title="' . esc_attr( __( 'Add Shift', 'radio-station' ) ) . '">' . esc_html( __( 'Shift', 'radio-station' ) ) . '</div>' . "\n";
-		echo '</a>' . "\n";
-		
-	echo '</div>' . "\n";
 	
 	// --- Hosts ---
-	$progress_items++;
+	$content_items++;
 	$host_percent = round( ( $shows_host_count / $show_count ), 2, PHP_ROUND_HALF_DOWN ) * 100;
 	echo '<div class="progress-line">' . "\n";
 
@@ -593,7 +651,7 @@ function radio_station_statistics_panel() {
 	echo '</div>' . "\n";
 
 	// --- Genres ---
-	$progress_items++;
+	$content_items++;
 	$genre_percent = round( ( $genre_show_count / $show_count ), 2, PHP_ROUND_HALF_DOWN ) * 100;
 	echo '<div class="progress-line">' . "\n";
 
@@ -648,7 +706,7 @@ function radio_station_statistics_panel() {
 	echo '</div>' . "\n";
 
 	// --- Playlists ---
-	$progress_items++;
+	$content_items++;
 	echo '<div class="progress-line">' . "\n";
 
 		// --- progress icon ---
@@ -688,7 +746,7 @@ function radio_station_statistics_panel() {
 	echo '</div>' . "\n";
 
 	// --- Episodes ---
-	$progress_items++;
+	$content_items++;
 	echo '<div class="progress-line">' . "\n";
 
 		// --- progress icon ---
@@ -739,7 +797,9 @@ function radio_station_statistics_panel() {
 	echo '</div>' . "\n";
 
 	// --- content progress bar ---
-	radio_station_progress_bar( $content_progress, $content_notdone, $progress_items );
+	$progress_percent = round( ( $content_progress / $content_items ), 2, PHP_ROUND_HALF_DOWN ) * 100;
+	$undone_percent = round( ( $content_notdone / $content_items ), 2, PHP_ROUND_HALF_DOWN ) * 100;
+	radio_station_progress_bar( $progress_percent, $undone_percent );
 	
 }
 
@@ -753,13 +813,13 @@ function radio_station_settings_panel() {
 	$settings = radio_station_get_settings( false );
 	
 	// --- settings progress ---
-	$progress_items = $settings_notdone = $settings_progress = 0;
+	$settings_items = $settings_notdone = $settings_progress = 0;
 	
 	// --- settings checks ---
 	echo '<div class="progress-heading">' . esc_html( 'Station Settings', 'radio-station' ) . '</div>' . "\n";
 
 	// --- Stream URLs ---
-	$progress_items++;
+	$settings_items++;
 	$settings_tab = 'general';
 	$settings_section = 'broadcast';
 	echo '<div class="progress-line">' . "\n";
@@ -824,7 +884,7 @@ function radio_station_settings_panel() {
 	echo '</div>' . "\n";
 
 	// --- Player Bar ---
-	$progress_items++;
+	$settings_items++;
 	echo '<div class="progress-line">' . "\n";
 
 		// --- progress icon ---
@@ -918,7 +978,7 @@ function radio_station_settings_panel() {
 	echo '</div>' . "\n";
 	
 	// --- Schedule Page ---
-	$progress_items++;
+	$settings_items++;
 	echo '<div class="progress-line">' . "\n";
 
 		// --- progress icon ---
@@ -983,7 +1043,7 @@ function radio_station_settings_panel() {
 	echo '</div>' . "\n";
 
 	// --- Station Info ---
-	$progress_items++;
+	$settings_items++;
 	$infos = array( 'station_title', 'station_image', 'station_frequency', 'station_location', 'station_phone', 'station_email' );
 	$infos_count = count( $infos );
 	$info_count = 0;
@@ -1046,7 +1106,7 @@ function radio_station_settings_panel() {
 
 
 	// --- Archive Pages ---
-	$progress_items++;
+	$settings_items++;
 	$archives = array( 'show', 'override', 'playlist', 'genre', 'language' );
 	$pro_archives = array( 'episode', 'team' );
 	if ( defined( 'RADIO_STATION_PRO_FILE' ) ) {
@@ -1116,7 +1176,7 @@ function radio_station_settings_panel() {
 	// --- Pro Archives Pages ---
 	if ( !defined( 'RADIO_STATION_PRO_FILE' ) ) {
 		
-		$progress_items++;
+		$settings_items++;
 		echo '<div class="progress-line">' . "\n";
 
 			// --- progress icon ---
@@ -1141,7 +1201,9 @@ function radio_station_settings_panel() {
 	// ...
 
 	// --- settings progress bar ---
-	radio_station_progress_bar( $settings_progress, $settings_notdone, $progress_items );
+	$progress_percent = round( ( $settings_progress / $settings_items ), 2, PHP_ROUND_HALF_DOWN ) * 100;
+	$undone_percent = round( ( $settings_notdone / $settings_items ), 2, PHP_ROUND_HALF_DOWN ) * 100;
+	radio_station_progress_bar( $progress_percent, $undone_percent );
 
 }
 
@@ -1149,15 +1211,16 @@ function radio_station_settings_panel() {
 // ------------
 // Progress Bar
 // ------------
-function radio_station_progress_bar( $done, $undone, $items ) {
-	$bar_width = 395;
-	$progress_percent = round( ( $done / $items ), 2, PHP_ROUND_HALF_DOWN ) * 100;
-	$progress_px = round( ( $progress_percent / 100 * $bar_width ), 0, PHP_ROUND_HALF_DOWN );
-	$undone_percent = round( ( $undone / $items ), 2, PHP_ROUND_HALF_DOWN ) * 100;
-	$undone_px = round( ( $undone_percent / 100 * $bar_width ), 0, PHP_ROUND_HALF_DOWN );
+// function radio_station_progress_bar( $done, $undone, $items ) {
+function radio_station_progress_bar( $progress_percent, $undone_percent ) {
+
 	$remainder_percent = 100 - $progress_percent - $undone_percent;
+	$bar_width = 395;
+	$progress_px = round( ( $progress_percent / 100 * $bar_width ), 0, PHP_ROUND_HALF_DOWN );
+	$undone_px = round( ( $undone_percent / 100 * $bar_width ), 0, PHP_ROUND_HALF_DOWN );
 	$remainder_px = round( ( $remainder_percent / 100 * $bar_width ), 0, PHP_ROUND_HALF_DOWN );	
-	echo '<table class="progress-bar" cellpadding="0" cellspacing="0">' . "\n";
+
+	echo '<table class="progress-bar" cellpadding="0" cellspacing="0" style="max-width: ' . esc_attr( $bar_width ) . 'px;">' . "\n";
 		echo '<tr>' . "\n";
 			echo '<td class="progress-bar-done" style="width:' . esc_attr( $progress_px ) . 'px;"></div>' . "\n";
 			echo '<td class="progress-bar-remainder" style="width:' . esc_attr( $remainder_px ) . 'px;"></div>' . "\n";
@@ -1179,7 +1242,7 @@ function radio_station_enqueue_onboarding_styles() {
 	// echo '<span style="display:none;">Current Screen' . print_r( $current_screen, true ) . '</span>';
 	
 	// --- add onboarding styles ---
-	if ( ( 'dashboard' == $current_screen->base )
+	if ( ( !is_null( $current_screen ) && ( 'dashboard' == $current_screen->base ) )
 	  || ( isset( $_REQUEST['page'] ) && ( 'radio-content' == $_REQUEST['page'] ) )
 	  || ( isset( $_REQUEST['page'] ) && ( 'radio-station' == $_REQUEST['page'] ) ) ) {
 		radio_station_enqueue_style( 'admin' );

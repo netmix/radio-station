@@ -148,7 +148,7 @@ function radio_station_settings_texts( $args ) {
 // (add this to your main plugin file to run this loader)
 // require(dirname(__FILE__).'/loader.php');				// requires this file!
 // $instance = new radio_station_loader($args);				// instantiates loader class
-// (ie. search and replace 'radio_station_' with 'my_plugin_' function namespace)
+// (ie. search and replace all 'radio_station_' with 'my_plugin_' function namespace)
 // and then search and replace 'text-domain' with your plugin's text domain.
 
 

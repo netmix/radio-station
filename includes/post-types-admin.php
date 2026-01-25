@@ -998,12 +998,13 @@ function radio_station_shift_edit_script() {
 
 	// --- save shifts via AJAX ---
 	// 2.3.2: added form input cloning to saving show shifts
+	// 2.5.18: added form style to display none
 	$ajaxurl = admin_url( 'admin-ajax.php' );
 	$js .= "function radio_shifts_save() {
 		action = 'radio_station_show_save_shifts';
 		if (jQuery('#single-shift').length && jQuery('#single-shift').prop('checked')) {action = 'radio_station_show_save_shift';}
 		jQuery('#shift-save-form, #shift-save-frame').remove();
-		form = '<form id=\"shift-save-form\" method=\"post\" action=\"" . esc_url( $ajaxurl ) . "\" target=\"shift-save-frame\">';
+		form = '<form id=\"shift-save-form\" method=\"post\" action=\"" . esc_url( $ajaxurl ) . "\" target=\"shift-save-frame\" style=\"display:none;\">';
 		form += '<input type=\"hidden\" name=\"action\" value=\"'+action+'\"></form>';
 		jQuery('#wpbody').append(form);
 		if (!jQuery('#shift-save-frame').length) {
@@ -4092,10 +4093,11 @@ function radio_station_override_edit_script() {
 
 	// --- save shifts via AJAX ---
 	// 2.3.2: added form input cloning to saving show shifts
+	// 2.5.18: added form style to display none
 	$ajaxurl = admin_url( 'admin-ajax.php' );
 	$js .= "function radio_overrides_save() {
 		jQuery('#override-save-form, #override-save-frame').remove();
-		form = '<form id=\"override-save-form\" method=\"post\" action=\"" . esc_url( $ajaxurl ) . "\" target=\"override-save-frame\">';
+		form = '<form id=\"override-save-form\" method=\"post\" action=\"" . esc_url( $ajaxurl ) . "\" target=\"override-save-frame\" style=\"display:none;\">';
 		form += '<input type=\"hidden\" name=\"action\" value=\"radio_station_override_save\"></form>';
 		jQuery('#wpbody').append(form);
 		if (!jQuery('#override-save-frame').length) {
