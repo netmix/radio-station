@@ -40,6 +40,19 @@ if ( !function_exists( 'sanitize_text_field' ) ) {
  }
 }
 
+// -----------------
+// Trailing Slash It
+// -----------------
+if ( !function_exists( 'trailingslashit' ) ) {
+ function trailingslashit( $url ) {
+	if ( substr( $url, -1, 1 ) !== '/' ) {
+		$url .= '/';
+	}
+	return $url;
+ }
+}
+
+
 // ----------------------------
 // Backwards Compatible Defines
 // ----------------------------

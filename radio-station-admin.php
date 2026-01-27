@@ -12,7 +12,7 @@ if ( !defined( 'ABSPATH' ) ) exit;
 // - Filter Plugin Action Links
 // - Content Dashboard Admin Page
 // === Admin Menu ===
-// - Setting Page Capability Check
+// - Settings Page Capability Check
 // - Add Admin Menu and Submenu Items
 // - Content Dashboard Admin Page
 // - Fix to Expand Main Menu for Submenu Items
@@ -218,7 +218,8 @@ function radio_station_add_admin_menus() {
 	// 2.5.18: added split content and settings menus
 	$rs = __( 'Radio Station', 'radio-station' );
 	$settings_icon = plugins_url( 'images/radio-station-icon.png', RADIO_STATION_FILE );
-	$content_icon = apply_filters( 'radio_station_content_menu_icon', 'dashicons-format-audio' );
+	// $content_icon = apply_filters( 'radio_station_content_menu_icon', 'dashicons-format-audio' );
+	$content_icon = plugins_url( 'images/radio-content-icon.png', RADIO_STATION_FILE );
 	$content_position = apply_filters( 'radio_station_content_menu_position', 4 );
 	$settings_position = apply_filters( 'radio_station_menu_position', 5 );
 	$settings_cap = apply_filters( 'radio_station_manage_options_capability', 'manage_options' );

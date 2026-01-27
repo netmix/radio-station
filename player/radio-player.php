@@ -85,7 +85,7 @@ if ( !defined( 'ABSPATH' ) ) exit;
 // ----------------------
 //
 // --- player resource URL ---
-// 2.5.18: change constant name from RADIO_PLAYER_DIR_URL to avoid conflict
+// 2.5.18: change constant name from RADIO_PLAYER_URL to avoid conflict
 // RADIO_PLAYER_DIR_URL - define player URL path for standalone compatible version
 // (note: should have a trailing slash!) eg. to use as a WordPress mu-plugins dropin:
 // define( 'RADIO_PLAYER_DIR_URL', 'https://example.com/wp-content/mu-plugins/player/');
@@ -1420,7 +1420,7 @@ function radio_player_core_scripts() {
 
 		// --- enqueue player script ---
 		if ( defined( 'RADIO_PLAYER_DIR_URL' ) ) {
-			$url = RADIO_PLAYER_DIR_URL . 'js/sysend.js';
+			$url = trailingslashit( RADIO_PLAYER_DIR_URL ) . 'js/sysend.js';
 		} elseif ( defined( 'RADIO_STATION_FILE' ) ) {
 			$url = plugins_url( 'player/js/sysend.js', RADIO_STATION_FILE );
 		} else {
@@ -1433,7 +1433,7 @@ function radio_player_core_scripts() {
 		// --- output script tag directly ---
 		$url = 'js/sysend.js';
 		if ( defined( 'RADIO_PLAYER_DIR_URL' ) ) {
-			$url = RADIO_PLAYER_DIR_URL . $url;
+			$url = trailingslashit( RADIO_PLAYER_DIR_URL ) . $url;
 		}
 		radio_player_script_tag( $url, $version );
 		$radio_player['printed_sysend'] = true;
@@ -1454,9 +1454,9 @@ function radio_player_core_scripts() {
 	if ( function_exists( 'wp_enqueue_script' ) ) {
 
 		// --- enqueue player script ---
-		// 2.5.18: change RADIO_PLAYER_DIR_URL to RADIO_PLAYER_DIR_URL
+		// 2.5.18: change RADIO_PLAYER_URL to RADIO_PLAYER_DIR_URL
 		if ( defined( 'RADIO_PLAYER_DIR_URL' ) ) {
-			$url = RADIO_PLAYER_DIR_URL . 'js/radio-player' . $suffix . '.js';
+			$url = trailingslashit( RADIO_PLAYER_DIR_URL ) . 'js/radio-player' . $suffix . '.js';
 		} elseif ( defined( 'RADIO_STATION_FILE' ) ) {
 			$url = plugins_url( 'player/js/radio-player' . $suffix . '.js', RADIO_STATION_FILE );
 		} else {
@@ -1472,7 +1472,7 @@ function radio_player_core_scripts() {
 		// --- output script tag directly ---
 		$url = 'js/radio-player' . $suffix . '.js';
 		if ( defined( 'RADIO_PLAYER_DIR_URL' ) ) {
-			$url = RADIO_PLAYER_DIR_URL . $url;
+			$url = trailingslashit( RADIO_PLAYER_DIR_URL ) . $url;
 		}
 		radio_player_script_tag( $url, $version );
 		$radio_player['printed_player'] = true;
@@ -1490,7 +1490,7 @@ function radio_player_core_scripts() {
 	$path = dirname( __FILE__ ) . '/js/amplitude' . $suffix . '.js';
 	if ( function_exists( 'wp_enqueue_script' ) ) {
 		if ( defined( 'RADIO_PLAYER_DIR_URL' ) ) {
-			$url = RADIO_PLAYER_DIR_URL . 'js/amplitude' . $suffix . '.js';
+			$url = trailingslashit( RADIO_PLAYER_DIR_URL ) . 'js/amplitude' . $suffix . '.js';
 		} elseif ( defined( 'RADIO_STATION_FILE' ) ) {
 			$url = plugins_url( 'player/js/amplitude' . $suffix . '.js', RADIO_STATION_FILE );
 		} else {
@@ -1500,7 +1500,7 @@ function radio_player_core_scripts() {
 	} /* else {
 		$url = 'js/amplitude' . $suffix . '.js';
 		if ( defined( 'RADIO_PLAYER_DIR_URL' ) ) {
-			$url = RADIO_PLAYER_DIR_URL . $url;
+			$url = trailingslashit( RADIO_PLAYER_DIR_URL ) . $url;
 		}
 	} */
 	$radio_player['amplitude_script'] = array( 'version' => '5.3.2', 'url' => $url, 'path' => $path );
@@ -1509,7 +1509,7 @@ function radio_player_core_scripts() {
 	$path = dirname( __FILE__ ) . '/js/jplayer' . $suffix . '.js';
 	if ( function_exists( 'wp_enqueue_script' ) ) {
 		if ( defined( 'RADIO_PLAYER_DIR_URL' ) ) {
-			$url = RADIO_PLAYER_DIR_URL . 'js/jplayer' . $suffix . '.js';
+			$url = trailingslashit( RADIO_PLAYER_DIR_URL ) . 'js/jplayer' . $suffix . '.js';
 		} elseif ( defined( 'RADIO_STATION_FILE' ) ) {
 			$url = plugins_url( 'player/js/jplayer' . $suffix . '.js', RADIO_STATION_FILE );
 		} else {
@@ -1525,7 +1525,7 @@ function radio_player_core_scripts() {
 	$path = dirname( __FILE__ ) . '/js/howler' . $suffix . '.js';
 	if ( function_exists( 'wp_enqueue_script' ) ) {
 		if ( defined( 'RADIO_PLAYER_DIR_URL' ) ) {
-			$url = RADIO_PLAYER_DIR_URL . 'js/howler' . $suffix . '.js';
+			$url = trailingslashit( RADIO_PLAYER_DIR_URL ) . 'js/howler' . $suffix . '.js';
 		} elseif ( defined( 'RADIO_STATION_FILE' ) ) {
 			$url = plugins_url( 'player/js/howler' . $suffix . '.js', RADIO_STATION_FILE );
 		} else {
@@ -1534,7 +1534,7 @@ function radio_player_core_scripts() {
 	} /* else {
 		$url = 'js/howler' . $suffix . '.js';
 		if ( defined( 'RADIO_PLAYER_DIR_URL' ) ) {
-			$url = RADIO_PLAYER_DIR_URL . $url;
+			$url = trailingslashit( RADIO_PLAYER_DIR_URL ) . $url;
 		}
 	} */
 	$radio_player['howler_script'] = array( 'version' => '2.2.3', 'url' => $url, 'path' => $path );
@@ -1543,14 +1543,14 @@ function radio_player_core_scripts() {
 	/* $version = '4.2.6'; // as of WP 4.9
 	$version = filemtime( dirname( __FILE__ ) . '/js/mediaelement-and-player' . $suffix . '.js' );
 	$url = 'js/mediaelement-and-player' . $suffix . '.js';
-	if ( defined( 'RADIO_PLAYER_DIR_URL' ) ) {$url = RADIO_PLAYER_DIR_URL . $url;}
+	if ( defined( 'RADIO_PLAYER_DIR_URL' ) ) {$url = trailingslashit( RADIO_PLAYER_DIR_URL ) . $url;}
 	$radio_player['media_script'] = array( 'version' => $version, 'url' => $url, 'path' => $path );
 
 	// --- set media elements player script ---
 	$path = dirname( __FILE__ ) . '/js/rp-mediaelement' . $suffix . '.js';
 	if ( function_exists( 'wp_enqueue_script' ) ) {
 		if ( defined( 'RADIO_PLAYER_DIR_URL' ) ) {
-			$url = RADIO_PLAYER_DIR_URL . 'js/rp-mediaelement.js';
+			$url = trailingslashit( RADIO_PLAYER_DIR_URL ) . 'js/rp-mediaelement.js';
 			$version = filemtime( dirname( __FILE__ ) . '/js/rp-mediaelement.js' );
 		} elseif ( defined( 'RADIO_STATION_FILE' ) ) {
 			$url = plugins_url( 'player/js/rp-mediaelement.js', RADIO_STATION_FILE );
@@ -1563,7 +1563,7 @@ function radio_player_core_scripts() {
 		// note: no minified version here yet ?
 		// $version = filemtime( dirname( __FILE__ ) . '/js/rp-mediaelement.js' );
 		// $url = 'js/rp-mediaelement.js';
-		// if ( defined( 'RADIO_PLAYER_DIR_URL' ) ) {$url = RADIO_PLAYER_DIR_URL . $url;}
+		// if ( defined( 'RADIO_PLAYER_DIR_URL' ) ) {$url = trailingslashit( RADIO_PLAYER_DIR_URL ) . $url;}
 	}
 	$radio_player['elements_script'] = array( 'version' => $version, 'url' => $url, 'path' => $path );
 	*/
@@ -1901,7 +1901,7 @@ function radio_player_get_player_settings( $echo = false ) {
 	// --- set jPlayer Flash path ---
 	// 2.5.7: disable swf fallback support
 	/* if ( defined( 'RADIO_PLAYER_DIR_URL' ) ) {
-		$swf_path = RADIO_PLAYER_DIR_URL . 'js';
+		$swf_path = trailingslashit( RADIO_PLAYER_DIR_URL ) . 'js';
 	} elseif ( function_exists( 'plugins_url' ) ) {
 		if ( defined( 'RADIO_STATION_FILE' ) ) {
 			$swf_path = plugins_url( 'player/js', RADIO_STATION_FILE );
@@ -2910,7 +2910,7 @@ function radio_player_enqueue_styles( $script = false, $skin = false ) {
 		$version = filemtime( $path );
 		if ( function_exists( 'wp_enqueue_style' ) ) {
 			if ( defined( 'RADIO_PLAYER_DIR_URL' ) ) {
-				$url = RADIO_PLAYER_DIR_URL . 'css/radio-player' . $suffix. '.css';
+				$url = trailingslashit( RADIO_PLAYER_DIR_URL ) . 'css/radio-player' . $suffix. '.css';
 			} elseif ( defined( 'RADIO_STATION_FILE' ) ) {
 				$url = plugins_url( 'player/css/radio-player' . $suffix . '.css', RADIO_STATION_FILE );
 			} else {
@@ -2930,7 +2930,7 @@ function radio_player_enqueue_styles( $script = false, $skin = false ) {
 			// --- output style tag directly ---
 			$url = 'css/radio-player' . $suffix . '.css';
 			if ( defined( 'RADIO_PLAYER_DIR_URL' ) ) {
-				$url = RADIO_PLAYER_DIR_URL . $url;
+				$url = trailingslashit( RADIO_PLAYER_DIR_URL ) . $url;
 			}
 			radio_player_style_tag( 'stream-player', $url, $version );
 			
@@ -2964,7 +2964,7 @@ function radio_player_enqueue_styles( $script = false, $skin = false ) {
 		$version = filemtime( $path );
 		if ( function_exists( 'wp_enqueue_style' ) ) {
 			if ( defined( 'RADIO_PLAYER_DIR_URL' ) ) {
-				$url = RADIO_PLAYER_DIR_URL . 'css/jplayer' . $suffix. '.css';
+				$url = trailingslashit( RADIO_PLAYER_DIR_URL ) . 'css/jplayer' . $suffix. '.css';
 			} elseif ( defined( 'RADIO_STATION_FILE' ) ) {
 				$url = plugins_url( 'player/css/jplayer' . $suffix . '.css', RADIO_STATION_FILE );
 			} else {
@@ -2974,7 +2974,7 @@ function radio_player_enqueue_styles( $script = false, $skin = false ) {
 		} else {
 			// --- output style tag directly ---
 			// $url = 'css/jplayer' . $suffix . '.css';
-			// if ( defined( 'RADIO_PLAYER_DIR_URL' ) ) {$url = RADIO_PLAYER_DIR_URL . $url;}
+			// if ( defined( 'RADIO_PLAYER_DIR_URL' ) ) {$url = trailingslashit( RADIO_PLAYER_DIR_URL ) . $url;}
 			// radio_player_style_tag( 'rp-jplayer', $url, $version );
 		}
 
@@ -3000,7 +3000,7 @@ function radio_player_enqueue_styles( $script = false, $skin = false ) {
 			$version = filemtime( $path );
 			if ( function_exists( 'wp_enqueue_style' ) ) {
 				if ( defined( 'RADIO_PLAYER_DIR_URL' ) ) {
-					$url = RADIO_PLAYER_DIR_URL . 'css/jplayer' . $skin_ref . $suffix . '.css';
+					$url = trailingslashit( RADIO_PLAYER_DIR_URL ) . 'css/jplayer' . $skin_ref . $suffix . '.css';
 				} elseif ( defined( 'RADIO_STATION_FILE' ) ) {
 					$url = plugins_url( 'player/css/jplayer' . $skin_ref . $suffix . '.css', RADIO_STATION_FILE );
 				} else {
@@ -3014,7 +3014,7 @@ function radio_player_enqueue_styles( $script = false, $skin = false ) {
 			} else {
 				// --- output style tag directly ---
 				// $url = 'css/jplayer' . $skin_ref . $suffix . '.css';
-				// if ( defined( 'RADIO_PLAYER_DIR_URL' ) ) {$url = RADIO_PLAYER_DIR_URL . $url;}
+				// if ( defined( 'RADIO_PLAYER_DIR_URL' ) ) {$url = trailingslashit( RADIO_PLAYER_DIR_URL ) . $url;}
 				// radio_player_style_tag( 'rp-jplayer-skin', $url, $version );
 			}
 
@@ -3046,7 +3046,7 @@ function radio_player_enqueue_styles( $script = false, $skin = false ) {
 			$version = filemtime( $path );
 			if ( function_exists( 'wp_enqueue_style' ) ) {
 				if ( defined( 'RADIO_PLAYER_DIR_URL' ) ){
-					$url = RADIO_PLAYER_DIR_URL . 'css/rp-mediaelement.css';
+					$url = trailingslashit( RADIO_PLAYER_DIR_URL ) . 'css/rp-mediaelement.css';
 				} elseif ( defined( 'RADIO_STATION_FILE' ) ) {
 					$url = plugins_url( 'player/css/rp-mediaelement.css', RADIO_STATION_FILE );
 				} else {
@@ -3056,7 +3056,7 @@ function radio_player_enqueue_styles( $script = false, $skin = false ) {
 			} else {
 				// --- output style tag directly ---
 				// $url = 'css/rp-mediaelement.css';
-				// if ( defined( 'RADIO_PLAYER_DIR_URL' ) ) {$url = RADIO_PLAYER_DIR_URL . $url;}
+				// if ( defined( 'RADIO_PLAYER_DIR_URL' ) ) {$url = trailingslashit( RADIO_PLAYER_DIR_URL ) . $url;}
 				// radio_player_style_tag( 'rp-mediaelement', $url, $version );
 			}
 
@@ -3072,7 +3072,7 @@ function radio_player_enqueue_styles( $script = false, $skin = false ) {
 			$version = filemtime( $path );
 			if ( function_exists( 'wp_enqueue_style' ) ) {
 				if ( defined( 'RADIO_PLAYER_DIR_URL' ) ) {
-					$url = RADIO_PLAYER_DIR_URL . 'css/mediaelement.css';
+					$url = trailingslashit( RADIO_PLAYER_DIR_URL ) . 'css/mediaelement.css';
 				} elseif ( defined( 'RADIO_STATION_FILE' ) ) {
 					$url = plugins_url( 'player/css/mediaelement.css', RADIO_STATION_FILE );
 				} else {
@@ -3082,7 +3082,7 @@ function radio_player_enqueue_styles( $script = false, $skin = false ) {
 			} else {
 				// --- output style tag directly ---
 				// $url = 'css/mediaelement.css';
-				// if ( defined( 'RADIO_PLAYER_DIR_URL' ) ) {$url = RADIO_PLAYER_DIR_URL . $url;}
+				// if ( defined( 'RADIO_PLAYER_DIR_URL' ) ) {$url = trailingslashit( RADIO_PLAYER_DIR_URL ) . $url;}
 				// radio_player_style_tag( 'rp-mediaelement', $url, $version );
 			}
 		}
