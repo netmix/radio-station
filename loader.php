@@ -3009,7 +3009,6 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 						// $row .= '<input class="setting-button button-secondary" type="button" value="+" onclick="' . $onclickup . '">' . "\n";
 						$row .= '<input class="number-button number-up-button setting-button button-secondary" type="button" value="+" data="' . esc_attr( $name ) . '">' . "\n";
 
-
 					} elseif ( 'image' == $type ) {
 
 						// 1.1.7: added image attachment selection from media library

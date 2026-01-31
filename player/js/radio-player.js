@@ -130,7 +130,10 @@ function radio_player_load_station(instance, station, data, start) {
 	data = radio_player_check_format(data); script = data.script;
 	player = radio_player_load_audio(script, instance, data, start);
 	if (player && start) {
-		setTimeout(function() {radio_player_play_on_load(player, script, instance);}, 250);
+		setTimeout(function() {
+			if (radio_player.debug) {console.log('Play on Load A');}
+			radio_player_play_on_load(player, script, instance);
+		}, 250);
 	}
 }
 
@@ -147,7 +150,10 @@ function radio_player_load_stream(script, instance, data, start) {
 	data = radio_player_check_format(data); script = data.script;
 	/* console.log('Script: '+script+' - Instance: '+instance+' URL: '+data.url+' Format: '+data.format+' Start:'+start); */
 	player = radio_player_load_audio(script, instance, data, start);
-	if (player && start) {radio_player_play_on_load(player, script, instance);}
+	if (player && start) {
+		if (radio_player.debug) {console.log('Play on Load B');}
+		radio_player_play_on_load(player, script, instance);
+	}
 }
 
 /* --- load a file --- */
@@ -161,7 +167,10 @@ function radio_player_load_file(script, instance, data, start) {
 	/* load the audio stream */
 	data = radio_player_check_format(data); script = data.script;
 	player = radio_player_load_audio(script, instance, data, start);
-	if (player && start) {radio_player_play_on_load(player, script, instance);}
+	if (player && start) {
+		if (radio_player.debug) {console.log('Play on Load C');}
+		radio_player_play_on_load(player, script, instance);
+	}
 }
 
 /* --- load audio in player --- */
@@ -171,7 +180,7 @@ function radio_player_load_audio(script, instance, data, start) {
 	radio_player_set_data_state(script, instance, data, start);
 	loaded = radio_player_check_script(script);
 	if (loaded) {
-		if (radio_player.delayed_player) {clearInterval(radio_player.delayed_player);}
+		clearInterval(radio_player.delayed_player);
 		/* initialize the player if script is already loaded */
 		if (script == 'amplitude') {player =  radio_player_amplitude(instance, url, format, fallback, fformat);}
 		else if (script == 'jplayer') {player = radio_player_jplayer(instance, url, format, fallback, fformat);}
@@ -187,6 +196,7 @@ function radio_player_load_audio(script, instance, data, start) {
 		/* delay initialization until script is loaded */
 		if (radio_player.debug) {console.log('Script not ready, initializing Delayed Player');}
 		radio_player.delayed_data = {'time':0, 'start':start, 'script':script, 'instance':instance, 'url':url, 'format':format, 'fallback':fallback, 'fformat':fformat};
+		if (radio_player.hasOwnProperty('delayed_player')) {clearInterval(radio_player.delayed_player);}
 		radio_player.delayed_player = setInterval(function() {
 			radio_player.delayed_data.time++; data = radio_player.delayed_data; player = false;
 			if (data.time > 10) {console.log('Script load timed out. Please try again...'); clearInterval(radio_player.delayed_player);}
@@ -207,7 +217,10 @@ function radio_player_load_audio(script, instance, data, start) {
 				radio_player_event_handler('loading', data);
 				radio_player_set_data_state(script, instance, data, data.start);
 				/* note: radio_player_play_on_load must be called inside delayed function */
-				if (data.start) {radio_player_play_on_load(player, data.script, data.instance);}
+				if (data.start) {
+					if (radio_player.debug) {console.log('Play on Load D');}
+					radio_player_play_on_load(player, data.script, data.instance);
+				}
 			}
 		}, 1000);
 		return false;
@@ -231,7 +244,8 @@ function radio_player_play_on_load(player, script, instance) {
 			} else {
 				/* jPlayer not ready, wait until ready to play */
 				if (radio_player.debug) {console.log('jPlayer is not yet ready...');}
-				radio_player.jplayer_load = setInterval(function() {
+				if (radio_player.hasOwnProperty('jplayer_load')) {clearInterval(radio_player.jplayer_load);}
+				radio_player.jplayer_load = setInterval(function(player) {
 					if (radio_player.jplayer_ready) {
 						clearInterval(radio_player.jplayer_load);
 						if (radio_player.debug) {console.log('jPlayer is ready.');}
@@ -239,7 +253,7 @@ function radio_player_play_on_load(player, script, instance) {
 							radio_player_custom_event('rp-play', detail);
 						} catch(e) {console.log(script+' error: could not play stream.'); console.log(e);}
 					}
-				}, 250);
+				}(player), 250);
 			}
 		}
 		/* if (!jQuery('#radio_container_'+instance).hasClass('playing')) {jQuery('#radio_container_'+instance).addClass('playing');} */
@@ -330,7 +344,10 @@ function radio_player_switch_script(instance, script) {
 		radio_player_stop_instance(instance, false);
 	}
 	player = radio_player_load_audio(script, instance, data, data.start);
-	if (player && data.start) {radio_player_play_on_load(player, script, instance);}
+	if (player && data.start) {
+		if (radio_player.debug) {console.log('Play on Load E');}
+		radio_player_play_on_load(player, script, instance);
+	}
 }
 
 /* === Player Functions and Event Callbacks === */
@@ -345,6 +362,7 @@ function radio_player_play_instance(instance) {
 	console.log(player); console.log(script);
 	if (script == 'amplitude') {
 		player.play(); radio_player_retry.player = player;
+		if (radio_player_retry.hasOwnProperty('cycle')) {clearInterval(radio_play_retry.cycle);}
 		radio_player_retry.cycle = setInterval(function() {
 			player = radio_player_retry.player;
 			if (player.getPlayerState() == 'stopped') {player.play();}
@@ -426,6 +444,7 @@ function radio_player_is_playing(instance) {
 	if (radio_player.debug) {console.log(player);}
 	if (script == 'amplitude') {
 		state = player.getPlayerState();
+		if (radio_player.debug) {console.log('Amplitude Player State for Instance '+instance+': '+state);}
 		if (state == 'playing') {playing = true;} else {playing = false;}
 	} else if (script == 'howler') {
 		playing = player.playing();
@@ -761,7 +780,7 @@ function radio_player_broadcast_playing(instance) {
 			data = channel;
 		}
 		windowid = radio_player_window_guid();
-		if (!instance) {instance = 0;}
+		if (instance === false) {console.log('Player Instance Error'); return;}
 		message = windowid+'::'+instance+'::'+type+'::'+data;
 		console.log('Broadcast Message: '+message);
 		sysend.broadcast('radio-play', {message: message});
@@ -1155,8 +1174,12 @@ jQuery(document).ready(function() {
 });
 
 /* === Pageload Functions === */
-
+var radio_player_initializing;
 jQuery(document).ready(function() {
+
+	/* --- prevent conflict on duplicate script load --- */
+	if (radio_player_initializing) {return;}
+	radio_player_initializing = true;
 
 	/* --- hide all volume controls if no support (iOS) --- */
 	novolumesupport = radio_player_volume_test();
@@ -1170,23 +1193,26 @@ jQuery(document).ready(function() {
 	}
 
 	/* --- bind pause/play button clicks --- */
-	jQuery('.rp-play-pause-button').on('click', function() {
+	jQuery('.rp-play-pause-button').on('click', function(e) {
+		e.stopImmediatePropagation(); e.preventDefault();
 		container = jQuery(this).parents('.radio-container');
 		instance = container.attr('id').replace('radio_container_','');
 		/* radio_player.debug = true; */
 		if (radio_player.debug) {console.log('Play/Pause Button Click:'); console.log(jQuery(this));}
+		/* maybe toggle currently playing radio */
+		inst = instance;
+		if (typeof radio_player_toggle_current == 'function') {
+			if (radio_player.debug) {console.log('Trigger Toggle of Player. New Instance '+instance);}
+			done = radio_player_toggle_current(instance);
+			if (done) {return;}
+		}
+		instance = inst; /* <- this is a fix */
+		
+		/* check to pause or play */
 		if (radio_player_is_playing(instance)) {
 			if (radio_player.debug) {console.log('Trigger Pause of Player Instance '+instance);}
 			radio_player_pause_instance(instance);
 		} else {
-			/* maybe toggle currently playing radio */
-			inst = instance;
-			if (typeof radio_player_toggle_current == 'function') {
-				if (radio_player.debug) {console.log('Trigger Toggle of Player. New Instance '+instance);}
-				done = radio_player_toggle_current(instance);
-				if (done) {return;}
-			}
-			instance = inst; /* <- this is a fix */
 			if (radio_player.debug) {console.log('Trigger Play of Player Instance '+instance);}
 			if (instance in radio_player_data.players) {
 				radio_player_play_instance(instance);

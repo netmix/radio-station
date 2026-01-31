@@ -179,9 +179,14 @@ function radio_player_set_debug_mode() {
 	if ( function_exists( 'radio_station_get_setting' ) ) {
 		$debug = radio_station_get_setting( 'player_debug' );
 	} 
+	// 2.5.18: allow for querystring to disable player debug setting
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
-	if ( isset( $_REQUEST['player-debug'] ) && ( '1' === sanitize_text_field( wp_unslash( $_REQUEST['player-debug'] ) ) ) ) {
-		$debug = true;
+	if ( isset( $_REQUEST['player-debug'] ) ) {
+		if ( '1' === sanitize_text_field( wp_unslash( $_REQUEST['player-debug'] ) ) ) {
+			$debug = true;
+		} elseif ( '0' === sanitize_text_field( wp_unslash( $_REQUEST['player-debug'] ) ) ) {
+			$debug = false;
+		}
 	}
 	if ( function_exists( 'apply_filters' ) ) {
 		$debug = apply_filters( 'radio_station_player_debug', $debug );
