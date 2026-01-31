@@ -1628,7 +1628,7 @@ function radio_station_announcement_content( $dismissable = true ) {
 		// --- plugin image ---
 		$plugin_image = plugins_url( 'images/radio-station.png', RADIO_STATION_FILE );
 		echo '<li style="display:inline-block; vertical-align:middle;">' . "\n";
-			echo '<img src="' . esc_url( $plugin_image ) . '">' . "\n";
+			echo '<img src="' . esc_url( $plugin_image ) . '" height="100" width="100">' . "\n";
 		echo '</li>' . "\n";
 
 		// --- takeover announcement ---

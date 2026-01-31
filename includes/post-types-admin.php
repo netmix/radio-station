@@ -2257,6 +2257,9 @@ function radio_station_show_save_data( $post_id ) {
 	// --- check show shift nonce ---
 	if ( isset( $_POST['show_shifts_nonce'] ) && wp_verify_nonce( sanitize_text_field( $_POST['show_shifts_nonce'] ), 'radio-station' ) ) {
 
+		// 2.5.18: get check conflicts setting
+		$check_conflicts = radio_station_get_setting( 'conflict_checker' );
+
 		// --- loop posted show shift times ---
 		// 2.3.1: added check if any shifts are set (fix undefined index warning)
 		$prev_shifts = radio_station_get_show_schedule( $post_id );
@@ -2392,11 +2395,14 @@ function radio_station_show_save_data( $post_id ) {
 				// 2.3.0: added show shift conflict checking
 				if ( !$disabled ) {
 					// 2.5.0: changed scope to other instead of shows
-					$conflicts = radio_station_check_shift( $post_id, $new_shifts[$i], 'other' );
-					if ( $conflicts ) {
-						$disabled = true;
-						if ( RADIO_STATION_DEBUG ) {
-							echo "*Conflicting Shift Disabled*" . "\n";
+					// 2.5.18: honour shift conflict setting
+					if ( 'yes' == $check_conflicts ) {
+						$conflicts = radio_station_check_shift( $post_id, $new_shifts[$i], 'other' );
+						if ( $conflicts ) {
+							$disabled = true;
+							if ( RADIO_STATION_DEBUG ) {
+								echo "*Conflicting Shift Disabled*" . "\n";
+							}
 						}
 					}
 				}
@@ -2413,7 +2419,10 @@ function radio_station_show_save_data( $post_id ) {
 
 			// --- recheck for conflicts with other shifts for this show ---
 			// 2.3.0: added new shift conflict checking
-			$new_shifts = radio_station_check_new_shifts( $new_shifts );
+			// 2.5.18: honour shift conflict setting
+			if ( 'yes' == $check_conflicts ) {
+				$new_shifts = radio_station_check_new_shifts( $new_shifts );
+			}
 
 			// --- update the schedule meta entry ---
 			// 2.3.0: check if shift times have changed before saving
