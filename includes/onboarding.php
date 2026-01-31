@@ -446,9 +446,11 @@ function radio_station_statistics_panel() {
 	echo '<div class="progress-line">' . "\n";
 	echo '</div>' . "\n";
 
-	// --- schedule progress bar ---
-	radio_station_progress_bar( $schedule_percent, $conflict_percent );
 	*/
+
+	// --- schedule progress bar ---
+	$conflict_percent = 0;
+	radio_station_progress_bar( $schedule_percent, $conflict_percent );
 
 	// --- Content heading ---
 	echo '<div class="progress-heading">' . esc_html( 'Station Content', 'radio-station' ) . '</div>' . "\n";
@@ -1255,7 +1257,8 @@ function radio_station_enqueue_onboarding_styles() {
 // Onboarding Styles
 // -----------------
 function radio_station_onboarding_styles() {
-	$css = ".progress-heading {text-align:center; font-size:16px; font-variant:small-caps; letter-spacing:3px; margin-bottom:5px;}
+	$css = ".progress-heading {text-align:center; font-size:16px; font-variant:small-caps; letter-spacing:3px; 
+		margin-top:10px; margin-bottom:5px; max-width:500px;}
 	.progress-list {margin-bottom:7px;}
 	.progress-list-item {display:inline-block; margin-right:25px;}
 	.progress-list-item:last-child {margin-right:0;}

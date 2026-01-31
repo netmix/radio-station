@@ -244,6 +244,7 @@ function radio_station_add_admin_menus() {
 	add_submenu_page( 'radio-content', $rs . ' ' . __( 'Shows', 'radio-station' ), __( 'Shows', 'radio-station' ), 'edit_shows', 'shows' );
 	// add_submenu_page( 'radio-station', $rs . ' ' . __( 'Add Show', 'radio-station' ), __( 'Add Show', 'radio-station' ), 'publish_shows', 'add-show' );
 	// 2.5.18: change label from Schedule Overrides
+
 	add_submenu_page( 'radio-content', $rs . ' ' . __( 'Special Overrides', 'radio-station' ), __( 'Special Overrides', 'radio-station' ), 'edit_shows', 'schedule-overrides' );
 
 	do_action( 'radio_station_admin_submenu_content_middle' );
