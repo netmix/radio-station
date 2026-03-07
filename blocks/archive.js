@@ -55,6 +55,7 @@
 			show_dates: { type: 'boolean', default: true },	/* overrides only */
 			
 			/* --- Hidden Switches --- */
+			channel: { type: 'number', default: 0 },
 			block: { type: 'boolean', default: true },
 			pro: { type: 'boolean', default: false }
 		},

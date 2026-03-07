@@ -653,6 +653,18 @@ class radio_station_schedule_engine {
 		$channel = $this->channel;
 		$context = $this->context;
 
+		if ( !$timezone ) {
+			$timezone = $this->get_timezone();
+		}
+
+		// 2.5.18: add missing range time definitions
+		if ( $start_date ) {
+			$range_start_time = $this->to_time( $start_date, $timezone );
+		}
+		if ( $end_date ) {
+			$range_end_time = $this->to_time( $end_date, $timezone );
+		}
+
 		// --- loop overrides and get data ---
 		$override_list = array();
 		foreach ( $overrides as $i => $override ) {
@@ -661,9 +673,6 @@ class radio_station_schedule_engine {
 
 			$override_shifts = $override['shifts'];
 			$show = $override['show'];
-			// if ( !isset( $show['title'] ) ) {
-				// echo '<span style="display:none;">Show! ' . print_r( $show, true ) . '</span>';	
-			// }
 
 			if ( $override_shifts && is_array( $override_shifts ) && ( count( $override_shifts ) > 0 ) )  {
 
@@ -688,7 +697,7 @@ class radio_station_schedule_engine {
 
 							// --- check if in specified date range ---
 							if ( ( isset( $range_start_time ) && ( $date_time < $range_start_time ) )
-									|| ( isset( $range_end_time ) && ( $date_time > $range_end_time ) ) ) {
+							  || ( isset( $range_end_time ) && ( $date_time > $range_end_time ) ) ) {
 								$inrange = false;
 							}
 
@@ -719,12 +728,13 @@ class radio_station_schedule_engine {
 
 									}
 								} */
+								$recurs = isset( $data['recurs'] ) ? $data['recurs'] : '';
 
 								if ( $override_start_time < $override_end_time ) {
 
 									// --- add the override as is ---
 									$override_data = array(
-										'override' => $show['id'],
+										'show'     => $show['id'],
 										'id'       => $data['id'],
 										'name'     => $show['title'],
 										'slug'     => $show['slug'],
@@ -732,6 +742,7 @@ class radio_station_schedule_engine {
 										'day'      => $day,
 										'start'    => $start,
 										'end'      => $end,
+										'recurs'   => $recurs,
 										'url'      => get_permalink( $show['id'] ),
 										'split'    => false,
 									);
@@ -751,6 +762,7 @@ class radio_station_schedule_engine {
 										'start'    => $start,
 										'end'      => '11:59:59 pm',
 										'real_end' => $end,
+										'recurs'   => $recurs,
 										'url'      => get_permalink( $show['id'] ),
 										'split'    => true,
 									);
@@ -776,6 +788,7 @@ class radio_station_schedule_engine {
 										'real_start' => $start,
 										'start'      => '00:00 am',
 										'end'        => $end,
+										'recurs'   => $recurs,
 										'url'        => get_permalink( $show['id'] ),
 										'split'      => true,
 									);

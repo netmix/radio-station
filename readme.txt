@@ -407,6 +407,7 @@ We recommend you test these on a Staging site (or a development copy of your liv
 = 2.5.18 =
 * Updated: Freemius SDK (2.13.0)
 * Updated: Plugin Panel (1.3.7) for delayed translations
+* Updated: Radio Player (1.0.4)
 * Changed: split station content and settings Admin menus
 * Changed: display label of Overrides to Specials
 * Changed: handle of radio-player assets to stream-player
@@ -414,12 +415,15 @@ We recommend you test these on a Staging site (or a development copy of your liv
 * Improved: handle Special/Override meta in Archive shortcode
 * Improved: edit Special/Override permissions for linked Shows
 * Improved: Timezone and Clock Timezone display formatting
+* Improved: Special override interface change highlighting
 * Added: Dashboard overview widget and Content Dashboard page
 * Added: Station Frequency and Location options
 * Added: Channel inputs for Shifts and Overrides
+* Added: Special Overrides data routes/feed to Data API
 * Added: Link main language term to filtered show archive
+* Fixed: Player Amplitude script pause/unpause source bug
 * Fixed: Special/Override (non-linked) Host/Producer data
-* Fixed: Radio Player plugin conflicts
+* Fixed: Radio Player (other developer) plugin conflicts
 * Fixed: Override Drafts without dates not listing in Admin
 * Fixed: Block asset paths for script/style file versions
 * Fixed: Display user timezone for timezone shortcode

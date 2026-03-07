@@ -144,6 +144,13 @@ function radio_station_get_block_attributes() {
 			'month' => array( 'type' => 'string', 'default' => 'full' ),
 			'zone' => array( 'type' => 'boolean', 'default' => true ),
 			'seconds' => array( 'type' => 'boolean', 'default' => true ),
+			
+			// TODO: add extended clock shortcode attributes
+			// 'code' => array( 'type' => 'boolean', 'default' => true ),
+			// 'region' => array( 'type' => 'boolean', 'default' => true ),
+			// 'location' => array( 'type' => 'boolean', 'default' => true ),
+			// 'offset' => array( 'type' => 'boolean', 'default' => true ),
+			// 'timezone' => array( 'type' => 'string', 'default' => '' ),
 		),
 
 		// === Archive Lists ===

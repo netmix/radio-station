@@ -463,6 +463,7 @@ function radio_station_register_show_taxonomies() {
 	// --------------
 
 	// --- Genre taxonomy labels ---
+	// 2.5.18: add back to items label
 	$labels = array(
 		'name'              => _x( 'Genres', 'taxonomy general name', 'radio-station' ),
 		'singular_name'     => _x( 'Genre', 'taxonomy singular name', 'radio-station' ),
@@ -475,6 +476,7 @@ function radio_station_register_show_taxonomies() {
 		'add_new_item'      => __( 'Add New Genre', 'radio-station' ),
 		'new_item_name'     => __( 'New Genre Name', 'radio-station' ),
 		'menu_name'         => __( 'Genre', 'radio-station' ),
+		'back_to_items'     => __( '← Back to Genres', 'radio-station' ),
 	);
 
 	// --- register the genre taxonomy ---
@@ -509,6 +511,7 @@ function radio_station_register_show_taxonomies() {
 	// -----------------
 
 	// --- Language taxonomy labels ---
+	// 2.5.18: add back to items label
 	$labels = array(
 		'name'              => _x( 'Languages', 'taxonomy general name', 'radio-station' ),
 		'singular_name'     => _x( 'Language', 'taxonomy singular name', 'radio-station' ),
@@ -521,6 +524,7 @@ function radio_station_register_show_taxonomies() {
 		'add_new_item'      => __( 'Add New Language', 'radio-station' ),
 		'new_item_name'     => __( 'New Language Name', 'radio-station' ),
 		'menu_name'         => __( 'Language', 'radio-station' ),
+		'back_to_items'     => __( '← Back to Languages', 'radio-station' ),
 	);
 
 	// --- register the language taxonomy ---

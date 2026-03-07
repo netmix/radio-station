@@ -37,6 +37,7 @@
 			theme: { type: 'string', default: 'default' },
 			buttons: { type: 'string', default: 'default' },
 			/* --- Hidden Switches --- */
+			channel: { type: 'number', default: 0 },
 			block: { type: 'boolean', default: true },
 			pro: { type: 'boolean', default: false }
 		},

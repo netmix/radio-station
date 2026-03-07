@@ -206,6 +206,13 @@ class Playlist_Widget extends WP_Widget {
 		$instance['label'] = isset( $new_instance['label'] ) ? 1 : 0;
 		$instance['comments'] = isset( $new_instance['comments'] ) ? 1 : 0;
 
+		// 2.5.18: save (or preserve) channel setting
+		if ( isset( $new_instance['channel'] ) ) {
+			$instance['channel'] = $new_instance['channel'];
+		} elseif ( isset( $old_instance['channel'] ) ) {
+			$instance['channel'] = $old_instance['channel'];
+		}
+
 		// 2.3.0: apply filters to widget instance update
 		$instance = apply_filters( 'radio_station_playlist_widget_update', $instance, $new_instance, $old_instance );
 		return $instance;

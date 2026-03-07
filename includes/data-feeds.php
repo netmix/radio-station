@@ -149,6 +149,15 @@ function radio_station_get_station_data() {
 		}
 	}
 
+	// --- get station data ---
+	// 2.5.10: add station image URL
+	// 2.5.18: get station name
+	// 2.5.18: added callsign and tagline fields
+	$station_name = radio_station_get_setting( 'station_title' );
+	$station_callsign = radio_station_get_setting( 'station_callsign' );
+	$station_tagline = radio_station_get_setting( 'station_tagline' );
+	$image_url = radio_station_get_station_image_url();
+
 	// --- get stream data ---
 	// 2.3.3.9: enabled format and fallback data
 	$stream_url = radio_station_get_stream_url();
@@ -156,12 +165,17 @@ function radio_station_get_station_data() {
 	$fallback_url = radio_station_get_fallback_url();
 	$fallback_format = radio_station_get_setting( 'fallback_format' );
 
-	// --- get station data ---
-	// 2.5.10: add station image URL
-	$station_url = radio_station_get_station_url();
-	$image_url = radio_station_get_station_image_url();
-	$schedule_url = radio_station_get_schedule_url();
+	// --- broadcast data ---
+	// 2.5.18: added frequency, band and location fields
 	$language = radio_station_get_language();
+	$frequency = radio_station_get_setting( 'station_frequency' );
+	$band = radio_station_get_setting( 'station_band' );
+	$location = radio_station_get_setting( 'station_location' );
+
+	// --- station page URLs ---
+	$station_url = radio_station_get_station_url();
+	$schedule_url = radio_station_get_schedule_url();
+	$shows_url = radio_station_get_shows_url();
 
 	// 2.3.2: use get date function with timezone
 	$now = radio_station_get_now();
@@ -178,16 +192,34 @@ function radio_station_get_station_data() {
 	// 2.3.2: added schedule updated timestamp
 	// 2.3.3.9: enabled format and fallback data
 	// 2.5.10: add station image URL
+	// 2.5.18: added frequency, band and location fields
 	$station_data = array(
-		'timezone'        => $timezone,
+	
+		// --- station info ---
+		'name'            => $station_name,
+		'callsign'        => $station_callsign,
+		'tagline'         => $station_tagline,
+		'image_url'       => $image_url,
+	
+		// --- stream meta ---
 		'stream_url'      => $stream_url,
 		'stream_format'   => $stream_format,
 		'fallback_url'    => $fallback_url,
 		'fallback_format' => $fallback_format,
-		'station_url'     => $station_url,
-		'image_url'       => $image_url,
-		'schedule_url'    => $schedule_url,
+
+		// --- station meta ---
 		'language'        => $language['slug'],
+		'timezone'        => $timezone,
+		'frequency'       => $frequency,
+		'band'            => $band,
+		'location'        => $location,
+
+		// --- station page URLs ---
+		'station_url'     => $station_url,
+		'schedule_url'    => $schedule_url,
+		'shows_url'       => $shows_url,
+
+		// --- request meta ---
 		'timestamp'       => $now,
 		'date_time'       => $date_time,
 		'updated'         => $updated,
@@ -633,6 +665,54 @@ function radio_station_shows_endpoint() {
 	return $shows;
 }
 
+// ----------------------
+// Specials Data Endpoint
+// ----------------------
+// 2.5.18: added specials data endpoint
+function radio_station_specials_endpoint() {
+
+	if ( RADIO_STATION_DEBUG ) {
+		header( 'Content-Type: text/plain' );
+	}
+
+	// --- get show query parameter ---
+	$show = $singular = $multiple = false;
+	if ( isset( $_GET['show'] ) ) {
+		$show = sanitize_text_field( $_GET['show'] );
+		if ( strstr( $show, ',' ) ) {
+			$multiple = true;
+		} else {
+			$singular = true;
+		}
+	}
+
+	// --- get override list data ---
+	$overrides = radio_station_get_overrides_data( $show );
+
+	// --- maybe set request error ---
+	if ( 0 === count( $overrides ) ) {
+		if ( $singular ) {
+			$code = 'show_not_found';
+			$message = 'Requested Show was not found.';
+		} elseif ( $multiple ) {
+			$code = 'shows_not_found';
+			$message = 'No Requested Shows were found.';
+		} else {
+			$code = 'no_specials';
+			$message = 'No Specials were found.';
+		}
+		$overrides = new WP_Error( $code, $message, array( 'status' => 400 ) );
+	}
+
+	// --- maybe output debug info ---
+	if ( RADIO_STATION_DEBUG ) {
+		echo "Show: " . esc_html( $show ) . PHP_EOL;
+		echo "Specials: " . esc_html( print_r( $overrides, true ) );
+	}
+
+	return $overrides;
+}
+
 // --------------------
 // Genres Data Endpoint
 // --------------------
@@ -746,11 +826,13 @@ function radio_station_register_rest_routes() {
 
 	// --- filter route slugs ---
 	// (can disable individual routes by returning false from filters)
+	// 2.5.18: added special overrides route
 	$base = apply_filters( 'radio_station_route_slug_base', 'radio' );
 	$station = apply_filters( 'radio_station_route_slug_station', 'station' );
 	$broadcast = apply_filters( 'radio_station_route_slug_broadcast', 'broadcast' );
 	$schedule = apply_filters( 'radio_station_route_slug_schedule', 'schedule' );
 	$shows = apply_filters( 'radio_station_route_slug_shows', 'shows' );
+	$specials = apply_filters( 'radio_station_route_slug_specials', 'specials' );
 	$genres = apply_filters( 'radio_station_route_slug_genres', 'genres' );
 	$languages = apply_filters( 'radio_station_route_slug_languages', 'languages' );
 
@@ -796,6 +878,14 @@ function radio_station_register_rest_routes() {
 	if ( $shows ) {
 		register_rest_route( $base, '/' . $shows . '/', $args );
 	}
+	
+	// --- Specials List Route ---
+	// 2.5.18: added specials route
+	$args['callback'] = 'radio_station_route_specials';
+	if ( $shows ) {
+		register_rest_route( $base, '/' . $specials . '/', $args );
+	}
+
 
 	// --- Show Genre List Route ---
 	// default URL: /wp-json/radio/genres/
@@ -835,6 +925,11 @@ function radio_station_get_route_urls() {
 	$shows = radio_station_get_route_url( 'shows' );
 	if ( $shows ) {
 		$routes['shows'] = $shows;
+	}
+	// 2.5.18: added specials route
+	$specials = radio_station_get_route_url( 'specials' );
+	if ( $specials ) {
+		$routes['specials'] = $specials;
 	}
 	$genres = radio_station_get_route_url( 'genres' );
 	if ( $genres ) {
@@ -959,6 +1054,30 @@ function radio_station_route_shows( $request ) {
 	return $show_list;
 }
 
+// -------------------
+// Specials List Route
+// -------------------
+// 2.5.18: added special overrides route
+function radio_station_route_specials( $request ) {
+
+	// --- get shows endpoint data ---
+	$specials_list = radio_station_specials_endpoint();
+	if ( !is_wp_error( $specials_list ) ) {
+		$specials_list = array( 'specials' => $specials_list );
+		$specials_list = radio_station_add_station_data( $specials_list );
+		$specials_list['endpoints'] = radio_station_get_route_urls();
+	}
+	$specials_list = apply_filters( 'radio_station_route_specials', $specials_list, $request );
+
+	// --- maybe output debug display ---
+	if ( RADIO_STATION_DEBUG ) {
+		echo "Output: " . esc_html( print_r( $specials_list, true ) ) . PHP_EOL;
+		exit;
+	}
+
+	return $specials_list;
+}
+
 // ----------------
 // Genre List Route
 // ----------------
@@ -1048,6 +1167,7 @@ function radio_station_add_feeds() {
 	$broadcast = apply_filters( 'radio_station_feed_slug_broadcast', 'broadcast' );
 	$schedule = apply_filters( 'radio_station_feed_slug_schedule', 'schedule' );
 	$shows = apply_filters( 'radio_station_feed_slug_shows', 'shows' );
+	$specials = apply_filters( 'radio_station_feed_slug_specials', 'specials' );
 	$genres = apply_filters( 'radio_station_feed_slug_genres', 'genres' );
 	$languages = apply_filters( 'radio_station_feed_slug_languages', 'languages' );
 
@@ -1067,6 +1187,10 @@ function radio_station_add_feeds() {
 	if ( $shows ) {
 		radio_station_add_feed( $shows, 'radio_station_feed_shows' );
 	}
+	// 2.5.18: added specials feed
+	if ( $specials ) {
+		radio_station_add_feed( $specials, 'radio_station_feed_specials' );
+	}
 	if ( $genres ) {
 		radio_station_add_feed( $genres, 'radio_station_feed_genres' );
 	}
@@ -1077,7 +1201,7 @@ function radio_station_add_feeds() {
 	// --- add single feed rewrite rule ---
 	// (without risking overriding standard permalink slugs)
 	// https://wordpress.stackexchange.com/questions/351576/add-feed-rewrite-overwriting-standard-permalinks/351603#351603
-	$feeds = array( $base, $station, $broadcast, $schedule, $shows, $genres, $languages );
+	$feeds = array( $base, $station, $broadcast, $schedule, $shows, $specials, $genres, $languages );
 	$feeds = apply_filters( 'radio_station_feed_slugs', $feeds );
 	foreach ( $feeds as $i => $feed ) {
 		if ( !$feed ) {
@@ -1124,6 +1248,11 @@ function radio_station_get_feed_urls() {
 	$shows = radio_station_get_feed_url( 'shows' );
 	if ( $shows ) {
 		$feeds['shows'] = $shows;
+	}
+	// 2.5.18: added special overrides feed
+	$shows = radio_station_get_feed_url( 'specials' );
+	if ( $shows ) {
+		$feeds['specials'] = $specials;
 	}
 	$genres = radio_station_get_feed_url( 'genres' );
 	if ( $genres ) {
@@ -1272,6 +1401,33 @@ function radio_station_feed_shows( $comment_feed, $feed_name ) {
 		// 2.5.0: use wp_send_json instead of echo json_encode
 		// header( 'Content-Type: application/json' );
 		wp_send_json( $show_list, $status_code );
+	}
+}
+
+// ------------------
+// Specials List Feed
+// ------------------
+// 2.5.18: added special overrides feed
+function radio_station_feed_specials( $comment_feed, $feed_name ) {
+
+	// --- get specials data endpoint ---
+	$specials_list = radio_station_specials_endpoint();
+	if ( is_wp_error( $specials_list ) ) {
+		$specials_list = radio_station_feed_not_found( $specials_list );
+		$status_code = 200;
+	} else {
+		$specials_list = array( 'specials' => $specials_list );
+		$specials_list = radio_station_add_station_data( $specials_list );
+		$show_list['endpoints'] = radio_station_get_feed_urls();
+		$status_code = 200;
+	}
+	$specials_list = apply_filters( 'radio_station_feed_specials', $specials_list );
+
+	// --- output debug display or feed data ---
+	if ( RADIO_STATION_DEBUG ) {
+		echo "Output: " . esc_html( print_r( $specials_list, true ) ) . PHP_EOL;
+	} else {
+		wp_send_json( $specials_list, $status_code );
 	}
 }
 

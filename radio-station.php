@@ -58,12 +58,12 @@ if ( !defined( 'ABSPATH' ) ) exit;
 // - Register Moment JS
 // - Enqueue Plugin Script
 // - Add Inline Script
-// - Print Footer Scripts
-// - Print Admin Footer Scripts
+// - Enqueue Footer Scripts
+// x Print Admin Footer Scripts
 // - Enqueue Plugin Stylesheet
 // - Add Inline Style
-// - Print Footer Styles
-// - Print Admin Footer Styles
+// - Enqueue Footer Styles
+// x Print Admin Footer Styles
 // - Enqueue Datepicker
 // - Enqueue Localized Script Values
 // - Localization Script
@@ -674,12 +674,6 @@ function radio_station_enqueue_script( $scriptkey, $deps = array(), $infooter = 
 // 2.5.0: added for missed inline scripts (via shortcodes)
 function radio_station_add_inline_script( $handle, $js, $position = 'after' ) {
 
-	// --- maybe enqueue footer dummy script ---
-	/* if ( ( 'rs-footer' == $handle ) && !wp_script_is( 'rs-footer', 'enqueued' ) ) {
-		$script_url = plugins_url( '/js/rs-footer.js', RADIO_STATION_FILE );
-		wp_enqueue_script( 'rs-footer', $script_url, array(), '1.0.0', true );
-	} */
-
 	// --- add check if script is already done ---
 	if ( wp_script_is( $handle, 'registered' ) && !wp_script_is( $handle, 'done' ) ) {
 
@@ -691,37 +685,31 @@ function radio_station_add_inline_script( $handle, $js, $position = 'after' ) {
 		// 2.5.7: enqueue dummy javascript file to output in footer
 		// 2.5.10: fix slug from rp-footer to rs-footer
 		// 2.5.10: change from register_script to enqueue_script
-		/* if ( !wp_script_is( 'rs-footer', 'enqueued' ) ) {
-			$script_url = plugins_url( '/js/rs-footer.js', RADIO_STATION_FILE );
-			wp_enqueue_script( 'rs-footer', $script_url, array(), '1.0.0', true );
-		}
-		wp_add_inline_script( 'rs-footer', $js, $position ); */
-		
-		// 2.5.7: enqueue dummy javascript file to output in footer
+		// 2.5.18: register here but enqueue later
 		if ( !wp_script_is( 'radio-station-footer', 'registered' ) ) {
-			$version = functIon_exists( 'radio_station_plugin_version' ) ? radio_station_plugin_version() : '2.5.0';
+			$version = function_exists( 'radio_station_plugin_version' ) ? radio_station_plugin_version() : '2.5.0';
 			wp_register_script( 'radio-station-footer', null, array( 'jquery' ), $version, true );
-			wp_enqueue_script( 'radio-station-footer' );
+			// wp_enqueue_script( 'radio-station-footer' );
 		}
 		wp_add_inline_script( 'radio-station-footer', $js, $position );
+		
+		// 2.5.18: enqueue in footer
+		if ( !has_action( 'wp_footer', 'radio_station_enqueue_footer_scripts', 9 ) ) {
+			add_action( 'wp_footer', 'radio_station_enqueue_footer_scripts', 9 );
+		}
 
 	}
 }
 
-// --------------------
-// Print Footer Scripts
-// --------------------
-// 2.5.0: added for missed inline scripts
-// 2.5.7: deprecated in favour of adding inline to dummy script
-/* function radio_station_print_footer_scripts() {
-	global $radio_station_scripts;
-	if ( is_array( $radio_station_scripts ) && ( count( $radio_station_scripts ) > 0 ) ) {
-		foreach ( $radio_station_scripts as $handle => $js ) {
-			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-			echo '<script id="' . esc_attr( $handle ) . '-js-after">' . $js . '</script>';
-		}
-	}
-} */
+// ----------------------
+// Enqueue Footer Scripts
+// ----------------------
+// 2.5.0: added print footer scripts for missed inline scripts
+// 2.5.7: deprecated print script in favour of adding inline to dummy script
+// 2.5.18: repurpose to enqueue footer scripts
+function radio_station_enqueue_footer_scripts() {
+	wp_enqueue_script( 'radio-station-footer' );
+}
 
 // --------------------------
 // Print Admin Footer Scripts
@@ -794,43 +782,28 @@ function radio_station_add_inline_style( $handle, $css ) {
 		wp_add_inline_style( $handle, $css );
 
 	} else {
-		// --- store extra styles for later output ---
-		/* if ( !strstr( $handle, '-admin' ) ) {
-			global $radio_station_styles;
-			add_action( 'wp_print_footer_scripts', 'radio_station_print_footer_styles', 20 );
-			if ( !isset( $radio_station_styles[$handle] ) ) {
-				$radio_station_styles[$handle] = '';
-			}
-			$radio_station_styles[$handle] .= $css;
-		} else {
-			global $radio_station_admin_styles;
-			add_action( 'admin_print_footer_scripts', 'radio_station_admin_print_footer_styles', 20 );
-			if ( !isset( $radio_station_admin_styles[$handle] ) ) {
-				$radio_station_admin_styles[$handle] = '';
-			}
-			$radio_station_admin_styles[$handle] .= $css;
-		} */
+		// 2.5.18: register inline style but enqueue later
 		if ( !wp_style_is( 'radio-station-footer', 'registered' ) ) {
 			$version = function_exists( 'radio_station_plugin_version' ) ? radio_station_plugin_version() : '2.5.0';
 			wp_register_style( 'radio-station-footer', null, array(), $version, 'all' );
-			wp_enqueue_style( 'radio-station-footer' );
+			// wp_enqueue_style( 'radio-station-footer' );
 		}
 		wp_add_inline_style( 'radio-station-footer', $css );
+		
+		if ( !has_action( 'wp_footer', 'radio_station_enqueue_footer_styles', 9 ) ) {
+			add_action( 'wp_footer', 'radio_station_enqueue_footer_styles', 9 );
+		}
 	}
 }
 
-// -------------------
-// Print Footer Styles
-// -------------------
-// 2.5.0: added for missed inline styles
-/* function radio_station_print_footer_styles() {
-	global $radio_station_styles;
-	if ( is_array( $radio_station_styles ) && ( count( $radio_station_styles ) > 0 ) ) {
-		foreach ( $radio_station_styles as $handle => $css ) {
-			echo '<style>' . wp_kses_post( $css ) . '</style>';
-		}
-	}
-} */
+// ---------------------
+// Enqueue Footer Styles
+// ---------------------
+// 2.5.0: added print in footer for missed inline styles
+// 2.5.18: repurpose to enqueue footer Styles
+function radio_station_enqueue_footer_styles() {
+	wp_enqueue_style( 'radio-station-footer' );
+}
 
 // -------------------------
 // Print Admin Footer Styles

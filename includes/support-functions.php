@@ -150,16 +150,10 @@ function radio_station_get_overrides( $args = false ) {
 		'post_status' => 'publish',
 		'numberposts' => -1,
 		'meta_query'  => array(
-			// 'relation' => 'AND',
 			array(
 				'key'     => 'show_override_sched',
 				'compare' => 'EXISTS',
 			),
-			/* array(
-				'key'     => 'show_active',
-				'value'   => 'on',
-				'compare' => '=',
-			), */
 		),
 		'orderby' => 'post_name',
 		'order'   => 'ASC',
@@ -174,10 +168,13 @@ function radio_station_get_overrides( $args = false ) {
 
 	// 2.5.0: added query args filter
 	$query_args = apply_filters( 'radio_station_get_overrides_args', $query_args, $args );
+	// print_r( $query_args );
 
 	// --- get overrides, filter and return ---
 	$overrides = get_posts( $query_args );
 	$overrides = apply_filters( 'radio_station_overrides', $overrides, $query_args, $args );
+	// print_r( $overrides );
+	
 	return $overrides;
 }
 
@@ -699,6 +696,69 @@ function radio_station_get_show_description( $show_data ) {
 	// echo "Excerpt: " . print_r( $excerpt, true ) . PHP_EOL;
 
 	return $show_data;
+}
+
+// ------------------
+// Get Overrides Data
+// ------------------
+// 2.5.18: added for special overrides data endpoint
+function radio_station_get_overrides_data( $show ) {
+	
+	$now = radio_station_get_now();
+	$timezone = radio_station_get_timezone();
+	$start_date = radio_station_get_time( 'date', $now, $timezone );
+	$end_date = radio_station_get_time( 'date', ( $now + ( 60 * 86400 ) ), $timezone );
+	$overrides = radio_station_get_all_overrides( $start_date, $end_date, $timezone );
+	
+	if ( $show ) {
+		if ( strstr( $show, ',' ) ) {
+			$shows = explode( ',', $show );
+		} else {
+			$shows = array( $show );
+		}
+
+		// --- check shows requested ---
+		foreach ( $shows as $i => $show ) {
+			$show = get_post( $show );
+			if ( !$show ) {
+				unset( $shows[$i] );
+			}
+		}
+
+		// --- remove overrides not matching shows specified )
+		foreach ( $overrides as $date => $times ) {
+			foreach ( $times as $timestamp => $override ) {
+				if ( !isset( $override['show']['id'] ) || !in_array( $override['show']['id'], $shows ) ) {
+					unset( $override[$date][$timestamp] );
+				}
+			}
+		}
+		$overrides = array_values( $overrides );		
+	}
+
+	// --- add override metadata ---
+	if ( count( $overrides ) > 0 ) {
+		$overrides_data = array();
+		foreach ( $overrides as $date => $times ) {
+			foreach ( $times as $timestamp => $override ) {
+				$metadata = radio_station_get_override_data_meta( $override['override'] );
+				$override['genres'] = $metadata['genres'];
+				$override['languages'] = $metadata['languages'];
+				$override['hosts'] = $metadata['hosts'];
+				$override['producers'] = $metadata['producers'];
+				$override['avatar_url'] = $metadata['avatar_url'];
+				$override['image_url'] = $metadata['image_url'];
+				
+				// TODO: get more override metadata ?
+				
+				$overrides_data[] = $override;
+			}
+		}
+	}
+
+	// --- filter and return ---
+	$overrides_data = apply_filters( 'radio_station_overrides_data', $overrides_data, $show );
+	return $overrides_data;	
 }
 
 // ----------------------
@@ -1461,7 +1521,8 @@ function radio_station_get_stream_formats() {
 // Get Station URL
 // ---------------
 function radio_station_get_station_url() {
-	$station_url = '';
+	// 2.5.18: set default to site URL
+	$station_url = site_url( '/' );
 	$page_id = radio_station_get_setting( 'station_page' );
 	if ( $page_id && ( '' != $page_id ) ) {
 		$station_url = get_permalink( $page_id );
@@ -1500,6 +1561,21 @@ function radio_station_get_schedule_url() {
 	$schedule_url = apply_filters( 'radio_station_schedule_url', $schedule_url );
 
 	return $schedule_url;
+}
+
+// ------------------
+// Get Shows Page URL
+// ------------------
+// 2.5.18: added get shows page URL
+function radio_station_get_shows_url() {
+	$shows_url = '';
+	$page_id = radio_station_get_setting( 'show_archive_page' );
+	if ( $page_id && ( '' != $page_id ) ) {
+		$shows_url = get_permalink( $page_id );
+	}
+	$shows_url = apply_filters( 'radio_station_shows_url', $shows_url );
+	
+	return $shows_url;
 }
 
 // -------------------------
@@ -1546,7 +1622,6 @@ function radio_station_get_route_url( $route ) {
 	}
 
 	// --- cache route URL ---
-	// echo "<!-- Route: " . $route . " - Path: " . $path . " -->";
 	$radio_station_routes[$route] = $route_url = get_rest_url( null, $path );
 
 	return $route_url;
@@ -2509,6 +2584,7 @@ function radio_station_settings_allowed_html( $allowed, $type, $context ) {
 		'style'       => array(),
 		'checked'     => array(),
 		'onclick'     => array(),
+		'onchange'    => array(),
 	);
 
 	// --- textarea ---
@@ -2566,6 +2642,12 @@ function radio_station_widget_player_allowed_html( $allowed, $type, $context ) {
 		return $allowed;
 	}
 
+	// 2.5.18: let list and div items have an onclick and style
+	$allowed['li']['onclick'] = array();
+	$allowed['li']['style'] = array();
+	$allowed['div']['onclick'] = array();
+	$allowed['div']['style'] = array();
+
 	// --- link ---
 	$allowed['link'] = array(
 		'rel'         => array(),
@@ -2612,6 +2694,14 @@ function radio_station_widget_player_allowed_html( $allowed, $type, $context ) {
 		'multiselect' => array(),
 		'style'       => array(),
 		'onchange'    => array(),
+	);
+
+	// 2.5.18: select options tags
+	$allowed['option'] = array(
+		'value'       => array(),
+		'selected'    => array(),
+		'disabled'    => array(),
+		'class'       => array(),
 	);
 
 	// --- styles ---

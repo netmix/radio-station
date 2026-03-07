@@ -229,3 +229,10 @@ if ( !function_exists( 'radio_station_player_validate_boolean' ) ) {
 		return (bool) $value;
 	}
 }
+
+// 2.5.18: back compat for radio_player_inline_script name change
+if ( !function_exists( 'radio_player_inline_script' ) ) {
+	function radio_player_inline_script( $js ) {
+		radio_player_add_inline_script( $js );
+	}
+}

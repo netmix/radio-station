@@ -278,6 +278,13 @@ class DJ_Upcoming_Widget extends WP_Widget {
 		$instance['link_djs'] = isset( $new_instance['link_djs'] ) ? 1 : 0;
 		$instance['show_encore'] = isset( $new_instance['show_encore'] ) ? 1 : 0;
 
+		// 2.5.18: save (or preserve) channel setting
+		if ( isset( $new_instance['channel'] ) ) {
+			$instance['channel'] = $new_instance['channel'];
+		} elseif ( isset( $old_instance['channel'] ) ) {
+			$instance['channel'] = $old_instance['channel'];
+		}
+
 		// 2.3.0: added widget filter instance to update
 		$instance = apply_filters( 'radio_station_upcoming_shows_widget_update', $instance, $new_instance, $old_instance );
 		return $instance;

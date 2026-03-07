@@ -125,6 +125,13 @@ class Radio_Clock_Widget extends WP_Widget {
 		$instance['seconds'] = isset( $new_instance['seconds'] ) ? 1 : 0;
 		$instance['zone'] = isset( $new_instance['zone'] ) ? 1 : 0;
 
+		// 2.5.18: save (or preserve) channel setting
+		if ( isset( $new_instance['channel'] ) ) {
+			$instance['channel'] = $new_instance['channel'];
+		} elseif ( isset( $old_instance['channel'] ) ) {
+			$instance['channel'] = $old_instance['channel'];
+		}
+
 		// 2.5.0: filter widget update instance
 		$instance = apply_filters( 'radio_station_clock_widget_update', $instance, $new_instance, $old_instance );
 		return $instance;
@@ -157,8 +164,9 @@ class Radio_Clock_Widget extends WP_Widget {
 
 		// --- set shortcode attributes for display ---
 		$atts = array(
+			// 2.5.18: change time key to time_format
 			// --- clock options ---
-			'time'    => $time,
+			'time_format'    => $time,
 			'day'     => $day,
 			'date'    => $date,
 			'month'   => $month,
@@ -168,6 +176,13 @@ class Radio_Clock_Widget extends WP_Widget {
 			'widget'  => 1,
 			'id'      => $id,
 		);
+		
+		// TODO: added attributes fields
+		/* 'timezone'    => $timezone,
+		'code'        => 1,
+		'region'      => 1,
+		'location'    => 1,
+		'offset'      => 1, */
 
 		// 2.3.3.9: add missing filter for clock widget attributes
 		$atts = apply_filters( 'radio_station_clock_widget_atts', $atts, $instance );

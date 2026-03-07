@@ -163,7 +163,10 @@ function radio_station_timezone_shortcode( $atts = array() ) {
 		'region'   => 1,
 		'location' => 1,
 		'offset'   => 1,
+		'channel'  => '',
 	);
+	// 2.5.18: added filter for default attributes
+	$defaults = apply_filters( 'radio_station_timezone_default_atts', $defaults );
 	$atts = shortcode_atts( $defaults, $atts, 'radio-timezone' );
 	$timezone = $atts['timezone'];
 
@@ -180,7 +183,8 @@ function radio_station_timezone_shortcode( $atts = array() ) {
 		$output .= '<div class="radio-timezone-title">' . "\n";
 			$output .= esc_html( __( 'Radio Timezone', 'radio-station' ) ) . "\n";
 		$output .= ':</div> ' . "\n";
-		$output .= '<div class="radio-timezone" data-format="' . esc_attr( $timezone_format ) . '">' . "\n";
+		// 2.5.18: added data-timezone attribute
+		$output .= '<div class="radio-timezone" data-format="' . esc_attr( $timezone_format ) . '" data-timezone="' . esc_attr( $timezone ) . '">' . "\n";
 			$output .= esc_html( $timezone_display ) . "\n";
 		$output .= '</div><br>' . "\n";
 
@@ -246,7 +250,10 @@ function radio_station_clock_shortcode( $atts = array() ) {
 		'zone'        => 1,
 		'seconds'     => 1,
 		'widget'      => 0,
+		'channel'     => '',
 	);
+	// 2.5.18: added default attributes filter
+	$defaults = apply_filters( 'radio_station_clock_default_atts', $defaults );
 	$atts = shortcode_atts( $defaults, $atts, 'radio-clock' );
 
 	// --- set timezone display and format ---
@@ -301,7 +308,8 @@ function radio_station_clock_shortcode( $atts = array() ) {
 			$clock .= ':</div>' . "\n";
 			$clock .= '<div class="radio-server-time" data-format="' . esc_attr( $atts['time_format'] ) . '"></div>' . "\n";
 			$clock .= '<div class="radio-server-date"></div>' . "\n";
-			$clock .= '<div class="radio-server-zone" data-format="' . esc_attr( $timezone_format ) . '"></div>' . "\n";
+			// 2.5.18: added data-timezone attribute
+			$clock .= '<div class="radio-server-zone" data-format="' . esc_attr( $timezone_format ) . '" data-timezone="' . esc_attr( $timezone ) . '"></div>' . "\n";
 		$clock .= '</div>' . "\n";
 
 		// --- user clock ---
@@ -336,8 +344,6 @@ function radio_station_clock_shortcode( $atts = array() ) {
 // Archive List Shortcode Router
 // -----------------------------
 function radio_station_archive_list( $atts ) {
-	
-	// echo '<span style="display:none;">' . print_r( $atts, true ) . '</span>';
 	
 	if ( 'shows' == $atts['archive_type'] ) {
 		return radio_station_show_archive_list( $atts );
@@ -409,7 +415,7 @@ function radio_station_archive_list_shortcode( $post_type, $atts ) {
 		'with_shifts'  => 1,
 		// 'show_shifts' => 0,
 		// --- for overrides only ---
-		'show_dates' => 1,
+		'show_dates'   => 1,
 		// --- for shows and overrides ---
 		// 'display_genres' => 0,
 		// 'display_languages' => 0,
@@ -422,6 +428,8 @@ function radio_station_archive_list_shortcode( $post_type, $atts ) {
 		'show'         => false,
 		'override'     => false,
 		'playlist'     => false,
+		// --- channel ---
+		'channel'      => '',
 	);
 
 	// 2.4.1.8: change default description value for grid view
@@ -445,6 +453,8 @@ function radio_station_archive_list_shortcode( $post_type, $atts ) {
 	}
 
 	// --- process shortcode attributes ---
+	// 2.5.18: added default attributes filter
+	$defaults = apply_filters( 'radio_station_archive_default_atts', $defaults );
 	$atts = shortcode_atts( $defaults, $atts, $post_type . '-archive' );
 	if ( RADIO_STATION_DEBUG ) {
 		echo '<span style="display:none;">' . esc_html( $type ) . ' Archive Shortcode Atts: ' . esc_html( print_r( $atts, true ) ) . '</span>' . "\n";
@@ -1060,6 +1070,8 @@ function radio_station_genre_archive_list( $atts ) {
 		'thumbnails'   => 0,
 		'avatar_width' => 75,
 		'show_desc'    => 1,
+		// --- channel ---
+		'channel'      => '',
 	);
 
 	// 2.5.0: change show description default for grid view
@@ -1083,6 +1095,8 @@ function radio_station_genre_archive_list( $atts ) {
 	}
 
 	// --- process shortcode attributes ---
+	// 2.5.18: added filter for default attributes
+	$defaults = apply_filters( 'radio_station_genre_archive_default_atts', $defaults );
 	$atts = shortcode_atts( $defaults, $atts, 'genre-archive' );
 	if ( RADIO_STATION_DEBUG ) {
 		echo '<span style="display:none;">Genre Archive Shortcode Atts: ' . esc_html( print_r( $atts, true ) ) . '</span>' . "\n";
@@ -1475,6 +1489,8 @@ function radio_station_language_archive_list( $atts ) {
 		'thumbnails'      => 0,
 		'avatar_width'    => 75,
 		'show_desc'       => 1,
+		// --- channel ---
+		'channel'         => '',
 	);
 
 	// 2.5.0: change show description default for grid view
@@ -1498,6 +1514,8 @@ function radio_station_language_archive_list( $atts ) {
 	}
 
 	// --- process shortcode attributes ---
+	// 2.5.18: added filter for default attributes
+	$defaults = apply_filters( 'radio_station_language_archive_default_atts', $defaults );
 	$atts = shortcode_atts( $defaults, $atts, 'language-archive' );
 	if ( RADIO_STATION_DEBUG ) {
 		echo '<span style="display:none;">Language Archive Shortcode Atts: ' . esc_html( print_r( $atts, true ) ) . '</span>' . "\n";
@@ -2005,6 +2023,7 @@ function radio_station_show_list_shortcode( $type, $atts ) {
 		// 2.5.6: add ordering defaults
 		'orderby'    => 'date',
 		'order'      => 'DESC',
+		'channel'    => '',
 	);
 	// 2.5.6: add filter for default attributes
 	$defaults = apply_filters( 'radio_station_show_list_defaults_atts', $defaults, $type );
@@ -2590,6 +2609,8 @@ function radio_station_current_show_shortcode( $atts ) {
 		'block'          => 0,
 		'id'             => '',
 		'for_time'       => 0,
+		// --- channel ---
+		'channel'        => '',
 	);
 	// 2.3.0: convert old attributes for DJs to hosts
 	if ( isset( $atts['display_djs'] ) && !isset( $atts['display_hosts'] ) ) {
@@ -2601,6 +2622,8 @@ function radio_station_current_show_shortcode( $atts ) {
 		unset( $atts['link_djs'] );
 	}
 	// 2.3.0: renamed shortcode identifier to current-show
+	// 2.5.18: added filter for default Attributes
+	$defaults = apply_filters( 'radio_station_current_show_default_atts', $defaults );
 	$atts = shortcode_atts( $defaults, $atts, 'current-show' );
 
 	// 2.3.2: enqueue countdown script earlier
@@ -3438,8 +3461,11 @@ function radio_station_upcoming_shows_shortcode( $atts ) {
 		'block'             => 0,
 		'id'                => '',
 		'for_time'          => 0,
+		// --- channel ---
+		'channel'           => '',
 	);
 	// 2.3.0: renamed shortcode identifier to upcoming-shows
+	$defaults = apply_filters( 'radio_station_upcomings_shows_default_atts', $defaults );
 	$atts = shortcode_atts( $defaults, $atts, 'upcoming-shows' );
 
 	// 2.3.2: enqueue countdown script earlier
@@ -4095,9 +4121,13 @@ function radio_station_current_playlist_shortcode( $atts ) {
 		'block'          => 0,
 		'id'             => '',
 		'for_time'       => 0,
+		// --- channel ---
+		'channel'        => '',
 	);
 
 	// 2.3.0: renamed shortcode identifier to current-playlist
+	// 2.5.18: added filter for default attributes
+	$defaults = apply_filters( 'radio_station_current_playlist_atts', $defaults );
 	$atts = shortcode_atts( $defaults, $atts, 'current-playlist' );
 
 	// 2.3.2: enqueue countdown script earlier

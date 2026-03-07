@@ -170,11 +170,21 @@ function radio_convert_times() {
 			endhtml = end.html(); endtime = end.attr('data'); endformat = end.attr('data-format');
 			startdisplay = radio_user_time(starttime, startformat);
 			enddisplay = radio_user_time(endtime, endformat);
+			if (jQuery(this).find('.rs-day').length) {
+				dayhtml = jQuery(this).find('.rs-day').html();
+				dayformat = jQuery(this).find('.rs-day').attr('data-format');
+				userday = radio_user_time(starttime, dayformat);
+			}
 			if ((starthtml != startdisplay) || (endhtml != enddisplay)) {
 				if (radio.debug) {console.log('Start: '+starthtml+' => '+startdisplay+' - End: '+endhtml+' => '+enddisplay);}
 				showusertime = jQuery(this).parent().find('.show-user-time').show();
 				showusertime.find('.rs-start-time').html(startdisplay);
 				showusertime.find('.rs-end-time').html(enddisplay);
+				if (showusertime.find('.rs-day').length) {
+					if (dayhtml != userday) {daydisplay = userday;} else {daydisplay = '';}
+					if (radio.debug) {console.log('Day: '+dayhtml+' => '+daydisplay);}
+					showusertime.find('.rs-day').html(daydisplay);
+				}
 			} else {jQuery(this).parent().find('.show-user-time').hide();}
 			if (jQuery(this).find('.rs-start-date').length) {
 				date = jQuery(this).find('.rs-start-date');

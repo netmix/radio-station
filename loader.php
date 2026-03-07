@@ -126,10 +126,23 @@ if ( !defined( 'ABSPATH' ) ) exit;
 //	'plan'			=> 'free',	 		// * rechecked later (if premium version found) *
 // );
 
+// ------------------------------------
+// Example Start Plugin Loader Instance
+// ------------------------------------
+// (add this to your main plugin file to run this loader)
+// require(dirname(__FILE__).'/loader.php');				// requires this file!
+// $instance = new radio_station_loader($args);				// instantiates loader class
+// (ie. search and replace all 'radio_station_' with 'my_plugin_' function namespace)
+// and then search and replace 'text-domain' with your plugin's text domain.
+
+
+// ---------------------------------------------
 // 1.3.7: Translated String Settings Update Note
 // ---------------------------------------------
-// Since loader is typically initiated directly within a plugin, this means string translations are too early.
-// Fix is to remove the translated strings (ratetext, sharetext, donatetext) to a later filter added for this purpose:
+// Since loader is typically initiated directly within a plugin, this means string translations are "too early".
+// A little bit of an annoying WordPress quirk to have to get around but it is achieved with the following steps:
+
+// 1. Fix is to remove the translated strings (ratetext, sharetext, donatetext) to a later filter added for this purpose:
 /*
 add_filter( 'radio_station_admin_args', 'radio_station_settings_texts' );
 function radio_station_settings_texts( $args ) {
@@ -142,14 +155,26 @@ function radio_station_settings_texts( $args ) {
 	return $args;
 } */
 
-// ------------------------------------
-// Example Start Plugin Loader Instance
-// ------------------------------------
-// (add this to your main plugin file to run this loader)
-// require(dirname(__FILE__).'/loader.php');				// requires this file!
-// $instance = new radio_station_loader($args);				// instantiates loader class
-// (ie. search and replace all 'radio_station_' with 'my_plugin_' function namespace)
-// and then search and replace 'text-domain' with your plugin's text domain.
+// 2. Instead of passing options directly to the loader, create a function with an admin argument.
+// eg. function radio_station_get_options( $admin ) {}
+// and translate any labels or helpers values conditionally using an inline if statement, ie. ? and :
+// 'label' => __( 'Label Test', 'radio-station' ),
+// becomes
+// 'label' => $admin ? __( 'Label Test', 'radio-station' ) : '',
+
+// 3. Then add a filter that runs after the main plugin loader is instantiated:
+/* 
+add_filter( 'radio_station_plugin_options', 'radio_station_get_options' );
+add_action( 'plugins_loaded', 'radio_station_admin_options_init' );
+function radio_station_admin_options_init() {
+	add_filter( 'radio-station_options', 'radio_station_admin_options' );
+	function radio_station_admin_options( $options ) {
+		$admin = is_admin();
+		$options = radio_station_get_options( $admin );
+		return $options;
+	}
+}
+*/
 
 
 // ===========================
@@ -2477,7 +2502,7 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 				$buttons = '<tr height="25"><td> </td></tr>' . "\n";
 				$buttons .= '<tr><td align="center">' . "\n";
 				// 1.2.5: remove reset onclick attribute
-				$buttons .= '<input type="button" id="settingsresetbutton" class="button-secondary settings-button" value="' . esc_attr( __( 'Reset Settings', 'radio-station' ) ) . '">' . "\n";
+				$buttons .= '<input type="button" id="settingsresetbutton" class="button-secondary settings-button reset-button" value="' . esc_attr( __( 'Reset Settings', 'radio-station' ) ) . '">' . "\n";
 				$buttons .= '</td><td colspan="3"></td><td align="center">' . "\n";
 				$buttons .= '<input type="submit" class="button-primary settings-button" value="' . esc_attr( __( 'Save Settings', 'radio-station' ) ) . '">' . "\n";
 				$buttons .= '</td></tr>' . "\n";
@@ -3163,7 +3188,8 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 						// 1.2.5: changed to jQuery click function to remove onclick button attribute
 						$confirmreset = __( 'Are you sure you want to reset to default settings?', 'radio-station' );
 						// echo "function plugin_panel_reset_defaults() {" . "\n";
-						echo "jQuery('#settingsresetbutton').on('click', function() {" . "\n";
+						// 1.3.7: fix to use class not ID
+						echo "jQuery('.reset-button').on('click', function() {" . "\n";
 						echo "	agree = confirm('" . esc_js( $confirmreset ) . "');" . "\n";
 						echo "	if (!agree) {return false;}" . "\n";
 						echo "	document.getElementById('settings-action').value = 'reset';" . "\n";

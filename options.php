@@ -8,15 +8,20 @@
 // Plugin Admin Options Filter
 // ---------------------------
 // 2.5.18: added filter for admin options
-add_filter( 'radio_station_options', 'radio_station_admin_options' );
-function radio_station_admin_options( $options ) {
-	$options = radio_station_plugin_options( true );
-	return $options;
+add_action( 'plugins_loaded', 'radio_station_load_admin_options' );
+function radio_station_load_admin_options() {
+	add_filter( 'radio_station_options', 'radio_station_admin_options' );
+	function radio_station_admin_options( $options ) {
+		$admin = is_admin();
+		$options = radio_station_plugin_options( $admin );
+		return $options;
+	}
 }
 
 // ------------------
 // Set Plugin Options
 // ------------------
+add_filter( 'radio_station_plugin_options', 'radio_station_plugin_options' );
 function radio_station_plugin_options( $admin = false ) {
 
 	$timezones = radio_station_get_timezone_options( true, $admin );
@@ -139,6 +144,28 @@ function radio_station_plugin_options( $admin = false ) {
 			'section' => 'station',
 		),
 
+		// --- Station Callsign ---
+		// 2.5.18: added station callsign field
+		'station_callsign' => array(
+			'type'    => 'text',
+			'label'   => $admin ? __( 'Station Callsign', 'radio-station' ) : '',
+			'default' => '',
+			'helper'  => $admin ? __( '', 'radio-station' ) : '',
+			'tab'     => 'general',
+			'section' => 'station',
+		),
+
+		// --- Station Tagline ---
+		// 2.5.18: added station tagline
+		'station_tagline' => array(
+			'type'    => 'text',
+			'label'   => $admin ? __( 'Station Tagline', 'radio-station' ) : '',
+			'default' => '',
+			'helper'  => $admin ? __( '', 'radio-station' ) : '',
+			'tab'     => 'general',
+			'section' => 'station',
+		),
+
 		// --- Station Image ---
 		// 2.3.3.8: added station logo image field
 		'station_image' => array(
@@ -156,9 +183,25 @@ function radio_station_plugin_options( $admin = false ) {
 			'type'    => 'text',
 			'label'   => $admin ? __( 'Station Frequency', 'radio-station' ) : '',
 			'default' => '',
-			'helper'  => $admin ? __( 'Text display to inform users of your main station frequency.', 'radio-station' ) : '',
+			'helper'  => $admin ? __( 'Your station frequency as a number.', 'radio-station' ) : '',
 			'tab'     => 'general',
 			'section' => 'station',
+		),
+		
+		// --- Station Band ---
+		// 2.5.18: addde station band option
+		'station_band' => array(
+			'type'    => 'select',
+			'label'   => $admin ? __( 'Frequency Band', 'radio-station' ) : '',
+			'options' => array(
+				''    => __( 'n/a', 'radio-station' ),
+				'fm'  => __( 'FM', 'radio-station' ),
+				'am'  => __( 'AM', 'radio-station' ),			
+			),
+			'default' => '',
+			'helper'  => $admin ? __( 'Your station frequency band identifier.', 'radio-station' ) : '',
+			'tab'     => 'general',
+			'section' => 'broadcast',
 		),
 
 		// --- Station Location ---
@@ -167,7 +210,7 @@ function radio_station_plugin_options( $admin = false ) {
 			'type'    => 'text',
 			'label'   => $admin ? __( 'Station Location', 'radio-station' ) : '',
 			'default' => '',
-			'helper'  => $admin ? __( 'Text display to inform users of your main station location.', 'radio-station' ) : '',
+			'helper'  => $admin ? __( 'Text display to inform users of your station location.', 'radio-station' ) : '',
 			'tab'     => 'general',
 			'section' => 'station',
 		),
@@ -313,7 +356,7 @@ function radio_station_plugin_options( $admin = false ) {
 		'player_defaults_note' => array(
 			'type'    => 'note',
 			'label'   => $admin ? __( 'Player Defaults Note', 'radio-station' ) : '',
-			'helper'  => $admin ? __( 'Note that you can override these defaults in specific Player Widgets.', 'radio-station' ) : '',
+			'helper'  => $admin ? __( 'Note that you can override these defaults in specific Player Shortcodes or Widgets.', 'radio-station' ) : '',
 			'tab'     => 'player',
 			'section' => 'basic',
 		),
@@ -336,6 +379,24 @@ function radio_station_plugin_options( $admin = false ) {
 			'default' => 'yes',
 			'value'   => 'yes',
 			'helper'  => $admin ? __( 'Display your Radio Station Image in Player by default.', 'radio-station' ) : '',
+			'tab'     => 'player',
+			'section' => 'basic',
+		),
+
+		// --- [Player] Player Meta ---
+		// 2.5.18: added station meta display options
+		'player_meta' => array(
+			'type'    => 'multicheck',
+			'label'   => $admin ? __( 'Display Station Meta', 'radio-station' ) : '',
+			'options' => array(
+				// 'tagline'   => $admin ? __( 'Tagline', 'radio-station' ) : '',
+				'frequency' => $admin ? __( 'Frequency', 'radio-station' ) : '',
+				'location'  => $admin ? __( 'Location', 'radio-station' ) : '',
+				'timezone'  => $admin ? __( 'Timezone', 'radio-station' ) : '',
+				// 'phone'     => $admin ? __( 'Phone', 'radio-station' ) : '',
+			),
+			'default' => array( 'frequency', 'location' ),
+			'helper'  => $admin ? __( 'Display your Radio Station Meta in Player by default.', 'radio-station' ) : '',
 			'tab'     => 'player',
 			'section' => 'basic',
 		),
@@ -364,7 +425,7 @@ function radio_station_plugin_options( $admin = false ) {
 		'player_fallbacks' => array(
 			'type'    => 'multicheck',
 			'label'   => $admin ? __( 'Fallback Scripts', 'radio-station' ) : '',
-			'default' => array( 'amplitude', 'howler', 'jplayer' ),
+			'default' => array( 'amplitude', 'jplayer' ),
 			'options' => array(
 				'amplitude' => $admin ? __( 'Amplitude', 'radio-station' ) : '',
 				'jplayer'   => $admin ? __( 'jPlayer', 'radio-station' ) : '',
@@ -440,7 +501,7 @@ function radio_station_plugin_options( $admin = false ) {
 		'player_playing_color' => array(
 			'type'    => 'color',
 			'label'   => $admin ? __( 'Playing Icon Highlight Color', 'radio-station' ) : '',
-			'default' => '#70E070',
+			'default' => '#70D070',
 			'helper'  => $admin ? __( 'Default highlight color to use for Play button icon when playing.', 'radio-station' ) : '',
 			'tab'     => 'player',
 			'section' => 'colors',
@@ -624,12 +685,31 @@ function radio_station_plugin_options( $admin = false ) {
 		// 2.4.0.3: add page load timeout option
 		'player_bar_timeout' => array(
 			'type'    => 'number',
-			'label'   => $admin ? __( 'Page Load Timeout', 'teleporter' ) : '',
+			'label'   => $admin ? __( 'Page Load Timeout', 'radio-station' ) : '',
 			'default' => 7000,
 			'min'     => 0,
 			'step'    => 500,
 			'max'     => 20000,
-			'helper'  => $admin ? __( 'Number of milliseconds to wait for new Page to load before fading in anyway (when continuous playback is enabled.)', 'radio-station' ) : '',
+			'helper'  => $admin ? __( 'Number of milliseconds to wait for new Page to load before fading in anyway or prompting (if continuous playback is enabled.)', 'radio-station' ) : '',
+			'tab'     => 'player',
+			'section' => 'bar',
+			'pro'     => true,
+		),
+
+		// --- [Pro/Player] Page Load Prompt ---
+		// 2.5.18: add timeout/error prompt
+		'player_bar_prompt' => array(
+			'type'    => 'select',
+			'label'   => $admin ? __( 'Load Fail Prompt', 'radio-station' ) : '',
+			'default' => '404',
+			'options' => array(
+				''     => $admin ? __( 'Off', 'radio-station' ) : '',
+				'yes'  => $admin ? __( 'Prompt on Timeout only', 'radio-station' ) : '',
+				'404'  => $admin ? __( 'Prompt on 404 Not Found only', 'radio-station' ) : '',
+				'404t' => $admin ? __( 'Prompt on 404 or Timeout', 'radio-station' ) : '',
+				'all'  => $admin ? __( 'Prompt on Timeout or any Error', 'radio-station' ) : '',
+			),
+			'helper'  => $admin ? __( 'Whether to show a user prompt on page timeout and/or when there is an error (if continuous playback is enabled.)', 'radio-station' ) : '',
 			'tab'     => 'player',
 			'section' => 'bar',
 			'pro'     => true,
@@ -647,10 +727,11 @@ function radio_station_plugin_options( $admin = false ) {
 		),
 
 		// --- [Pro/Player] Bar Player Background Color ---
+		// 2.5.18: fix default alpha value from 255 to 1
 		'player_bar_background' => array(
 			'type'    => 'coloralpha',
 			'label'   => $admin ? __( 'Bar Player Background Color', 'radio-station' ) : '',
-			'default' => 'rgba(0,0,0,255)',
+			'default' => 'rgba(0,0,0,1)',
 			'helper'  => $admin ? __( 'Background color for the fixed position Sitewide Bar Player.', 'radio-station' ) : '',
 			'tab'     => 'player',
 			'section' => 'bar',

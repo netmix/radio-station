@@ -12,6 +12,7 @@ if ( !defined( 'ABSPATH' ) ) exit;
 // - Admin Fix for DJ / Host Role Label
 // - maybe Revoke Edit Show Capability
 // - Map Meta Cap Override
+// - Get Show Post User IDs
 // - Get Show User IDs
 // - Get Override User IDs
 
@@ -58,6 +59,9 @@ function radio_station_set_roles() {
 		'publish_playlists'        => true,
 		// --- posts ---
 		'edit_posts'               => true,
+		// 2.5.18: add basic cap for edit others post
+		// (cap is later revoked if post not assign to show with user as host/producer)
+		'edit_others_posts'        => true,
 		'edit_published_posts'     => true,
 		'publish_posts'            => true,
 		'delete_posts'             => true,
@@ -415,6 +419,22 @@ function radio_station_revoke_show_edit_cap( $allcaps, $caps, $args, $user ) {
 	}
 	if ( isset( $post ) && is_object( $post ) && property_exists( $post, 'post_type' ) && isset( $post->post_type ) ) {
 
+		// TODO: hosts should not be able to edit others show posts
+		if ( ( 'post' == $post->post_type ) && ( 'edit_post' == $capability ) ) {
+			
+			$users = radio_station_get_post_user_ids( $post->ID );
+			if ( ( $user->ID != $post->post_author ) && !in_array( $user->ID, $users ) ) {
+				$allcaps['edit_posts'] = false;
+				$allcaps['edit_others_posts'] = false;
+				$allcaps['edit_published_posts'] = false;
+			} else {
+				$allcaps['edit_posts'] = true;
+				$allcaps['edit_others_posts'] = true;
+				$allcaps['edit_published_posts'] = true;
+			}
+			
+		}
+
 		// --- show capabilities check ---
 		// 2.5.18: moved check for show slug outside
 		if ( ( RADIO_STATION_SHOW_SLUG == $post->post_type ) && ( 'edit_show' == $capability ) ) {
@@ -474,7 +494,8 @@ function radio_station_revoke_show_edit_cap( $allcaps, $caps, $args, $user ) {
 				// ---- revoke editing capability if not assigned to this show ---
 				// 2.2.8: remove strict in_array checking
 				// 2.3.0: also check new Producer role
-				if ( !in_array( $user->ID, $users ) ) {
+				// 2.5.18: add author check to be safe
+				if ( ( $user->ID != $post->post_author ) && !in_array( $user->ID, $users ) ) {
 
 					// --- remove the edit_shows capability ---
 					$allcaps['edit_shows'] = false;
@@ -544,7 +565,8 @@ function radio_station_revoke_show_edit_cap( $allcaps, $caps, $args, $user ) {
 				$users = radio_station_get_override_user_ids( $post->ID );
 
 				// ---- revoke editing capability if not assigned to this show ---
-				if ( !in_array( $user->ID, $users ) )  {
+				// 2.5.18: add author check to be safe
+				if ( ( $user->ID != $post->post_author ) && !in_array( $user->ID, $users ) )  {
 
 					// --- remove the edit_overrides capability ---
 					$allcaps['edit_overrides'] = false;
@@ -599,12 +621,17 @@ function radio_station_map_meta_cap_for_nonauthor( $caps, $cap, $user_id, $args 
 			if ( in_array( $post->post_type, $post_types ) ) {
 				
 				// --- check for editor role ---
+				$allowed = false;
 				$user = wp_get_current_user();
 				$editor_role_caps = radio_station_get_setting( 'add_editor_capabilities' );
 				if ( ( 'yes' == $editor_role_caps ) && in_array( 'editor', $user->roles ) ) {
 					$allowed = true;
 				} else {
 					// --- check assigned users ---
+					if ( 'post' == $post->post_type ) {
+						$users = radio_station_get_post_user_ids( $post->ID );
+						$type = 'post';
+					}
 					if ( RADIO_STATION_SHOW_SLUG == $post->post_type ) {
 						$users = radio_station_get_show_user_ids( $post->ID );
 						$type = 'show';
@@ -620,7 +647,7 @@ function radio_station_map_meta_cap_for_nonauthor( $caps, $cap, $user_id, $args 
 				if ( $allowed ) {
 
 					// --- remove the need for these caps ---
-					$remove_caps = array( 'edit_others_posts', 'edit_others_' . $type . 's', 'edit_published_posts', 'edit_published_' . $type . 's' );
+					$remove_caps = array( 'edit_others_' . $type . 's', 'edit_published_' . $type . 's' );
 					foreach ( $remove_caps as $remove_cap ) {
 						$key = array_search( $remove_cap, $caps );
 						if ( false !== $key ) {
@@ -635,6 +662,19 @@ function radio_station_map_meta_cap_for_nonauthor( $caps, $cap, $user_id, $args 
 
 	// echo "CAPS AFTER: "; print_r( $caps );
 	return $caps;
+}
+
+// ----------------------
+// Get Show Post User IDs
+// ----------------------
+function radio_station_get_post_user_ids( $post_id ) {
+
+	$users = array();
+	$show_id = get_post_meta( $post_id, 'post_showblog_id', true );
+	if ( $show_id ) {
+		$users = radio_station_get_show_user_ids( $show_id );
+	}
+	return $users;
 }
 
 // -----------------

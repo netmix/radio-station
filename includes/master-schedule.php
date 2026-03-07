@@ -27,20 +27,21 @@ function radio_station_master_schedule( $atts ) {
 
 	global $radio_station_data;
 
-	// 2.5.0: maybe set schedule instances array
-	if ( !isset( $radio_station_data['schedules'] ) ) {
-		$radio_station_data['schedules'] = array();
-	}
-	if ( !isset( $radio_station_data['schedules']['instances'] ) ) {
-		$radio_station_data['schedules']['instances'] = -1;
-	}
-	$radio_station_data['schedules']['instances']++;
-	$instances = $radio_station_data['schedules']['instances'];
-
 	// 2.5.10.1: allow specifying instance value for AJAX loading
+	// 2.5.18: only increment instances if not specified
 	if ( isset( $atts['instance'] ) ) {
 		$instance = $atts['instance'];
 		unset( $atts['instance'] );
+	} else {
+		// 2.5.0: maybe set schedule instances array
+		if ( !isset( $radio_station_data['schedules'] ) ) {
+			$radio_station_data['schedules'] = array();
+		}
+		if ( !isset( $radio_station_data['schedules']['instances'] ) ) {
+			$radio_station_data['schedules']['instances'] = -1;
+		}
+		$radio_station_data['schedules']['instances']++;
+		$instances = $radio_station_data['schedules']['instances'];
 	}
 
 	// --- make attributes backward compatible ---
@@ -144,9 +145,11 @@ function radio_station_master_schedule( $atts ) {
 
 		// --- instance values ---
 		// 2.5.10.1: add AJAX attribute value
+		// 2.5.18: added optional channel attribute
 		'ajax'				=> $ajax,
 		'widget'            => 0,
 		'block'             => 0,
+		'channel'           => 0,
 		// 'instance'			=> $instance,
 
 		// --- converted and deprecated ---
@@ -247,6 +250,14 @@ function radio_station_master_schedule( $atts ) {
 	// 2.5.0: just set new line for output readability
 	// $newline = "\n";
 
+	// 2.5.10.1: maybe merge instance ID back into atts value
+	// 2.5.18: merge earlier for control filters
+	if ( isset( $instance ) ) {
+		$atts['instance'] = $instance;
+	} elseif ( isset( $instances ) ) {
+		$atts['instance'] = $instances;
+	}
+
 	// --- table for selector and clock  ---
 	// 2.3.0: moved out from templates to apply to all views
 	// 2.3.2: moved shortcode calls inside and added filters
@@ -260,7 +271,8 @@ function radio_station_master_schedule( $atts ) {
 		if ( $atts['clock'] ) {
 
 			// --- radio clock ---
-			$clock_atts = apply_filters( 'radio_station_schedule_clock', array(), $atts );
+			// 2.5.18: fix for conflicting filter radio_station_schedule_clock
+			$clock_atts = apply_filters( 'radio_station_schedule_clock_atts', array(), $atts );
 			$controls['clock'] = '<div id="master-schedule-clock-wrapper' . esc_attr( $id ) . '" class="master-schedule-clock-wrapper">' . "\n";
 				$controls['clock'] .= radio_station_clock_shortcode( $clock_atts );
 			$controls['clock'] .= "\n" . '</div>' . "\n";
@@ -268,7 +280,8 @@ function radio_station_master_schedule( $atts ) {
 		} elseif ( $atts['timezone'] ) {
 
 			// --- radio timezone ---
-			$timezone_atts = apply_filters( 'radio_station_schedule_clock', array(), $atts );
+			// 2.5.18: fix for conflicting filter radio_station_schedule_clock
+			$timezone_atts = apply_filters( 'radio_station_schedule_timezone_atts', array(), $atts );
 			$controls['timezone'] = '<div id="master-schedule-timezone-wrapper' . esc_attr( $id ) . '" class="master-schedule-timezone-wrapper">' . "\n";
 				$controls['timezone'] .= radio_station_timezone_shortcode( $timezone_atts );
 			$controls['timezone'] .= "\n" . '</div>' . "\n";
@@ -339,10 +352,6 @@ function radio_station_master_schedule( $atts ) {
 	// --- schedule display override ---
 	// 2.3.1: add full schedule override filter
 	// 2.3.3.9: add existing controls output to filter
-	// 2.5.10.1: maybe merge instance ID back into atts value
-	if ( isset( $instance ) ) {
-		$atts = array_merge( $atts, array( 'instance' => $instance ) );
-	}
 	$override = apply_filters( 'radio_station_schedule_override', $output, $atts );
 	if ( strstr( $override, '<!-- SCHEDULE OVERRIDE -->' ) ) {
 		$override = str_replace( '<!-- SCHEDULE OVERRIDE -->', '', $override );

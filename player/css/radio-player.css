@@ -9,12 +9,11 @@
 */
 
 .rp-player {
- 	background-color: transparent;
+	background-color: transparent;
 }
  
 .rp-player audio {
-	width: 0;
-	height: 0;
+	width: 0; height: 0;
 }
 
 .rp-audio button::-moz-focus-inner, .rp-audio-stream button::-moz-focus-inner {
@@ -23,26 +22,20 @@
 }
 
 .rp-audio, .rp-audio-stream {
-	font-size: 16px;
-	font-family: Verdana, Arial, sans-serif;
-	line-height: 1.6;
-	background-color: transparent;
+	font-size: 16px; font-family: Verdana, Arial, sans-serif; line-height: 1.6; background-color: transparent;
 }
 
 .rp-audio *:focus, .rp-audio-stream *:focus {
 	/* Disable the browser focus highlighting. */
-	outline: none;
-	box-shadow: none;
+	outline: none; box-shadow: none;
 }
 
 .rp-interface {
-	position: relative;
-	background-color: transparent;
+	position: relative; background-color: transparent;
 }
 
 .rp-audio-stream .rp-interface {
-	width: 35%;
-	display: inline-block;
+	width: 35%; display: inline-block;
 }
 
 .rp-station-info, .rp-interface, .rp-volume-controls, .rp-controls-holder , .rp-script-switcher, .rp-show-info {
@@ -50,9 +43,7 @@
 }
 
 .rp-station-info, .rp-interface, .rp-show-info {
-	text-align: center;
-	vertical-align: top;
-	margin-top: 7px;
+	text-align: center; vertical-align: top; margin-top: 7px;
 }
 
 .rp-station-info, .rp-show-info {
@@ -60,8 +51,7 @@
 }
 
 .rp-audio-stream .rp-station-info, .rp-audio-stream .rp-show-info {
-	width: 32%;
-	display: inline-block;
+	width: 32%; display: inline-block;
 }
 
 .rp-station-text-alt, .rp-show-text-alt {
@@ -75,20 +65,15 @@
 .radio-container.vertical .rp-station-info, 
 .radio-container.vertical .rp-interface,
 .radio-container.vertical .rp-show-info {
-	display: block;
-	width: 100%;
-	vertical-align: top;
+	display: block; width: 100%; vertical-align: top;
 }
 
 .rp-controls, .rp-volume-controls, .rp-script-switcher {
-	display: inline-block;
-	vertical-align: middle;
-	/* margin-top: -10px; */
+	display: inline-block; vertical-align: middle; /* margin-top: -10px; */
 }
 
 .rp-volume-controls button, .rp-volume-slider-container, .rp-volume-bar {
-	display: inline-block;
-	vertical-align: middle;
+	display: inline-block; vertical-align: middle;
 }
 
 .rp-popup {
@@ -96,24 +81,17 @@
 }
 
 .rp-audio .rp-interface, .rp-audio-stream .rp-interface {
-	height: 80px;
-	padding-top: 5px;
+	height: 80px; padding-top: 5px;
 }
 
 /* @group CONTROLS */
 .rp-interface .rp-controls {
-	margin: 0;
-	padding: 0;
-	overflow: hidden;
+	margin: 0; padding: 0; overflow: hidden;
 }
 
 .rp-controls button {
-	display: block;
-	float: left;
-	overflow: hidden;
-	text-indent: -9999px;
-	border: none;
-	cursor: pointer;
+	display: block; float: left; overflow: hidden;
+	text-indent: -9999px; border: none; cursor: pointer;
 }
 
 /* @group Control Buttons */
@@ -128,9 +106,7 @@
 .dark .rp-play-pause-button-bg {background-color: rgba(64, 64, 64, 0.5);}
 
 .rp-play-pause-button-bg, .rp-play-pause-button {
-	width: 40px;
-	height: 40px;
-	background-size: 40px 40px;
+	width: 40px; height: 40px; background-size: 40px 40px;
 }
 
 .radio-container.circular .rp-play-pause-button-bg {
@@ -142,13 +118,11 @@
 }
 
 .rp-play-pause-button {
-	opacity: 0.9;
-	cursor: pointer;
+	opacity: 0.9; cursor: pointer;
 }
 
 .rp-play-pause-button:hover, .rp-play-pause-button:focus {
-	opacity: 1;
-	scale: 1.1;
+	opacity: 1; scale: 1.1;
 }
 
 .radio-container.light.circular .rp-play-pause-button {
@@ -233,9 +207,7 @@
 
 /* @group Volume Controls */
 .rp-volume-slider-container {
-	position: relative;
-	opacity: 0.85;
-	height: 30px;
+	position: relative; opacity: 0.85; height: 30px;
 }
 
 .rp-volume-slider-container:hover, .rp-volume-slider-container:focus {
@@ -243,17 +215,12 @@
 }
 
 .radio-container .rp-volume-controls button, .radio-container .rp-popup button {
-	overflow: hidden;
-	text-indent: -9999px;
-	border: none;
-	cursor: pointer;
-	opacity: 0.9;
+	overflow: hidden; text-indent: -9999px;	border: none; cursor: pointer; opacity: 0.9;
 }
 
 .radio-container .rp-volume-controls button:hover, .radio-container .rp-volume-controls button:focus,
 .radio-container .rp-popup button:hover, .radio-container .rp-popup button:focus {
-	opacity: 0.99;
-	scale: 1.1;
+	opacity: 0.99; scale: 1.1;
 }
 
 .radio-container.circular .rp-volume-controls button, .radio-container.circular .rp-popup button {
@@ -293,6 +260,7 @@
 .rp-volume-down:focus, .rp-volume-down:hover {background-position: -18px -72px;}
 .rp-popup-button {background-position: 0 -90px;}
 .rp-popup-button:focus, .rp-popup-button:hover {background-position: -18px -90px;}
+.rp-script-select {display: none;}
 /* @end */
 
 /* @roup Now Playing Info */
@@ -300,39 +268,29 @@
     font-size: 14px;
 }
 .rp-now-playing-title, .rp-now-playing-artist, .rp-now-playing-album {
-	display: inline-block;
-	padding: 0 10px;
+	display: inline-block; padding: 0 10px;
 }
 
 /* @group Station and Show Info */
 .rp-station-image, .rp-station-text, .rp-show-text, .rp-show-image {
-	display: inline-block;
-	vertical-align: top;
+	display: inline-block; vertical-align: top;
 }
 .rp-station-info .rp-station-image, .rp-show-info .rp-show-image {
-	width: 64px; 
-	height: 64px; 
-	margin: 0; 
-	padding: 0;
-	background-size: 100% 100%;
+	width: 64px; height: 64px; margin: 0; padding: 0; background-size: 100% 100%;
 }
 .rp-station-info .rp-station-image {margin-right: 16px;}
 .rp-station-info .rp-station-image.no-image {width: 0; height: 0; margin-right: 0; display: none;}
 .rp-station-info .rp-station-image.no-image.new-image {width: 64px; height: 64px; margin-right: 16px;}
 .rp-station-info .rp-station-image.new-image img {display: none;}
-.rp-show-info .rp-show-image {margin-left: 16px;}
+.rp-show-info .rp-show-image {margin-left: 16px; border: 0;}
 .rp-show-info .rp-show-image.no-image {width: 0; height: 0; margin-left: 0; display: none;}
+.rp-show-info .rp-show-image-link {text-decoration: none;}
 .rp-show-info .rp-station-text {max-width: calc(100% - 90px);}
 /* @end */
 
 /* @group No Solution error */
 .rp-no-solution {
-	padding: 5px;
-	font-size: .8em;
-	background-color: #eee;
-	border: 2px solid #009be3;
-	color: #000;
-	display: none;
+	padding: 5px; font-size: .8em; background-color: #eee; border: 2px solid #009be3; color: #000; display: none;
  }
 
 .rp-no-solution a {
@@ -340,9 +298,6 @@
 }
 
 .rp-no-solution span {
-	font-size: 1em;
-	display: block;
-	text-align: center;
-	font-weight: bold;
+	font-size: 1em; display: block; text-align: center;	font-weight: bold;
 }
 /* @end */

@@ -303,6 +303,13 @@ class DJ_Widget extends WP_Widget {
 		$instance['show_playlist'] = isset( $new_instance['show_playlist'] ) ? 1 : 0;
 		$instance['show_encore'] = isset( $new_instance['show_encore'] ) ? 1 : 0;
 
+		// 2.5.18: save (or preserve) channel setting
+		if ( isset( $new_instance['channel'] ) ) {
+			$instance['channel'] = $new_instance['channel'];
+		} elseif ( isset( $old_instance['channel'] ) ) {
+			$instance['channel'] = $old_instance['channel'];
+		}
+
 		// 2.3.0: filter widget update instance
 		$instance = apply_filters( 'radio_station_current_show_widget_update', $instance, $new_instance, $old_instance );
 		return $instance;
