@@ -28,6 +28,12 @@ function radio_station_plugin_options( $admin = false ) {
 	$languages = radio_station_get_language_options( true, $admin );
 	$formats = radio_station_get_stream_formats();
 
+	// 2.6.16: add am/pm translations for schedule_start_hour
+	if ( $admin ) {
+		$am = radio_station_translate_meridiem( 'am' );
+		$pm = radio_station_translate_meridiem( 'pm' );
+	}
+
 	$options = array(
 
 		// === Stream ===
@@ -77,6 +83,7 @@ function radio_station_plugin_options( $admin = false ) {
 		),
 
 		// --- [Player] Stream GeoBlocking ---
+		// TODO: conditional display of blacklist/whitelist fields
 		'stream_geo_blocking' => array(
 			'label'		=> $admin ? __( 'GeoIP Stream Blocking', 'radio-station' ) : '',
 			'type'		=> 'select',
@@ -85,6 +92,7 @@ function radio_station_plugin_options( $admin = false ) {
 				'live365'	=> $admin ? __( 'Live365 (only US, UK, Canada, Mexico)', 'radio-station' ) : '',
 				// 'blacklist' => $admin ? __( 'Custom Country Blacklist', 'radio-station' ) : '',
 				// 'whitelist' => $admin ? __( 'Custom Country Whitelist', 'radio-station' ) : '',
+				// 'both'      => $admin ? __( 'Blacklist and Whitelist', 'radio-station' ) : '',
 			),
 			'default' => '',
 			'helper'  => $admin ? __( 'Block streaming according to country, detected by user IP address.', 'radio-station' ) : '',
@@ -130,52 +138,6 @@ function radio_station_plugin_options( $admin = false ) {
 			'tab'     => 'general',
 			'section' => 'broadcast',
 		),
-			
-		// === Station ===
-
-		// --- Station Title ---
-		// 2.3.3.8: added station title field
-		'station_title' => array(
-			'type'    => 'text',
-			'label'   => $admin ? __( 'Station Title', 'radio-station' ) : '',
-			'default' => '',
-			'helper'  => $admin ? __( 'Name of your Radio Station. For use in Stream Player and Data Feeds.', 'radio-station' ) : '',
-			'tab'     => 'general',
-			'section' => 'station',
-		),
-
-		// --- Station Callsign ---
-		// 2.5.18: added station callsign field
-		'station_callsign' => array(
-			'type'    => 'text',
-			'label'   => $admin ? __( 'Station Callsign', 'radio-station' ) : '',
-			'default' => '',
-			'helper'  => $admin ? __( '', 'radio-station' ) : '',
-			'tab'     => 'general',
-			'section' => 'station',
-		),
-
-		// --- Station Tagline ---
-		// 2.5.18: added station tagline
-		'station_tagline' => array(
-			'type'    => 'text',
-			'label'   => $admin ? __( 'Station Tagline', 'radio-station' ) : '',
-			'default' => '',
-			'helper'  => $admin ? __( '', 'radio-station' ) : '',
-			'tab'     => 'general',
-			'section' => 'station',
-		),
-
-		// --- Station Image ---
-		// 2.3.3.8: added station logo image field
-		'station_image' => array(
-			'type'    => 'image',
-			'label'   => $admin ? __( 'Station Logo Image', 'radio-station' ) : '',
-			'default' => '',
-			'helper'  => $admin ? __( 'Add a logo image for your Radio Station. Please ensure image is square before uploading. Recommended size 256 x 256', 'radio-station' ) : '',
-			'tab'     => 'general',
-			'section' => 'station',
-		),
 
 		// --- Station Frequency ---
 		// 2.5.18: added station frequency option
@@ -204,6 +166,75 @@ function radio_station_plugin_options( $admin = false ) {
 			'section' => 'broadcast',
 		),
 
+		// --- Service Identifier ---
+		// TODO: service identifier for RadioDNS
+		/* 'service_identifier' => array(
+			'type'    => 'text',
+			'label'   => $admin ? __( 'Service Identifier', 'radio-station' ) : '',
+			'default' => '',
+			'helper'  => $admin ? __( 'RadioDNS Service Identifier.', 'radio-station' ) : '',
+			'tab'     => 'general',
+			'section' => 'station',
+		), */
+
+		// --- Ping Netmix Directory ---
+		// note: disabled by default for WordPress.org repository compliance
+		'ping_netmix_directory' => array(
+			'type'    => 'checkbox',
+			'label'   => $admin ? __( 'Ping Netmix Directory', 'radio-station' ) : '',
+			'default' => '',
+			'value'   => 'yes',
+			'helper'  => $admin ? __( 'Enable this to ping the Netmix Directory whenever you update your schedule.', 'radio-station' ) : '',
+			'tab'     => 'general',
+			'section' => 'broadcast',
+		),
+			
+		// === Station ===
+
+		// --- Station Title ---
+		// 2.3.3.8: added station title field
+		'station_title' => array(
+			'type'    => 'text',
+			'label'   => $admin ? __( 'Station Title', 'radio-station' ) : '',
+			'default' => '',
+			'helper'  => $admin ? __( 'Name of your Radio Station. For use in Stream Player and Data Feeds.', 'radio-station' ) : '',
+			'tab'     => 'general',
+			'section' => 'station',
+		),
+
+		// --- Station Tagline ---
+		// 2.5.18: added station tagline
+		'station_tagline' => array(
+			'type'    => 'text',
+			'label'   => $admin ? __( 'Station Tagline', 'radio-station' ) : '',
+			'default' => '',
+			'helper'  => $admin ? __( 'Tagline for your Radio Station. (eg. 24/7 Greatest Hits.)', 'radio-station' ) : '',
+			'tab'     => 'general',
+			'section' => 'station',
+		),
+
+		// --- Station Callsign ---
+		// 2.5.18: added station callsign field
+		'station_callsign' => array(
+			'type'    => 'text',
+			'label'   => $admin ? __( 'Station Callsign', 'radio-station' ) : '',
+			'default' => '',
+			'helper'  => $admin ? __( 'Short callsign for your Radio Station. (eg. TOP.)', 'radio-station' ) : '',
+			'tab'     => 'general',
+			'section' => 'station',
+		),
+
+		// --- Station Image ---
+		// 2.3.3.8: added station logo image field
+		'station_image' => array(
+			'type'    => 'image',
+			'label'   => $admin ? __( 'Station Logo Image', 'radio-station' ) : '',
+			'default' => '',
+			'helper'  => $admin ? __( 'Add a logo image for your Radio Station. Please ensure image is square before uploading. Recommended size 256 x 256', 'radio-station' ) : '',
+			'tab'     => 'general',
+			'section' => 'station',
+		),
+
 		// --- Station Location ---
 		// 2.5.18: added station location option
 		'station_location' => array(
@@ -227,37 +258,27 @@ function radio_station_plugin_options( $admin = false ) {
 			'section' => 'station',
 		),
 
-		// --- Phone for Shows ---
-		// 2.3.3.6: added default to station phone option
-		'shows_phone' => array(
-			'type'    => 'checkbox',
+		// --- Station Text Number ---
+		// 2.5.18: added station text in number
+		'station_text' => array(
+			'type'    => 'text',
+			'options' => 'PHONE',
+			'label'   => $admin ? __( 'Station Text', 'radio-station' ) : '',
 			'default' => '',
-			'value'   => 'yes',
-			'label'   => $admin ? __( 'Show Phone Display', 'radio-station' ) : '',
-			'helper'  => $admin ? __( 'Display Station phone number on Shows where a Show phone number is not set.', 'radio-station' ) : '',
+			'helper'  => $admin ? __( 'Text line phone number for the Station (for requests etc.)', 'radio-station' ) : '',
 			'tab'     => 'general',
 			'section' => 'station',
 		),
 
 		// --- Station Email Address ---
 		// 2.3.3.8: added station email address option
+		// TODO: allow for contact page URL instead ?
 		'station_email' => array(
 			'type'    => 'email',
 			'default' => '',
 			'label'   => $admin ? __( 'Station Email', 'radio-station' ) : '',
 			'helper'  => $admin ? __( 'Main email address for the Station (for requests etc.)', 'radio-station' ) : '',
-			'tab'     => 'general',
-			'section' => 'station',
-		),
-
-		// --- Email for Shows ---
-		// 2.3.3.8: added default to email address option
-		'shows_email' => array(
-			'type'    => 'checkbox',
-			'default' => '',
-			'value'   => 'yes',
-			'label'   => $admin ? __( 'Show Email Display', 'radio-station' ) : '',
-			'helper'  => $admin ? __( 'Display Station email address on Shows where a Show email address is not set.', 'radio-station' ) : '',
+			//  . ' ' . __( 'Alternatively, enter the URL for your contact page.' , 'radio-station' ) 
 			'tab'     => 'general',
 			'section' => 'station',
 		),
@@ -286,17 +307,17 @@ function radio_station_plugin_options( $admin = false ) {
 			'section' => 'feeds',
 		),
 
-		// --- Ping Netmix Directory ---
-		// note: disabled by default for WordPress.org repository compliance
-		'ping_netmix_directory' => array(
+		// --- Show Shift Feeds ---
+		/* 'show_shift_feeds' => array(
 			'type'    => 'checkbox',
-			'label'   => $admin ? __( 'Ping Netmix Directory', 'radio-station' ) : '',
-			'default' => '',
+			'label'   => $admin ? __( 'Show Shift Feeds', 'radio-station' ) : '',
+			'default' => 'yes',
 			'value'   => 'yes',
-			'helper'  => $admin ? __( 'If you have a Netmix Directory listing, enable this to ping the directory whenever you update your schedule.', 'radio-station' ) : '',
+			'helper'  => $admin ? __( 'Convert RSS Feeds for a single Show to a Show shift feed, allowing a visitor to subscribe to a Show feed to be notified of Show shifts.', 'radio-station' ) : '',
 			'tab'     => 'general',
-			'section' => 'broadcast',
-		),
+			'section' => 'feeds',
+			'pro'     => true,
+		), */
 
 		// === Performance ===
 		// 2.4.0.6: separated performance section
@@ -336,18 +357,6 @@ function radio_station_plugin_options( $admin = false ) {
 			'section' => 'performance',
 			'pro'     => true,
 		),
-
-		// --- Show Shift Feeds ---
-		/* 'show_shift_feeds' => array(
-			'type'    => 'checkbox',
-			'label'   => $admin ? __( 'Show Shift Feeds', 'radio-station' ) : '',
-			'default' => 'yes',
-			'value'   => 'yes',
-			'helper'  => $admin ? __( 'Convert RSS Feeds for a single Show to a Show shift feed, allowing a visitor to subscribe to a Show feed to be notified of Show shifts.', 'radio-station' ) : '',
-			'tab'     => 'general',
-			'section' => 'feeds',
-			'pro'     => true,
-		), */
 
 		// === Basic Stream Player ===
 
@@ -389,11 +398,12 @@ function radio_station_plugin_options( $admin = false ) {
 			'type'    => 'multicheck',
 			'label'   => $admin ? __( 'Display Station Meta', 'radio-station' ) : '',
 			'options' => array(
-				// 'tagline'   => $admin ? __( 'Tagline', 'radio-station' ) : '',
+				'tagline'   => $admin ? __( 'Tagline', 'radio-station' ) : '',
 				'frequency' => $admin ? __( 'Frequency', 'radio-station' ) : '',
 				'location'  => $admin ? __( 'Location', 'radio-station' ) : '',
 				'timezone'  => $admin ? __( 'Timezone', 'radio-station' ) : '',
-				// 'phone'     => $admin ? __( 'Phone', 'radio-station' ) : '',
+				// 'phone'  => $admin ? __( 'Phone Number', 'radio-station' ) : '',
+				// 'text'   => $admin ? __( 'Text Number', 'radio-station' ) : '',
 			),
 			'default' => array( 'frequency', 'location' ),
 			'helper'  => $admin ? __( 'Display your Radio Station Meta in Player by default.', 'radio-station' ) : '',
@@ -922,6 +932,43 @@ function radio_station_plugin_options( $admin = false ) {
 			'pro'     => true,
 		),
 
+		// --- schedule start hour ---
+		'schedule_start_hour' => array(
+			'label'   => $admin ? __( 'Display Start Hour', 'radio-station' ) : '',
+			'type'    => 'select',
+			'options' => array(
+				0  => $admin ? __( 'Midnight', 'radio-station' ) : 'Midnight',
+				1  => $admin ? '1 ' . $am : '1 am',
+				2  => $admin ? '2 ' . $am : '2 am',
+				3  => $admin ? '3 ' . $am : '3 am',
+				4  => $admin ? '4 ' . $am : '4 am',
+				5  => $admin ? '5 ' . $am : '5 am',
+				6  => $admin ? '6 ' . $am : '6 am',
+				7  => $admin ? '7 ' . $am : '7 am',
+				8  => $admin ? '8 ' . $am : '8 am',
+				9  => $admin ? '9 ' . $am : '9 am',
+				10 => $admin ? '10 ' . $am : '10 am',
+				11 => $admin ? '11 ' . $am : '11 am',
+				12 => $admin ? __( 'Noon', 'radio-station' ) : 'Noon',
+				13 => $admin ? '1 ' . $pm : '1 pm',
+				14 => $admin ? '2 ' . $pm : '2 pm',
+				15 => $admin ? '3 ' . $pm : '3 pm',
+				16 => $admin ? '4 ' . $pm : '4 pm',
+				17 => $admin ? '5 ' . $pm : '5 pm',
+				18 => $admin ? '6 ' . $pm : '6 pm',
+				19 => $admin ? '7 ' . $pm : '7 pm',
+				20 => $admin ? '8 ' . $pm : '8 pm',
+				21 => $admin ? '9 ' . $pm : '9 pm',
+				22 => $admin ? '10 ' . $pm : '10 pm',
+				23 => $admin ? '11 ' . $pm : '11 pm',
+			),
+			'default' => '0',
+			'helper'  => $admin ? __( 'Schedule displays will start from this hour instead of midnight.', 'radio-station' ) : '',
+			'tab'     => 'pages',
+			'section' => 'schedule',
+			'pro'     => true,
+		),
+
 		// === Show Pages ===
 
 		// --- Show Blocks Position ---
@@ -984,17 +1031,45 @@ function radio_station_plugin_options( $admin = false ) {
 			'section' => 'show',
 		),
 
-		// --- Show Header Image ---
-		// 2.3.2: added plural to option label
-		'show_header_image' => array(
+		// --- Phone for Shows ---
+		// 2.3.3.6: added default to station phone option
+		// 2.5.18: moved from station section
+		'shows_phone' => array(
 			'type'    => 'checkbox',
-			'label'   => $admin ? __( 'Content Header Images', 'radio-station' ) : '',
-			'value'   => 'yes',
 			'default' => '',
-			'helper'  => $admin ? __( 'If your chosen template does not display the Featured Image, enable this and use the Content Header Image box on the Show edit screen instead.', 'radio-station' ) : '',
+			'value'   => 'yes',
+			'label'   => $admin ? __( 'Show Phone Default', 'radio-station' ) : '',
+			'helper'  => $admin ? __( 'Display Station phone number on Shows where a Show phone number is not set.', 'radio-station' ) : '',
 			'tab'     => 'pages',
 			'section' => 'show',
 		),
+
+		// --- Text for Shows ---
+		// TODO: text number display on show pages
+		/* 'shows_text' => array(
+			'type'    => 'checkbox',
+			'default' => '',
+			'value'   => 'yes',
+			'label'   => $admin ? __( 'Show Email Default', 'radio-station' ) : '',
+			'helper'  => $admin ? __( 'Display Station text number on Shows where a Show text number is not set.', 'radio-station' ) : '',
+			'tab'     => 'pages',
+			'section' => 'show',
+		), */
+		
+		// --- Email for Shows ---
+		// 2.3.3.8: added default to email address option
+		// 2.5.18: moved from station section
+		'shows_email' => array(
+			'type'    => 'checkbox',
+			'default' => '',
+			'value'   => 'yes',
+			'label'   => $admin ? __( 'Show Email Display', 'radio-station' ) : '',
+			'helper'  => $admin ? __( 'Display Station email address on Shows where a Show email address is not set.', 'radio-station' ) : '',
+			'tab'     => 'pages',
+			'section' => 'show',
+		),
+
+		// TODO: Show RSS / Calendar Links ?
 
 		// --- Latest Show Posts ---
 		// 'show_latest_posts' => array(
@@ -1066,6 +1141,18 @@ function radio_station_plugin_options( $admin = false ) {
 			'tab'     => 'pages',
 			'section' => 'show',
 			'pro'     => true,
+		),
+
+		// --- Show Header Image ---
+		// 2.3.2: added plural to option label
+		'show_header_image' => array(
+			'type'    => 'checkbox',
+			'label'   => $admin ? __( 'Content Header Images', 'radio-station' ) : '',
+			'value'   => 'yes',
+			'default' => '',
+			'helper'  => $admin ? __( 'If your theme template does not display the Featured Image, enable this and use the Content Header Image box on the Show edit screen instead.', 'radio-station' ) : '',
+			'tab'     => 'pages',
+			'section' => 'show',
 		),
 
 		// === Profile Pages ===

@@ -417,10 +417,11 @@ We recommend you test these on a Staging site (or a development copy of your liv
 * Improved: Timezone and Clock Timezone display formatting
 * Improved: Special override interface change highlighting
 * Added: Dashboard overview widget and Content Dashboard page
-* Added: Station Frequency and Location options
-* Added: Channel inputs for Shifts and Overrides
+* Added: Station Tagline, Callsign, Frequency, Location options
+* Added: Default Player display for Station Meta
 * Added: Special Overrides data routes/feed to Data API
 * Added: Link main language term to filtered show archive
+* Added: Channel input support for Shifts and Overrides
 * Fixed: Player Amplitude script pause/unpause source bug
 * Fixed: Special/Override (non-linked) Host/Producer data
 * Fixed: Radio Player (other developer) plugin conflicts
