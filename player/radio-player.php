@@ -315,6 +315,14 @@ function radio_player_output( $args = array(), $echo = false ) {
 	if ( 0 == count( $args['volumes'] ) ) {
 		$classes[] = 'no-volume-controls';
 	}
+	
+	// 2.5.18: added 24 hour shift time formatting class
+	if ( function_exists( 'radio_station_get_setting' ) ) {
+		$time_format = radio_station_get_setting( 'clock_time_format' );
+		if ( 24 == (int) $time_format ) {
+			$classes[] = 'format-24';
+		}
+	}
 
 	// 2.5.0: added preconnect/dns-prefetch link tags for URL host
 	if ( 'stream' == $args['media'] ) {
@@ -341,7 +349,7 @@ function radio_player_output( $args = array(), $echo = false ) {
 	}
 	$class_list = implode( ' ', $classes );
 
-	$html['player_open'] .= '<div id="' . esc_attr( $container_id ) . '" class="' . esc_attr( $class_list ) . '" role="application" aria-label="media player" data-href="' . esc_url( $args['url'] ) . '" data-format="' . esc_attr( $args['format'] ) . '" data-fallback="' . esc_url( $args['fallback'] ) . '" data-fformat="' . esc_attr( $args['fformat'] ) . '"';
+	$html['player_open'] .= '<div id="' . esc_attr( $container_id ) . '" class="' . esc_attr( $class_list ) . '" role="application" aria-label="media player" data-instance="' . esc_attr( $instance ) . '" data-href="' . esc_url( $args['url'] ) . '" data-format="' . esc_attr( $args['format'] ) . '" data-fallback="' . esc_url( $args['fallback'] ) . '" data-fformat="' . esc_attr( $args['fformat'] ) . '"';
 	// 2.5.6: added optional argument for metadata URL (or 0 to disable)
 	if ( isset( $args['metadata'] ) && ( '1' != $args['metadata'] ) ) {
 		// 2.5.10: use esc_url not esc_url_raw
@@ -426,41 +434,53 @@ function radio_player_output( $args = array(), $echo = false ) {
 			// $html['controls'] .= '		<button class="rp-stop" role="button" tabindex="0">' . esc_html( __( 'Stop', 'radio-station' ) ) . '</button>' . "\n";
 		$html['controls'] .= '	</div>' . "\n";
 
-		// 2.5.18: preload the pause icon to prevent display glitch on play
+		// 2.5.18: preload the pause icon to prevent display delay glitch on play
 		$theme = radio_station_get_setting( 'player_theme' );
 		$buttons = radio_station_get_setting( 'player_buttons' );
 		$pause_icon_url = plugins_url( '/player/images/pause-' . $theme . '-' . $buttons . '.png', RADIO_STATION_FILE );
+		$pause_icon_url = apply_filters( 'radio_player_pause_preload_url', $pause_icon_url );
 		$html['controls'] .= '<img style="display:none !important; height: 0; width: 0;" src="' . $pause_icon_url . '?v=2">' . "\n";
 
 	$html['controls'] .= '</div>' . "\n";
 
 	// --- Volume Controls ---
+	// 2.5.18: respect volumes attribute key
 	$html['volume'] = '<div class="rp-volume-controls">' . "\n";
 
 		// --- Volume Mute ---
-		$html['volume'] .= '<button class="rp-mute" role="button" tabindex="0">' . esc_html( __( 'Mute', 'radio-station' ) ) . '</button>' . "\n";
+		if ( in_array( 'mute', $args['volumes'] ) ) {
+			$html['volume'] .= '<button class="rp-mute" role="button" tabindex="0">' . esc_html( __( 'Mute', 'radio-station' ) ) . '</button>' . "\n";
+		}
 
 		// --- Volume Decrease ---
 		// 2.5.0: fix to attribute typo area-label
-		$html['volume'] .= '<button class="rp-volume-down" role="button" aria-label="' . esc_attr( __( 'Volume Down', 'radio-station' ) ) . '">-</button>' . "\n";
+		if ( in_array( 'updown', $args['volumes'] ) ) {
+			$html['volume'] .= '<button class="rp-volume-down" role="button" aria-label="' . esc_attr( __( 'Volume Down', 'radio-station' ) ) . '">-</button>' . "\n";
+		}
 
 		// --- Custom Range volume slider ---
-		$html['volume'] .= '<div class="rp-volume-slider-container">' . "\n";
-			$html['volume'] .= '<div class="rp-volume-slider-bg" style="width: 0; border: none;"></div>' . "\n";
-				$html['volume'] .= '<input type="range" class="rp-volume-slider" value="' . esc_attr( $args['volume'] ) . '" max="100" min="0" aria-label="' . esc_attr( __( 'Volume Slider', 'radio-station' ) ) . '">' . "\n";
-			$html['volume'] .= '<div class="rp-volume-thumb"></div>' . "\n";
-		$html['volume'] .= '</div>' . "\n";
+		if ( in_array( 'slider', $args['volumes'] ) ) {
+			$html['volume'] .= '<div class="rp-volume-slider-container">' . "\n";
+				$html['volume'] .= '<div class="rp-volume-slider-bg" style="width: 0; border: none;"></div>' . "\n";
+					$html['volume'] .= '<input type="range" class="rp-volume-slider" value="' . esc_attr( $args['volume'] ) . '" max="100" min="0" aria-label="' . esc_attr( __( 'Volume Slider', 'radio-station' ) ) . '">' . "\n";
+				$html['volume'] .= '<div class="rp-volume-thumb"></div>' . "\n";
+			$html['volume'] .= '</div>' . "\n";
+		}
 
 		// --- Volume Increase ---
-		$html['volume'] .= '<button class="rp-volume-up" role="button" aria-label="' . esc_attr( __( 'Volume Up', 'radio-station' ) ) . '">+</button>' . "\n";
+		if ( in_array( 'updown', $args['volumes'] ) ) {
+			$html['volume'] .= '<button class="rp-volume-up" role="button" aria-label="' . esc_attr( __( 'Volume Up', 'radio-station' ) ) . '">+</button>' . "\n";
+		}
 
 		// --- Volume Max ---
-		$html['volume'] .= '<button class="rp-volume-max" role="button" tabindex="0">' . esc_html( __( 'Max', 'radio-station' ) ) . '</button>' . "\n";
+		if ( in_array( 'max', $args['volumes'] ) ) {
+			$html['volume'] .= '<button class="rp-volume-max" role="button" tabindex="0">' . esc_html( __( 'Max', 'radio-station' ) ) . '</button>' . "\n";
+		}
 
 	$html['volume'] .= '</div>' . "\n";
 
 	// --- dropdown script switcher for testing ---
-	if ( RADIO_PLAYER_DEBUG ) {
+	if ( isset( $_REQUEST['script-debug'] ) && ( '1' == sanitize_text_field( wp_unslash( $_REQUEST['script-debug'] ) ) ) ) {
 		$html['switcher'] = '<div class="rp-script-switcher">' . "\n";
 			$html['switcher'] .= '<div class="rp-show-switcher" onclick="radio_player_show_switcher(' . esc_js( $instance ) . ');">*</div>';
 			$html['switcher'] .= '<select class="rp-script-select" name="rp-script-select">' . "\n";
@@ -484,6 +504,7 @@ function radio_player_output( $args = array(), $echo = false ) {
 		$show_text_html .= '<div class="rp-show-producers"></div>' . "\n";
 		$show_text_html .= '<div class="rp-show-shift"></div>' . "\n";
 		$show_text_html .= '<div class="rp-show-remaining"></div>' . "\n";
+		$show_text_html .= '<div class="rp-show-description"></div>' . "\n";
 	$show_text_html .= '</div>' . "\n";
 
 	// 2.5.18: make show logo clickable
@@ -3254,6 +3275,13 @@ function radio_player_control_styles( $instance, $atts = false ) {
 
 	global $radio_player;
 
+	// 2.5.18: added secondary container option
+	$secondary = false;
+	if ( strstr( $instance, 'b' ) ) {
+		$instance = (int) str_replace( 'b', '', $instance );
+		$secondary = true;
+	}
+			
 	// --- set default control colors ---
 	// 2.5.0: added empty text and background color styles
 	// 2.5.18: adjust playing default from #70E070
@@ -3302,6 +3330,10 @@ function radio_player_control_styles( $instance, $atts = false ) {
 		
 		// -- set instance container selector ---
 		$container = '#radio_container_' . $instance;
+		// 2.5.18: added secondary container option
+		if ( $secondary ) {
+			$container = '#rp_container_' . $instance;
+		}
 
 		// --- get colors for container instance ---
 		if ( isset( $radio_player['instance-props'][$instance] ) ) {

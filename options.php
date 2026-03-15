@@ -650,6 +650,22 @@ function radio_station_plugin_options( $admin = false ) {
 			'pro'     => true,
 		),
 
+		// --- [Pro/Player] Responsive Mode ---
+		// 2.5.18: added option for responsive expander bar
+		'player_bar_responsive' => array(
+			'type'    => 'select',
+			'label'   => $admin ? __( 'Bar Responsive Mode', 'radio-station' ) : '',
+			'options' => array(
+				'left-right' => $admin ? __( 'Horizontal Arrows', 'radio-station' ) : '',
+				'expander'   => $admin ? __( 'Vertical Expander', 'radio-station' ) : '',
+			),
+			'default' => 'left-right',
+			'tab'     => 'player',
+			'section' => 'bar',
+			'helper'  => $admin ? __( 'Player Bar responsive mode for mobile overflow sections.', 'radio-station' ) : '',
+			'pro'     => true,
+		),
+
 		// --- [Pro/Player] Fade In Player Bar ---
 		'player_bar_fadein' => array(
 			'type'    => 'number',

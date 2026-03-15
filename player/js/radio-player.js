@@ -495,7 +495,7 @@ function radio_player_get_volume(instance) {
 
 /* --- set all volume sliders --- */
 function radio_player_volume_sliders(volume) {
-	jQuery('.radio-container').each(function() {
+	jQuery('.radio-container, .rp-container').each(function() {
 		instance = jQuery(this).attr('id').replace('radio_container_','');
 		console.log('Set volume on instance '+instance+' to '+volume);
 		radio_player_volume_slider(instance, volume);

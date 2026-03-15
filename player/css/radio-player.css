@@ -3,7 +3,7 @@
  * https://radiostation.pro/stream-player/
  *
  * Author: Tony Hayes
- * Skin Version: 1.0.1 (Stream Player 2.5.0)
+ * Skin Version: 1.0.2 (Stream Player 2.5.0)
  *
  * originally based on Blue Monday Skin for jPlayer 2.9.2 ~ (c) 2009-2014 Happyworm Ltd ~ MIT License
 */
@@ -62,9 +62,9 @@
 	padding: 10px;
 }
 
-.radio-container.vertical .rp-station-info, 
-.radio-container.vertical .rp-interface,
-.radio-container.vertical .rp-show-info {
+.vertical .rp-station-info, 
+.vertical .rp-interface,
+.vertical .rp-show-info {
 	display: block; width: 100%; vertical-align: top;
 }
 
@@ -95,10 +95,10 @@
 }
 
 /* @group Control Buttons */
-.radio-container.horizontal .rp-play-pause-button-bg {
+.horizontal .rp-play-pause-button-bg {
 	margin-right: 25px;
 }
-.radio-container.vertical .rp-play-pause-button-bg {
+.vertical .rp-play-pause-button-bg {
 	margin-right: 5px;
 }
 
@@ -109,11 +109,11 @@
 	width: 40px; height: 40px; background-size: 40px 40px;
 }
 
-.radio-container.circular .rp-play-pause-button-bg {
+.circular .rp-play-pause-button-bg {
 	border-radius: 20px;
 }
 
-.radio-container.rounded .rp-play-pause-button-bg {
+.rounded .rp-play-pause-button-bg {
 	border-radius: 10px;
 }
 
@@ -125,51 +125,51 @@
 	opacity: 1; scale: 1.1;
 }
 
-.radio-container.light.circular .rp-play-pause-button {
+.light.circular .rp-play-pause-button {
 	background-image: url("../images/play-light-circular.png?v=2");
 }
 
-.radio-container.light.rounded .rp-play-pause-button {
+.light.rounded .rp-play-pause-button {
 	background-image: url("../images/play-light-rounded.png?v=2");
 }
 
-.radio-container.light.square .rp-play-pause-button {
+.light.square .rp-play-pause-button {
 	background-image: url("../images/play-light-square.png?v=2");
 }
 
-.radio-container.dark.circular .rp-play-pause-button {
+.dark.circular .rp-play-pause-button {
 	background-image: url("../images/play-dark-circular.png?v=2");
 }
 
-.radio-container.dark.rounded .rp-play-pause-button {
+.dark.rounded .rp-play-pause-button {
 	background-image: url("../images/play-dark-rounded.png?v=2");
 }
 
-.radio-container.dark.square .rp-play-pause-button {
+.dark.square .rp-play-pause-button {
 	background-image: url("../images/play-dark-square.png?v=2");
 }
 
-.radio-container.playing.light.circular .rp-play-pause-button {
+.playing.light.circular .rp-play-pause-button {
 	background-image: url("../images/pause-light-circular.png?v=2");
 }
 
-.radio-container.playing.light.rounded .rp-play-pause-button {
+.playing.light.rounded .rp-play-pause-button {
 	background-image: url("../images/pause-light-rounded.png?v=2");
 }
 
-.radio-container.playing.light.square .rp-play-pause-button {
+.playing.light.square .rp-play-pause-button {
 	background-image: url("../images/pause-light-square.png?v=2");
 }
 
-.radio-container.playing.dark.circular .rp-play-pause-button {
+.playing.dark.circular .rp-play-pause-button {
 	background-image: url("../images/pause-dark-circular.png?v=2");
 }
 
-.radio-container.playing.dark.rounded .rp-play-pause-button {
+.playing.dark.rounded .rp-play-pause-button {
 	background-image: url("../images/pause-dark-rounded.png?v=2");
 }
 
-.radio-container.playing.dark.square .rp-play-pause-button {
+.playing.dark.square .rp-play-pause-button {
 	background-image: url("../images/pause-dark-square.png?v=2");
 }
 
@@ -214,24 +214,24 @@
 	opacity: 0.99;
 }
 
-.radio-container .rp-volume-controls button, .radio-container .rp-popup button {
+.rp-volume-controls button, .rp-popup button {
 	overflow: hidden; text-indent: -9999px;	border: none; cursor: pointer; opacity: 0.9;
 }
 
-.radio-container .rp-volume-controls button:hover, .radio-container .rp-volume-controls button:focus,
-.radio-container .rp-popup button:hover, .radio-container .rp-popup button:focus {
+.rp-volume-controls button:hover, .rp-volume-controls button:focus,
+.rp-popup button:hover, .rp-popup button:focus {
 	opacity: 0.99; scale: 1.1;
 }
 
-.radio-container.circular .rp-volume-controls button, .radio-container.circular .rp-popup button {
+.circular .rp-volume-controls button, .circular .rp-popup button {
 	border-radius: 9px;
 }
 
-.radio-container.rounded .rp-volume-controls button, .radio-container.rounded .rp-popup button {
+.rounded .rp-volume-controls button, .rounded .rp-popup button {
 	border-radius: 6px;
 }
 
-.radio-container.square .rp-volume-controls button, .radio-container.square .rp-popup button {
+.square .rp-volume-controls button, .square .rp-popup button {
 	border-radius: 1px;
 }
 
@@ -264,9 +264,8 @@
 /* @end */
 
 /* @roup Now Playing Info */
-.rp-now-playing {
-    font-size: 14px;
-}
+.rp-now-playing {font-size: 14px; display: none;}
+.now-playing .rp-now-playing {display: flex;}
 .rp-now-playing-title, .rp-now-playing-artist, .rp-now-playing-album {
 	display: inline-block; padding: 0 10px;
 }
