@@ -3027,12 +3027,12 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 						}
 						$data = esc_attr( $min ) . "," . esc_attr( $max ) . "," . esc_attr( $step );
 						$row .= '<input id="number-input-' . esc_attr( $name ) . '" class="setting-numeric" type="text" name="' . esc_attr( $name ) . '" value="' . esc_attr( $setting ) . '" placeholder="' . esc_attr( $placeholder ) . '" data="' . esc_attr( $data ) . '">' . "\n";
-						if ( isset( $option['suffix'] ) ) {
-							$row .= ' ' . $option['suffix'];
-						}
 						// $onclickup = "plugin_panel_number_step('up', '" . esc_attr( $name ) . "', " . esc_attr( $min ) . ", " . esc_attr( $max ) . ", " . esc_attr( $step ) . ");" . "\n";
 						// $row .= '<input class="setting-button button-secondary" type="button" value="+" onclick="' . $onclickup . '">' . "\n";
 						$row .= '<input class="number-button number-up-button setting-button button-secondary" type="button" value="+" data="' . esc_attr( $name ) . '">' . "\n";
+						if ( isset( $option['suffix'] ) ) {
+							$row .= ' ' . $option['suffix'];
+						}
 
 					} elseif ( 'image' == $type ) {
 

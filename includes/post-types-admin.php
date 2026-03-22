@@ -37,6 +37,7 @@ if ( !defined( 'ABSPATH' ) ) exit;
 // - Add Show List Columns
 // - Show List Column Data
 // - Show List Column Styles
+// - Add Show List Filters
 // === Schedule Overrides ===
 // - Add Override Show Data Metabox
 // - Override Show Data Metabox
@@ -79,8 +80,10 @@ if ( !defined( 'ABSPATH' ) ) exit;
 // - Bulk Edit Posts Notice
 // - Related Show Post List Styles
 // === Extra Functions ===
+// - Show Description Query Where Filter
 // - Post Type List Query Filter
 // - Relogin AJAX Message
+// - Show Select Options Output
 
 
 // -------------------------
@@ -1632,7 +1635,7 @@ function radio_station_show_shifts_table( $post_id ) {
 
 						// --- end minute selection ---
 						$class = ( '' == $shift['end_min'] ) ? 'incomplete' : '';
-						$list .= '<select id="shift-' . esc_attr( $unique_id ) . '-end-min" name="show_sched[' . esc_attr( $unique_id ) . '][end_min]" class="' . esc_attr( $classe ) . '" onchange="radio_check_select(this);" style="min-width:35px;">' . "\n";
+						$list .= '<select id="shift-' . esc_attr( $unique_id ) . '-end-min" name="show_sched[' . esc_attr( $unique_id ) . '][end_min]" class="' . esc_attr( $class ) . '" onchange="radio_check_select(this);" style="min-width:35px;">' . "\n";
 							$list .= '<option value=""></option>' . "\n";
 							$list .= '<option value="00">' . esc_html( number_format_i18n( 0 ) . number_format_i18n( 0 ) ) . '</option>' . "\n";
 							$list .= '<option value="15">' . esc_html( number_format_i18n( 15 ) ) . '</option>' . "\n";
@@ -2743,7 +2746,7 @@ function radio_station_show_columns( $columns ) {
 	// --- modify existing columns ---
 	$date = $columns['date'];
 	unset( $columns['date'] );
-	$comments = $columns['comments'];
+	// $comments = $columns['comments'];
 	unset( $columns['comments'] );
 	$genres = $columns['taxonomy-' . RADIO_STATION_GENRES_SLUG];
 	unset( $columns['taxonomy-' . RADIO_STATION_GENRES_SLUG] );
@@ -2759,8 +2762,9 @@ function radio_station_show_columns( $columns ) {
 	$columns['hosts'] = esc_attr( __( 'Hosts', 'radio-station' ) );
 	$columns['taxonomy-' . RADIO_STATION_GENRES_SLUG] = $genres;
 	$columns['taxonomy-' . RADIO_STATION_LANGUAGES_SLUG] = $languages;
-	$columns['comments'] = $comments;
+	// $columns['comments'] = $comments;
 	$columns['date'] = $date;
+	
 	$columns['show_image'] = esc_attr( __( 'Show Avatar', 'radio-station' ) );
 
 	return $columns;
@@ -2921,16 +2925,20 @@ function radio_station_show_column_data( $column, $post_id ) {
 			if ( is_array( $hosts ) && ( count( $hosts ) > 0 ) ) {
 				foreach ( $hosts as $host ) {
 					$user_info = get_userdata( $host );
-					// 2.5.9: add link to host edit URL
-					$host_edit_url = radio_station_get_host_edit_url( $host );
-					if ( $host_edit_url ) {
-						echo '<a href="' . esc_url( $host_edit_url ) . '">';
-					}				
-					echo esc_html( $user_info->display_name );
-					if ( $host_edit_url ) {
-						echo '</a>';
+					if ( $user_info ) {
+						// 2.5.9: add link to host edit URL
+						$host_edit_url = radio_station_get_host_edit_url( $host );
+						if ( $host_edit_url ) {
+							echo '<a href="' . esc_url( $host_edit_url ) . '">';
+						}
+						echo esc_html( $user_info->display_name );
+						if ( $host_edit_url ) {
+							echo '</a>';
+						}
+						echo '<br>' . "\n";
+					} else {
+						echo '<span style="display:none;">Host ' . esc_html( $host ) . ' ID not found.</span>';
 					}
-					echo '<br>' . "\n";
 				}
 			}
 		}
@@ -2980,7 +2988,8 @@ function radio_station_show_column_data( $column, $post_id ) {
 // -----------------------
 // 2.2.7: added show column styles
 // 2.5.0: renamed from radio_station_show_column_styles for consistency
-add_action( 'admin_footer', 'radio_station_show_admin_list_styles' );
+// 2.5.18: moved to admin head to not miss footer enqueueing
+add_action( 'admin_head', 'radio_station_show_admin_list_styles' );
 function radio_station_show_admin_list_styles() {
 
 	$current_screen = get_current_screen();
@@ -2988,11 +2997,16 @@ function radio_station_show_admin_list_styles() {
 		return;
 	}
 
-	$css = "#shifts {width: 200px;} #active, #description, #comments {width: 50px;}
-	.show-image {width: 100px;} .show-image img {width: 100%; height: auto;}
+	// 2.5.18: added active filter highlighting
+	$css = "#shifts {width: 200px;} #date {width: 100px;}
+	#active, #description, #comments {width: 50px;}
+	.column.column-date {font-size: 10px;}
+	.show-image {width: 75px;}
+	.show-image img {width: 100%; height: auto;}
 	.show-shift.disabled {border: 1px dashed orange;}
 	.show-shift.conflict {border: 1px solid red;}
-	.show-shift.disabled.conflict {border: 1px dashed red;}";
+	.show-shift.disabled.conflict {border: 1px dashed red;}
+	select.active-filter {outline: 1px solid #FF7700;}";
 	
 	// 2.5.0: added missing style filter
 	// 2.5.6: use radio_station_add_inline_style
@@ -3001,12 +3015,12 @@ function radio_station_show_admin_list_styles() {
 	radio_station_add_inline_style( 'rs-admin', $css );
 }
 
-// -------------------------
-// Add Show Shift Day Filter
-// -------------------------
+// ---------------------
+// Add Show List Filters
+// ---------------------
 // 2.2.7: added show day selection filtering
-add_action( 'restrict_manage_posts', 'radio_station_show_day_filter', 10, 2 );
-function radio_station_show_day_filter( $post_type, $which ) {
+add_action( 'restrict_manage_posts', 'radio_station_show_list_filters', 10, 2 );
+function radio_station_show_list_filters( $post_type, $which ) {
 
 	if ( RADIO_STATION_SHOW_SLUG !== $post_type ) {
 		return;
@@ -3022,7 +3036,12 @@ function radio_station_show_day_filter( $post_type, $which ) {
 	$days = radio_station_get_schedule_weekdays();
 
 	echo '<label for="filter-by-show-day" class="screen-reader-text">' . esc_html( __( 'Filter by show day', 'radio-station' ) ) . '</label>' . "\n";
-	echo '<select name="weekday" id="filter-by-show-day">' . "\n";
+	echo '<select name="weekday" id="filter-by-show-day"';
+	// 2.5.18: added active filter higlighting
+	if ( 0 != $d ) {
+		echo ' class="active-filter"';
+	}	
+	echo '>' . "\n";
 		echo '<option value="0" ' . selected( $d, 0, false ) . '>' . esc_html( __( 'All show days', 'radio-station' ) ) . '</option>' . "\n";
 		foreach ( $days as $day ) {
 			echo '<option value="' . esc_attr( $day ) . '" ' . selected( $d, $day, false ) . '>';
@@ -3031,6 +3050,46 @@ function radio_station_show_day_filter( $post_type, $which ) {
 			echo '</option>' . "\n";
 		}
 	echo '</select>' . "\n";
+	
+	// --- show description ---
+	// 2.5.18: added show description filter selection
+	$desc = isset( $_GET['description'] ) ? sanitize_text_field( $_GET['description'] ) : '';
+	echo '<label for="filter-by-description" class="screen-reader-text">' . esc_html( __( 'Filter by Description', 'radio-station' ) ) . '</label>' . "\n";
+	echo '<select name="description" id="filter-by-description"';
+	if ( '' != $desc ) {
+		echo ' class="active-filter"';
+	}	
+	echo '>' . "\n";
+		echo '<option value=""' . selected( $desc, '', false ) . '>' . esc_html( __( 'Any Description', 'radio-station' ) ) . '</option>' . "\n";
+		echo '<option value="empty" ' . selected( $desc, 'empty', false ) . '>';
+			echo esc_html( __( 'No Description', 'radio-station' ) );
+		echo '</option>' . "\n";
+		echo '<option value="notempty" ' . selected( $desc, 'notempty', false ) . '>';
+			echo esc_html( __( 'With Description', 'radio-station' ) );
+		echo '</option>' . "\n";
+	echo '</select>' . "\n";
+
+	// --- show genres ---
+	// 2.5.18: added show genre filter selection
+	$g = isset( $_GET['genre'] ) ? sanitize_text_field( $_GET['genre'] ) : '';
+	$genres = get_terms( array( 'taxonomy' => RADIO_STATION_GENRES_SLUG, 'hide_empty' => false ) );
+	if ( $genres && ( count( $genres ) > 0 ) ) {
+		echo '<label for="filter-by-genre" class="screen-reader-text">' . esc_html( __( 'Filter by Genre', 'radio-station' ) ) . '</label>' . "\n";
+		echo '<select name="genre" id="filter-by-genre"';
+		if ( '' != $g ) {
+			echo ' class="active-filter"';
+		}	
+		echo '>' . "\n";
+			echo '<option value=""' . selected( $g, '', false ) . '>' . esc_html( __( 'All Genres', 'radio-station' ) ) . '</option>' . "\n";
+			echo '<option value="none"' . selected( $g, 'none', false ) . '>' . esc_html( __( 'Without Genre', 'radio-station' ) ) . '</option>' . "\n";
+			foreach ( $genres as $genre ) {
+				echo '<option value="' . $genre->term_id . '" ' . selected( $g, $genre->term_id, false ) . '>';
+					echo esc_html( $genre->name ) . ' (' . esc_html( $genre->count ) . ')';
+				echo '</option>' . "\n";
+			}
+		echo '</select>' . "\n";
+	}
+
 }
 
 
@@ -5309,20 +5368,23 @@ function radio_station_override_sortable_columns( $columns ) {
 // Schedule Override Column Styles
 // -------------------------------
 // 2.5.0: renamed from radio_station_override_column_styles for consistency
-add_action( 'admin_footer', 'radio_station_override_admin_list_styles' );
+// 2.5.18: moved to admin_head to not miss footer enqueueing
+add_action( 'admin_head', 'radio_station_override_admin_list_styles' );
 function radio_station_override_admin_list_styles() {
 	$currentscreen = get_current_screen();
 	if ( 'edit-' . RADIO_STATION_OVERRIDE_SLUG !== $currentscreen->id ) {
 		return;
 	}
 	
+	// 2.5.18: added active filter highlighting
 	$css = "#title {min-width: 100px;}
 	#override_times {width: 150px;}
 	#shows_affected {width: 250px;}
 	#description {width: 40px; font-size: 12px;}
 	#taxonomy-" . RADIO_STATION_GENRES_SLUG . ", #taxonomy-" . RADIO_STATION_LANGUAGES_SLUG . " {width: 75px;}
 	#override_image, .override_image {width: 75px;}
-	.override_image img {width: 100%; height: auto;}";
+	.override_image img {width: 100%; height: auto;}
+	select.active-filter {outline: 1px solid #FF7700;}";
 
 	// 2.3.2: set override image column width to override image width
 	// 2.3.3.9: set override times column width
@@ -5373,7 +5435,11 @@ function radio_station_override_date_filter( $post_type, $which ) {
 
 	// --- month override selector ---
 	echo '<label for="filter-by-override-date" class="screen-reader-text">' . esc_html( __( 'Filter by override date', 'radio-station' ) ) . '</label>' . "\n";
-	echo '<select name="month" id="filter-by-override-date">' . "\n";
+	echo '<select name="month" id="filter-by-override-date"';
+	if ( 0 != $m ) {
+		echo ' class="active-filter"';
+	}
+	echo '>' . "\n";
 		echo '<option value="0" ' . selected( $m, 0, false ) . '>' . esc_html( __( 'All Override Months', 'radio-station' ) ) . '</option>' . "\n";
 		if ( count( $months ) > 0 ) {
 			foreach ( $months as $key => $data ) {
@@ -5403,7 +5469,11 @@ function radio_station_override_past_future_filter( $post_type, $which ) {
 	// --- past / future override selector ---
 	// 2.3.3.5: added option for today filtering
 	echo '<label for="filter-by-past-future" class="screen-reader-text">' . esc_html( __( 'Past and Future', 'radio-station' ) ) . '</label>' . "\n";
-	echo '<select name="pastfuture" id="filter-by-past-future">' . "\n";
+	echo '<select name="pastfuture" id="filter-by-past-future"';
+	if ( '' != $pastfuture ) {
+		echo ' class="active-filter"';
+	}	
+	echo '>' . "\n";
 		echo '<option value="" ' . selected( $pastfuture, 0, false ) . '>' . esc_html( __( 'All Overrides', 'radio-station' ) ) . '</option>' . "\n";
 		echo '<option value="past"' . selected( $pastfuture, 'past', false ) . '>' . esc_html( __( 'Past Overrides', 'radio-station' ) ) . '</option>' . "\n";
 		echo '<option value="today"' . selected( $pastfuture, 'today', false ) . '>' . esc_html( __( 'Overrides Today', 'radio-station' ) ) . '</option>' . "\n";
@@ -6435,7 +6505,8 @@ function radio_station_playlist_column_data( $column, $post_id ) {
 // Playlist List Column Styles
 // ---------------------------
 // 2.5.0: renamed function from radio_station_playlist_column_styles
-add_action( 'admin_footer', 'radio_station_playlist_admin_list_styles' );
+// 2.5.18: moved to admin_head to not miss footer enqueueing
+add_action( 'admin_head', 'radio_station_playlist_admin_list_styles' );
 function radio_station_playlist_admin_list_styles() {
 	$currentscreen = get_current_screen();
 	if ( 'edit-' . RADIO_STATION_PLAYLIST_SLUG !== $currentscreen->id ) {
@@ -6443,11 +6514,13 @@ function radio_station_playlist_admin_list_styles() {
 	}
 
 	// --- playlist list styles ---
+	// 2.5.18: added active filter highlighting
 	$css = "#show {width: 100px;}
 	#trackcount {width: 35px; font-size: 12px;}
 	#tracklist {width: 250px;}
 	.tracklist-table {width: 350px;}
-	.tracklist-table td {padding: 0px 10px;}";
+	.tracklist-table td {padding: 0px 10px;}
+	select.active-filter {outline: 1px solid #FF7700;}";
 
 	// 2.3.3.9: add playlist list styles filter
 	// 2.5.0: use wp_kses_post on style output
@@ -7279,6 +7352,29 @@ function radio_station_posts_list_styles() {
 // === Extra Functions ===
 // -----------------------
 
+// -----------------------------------
+// Show Description Query Where Filter
+// -----------------------------------
+// 2.5.18: added for filtering empty show description or not
+add_filter( 'posts_where', 'radio_station_columns_where_filter', 10, 2 );
+function radio_station_columns_where_filter( $where, $query ) {
+
+	if ( !is_admin() || !$query->is_main_query() || ( RADIO_STATION_SHOW_SLUG !== $query->get( 'post_type' ) ) ) {
+		return $where;
+	}
+
+	// --- description filter ---
+	if ( isset( $_GET['description'] ) ) {
+		$desc = sanitize_text_field( $_GET['description'] );
+		if ( 'empty' == $desc ) {
+			$where .= " AND (post_content IS NULL OR TRIM(post_content) = '')";
+		} elseif ( 'notempty' == $desc ) {
+			$where .= " AND (post_content IS NOT NULL AND TRIM(post_content) != '')";
+		}
+	}
+	return $where;
+}
+		
 // ---------------------------
 // Post Type List Query Filter
 // ---------------------------
@@ -7354,7 +7450,36 @@ function radio_station_columns_query_filter( $query ) {
 			$query->set( 'orderby', 'meta_value' );
 			$query->set( 'meta_key', 'show_shift_time' );
 			$query->set( 'meta_type', 'TIME' );
+		}	
+
+		// --- Genre Filtering ---
+		// 2.5.18: added genre filtering
+		if ( isset( $_GET['genre'] ) ) {
+			$genre = sanitize_text_field( $_GET['genre'] );
+			if ( '' != $genre ) {
+				if ( 'none' == $genre ) {
+					$genre_tax_query = array(
+						array(
+							'taxonomy' => RADIO_STATION_GENRES_SLUG,
+							'field'    => 'id',
+							'operator' => 'NOT EXISTS',
+						),
+					);
+				} else {
+					$genre_tax_query = array(
+						array(
+							'taxonomy' => RADIO_STATION_GENRES_SLUG,
+							'field'    => 'id',
+							'terms'    => (int) $genre,
+						),
+					);
+				}
+
+				// --- set channel taxonomy query ---
+				$query->set( 'tax_query', $genre_tax_query );
+			}
 		}
+
 	}
 
 	// --- Order Show Overrides by Override Date ---
@@ -7513,7 +7638,7 @@ function radio_station_relogin_message() {
 }
 
 // --------------------------
-// Show Select Options output
+// Show Select Options Output
 // --------------------------
 function radio_station_show_select_options( $type, $selected, $shows = false ) {
 

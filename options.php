@@ -151,14 +151,15 @@ function radio_station_plugin_options( $admin = false ) {
 		),
 		
 		// --- Station Band ---
-		// 2.5.18: addde station band option
+		// 2.5.18: added station band option
 		'station_band' => array(
 			'type'    => 'select',
 			'label'   => $admin ? __( 'Frequency Band', 'radio-station' ) : '',
 			'options' => array(
-				''    => __( 'n/a', 'radio-station' ),
-				'fm'  => __( 'FM', 'radio-station' ),
-				'am'  => __( 'AM', 'radio-station' ),			
+				''    => $admin ? __( 'n/a', 'radio-station' ) : '',
+				'fm'  => $admin ? __( 'FM', 'radio-station' ) : '',
+				'am'  => $admin ? __( 'AM', 'radio-station' ) : '',
+				'dab' => $admin ? __( 'DAB', 'radio-station' ) : '',
 			),
 			'default' => '',
 			'helper'  => $admin ? __( 'Your station frequency band identifier.', 'radio-station' ) : '',
@@ -402,10 +403,8 @@ function radio_station_plugin_options( $admin = false ) {
 				'frequency' => $admin ? __( 'Frequency', 'radio-station' ) : '',
 				'location'  => $admin ? __( 'Location', 'radio-station' ) : '',
 				'timezone'  => $admin ? __( 'Timezone', 'radio-station' ) : '',
-				// 'phone'  => $admin ? __( 'Phone Number', 'radio-station' ) : '',
-				// 'text'   => $admin ? __( 'Text Number', 'radio-station' ) : '',
 			),
-			'default' => array( 'frequency', 'location' ),
+			'default' => array( 'frequency' ),
 			'helper'  => $admin ? __( 'Display your Radio Station Meta in Player by default.', 'radio-station' ) : '',
 			'tab'     => 'player',
 			'section' => 'basic',
@@ -483,6 +482,7 @@ function radio_station_plugin_options( $admin = false ) {
 			'type'    => 'multicheck',
 			'label'   => $admin ? __( 'Volume Controls', 'radio-station' ) : '',
 			'default' => array( 'slider' ),
+			'suffix'  => '%',
 			'options' => array(
 				'slider'   => $admin ? __( 'Volume Slider', 'radio-station' ) : '',
 				'updown'   => $admin ? __( 'Volume Plus / Minus', 'radio-station' ) : '',
@@ -674,6 +674,7 @@ function radio_station_plugin_options( $admin = false ) {
 			'min'     => 0,
 			'step'    => 100,
 			'max'     => 10000,
+			'suffix'  => 'ms',
 			'helper'  => $admin ? __( 'Number of milliseconds after Page load over which to fade in Player Bar. Use 0 for instant display.', 'radio-station' ) : '',
 			'tab'     => 'player',
 			'section' => 'bar',
@@ -701,6 +702,7 @@ function radio_station_plugin_options( $admin = false ) {
 			'min'     => 0,
 			'step'    => 100,
 			'max'     => 10000,
+			'suffix'  => 'ms',
 			'helper'  => $admin ? __( 'Number of milliseconds over which to fade in new Pages (when continuous playback is enabled.) Use 0 for instant display.', 'radio-station' ) : '',
 			'tab'     => 'player',
 			'section' => 'bar',
@@ -716,6 +718,7 @@ function radio_station_plugin_options( $admin = false ) {
 			'min'     => 0,
 			'step'    => 500,
 			'max'     => 20000,
+			'suffix'  => 'ms',
 			'helper'  => $admin ? __( 'Number of milliseconds to wait for new Page to load before fading in anyway or prompting (if continuous playback is enabled.)', 'radio-station' ) : '',
 			'tab'     => 'player',
 			'section' => 'bar',
@@ -774,6 +777,25 @@ function radio_station_plugin_options( $admin = false ) {
 			'tab'     => 'player',
 			'section' => 'bar',
 			'helper'  => $admin ? __( 'Display the Current Show in the Player Bar.', 'radio-station' ) : '',
+			'pro'     => true,
+		),
+		
+		// --- [Pro/Player] Show Meta ---
+		// 2.5.18: added show meta display option
+		'player_bar_showmeta' => array(
+			'type'    => 'multicheck',
+			'label'   => $admin ? __( 'Show Meta Display', 'radio-station' ) : '',
+			'options' => array(
+				'hosts'       => $admin ? __( 'Hosts', 'radio-station' ) : '',
+				'producers'   => $admin ? __( 'Producers', 'radio-station' ) : '',
+				'shift'       => $admin ? __( 'Shift Time', 'radio-station' ) : '',
+				// 'remaining'   => $admin ? __( 'Remaining Time', 'radio-station' ) : '',
+				// 'description' => $admin ? __( 'Description', 'radio-station' ) : '',
+			),
+			'default' => 'yes',
+			'tab'     => 'player',
+			'section' => 'bar',
+			'helper'  => $admin ? __( 'Show meta to display in the Player Bar.', 'radio-station' ) : '',
 			'pro'     => true,
 		),
 

@@ -570,16 +570,18 @@ function radio_station_statistics_panel() {
 			if ( $override_count > 0 ) {
 				echo ' ' . esc_html( __( 'and', 'radio-station' ) ) . ' ';
 				echo '<span style="progress-count">' . esc_html( $override_count ) . '</span>';
-				echo ' ' . esc_html( __( 'Overrides', 'radio-station' ) );
+				echo ' ' . esc_html( __( 'Specials', 'radio-station' ) );
 			}
 
 			echo ' ' . esc_html( __( 'with',' radio-station' ) ) . ' ';
 			echo ' ' . esc_html( $desc_percent ) . '% ';
 			// TODO: link to Show list - filtered by lack of description
-			// $show_desc_url = admin_url( '' );
-			// echo '<a href="' . esc_url( $show_desc_url ) . '">';
+			$show_desc_url = admin_url( 'edit.php' );
+			$show_desc_url = add_query_arg( 'post_type', RADIO_STATION_SHOW_SLUG, $show_desc_url );
+			$show_desc_url = add_query_arg( 'description', 'empty', $show_desc_url );
+			echo '<a href="' . esc_url( $show_desc_url ) . '">';
 				echo esc_html( 'Description coverage', 'radio-station' ) . '.';
-			// echo '</a>';
+			echo '</a>';
 
 		echo '</div>' . "\n";
 		
@@ -685,7 +687,7 @@ function radio_station_statistics_panel() {
 			if ( $genre_percent < 100 ) {
 				// TODO: link to shows list - without genres filter
 				$show_genres_url = add_query_arg( 'post_type', RADIO_STATION_SHOW_SLUG, admin_url( 'edit.php' ) );
-				$show_genres_url = add_query_arg( 'filter', 'no-genres', $show_genres_url );
+				$show_genres_url = add_query_arg( 'genre', 'none', $show_genres_url );
 				echo '<a href="' . esc_url( $show_genres_url ) . '">';
 			}
 			echo esc_html( __( 'Genre coverage', 'radio-station' ) );

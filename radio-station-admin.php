@@ -14,7 +14,6 @@ if ( !defined( 'ABSPATH' ) ) exit;
 // === Admin Menu ===
 // - Settings Page Capability Check
 // - Add Admin Menu and Submenu Items
-// - Content Dashboard Admin Page
 // - Fix to Expand Main Menu for Submenu Items
 // - Taxonomy Submenu Item Fix
 // - Fix to Redirect Plugin Settings Menu Link
@@ -240,7 +239,9 @@ function radio_station_add_admin_menus() {
 	// 2.3.0: remove add playlist and add override to reduce clutter
 	// 2.3.0: added actions for adding of other plugin submenu items in position
 	// 2.5.0: disabled Add Show submenu item to reduce clutter
+	// 2.5.18: added dashboard item and do_actions 
 	do_action( 'radio_station_admin_submenu_content_top' );
+	add_submenu_page( 'radio-content', __( 'Dashboard', 'radio-station' ), __( 'Dashboard', 'radio-station' ), 'publish_playlists', 'radio-content', 'radio_station_content_page' );
 	add_submenu_page( 'radio-content', $rs . ' ' . __( 'Shows', 'radio-station' ), __( 'Shows', 'radio-station' ), 'edit_shows', 'shows' );
 	// add_submenu_page( 'radio-station', $rs . ' ' . __( 'Add Show', 'radio-station' ), __( 'Add Show', 'radio-station' ), 'publish_shows', 'add-show' );
 	// 2.5.18: change label from Schedule Overrides

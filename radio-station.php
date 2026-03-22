@@ -686,16 +686,18 @@ function radio_station_add_inline_script( $handle, $js, $position = 'after' ) {
 		// 2.5.10: fix slug from rp-footer to rs-footer
 		// 2.5.10: change from register_script to enqueue_script
 		// 2.5.18: register here but enqueue later
-		if ( !wp_script_is( 'radio-station-footer', 'registered' ) ) {
+		if ( !wp_script_is( RADIO_STATION_SLUG . '-footer', 'registered' ) ) {
 			$version = function_exists( 'radio_station_plugin_version' ) ? radio_station_plugin_version() : '2.5.0';
-			wp_register_script( 'radio-station-footer', null, array( 'jquery' ), $version, true );
-			// wp_enqueue_script( 'radio-station-footer' );
+			wp_register_script( RADIO_STATION_SLUG . '-footer', null, array( 'jquery' ), $version, true );
+			// wp_enqueue_script( RADIO_STATION_SLUG . '-footer' );
 		}
-		wp_add_inline_script( 'radio-station-footer', $js, $position );
+		wp_add_inline_script( RADIO_STATION_SLUG . '-footer', $js, $position );
 		
 		// 2.5.18: enqueue in footer
-		if ( !has_action( 'wp_footer', 'radio_station_enqueue_footer_scripts', 9 ) ) {
-			add_action( 'wp_footer', 'radio_station_enqueue_footer_scripts', 9 );
+		// 2.5.18: allow for admin footer hook
+		$hook = is_admin() ? 'admin_footer' : 'wp_footer';
+		if ( !has_action( $hook, 'radio_station_enqueue_footer_scripts', 9 ) ) {
+			add_action( $hook, 'radio_station_enqueue_footer_scripts', 9 );
 		}
 
 	}
@@ -708,7 +710,7 @@ function radio_station_add_inline_script( $handle, $js, $position = 'after' ) {
 // 2.5.7: deprecated print script in favour of adding inline to dummy script
 // 2.5.18: repurpose to enqueue footer scripts
 function radio_station_enqueue_footer_scripts() {
-	wp_enqueue_script( 'radio-station-footer' );
+	wp_enqueue_script( RADIO_STATION_SLUG . '-footer' );
 }
 
 // --------------------------
@@ -783,15 +785,17 @@ function radio_station_add_inline_style( $handle, $css ) {
 
 	} else {
 		// 2.5.18: register inline style but enqueue later
-		if ( !wp_style_is( 'radio-station-footer', 'registered' ) ) {
+		if ( !wp_style_is( RADIO_STATION_SLUG . '-footer', 'registered' ) ) {
 			$version = function_exists( 'radio_station_plugin_version' ) ? radio_station_plugin_version() : '2.5.0';
-			wp_register_style( 'radio-station-footer', null, array(), $version, 'all' );
-			// wp_enqueue_style( 'radio-station-footer' );
+			wp_register_style( RADIO_STATION_SLUG . '-footer', null, array(), $version, 'all' );
+			// wp_enqueue_style( RADIO_STATION_SLUG . '-footer' );
 		}
-		wp_add_inline_style( 'radio-station-footer', $css );
-		
-		if ( !has_action( 'wp_footer', 'radio_station_enqueue_footer_styles', 9 ) ) {
-			add_action( 'wp_footer', 'radio_station_enqueue_footer_styles', 9 );
+		wp_add_inline_style( RADIO_STATION_SLUG . '-footer', $css );
+
+		// 2.5.18: allow for admin footer position
+		$hook = is_admin() ? 'admin_footer' : 'wp_footer';
+		if ( !has_action( $hook, 'radio_station_enqueue_footer_styles', 9 ) ) {
+			add_action( $hook, 'radio_station_enqueue_footer_styles', 9 );
 		}
 	}
 }
@@ -802,7 +806,7 @@ function radio_station_add_inline_style( $handle, $css ) {
 // 2.5.0: added print in footer for missed inline styles
 // 2.5.18: repurpose to enqueue footer Styles
 function radio_station_enqueue_footer_styles() {
-	wp_enqueue_style( 'radio-station-footer' );
+	wp_enqueue_style( RADIO_STATION_SLUG . '-footer' );
 }
 
 // -------------------------
@@ -1016,11 +1020,13 @@ function radio_station_localization_script() {
 
 	// --- set countdown labels ---
 	// 2.5.0: moved here from countdown enqueue function
+	// 2.5.18: added with label for host metadata display
 	$js .= "radio.labels.showstarted = '" . esc_js( __( 'This Show has started.', 'radio-station' ) ) . "';" . "\n";
 	$js .= "radio.labels.showended = '" . esc_js( __( 'This Show has ended.', 'radio-station' ) ) . "';" . "\n";
 	$js .= "radio.labels.playlistended = '" . esc_js( __( 'This Playlist has ended.', 'radio-station' ) ) . "';" . "\n";
 	$js .= "radio.labels.timecommencing = '" . esc_js( __( 'Commencing in', 'radio-station' ) ) . "';" . "\n";
 	$js .= "radio.labels.timeremaining = '" . esc_js( __( 'Remaining Time', 'radio-station' ) ) . "';" . "\n";
+	$js .= "radio.labels.showwith = '" . esc_js( __( 'with', 'radio-station' ) ) . "';" . "\n";
 
 	// --- translated time unit strings ---
 	$js .= "radio.units.am = '" . esc_js( radio_station_translate_meridiem( 'am' ) ) . "'; ";

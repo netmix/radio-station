@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Added: Special Overrides data routes/feed to Data API
 * Added: Link main language term to filtered show archive
 * Added: Channel input support for Shifts and Overrides
+* Added: Genre and Description filters for admin Show list
 * Fixed: Player Amplitude script pause/unpause source bug
 * Fixed: Special/Override (non-linked) Host/Producer data
 * Fixed: Radio Player (other developer) plugin conflicts
