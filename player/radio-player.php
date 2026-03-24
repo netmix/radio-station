@@ -250,6 +250,17 @@ function radio_player_output( $args = array(), $echo = false ) {
 		'default'  => false,
 	);
 
+	// 2.5.18: explode string attributes
+	if ( isset( $atts['meta'] ) && is_string( $atts['meta'] ) && ( '' != $atts['meta'] ) ) {
+		$atts['meta'] = explode( ',', $atts['meta'] );
+	}
+	if ( isset( $atts['showmeta'] ) && is_string( $atts['showmeta'] )  && ( '' != $atts['meta'] ) ) {
+		$atts['showmeta'] = explode( ',', $atts['showmeta'] );
+	}
+	if ( isset( $atts['volumes'] ) && is_string( $atts['volumes'] )  && ( '' != $atts['meta'] ) ) {
+		$atts['volumes'] = explode( ',', $atts['volumes'] );
+	}
+
 	// --- ensure all arguments are set ---
 	foreach ( $defaults as $key => $value ) {
 		// 2.5.18: allow setting of value to default
@@ -398,11 +409,7 @@ function radio_player_output( $args = array(), $echo = false ) {
 			$title_display .= esc_html( $args['title'] );
 		}
 		$title_display = apply_filters( 'radio_player_station_display', $title_display, $args, $instance );
-		$station_meta['title'] = '<div class="rp-station-title" aria-label="' . esc_attr( __( 'Station Name', 'radio-station' ) ) . '"';
-		if ( !in_array( 'title', $args['meta'] ) ) {
-			$station_meta['title'] .= ' style="display:none;"';
-		}
-		$station_meta['title'] .= '>' . $title_display . '</div>' . "\n";
+		$station_meta['title'] = '<div class="rp-station-title" aria-label="' . esc_attr( __( 'Station Name', 'radio-station' ) ) . '">' . $title_display . '</div>' . "\n";
 
 		// --- station tagline ---
 		// 2.5.18: add tagline display

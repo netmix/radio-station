@@ -147,7 +147,7 @@ function radio_station_plugin_options( $admin = false ) {
 			'default' => '',
 			'helper'  => $admin ? __( 'Your station frequency as a number.', 'radio-station' ) : '',
 			'tab'     => 'general',
-			'section' => 'station',
+			'section' => 'broadcast',
 		),
 		
 		// --- Station Band ---
@@ -372,6 +372,7 @@ function radio_station_plugin_options( $admin = false ) {
 		),
 
 		// --- [Player] Player Title ---
+		// TODO: option to display callsign instead ?
 		'player_title' => array(
 			'type'    => 'checkbox',
 			'label'   => $admin ? __( 'Display Station Title', 'radio-station' ) : '',
@@ -792,7 +793,7 @@ function radio_station_plugin_options( $admin = false ) {
 				// 'remaining'   => $admin ? __( 'Remaining Time', 'radio-station' ) : '',
 				// 'description' => $admin ? __( 'Description', 'radio-station' ) : '',
 			),
-			'default' => 'yes',
+			'default' => array( 'hosts', 'shift' ),
 			'tab'     => 'player',
 			'section' => 'bar',
 			'helper'  => $admin ? __( 'Show meta to display in the Player Bar.', 'radio-station' ) : '',

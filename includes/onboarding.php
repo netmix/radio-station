@@ -100,7 +100,7 @@ function radio_station_quicklinks_panel() {
 		} else {
 			$account_url = add_query_arg( 'page', 'radio-station-account', admin_url( 'admin.php' ) );
 			echo '<li class="progress-list-item">' . "\n";
-				echo '<span class="progress-icon progress-upgrade dashicons dashicons-admin-users"></span>' . "\n";
+				echo '<span class="progress-icon progress-account dashicons dashicons-admin-users"></span>' . "\n";
 				echo '<a class="progress-quicklink" href="' . esc_url( $account_url ) . '">' . esc_html( __( 'Account', 'radio-station' ) ) . '</a>' . "\n";
 			echo '</li>' . "\n";
 		}
@@ -113,35 +113,35 @@ function radio_station_quicklinks_panel() {
 		// --- shows ---
 		$shows_url = add_query_arg( 'post_type', RADIO_STATION_SHOW_SLUG, admin_url( 'edit.php' ) );
 		echo '<li class="progress-list-item">' . "\n";
-			echo '<span class="progress-icon progress-settings dashicons dashicons-format-audio"></span>' . "\n";
+			echo '<span class="progress-icon progress-shows dashicons dashicons-format-audio"></span>' . "\n";
 			echo '<a href="' . esc_url( $shows_url ) . '">' . esc_html( __( 'Shows', 'radio-station' ) ) . '</a>' . "\n";
 		echo '</li>' . "\n";
 		
 		// --- specials ---
 		$specials_url = add_query_arg( 'post_type', RADIO_STATION_OVERRIDE_SLUG, admin_url( 'edit.php' ) );
 		echo '<li class="progress-list-item">' . "\n";
-			echo '<span class="progress-icon progress-settings dashicons dashicons-clock"></span>' . "\n";
+			echo '<span class="progress-icon progress-specials dashicons dashicons-clock"></span>' . "\n";
 			echo '<a href="' . esc_url( $specials_url ) . '">' . esc_html( __( 'Specials', 'radio-station' ) ) . '</a>' . "\n";
 		echo '</li>' . "\n";
 		
 		// --- playlists ---
 		$playlist_url = add_query_arg( 'post_type', RADIO_STATION_PLAYLIST_SLUG, admin_url( 'edit.php' ) );
 		echo '<li class="progress-list-item">' . "\n";
-			echo '<span class="progress-icon progress-settings dashicons dashicons-playlist-audio"></span>' . "\n";
+			echo '<span class="progress-icon progress-playlists dashicons dashicons-playlist-audio"></span>' . "\n";
 			echo '<a href="' . esc_url( $playlist_url ) . '">' . esc_html( __( 'Playlists', 'radio-station' ) ) . '</a>' . "\n";
 		echo '</li>' . "\n";
 
 		// --- genres ---
 		$genres_url = add_query_arg( 'taxonomy', RADIO_STATION_GENRES_SLUG, admin_url( 'edit-tags.php' ) );
 		echo '<li class="progress-list-item">' . "\n";
-			echo '<span class="progress-icon progress-settings dashicons dashicons-media-audio"></span>' . "\n";
+			echo '<span class="progress-icon progress-genres dashicons dashicons-media-audio"></span>' . "\n";
 			echo '<a href="' . esc_url( $genres_url ) . '">' . esc_html( __( 'Genres', 'radio-station' ) ) . '</a>' . "\n";
 		echo '</li>' . "\n";
 
 		// --- languages ---
 		$languages_url = add_query_arg( 'taxonomy', RADIO_STATION_LANGUAGES_SLUG, admin_url( 'edit-tags.php' ) );
 		echo '<li class="progress-list-item">' . "\n";
-			echo '<span class="progress-icon progress-settings dashicons dashicons-translation"></span>' . "\n";
+			echo '<span class="progress-icon progress-languages dashicons dashicons-translation"></span>' . "\n";
 			echo '<a href="' . esc_url( $languages_url ) . '">' . esc_html( __( 'Languages', 'radio-station' ) ) . '</a>' . "\n";
 		echo '</li>' . "\n";
 
@@ -157,28 +157,28 @@ function radio_station_quicklinks_panel() {
 			// TODO: link to schedule editor page
 			$schedule_url = add_query_arg( 'post_type', RADIO_STATION_SHOW_SLUG, admin_url( 'edit.php' ) );
 			echo '<li class="progress-list-item">' . "\n";
-				echo '<span class="progress-icon progress-settings dashicons dashicons-calendar"></span>' . "\n";
+				echo '<span class="progress-icon progress-schedule dashicons dashicons-calendar"></span>' . "\n";
 				echo '<a href="' . esc_url( $schedule_url ) . '">' . esc_html( __( 'Schedule Editor', 'radio-station' ) ) . '</a>' . "\n";
 			echo '</li>' . "\n";
 
 			// --- episodes ---
 			$episodes_url = add_query_arg( 'post_type', RADIO_STATION_EPISODE_SLUG, admin_url( 'edit.php' ) );
 			echo '<li class="progress-list-item">' . "\n";
-				echo '<span class="progress-icon progress-settings dashicons dashicons-album"></span>' . "\n";
+				echo '<span class="progress-icon progress-episodes dashicons dashicons-album"></span>' . "\n";
 				echo '<a href="' . esc_url( $episodes_url ) . '">' . esc_html( __( 'Episodes', 'radio-station' ) ) . '</a>' . "\n";
 			echo '</li>' . "\n";
 
 			// --- hosts ---
 			$hosts_url = add_query_arg( 'post_type', RADIO_STATION_HOST_SLUG, admin_url( 'edit.php' ) );
 			echo '<li class="progress-list-item">' . "\n";
-				echo '<span class="progress-icon progress-settings dashicons dashicons-groups"></span>' . "\n";
+				echo '<span class="progress-icon progress-hosts dashicons dashicons-groups"></span>' . "\n";
 				echo '<a href="' . esc_url( $hosts_url ) . '">' . esc_html( __( 'Hosts', 'radio-station' ) ) . '</a>' . "\n";
 			echo '</li>' . "\n";
 
 			// --- producers ---
 			$producers_url = add_query_arg( 'post_type', RADIO_STATION_PRODUCER_SLUG, admin_url( 'edit.php' ) );
 			echo '<li class="progress-list-item">' . "\n";
-				echo '<span class="progress-icon progress-settings dashicons dashicons-businessperson"></span>' . "\n";
+				echo '<span class="progress-icon progress-producers dashicons dashicons-businessperson"></span>' . "\n";
 				echo '<a href="' . esc_url( $producers_url ) . '">' . esc_html( __( 'Producers', 'radio-station' ) ) . '</a>' . "\n";
 			echo '</li>' . "\n";
 
@@ -343,467 +343,498 @@ function radio_station_statistics_panel() {
 	// --- get episode counts ---
 	$episode_count = $episode_show_count = $episode_playlist_count = 0;
 	$episode_show_ids = $episode_playlist_ids = array();
-	$query = "SELECT ID FROM " . $wpdb->prefix . "posts WHERE post_type = %s";
-	$results = $wpdb->get_results( $wpdb->prepare( $query, RADIO_STATION_EPISODE_SLUG ), ARRAY_A );
-	if ( $results && is_array( $results ) && ( count( $results ) > 0 ) ) {
-		foreach ( $results as $result ) {
-			$episode_show_id = get_post_meta( $result['ID'], 'episode_show_id', true );
-			if ( !in_array( $episode_show_id, $episode_show_ids ) ) {
-				$episode_show_ids[] = $episode_show_id;
-			}
-			$episode_playlist_id = get_post_meta( $result['ID'], 'episode_playlist', true );
-			if ( $episode_playlist_id && !in_array( $episode_playlist_id, $episode_playlist_ids ) ) {
-				$episode_playlist_ids[] = $episode_playlist_id;
-			}
-		}
-	}
-	$episode_show_count = count( $episode_show_ids );
-	$episode_playlist_count = count( $episode_playlist_ids );
-
-	// --- Schedule heading ---
-	echo '<div class="progress-heading">' . esc_html( 'Station Schedule', 'radio-station' ) . '</div>' . "\n";
-
-	// --- Schedule percentage line  ---
-	$schedule_percent = $total_times = 0;
-	$schedule = radio_station_get_current_schedule();
-	if ( $schedule && is_array( $schedule ) && ( count( $schedule ) > 0 ) ) {
-		// print_r( $schedule );
-		foreach ( $schedule as $day => $shifts ) {
-			foreach ( $shifts as $time => $shift ) {
-				$start_time = strtotime( $shift['date'] . ' ' . $shift['start'] );
-				$end_time = strtotime( $shift['date'] . ' ' . $shift['end'] );
-				if ( $start_time > $end_time ) {
-					$end_time = $end_time + 86400;
+	if ( defined( 'RADIO_STATION_EPISODE_SLUG' ) ) {
+		$query = "SELECT ID FROM " . $wpdb->prefix . "posts WHERE post_type = %s";
+		$results = $wpdb->get_results( $wpdb->prepare( $query, RADIO_STATION_EPISODE_SLUG ), ARRAY_A );
+		if ( $results && is_array( $results ) && ( count( $results ) > 0 ) ) {
+			$episode_count = count( $results );
+			foreach ( $results as $result ) {
+				$episode_show_id = get_post_meta( $result['ID'], 'episode_show_id', true );
+				if ( !in_array( $episode_show_id, $episode_show_ids ) ) {
+					$episode_show_ids[] = $episode_show_id;
 				}
-				$shift_length = $end_time - $start_time;
-				// echo $shift['start'] . ' - ' . $shift['end'] . ' - ' . $start_time . ' - ' . $end_time . ' - ';
-				// echo $shift_length . '<br>';
-				$total_times = $total_times + $shift_length;
+				$episode_playlist_id = get_post_meta( $result['ID'], 'episode_playlist', true );
+				if ( $episode_playlist_id && !in_array( $episode_playlist_id, $episode_playlist_ids ) ) {
+					$episode_playlist_ids[] = $episode_playlist_id;
+				}
 			}
 		}
-		$week_in_seconds = 86400 * 7;
-		// echo 'TOTAL:' . $total_times . ' of ' . $week_in_seconds . '<br>';
-		$schedule_percent = round( ( $total_times / $week_in_seconds ), 2, PHP_ROUND_HALF_DOWN ) * 100;
+		$episode_show_count = count( $episode_show_ids );
+		$episode_playlist_count = count( $episode_playlist_ids );
 	}
 
-	echo '<div class="progress-line">' . "\n";
+	// --- open table ---
+	echo '<table class="progress-table">' . "\n";
 
-		// --- progress icon ---
-		echo '<div class="progress-icon dashicons ';
-		if ( ( 0 == $shift_count ) || ( 0 == $schedule_percent ) ) {
-			echo 'progress-cross dashicons-dismiss';
-		} elseif ( 100 == $schedule_percent ) {
-			echo 'progress-tick dashicons-yes-alt';
-		} else {
-			echo 'progress-alert dashicons-warning';
-		}
-		echo '"></div>' . "\n";
+		// --- Schedule heading ---
+		echo '<tr><td colspan="3">' . "\n";
+			echo '<div class="progress-heading">' . esc_html( 'Station Schedule', 'radio-station' ) . '</div>' . "\n";
+		echo '</td></tr>' . "\n";
 
-		echo '<div class="progress-text">' . "\n";
-		
-			// --- show count ---
-			echo '<span style="progress-count">' . esc_html( $shift_count ) . '</span>';
-			echo ' ' . esc_html( __( 'Shifts', 'radio-station' ) ) . ' ' . esc_html( __( 'and', 'radio-station' ) );
-
-			echo ' <span style="progress-count">' . esc_html( $specials_count ) . '</span>';
-			echo ' ' . esc_html( __( 'Specials', 'radio-station' ) );
-
-			// --- coverage percentage ---
-			echo ' ' . esc_html( __( 'with', 'radio-station' ) );
-			echo ' ' . esc_html( $schedule_percent ) . '% ' . esc_html( __( 'Schedule coverage', 'radio-station' ) );
-			echo '.' . "\n";
-
-		echo '</div>' . "\n";
-
-		// --- schedule editor ---
-		if ( defined( 'RADIO_STATION_PRO_FILE' ) ) {
-			$schedule_url = add_query_arg( 'page', 'radio-schedule', admin_url( 'admin.php' ) );
-			$schedule_title = __( 'Visual Schedule Editor', 'radio-station' );
-			$schedule_text = __( 'Schedule', 'radio-station' );
-		} else {
-			$schedule_url = add_query_arg( 'post_type', RADIO_STATION_SHOW_SLUG, admin_url( 'edit.php' ) );
-			$schedule_title = __( 'Edit Shows', 'radio-station' );
-			$schedule_text = __( 'Shows', 'radio-station' );
-		}
-		echo '<a class="progress-icon-link" href="' . esc_url( $schedule_url ) . '">' . "\n";
-			echo '<div class="progress-icon progress-add dashicons dashicons-calendar"></div>' . "\n";
-		echo '</a>' . "\n";
-		echo '<a class="progress-label-link" href="' . esc_url( $schedule_url ) . '">' . "\n";
-			echo '<div class="progress-label" title="' . esc_attr( $schedule_title ) . '">' . esc_html( $schedule_text ) . '</div>' . "\n";
-		echo '</a>' . "\n";
-			
-	echo '</div>' . "\n";
-
-	// --- shift conflicts line ---
-	/* $conflict_percent = 0; // TEMP
-	
-	$conflicts = radio_station_check_shifts();
-	echo 'Conflicts: ' . print_r( $conflicts, true ) . '<br>';
-	
-	// TODO: check for shift conflicts and convert to %
-	$schedule_percent = $schedule_percent - $conflict_percent;
-
-	echo '<div class="progress-line">' . "\n";
-	echo '</div>' . "\n";
-
-	*/
-
-	// --- schedule progress bar ---
-	$conflict_percent = 0;
-	radio_station_progress_bar( $schedule_percent, $conflict_percent );
-
-	// --- Content heading ---
-	echo '<div class="progress-heading">' . esc_html( 'Station Content', 'radio-station' ) . '</div>' . "\n";
-
-	// --- Shows ---
-	$content_items++;
-	// $active_percent = round( ( $active_count / $show_count ), 2, PHP_ROUND_HALF_DOWN ) * 100;
-	// $publish_percent = round( ( $publish_count / $show_count ), 2, PHP_ROUND_HALF_DOWN ) * 100;
-	$active_publish_percent = round( ( $active_count / $publish_count ), 2, PHP_ROUND_HALF_DOWN ) * 100;
-	echo '<div class="progress-line">' . "\n";
-
-		// --- progress icon ---
-		echo '<div class="progress-icon dashicons ';
-		if ( 0 == $show_count ) {
-			echo 'progress-cross dashicons-dismiss';
-			$content_notdone++;
-		} elseif ( 100 == $active_publish_percent ) {
-			echo 'progress-tick dashicons-yes-alt';
-			$content_progress++;
-		} else {
-			echo 'progress-alert dashicons-warning';
-			$content_progress = $content_progress + 0.5;
-		}
-		echo '"></div>' . "\n";
-
-		echo '<div class="progress-text">' . "\n";
-		
-			// --- show count ---
-			echo '<span style="progress-count">' . esc_html( $publish_count ) . '</span>';
-			echo ' ' . esc_html( __( 'Shows', 'radio-station' ) );
-
-			// --- show draft count ---
-			$drafts_link = add_query_arg( 'post_type', RADIO_STATION_SHOW_SLUG, admin_url( 'edit.php' ) );
-			$drafts_link = add_query_arg( 'post_status', 'draft', $drafts_link );
-			if ( $draft_count > 0 ) {
-				echo ' (' . esc_html( __( 'and', 'radio-station' ) ) . ' ';
-				echo '<a href="' . esc_url( $drafts_link ) . '">';
-					echo esc_html( $draft_count ) . ' ' . esc_html( __( 'Drafts', 'radio-station' ) );
-				echo '</a>) ';
+		// --- Schedule percentage line  ---
+		$schedule_percent = $total_times = 0;
+		$schedule = radio_station_get_current_schedule();
+		if ( $schedule && is_array( $schedule ) && ( count( $schedule ) > 0 ) ) {
+			// print_r( $schedule );
+			foreach ( $schedule as $day => $shifts ) {
+				foreach ( $shifts as $time => $shift ) {
+					$start_time = strtotime( $shift['date'] . ' ' . $shift['start'] );
+					$end_time = strtotime( $shift['date'] . ' ' . $shift['end'] );
+					if ( $start_time > $end_time ) {
+						$end_time = $end_time + 86400;
+					}
+					$shift_length = $end_time - $start_time;
+					// echo $shift['start'] . ' - ' . $shift['end'] . ' - ' . $start_time . ' - ' . $end_time . ' - ';
+					// echo $shift_length . '<br>';
+					$total_times = $total_times + $shift_length;
+				}
 			}
-			
-			// --- show active percentage ---
-			// TODO: filter show post link for inactive shows
-			$inactive_link = add_query_arg( 'post_type', RADIO_STATION_SHOW_SLUG, admin_url( 'edit.php' ) );
-			$inactive_link = add_query_arg( 'post_status', 'inactive', $inactive_link );
-			echo ' ' . esc_html( __( 'with', 'radio-station' ) ) . ' ';
-			if ( $active_publish_percent < 100 ) {
-				echo '<a href="' . esc_url( $inactive_link ) . '">';
-			}
-			echo ' ' . esc_html( $active_publish_percent ) . '% ';
-			echo esc_html( __( 'Active', 'radio-station' ) );
-			if ( $active_publish_percent < 100 ) {
-				echo '</a>';
-			}
-			echo '.' . "\n";
-			
-			/* if ( 0 == $show_desc_empty ) {
-				$desc_percent = 100;
+			$week_in_seconds = 86400 * 7;
+			// echo 'TOTAL:' . $total_times . ' of ' . $week_in_seconds . '<br>';
+			$schedule_percent = round( ( $total_times / $week_in_seconds ), 2, PHP_ROUND_HALF_DOWN ) * 100;
+		}
+
+		echo '<tr class="progress-line">' . "\n";
+
+			// --- progress icon ---
+			echo '<td><div class="progress-icon dashicons ';
+			if ( ( 0 == $shift_count ) || ( 0 == $schedule_percent ) ) {
+				echo 'progress-cross dashicons-dismiss';
+			} elseif ( 100 == $schedule_percent ) {
+				echo 'progress-tick dashicons-yes-alt';
 			} else {
-				$empty_desc_percent = round( ( $show_desc_empty / $show_count ), 2, PHP_ROUND_HALF_DOWN ) * 100;
-				$desc_percent = 100 - $empty_desc_percent;
+				echo 'progress-alert dashicons-warning';
 			}
-			echo ' ' . esc_html( $desc_percent ) . '% ';
-			// TODO: link to Show list - filtered by lack of description
-			// $show_desc_url = admin_url( '' );
-			// echo '<a href="' . esc_url( $show_desc_url ) . '">';
-				echo esc_html( 'Description coverage', 'radio-station' ) . '.';
-			// echo '</a>'; */
+			echo '"></div></td>' . "\n";
 
-		echo '</div>' . "\n";
-		
-		// --- add show icon ---
-		$add_show_url = add_query_arg( 'post_type', RADIO_STATION_SHOW_SLUG, admin_url( 'post-new.php' ) );
-		echo '<a class="progress-icon-link" href="' . esc_url( $add_show_url ) . '">';
-			echo '<span class="progress-icon progress-add dashicons dashicons-plus-alt dashicons dashicons-plus-alt"></span>';
-		echo '</a>';
-		echo '<a class="progress-label-link" href="' . esc_url( $add_show_url ) . '">';
-			echo '<div class="progress-label" title="' . esc_attr( __( 'Add Show', 'radio-station' ) ) . '">' . esc_html( __( 'Show', 'radio-station' ) ) . '</div>';
-		echo '</a>' . "\n";
-		
-	echo '</div>' . "\n";
+			echo '<td class="progress-text">' . "\n";
+			
+				// --- show count ---
+				echo '<span style="progress-count">' . esc_html( $shift_count ) . '</span>';
+				echo ' ' . esc_html( __( 'Shifts', 'radio-station' ) ) . ' ' . esc_html( __( 'and', 'radio-station' ) );
 
-	// --- Descriptions ---
-	$content_items++;
-
-	// --- check shows and override description percentage ---
-	if ( ( 0 == $show_desc_empty ) && ( 0 == $override_desc_empty ) ) {
-		$desc_percent = 100;
-	} else {
-		$empty_count = $show_desc_empty + $override_desc_empty;
-		$total_count = $show_count + $override_count;
-		$empty_desc_percent = round( ( $empty_count / $total_count ), 2, PHP_ROUND_HALF_DOWN ) * 100;
-		$desc_percent = 100 - $empty_desc_percent;
-	}
-
-	echo '<div class="progress-line">' . "\n";
-
-		// --- progress icon ---
-		echo '<div class="progress-icon dashicons ';
-		if ( 0 == $show_count ) {
-			echo 'progress-cross dashicons-dismiss';
-			$content_notdone++;
-		} elseif ( 100 == $desc_percent ) {
-			echo 'progress-tick dashicons-yes-alt';
-			$content_progress++;
-		} else {
-			echo 'progress-alert dashicons-warning';
-			$content_progress = $content_progress + 0.5;
-		}
-		echo '"></div>' . "\n";
-
-		echo '<div class="progress-text">' . "\n";
-		
-			// --- show count ---
-			echo '<span style="progress-count">' . esc_html( $show_count ) . '</span>';
-			echo ' ' . esc_html( __( 'Shows', 'radio-station' ) );
-			if ( $override_count > 0 ) {
-				echo ' ' . esc_html( __( 'and', 'radio-station' ) ) . ' ';
-				echo '<span style="progress-count">' . esc_html( $override_count ) . '</span>';
+				echo ' <span style="progress-count">' . esc_html( $specials_count ) . '</span>';
 				echo ' ' . esc_html( __( 'Specials', 'radio-station' ) );
-			}
 
-			echo ' ' . esc_html( __( 'with',' radio-station' ) ) . ' ';
-			echo ' ' . esc_html( $desc_percent ) . '% ';
-			// TODO: link to Show list - filtered by lack of description
-			$show_desc_url = admin_url( 'edit.php' );
-			$show_desc_url = add_query_arg( 'post_type', RADIO_STATION_SHOW_SLUG, $show_desc_url );
-			$show_desc_url = add_query_arg( 'description', 'empty', $show_desc_url );
-			echo '<a href="' . esc_url( $show_desc_url ) . '">';
-				echo esc_html( 'Description coverage', 'radio-station' ) . '.';
-			echo '</a>';
+				// --- coverage percentage ---
+				echo ' ' . esc_html( __( 'with', 'radio-station' ) );
+				echo ' ' . esc_html( $schedule_percent ) . '% ' . esc_html( __( 'Schedule coverage', 'radio-station' ) );
+				echo '.' . "\n";
 
+			echo '</td>' . "\n";
+
+			// --- schedule editor ---
+			echo '<td>' . "\n";
+				if ( defined( 'RADIO_STATION_PRO_FILE' ) ) {
+					$schedule_url = add_query_arg( 'page', 'radio-schedule', admin_url( 'admin.php' ) );
+					$schedule_title = __( 'Visual Schedule Editor', 'radio-station' );
+					$schedule_text = __( 'Schedule', 'radio-station' );
+				} else {
+					$schedule_url = add_query_arg( 'post_type', RADIO_STATION_SHOW_SLUG, admin_url( 'edit.php' ) );
+					$schedule_title = __( 'Edit Shows', 'radio-station' );
+					$schedule_text = __( 'Shows', 'radio-station' );
+				}
+				echo '<a class="progress-icon-link" href="' . esc_url( $schedule_url ) . '">' . "\n";
+					echo '<div class="progress-icon progress-add dashicons dashicons-calendar"></div>' . "\n";
+				echo '</a>' . "\n";
+				echo '<a class="progress-label-link" href="' . esc_url( $schedule_url ) . '">' . "\n";
+					echo '<div class="progress-label" title="' . esc_attr( $schedule_title ) . '">' . esc_html( $schedule_text ) . '</div>' . "\n";
+				echo '</a>' . "\n";
+			echo '</td>' . "\n";
+				
+		echo '</tr>' . "\n";
+
+		// --- shift conflicts line ---
+		/* $conflict_percent = 0; // TEMP
+		
+		$conflicts = radio_station_check_shifts();
+		echo 'Conflicts: ' . print_r( $conflicts, true ) . '<br>';
+		
+		// TODO: check for shift conflicts and convert to %
+		$schedule_percent = $schedule_percent - $conflict_percent;
+
+		echo '<div class="progress-line">' . "\n";
 		echo '</div>' . "\n";
-		
-		// --- add show icon ---
-		$add_override_url = add_query_arg( 'post_type', RADIO_STATION_OVERRIDE_SLUG, admin_url( 'post-new.php' ) );
-		echo '<a class="progress-icon-link" href="' . esc_url( $add_override_url ) . '">';
-			echo '<span class="progress-icon progress-add dashicons dashicons-plus-alt dashicons dashicons-plus-alt"></span>';
-		echo '</a>';
-		echo '<a class="progress-label-link" href="' . esc_url( $add_override_url ) . '">';
-			echo '<div class="progress-label" title="' . esc_attr( __( 'Add Special', 'radio-station' ) ) . '">' . esc_html( __( 'Special', 'radio-station' ) ) . '</div>';
-		echo '</a>' . "\n";
-		
-	echo '</div>' . "\n";
-	
-	// --- Hosts ---
-	$content_items++;
-	$host_percent = round( ( $shows_host_count / $show_count ), 2, PHP_ROUND_HALF_DOWN ) * 100;
-	echo '<div class="progress-line">' . "\n";
 
-		// --- progress icon ---
-		echo '<div class="progress-icon dashicons ';
-		if ( ( 0 == $host_count ) || ( 0 == $host_percent ) ) {
-			echo 'progress-cross dashicons-dismiss';
-			$content_notdone++;
-		} elseif ( 100 == $host_percent ) {
-			echo 'progress-tick dashicons-yes-alt';
-			$content_progress++;
-		} else {
-			echo 'progress-alert dashicons-warning';
-			$content_progress = $content_progress + 0.5;
-		}
-		echo '"></div>' . "\n";
+		*/
 
-		echo '<div class="progress-text">' . "\n";
-		
-			// --- show count ---
-			echo '<span style="progress-count">' . esc_html( $host_count ) . '</span>';
-			echo ' ' . esc_html( __( 'Hosts', 'radio-station' ) ) . ' ' . esc_html( __( 'assigned to', 'radio-station' ) );
+		// --- schedule progress bar ---
+		echo '<tr><td colspan="3">' . "\n";
+			$conflict_percent = 0;
+			radio_station_progress_bar( $schedule_percent, $conflict_percent );
+		echo '</td></tr>' . "\n";
 
-			echo ' <span style="progress-count">' . esc_html( $active_show_count ) . '</span>';
-			echo ' ' . esc_html( __( 'Shows', 'radio-station' ) ) . ' ' . esc_html( __( 'with', 'radio-station' ) );
+		// --- Content heading ---
+		echo '<tr><td colspan="3" align="center">' . "\n";
+			echo '<div class="progress-heading">' . esc_html( 'Station Content', 'radio-station' ) . '</div>' . "\n";
+		echo '</td></tr>' . "\n";
 
-			// --- show active percentage ---
-			// TODO: link to shows list - without hosts filter
-			echo ' ' . esc_html( $host_percent ) . '% ';
-			if ( $host_percent < 100 ) {
-				$show_host_url = add_query_arg( 'post_type', RADIO_STATION_SHOW_SLUG, admin_url( 'edit.php' ) );
-				echo '<a href="' . esc_url( $show_host_url ) . '">';
+		// --- Shows ---
+		$content_items++;
+		// $active_percent = round( ( $active_count / $show_count ), 2, PHP_ROUND_HALF_DOWN ) * 100;
+		// $publish_percent = round( ( $publish_count / $show_count ), 2, PHP_ROUND_HALF_DOWN ) * 100;
+		$active_publish_percent = round( ( $active_count / $publish_count ), 2, PHP_ROUND_HALF_DOWN ) * 100;
+		echo '<tr class="progress-line">' . "\n";
+
+			// --- progress icon ---
+			echo '<td><div class="progress-icon dashicons ';
+			if ( 0 == $show_count ) {
+				echo 'progress-cross dashicons-dismiss';
+				$content_notdone++;
+			} elseif ( 100 == $active_publish_percent ) {
+				echo 'progress-tick dashicons-yes-alt';
+				$content_progress++;
+			} else {
+				echo 'progress-alert dashicons-warning';
+				$content_progress = $content_progress + ( $active_publish_percent / 100 );
 			}
-			echo esc_html( __( 'Host coverage', 'radio-station' ) );
-			if ( $host_percent < 100 ) {
+			echo '"></div></td>' . "\n";
+
+			echo '<td class="progress-text">' . "\n";
+			
+				// --- show count ---
+				echo '<span style="progress-count">' . esc_html( $publish_count ) . '</span>';
+				echo ' ' . esc_html( __( 'Shows', 'radio-station' ) );
+
+				// --- show draft count ---
+				$drafts_link = add_query_arg( 'post_type', RADIO_STATION_SHOW_SLUG, admin_url( 'edit.php' ) );
+				$drafts_link = add_query_arg( 'post_status', 'draft', $drafts_link );
+				if ( $draft_count > 0 ) {
+					echo ' (' . esc_html( __( 'and', 'radio-station' ) ) . ' ';
+					echo '<a href="' . esc_url( $drafts_link ) . '">';
+						echo esc_html( $draft_count ) . ' ' . esc_html( __( 'Drafts', 'radio-station' ) );
+					echo '</a>) ';
+				}
+				
+				// --- show active percentage ---
+				// TODO: filter show post link for inactive shows
+				$inactive_link = add_query_arg( 'post_type', RADIO_STATION_SHOW_SLUG, admin_url( 'edit.php' ) );
+				$inactive_link = add_query_arg( 'post_status', 'inactive', $inactive_link );
+				echo ' ' . esc_html( __( 'with', 'radio-station' ) ) . ' ';
+				if ( $active_publish_percent < 100 ) {
+					echo '<a href="' . esc_url( $inactive_link ) . '">';
+				}
+				echo ' ' . esc_html( $active_publish_percent ) . '% ';
+				echo esc_html( __( 'Active', 'radio-station' ) );
+				if ( $active_publish_percent < 100 ) {
+					echo '</a>';
+				}
+				echo '.' . "\n";
+				
+				/* if ( 0 == $show_desc_empty ) {
+					$desc_percent = 100;
+				} else {
+					$empty_desc_percent = round( ( $show_desc_empty / $show_count ), 2, PHP_ROUND_HALF_DOWN ) * 100;
+					$desc_percent = 100 - $empty_desc_percent;
+				}
+				echo ' ' . esc_html( $desc_percent ) . '% ';
+				// TODO: link to Show list - filtered by lack of description
+				// $show_desc_url = admin_url( '' );
+				// echo '<a href="' . esc_url( $show_desc_url ) . '">';
+					echo esc_html( 'Description coverage', 'radio-station' ) . '.';
+				// echo '</a>'; */
+
+			echo '</td>' . "\n";
+			
+			// --- add show icon ---
+			echo '<td>' . "\n";
+				$add_show_url = add_query_arg( 'post_type', RADIO_STATION_SHOW_SLUG, admin_url( 'post-new.php' ) );
+				echo '<a class="progress-icon-link" href="' . esc_url( $add_show_url ) . '">';
+					echo '<span class="progress-icon progress-add dashicons dashicons-plus-alt dashicons dashicons-plus-alt"></span>';
 				echo '</a>';
-			}
-			echo '.' . "\n";
+				echo '<a class="progress-label-link" href="' . esc_url( $add_show_url ) . '">';
+					echo '<div class="progress-label" title="' . esc_attr( __( 'Add Show', 'radio-station' ) ) . '">' . esc_html( __( 'Show', 'radio-station' ) ) . '</div>';
+				echo '</a>' . "\n";
+			echo '</td>' . "\n";
+			
+		echo '</tr>' . "\n";
 
-		echo '</div>' . "\n";
+		// --- Descriptions ---
+		$content_items++;
 
-		// --- add host icon ---
-		$add_host_url = add_query_arg( 'post_type', RADIO_STATION_SHOW_SLUG, admin_url( 'users.php' ) );
-		if ( defined( 'RADIO_STATION_PRO_FILE' ) ) {
-			$add_host_url = add_query_arg( 'page', 'radio-station', admin_url( 'admin.php' ) );
-			$add_host_url = add_query_arg( 'tab', 'roles', $add_host_url );
-		}
-		echo '<a class="progress-icon-link" href="' . esc_url( $add_host_url ) . '">' . "\n";
-			echo '<div class="progress-icon progress-add dashicons dashicons-plus-alt"></div>' . "\n";
-		echo '</a>';
-		echo '<a class="progress-label-link" href="' . esc_url( $add_host_url ) . '">' . "\n";
-			echo '<div class="progress-label" title="' . esc_attr( __( 'Add Host', 'radio-station' ) ) . '">' . esc_html( __( 'Host', 'radio-station' ) ) . '</div>' . "\n";
-		echo '</a>' . "\n";
-		
-	echo '</div>' . "\n";
-
-	// --- Genres ---
-	$content_items++;
-	$genre_percent = round( ( $genre_show_count / $show_count ), 2, PHP_ROUND_HALF_DOWN ) * 100;
-	echo '<div class="progress-line">' . "\n";
-
-		// --- progress icon ---
-		echo '<div class="progress-icon dashicons ';
-		if ( ( 0 == $genre_count ) || ( 0 == $genre_percent ) ) {
-			echo 'progress-cross dashicons-dismiss';
-			$content_notdone++;
-		} elseif ( 100 == $genre_percent ) {
-			echo 'progress-tick dashicons-yes-alt';
-			$content_progress++;
+		// --- check shows and override description percentage ---
+		if ( ( 0 == $show_desc_empty ) && ( 0 == $override_desc_empty ) ) {
+			$desc_percent = 100;
 		} else {
-			echo 'progress-alert dashicons-warning';
-			$content_progress = $content_progress + 0.5;
+			$empty_count = $show_desc_empty + $override_desc_empty;
+			$total_count = $show_count + $override_count;
+			$empty_desc_percent = round( ( $empty_count / $total_count ), 2, PHP_ROUND_HALF_DOWN ) * 100;
+			$desc_percent = 100 - $empty_desc_percent;
 		}
-		echo '"></div>' . "\n";
 
-		echo '<div class="progress-text">' . "\n";
-		
-			// --- show count ---
-			echo '<span style="progress-count">' . esc_html( $genre_count ) . '</span>';
-			echo ' ' . esc_html( __( 'Genres', 'radio-station' ) ) . ' ' . esc_html( __( 'assigned to', 'radio-station' ) );
+		echo '<tr class="progress-line">' . "\n";
 
-			echo ' <span style="progress-count">' . esc_html( $active_show_count ) . '</span>';
-			echo ' ' . esc_html( __( 'Shows', 'radio-station' ) ) . ' ' . esc_html( __( 'with', 'radio-station' ) );
-
-			// --- show active percentage ---
-			echo ' ' . esc_html( $genre_percent ) . '% ';
-			if ( $genre_percent < 100 ) {
-				// TODO: link to shows list - without genres filter
-				$show_genres_url = add_query_arg( 'post_type', RADIO_STATION_SHOW_SLUG, admin_url( 'edit.php' ) );
-				$show_genres_url = add_query_arg( 'genre', 'none', $show_genres_url );
-				echo '<a href="' . esc_url( $show_genres_url ) . '">';
+			// --- progress icon ---
+			echo '<td><div class="progress-icon dashicons ';
+			if ( 0 == $show_count ) {
+				echo 'progress-cross dashicons-dismiss';
+				$content_notdone++;
+			} elseif ( 100 == $desc_percent ) {
+				echo 'progress-tick dashicons-yes-alt';
+				$content_progress++;
+			} else {
+				echo 'progress-alert dashicons-warning';
+				$content_progress = $content_progress + ( $desc_percent / 100 );
 			}
-			echo esc_html( __( 'Genre coverage', 'radio-station' ) );
-			if ( $genre_percent < 100 ) {
+			echo '"></div></td>' . "\n";
+
+			echo '<td class="progress-text">' . "\n";
+			
+				// --- show count ---
+				echo '<span style="progress-count">' . esc_html( $show_count ) . '</span>';
+				echo ' ' . esc_html( __( 'Shows', 'radio-station' ) );
+				if ( $override_count > 0 ) {
+					echo ' ' . esc_html( __( 'and', 'radio-station' ) ) . ' ';
+					echo '<span style="progress-count">' . esc_html( $override_count ) . '</span>';
+					echo ' ' . esc_html( __( 'Specials', 'radio-station' ) );
+				}
+
+				echo ' ' . esc_html( __( 'with',' radio-station' ) ) . ' ';
+				echo ' ' . esc_html( $desc_percent ) . '% ';
+				// TODO: link to Show list - filtered by lack of description
+				$show_desc_url = admin_url( 'edit.php' );
+				$show_desc_url = add_query_arg( 'post_type', RADIO_STATION_SHOW_SLUG, $show_desc_url );
+				$show_desc_url = add_query_arg( 'description', 'empty', $show_desc_url );
+				echo '<a href="' . esc_url( $show_desc_url ) . '">';
+					echo esc_html( 'Description coverage', 'radio-station' ) . '.';
 				echo '</a>';
+
+			echo '</td>' . "\n";
+			
+			// --- add show icon ---
+			echo '<td>' . "\n";
+				$add_override_url = add_query_arg( 'post_type', RADIO_STATION_OVERRIDE_SLUG, admin_url( 'post-new.php' ) );
+				echo '<a class="progress-icon-link" href="' . esc_url( $add_override_url ) . '">';
+					echo '<span class="progress-icon progress-add dashicons dashicons-plus-alt dashicons dashicons-plus-alt"></span>';
+				echo '</a>';
+				echo '<a class="progress-label-link" href="' . esc_url( $add_override_url ) . '">';
+					echo '<div class="progress-label" title="' . esc_attr( __( 'Add Special', 'radio-station' ) ) . '">' . esc_html( __( 'Special', 'radio-station' ) ) . '</div>';
+				echo '</a>' . "\n";
+			echo '</td>' . "\n";
+			
+		echo '</tr>' . "\n";
+		
+		// --- Hosts ---
+		$content_items++;
+		$host_percent = round( ( $shows_host_count / $show_count ), 2, PHP_ROUND_HALF_DOWN ) * 100;
+		echo '<tr class="progress-line">' . "\n";
+
+			// --- progress icon ---
+			echo '<td><div class="progress-icon dashicons ';
+			if ( ( 0 == $host_count ) || ( 0 == $host_percent ) ) {
+				echo 'progress-cross dashicons-dismiss';
+				$content_notdone++;
+			} elseif ( 100 == $host_percent ) {
+				echo 'progress-tick dashicons-yes-alt';
+				$content_progress++;
+			} else {
+				echo 'progress-alert dashicons-warning';
+				$content_progress = $content_progress + ( $host_percent / 100 );
 			}
-			echo '.' . "\n";
+			echo '"></div></td>' . "\n";
 
-		echo '</div>' . "\n";
+			echo '<td class="progress-text">' . "\n";
+			
+				// --- show count ---
+				echo '<span style="progress-count">' . esc_html( $host_count ) . '</span>';
+				echo ' ' . esc_html( __( 'Hosts', 'radio-station' ) ) . ' ' . esc_html( __( 'assigned to', 'radio-station' ) );
 
-		// --- add genre icon ---		
-		$add_genre_url = add_query_arg( 'taxonomy', RADIO_STATION_GENRES_SLUG, admin_url( 'edit-tags.php' ) );
-		echo '<a class="progress-icon-link" href="' . esc_url( $add_genre_url ) . '">' . "\n";
-			echo '<div class="progress-icon progress-add dashicons dashicons-plus-alt"></div>' . "\n";
-		echo '</a>' . "\n";
-		echo '<a class="progress-label-link" href="' . esc_url( $add_genre_url ) . '">' . "\n";
-			echo '<div class="progress-label" title="' . esc_attr( __( 'Add Genre', 'radio-station' ) ) . '">' . esc_html( __( 'Genre', 'radio-station' ) ) . '</div>' . "\n";
-		echo '</a>' . "\n";
-		
-	echo '</div>' . "\n";
+				echo ' <span style="progress-count">' . esc_html( $active_show_count ) . '</span>';
+				echo ' ' . esc_html( __( 'Shows', 'radio-station' ) ) . ' ' . esc_html( __( 'with', 'radio-station' ) );
 
-	// --- Playlists ---
-	$content_items++;
-	echo '<div class="progress-line">' . "\n";
+				// --- show active percentage ---
+				// TODO: link to shows list - without hosts filter
+				echo ' ' . esc_html( $host_percent ) . '% ';
+				if ( $host_percent < 100 ) {
+					$show_host_url = add_query_arg( 'post_type', RADIO_STATION_SHOW_SLUG, admin_url( 'edit.php' ) );
+					echo '<a href="' . esc_url( $show_host_url ) . '">';
+				}
+				echo esc_html( __( 'Host coverage', 'radio-station' ) );
+				if ( $host_percent < 100 ) {
+					echo '</a>';
+				}
+				echo '.' . "\n";
 
-		// --- progress icon ---
-		echo '<div class="progress-icon dashicons ';
-		if ( 0 == $playlist_count ) {
-			echo 'progress-alert dashicons-warning';
-			$content_progress = $content_progress + 0.5;
-		} else {
-			echo 'progress-tick dashicons-yes-alt';
-			$content_progress++;
-		}
-		echo '"></div>' . "\n";
+			echo '</td>' . "\n";
 
-		echo '<div class="progress-text">' . "\n";
-		
-			// --- show count ---
-			echo '<span style="progress-count">' . esc_html( $playlist_count ) . '</span>';
-			echo ' ' . esc_html( __( 'Playlists', 'radio-station' ) ) . ' ' . esc_html( __( 'assigned to', 'radio-station' ) );
+			// --- add host icon ---
+			echo '<td>' . "\n";
+				$add_host_url = add_query_arg( 'post_type', RADIO_STATION_SHOW_SLUG, admin_url( 'users.php' ) );
+				if ( defined( 'RADIO_STATION_PRO_FILE' ) ) {
+					$add_host_url = add_query_arg( 'page', 'radio-station', admin_url( 'admin.php' ) );
+					$add_host_url = add_query_arg( 'tab', 'roles', $add_host_url );
+				}
+				echo '<a class="progress-icon-link" href="' . esc_url( $add_host_url ) . '">' . "\n";
+					echo '<div class="progress-icon progress-add dashicons dashicons-plus-alt"></div>' . "\n";
+				echo '</a>';
+				echo '<a class="progress-label-link" href="' . esc_url( $add_host_url ) . '">' . "\n";
+					echo '<div class="progress-label" title="' . esc_attr( __( 'Add Host', 'radio-station' ) ) . '">' . esc_html( __( 'Host', 'radio-station' ) ) . '</div>' . "\n";
+				echo '</a>' . "\n";
+			echo '</td>' . "\n";
+			
+		echo '</tr>' . "\n";
 
-			echo ' <span style="progress-count">' . esc_html( $playlist_show_count ) . '</span>';
-			echo ' ' . esc_html( __( 'Shows', 'radio-station' ) ) . ' ' . esc_html( __( 'and', 'radio-station' ) );
+		// --- Genres ---
+		$content_items++;
+		$genre_percent = round( ( $genre_show_count / $show_count ), 2, PHP_ROUND_HALF_DOWN ) * 100;
+		echo '<tr class="progress-line">' . "\n";
 
-			echo ' <span style="progress-count">' . esc_html( $episode_playlist_count ) . '</span>';
-			echo ' ' . esc_html( __( 'Episodes', 'radio-station' ) ) . '.';
+			// --- progress icon ---
+			echo '<td><div class="progress-icon dashicons ';
+			if ( ( 0 == $genre_count ) || ( 0 == $genre_percent ) ) {
+				echo 'progress-cross dashicons-dismiss';
+				$content_notdone++;
+			} elseif ( 100 == $genre_percent ) {
+				echo 'progress-tick dashicons-yes-alt';
+				$content_progress++;
+			} else {
+				echo 'progress-alert dashicons-warning';
+				$content_progress = $content_progress + ( $genre_percent / 100 );
+			}
+			echo '"></div></td>' . "\n";
 
-		echo '</div>' . "\n";
+			echo '<td class="progress-text">' . "\n";
+			
+				// --- show count ---
+				echo '<span style="progress-count">' . esc_html( $genre_count ) . '</span>';
+				echo ' ' . esc_html( __( 'Genres', 'radio-station' ) ) . ' ' . esc_html( __( 'assigned to', 'radio-station' ) );
 
-		// --- add playlist icon ---		
-		$add_playlist_url = add_query_arg( 'post_type', RADIO_STATION_PLAYLIST_SLUG, admin_url( 'post-new.php' ) );
-		echo '<a class="progress-icon-link" href="' . esc_url( $add_playlist_url ) . '">' . "\n";
-			echo '<div class="progress-icon progress-add dashicons dashicons-plus-alt"></div>' . "\n";
-		echo '</a>' . "\n";
-		echo '<a class="progress-label-link" href="' . esc_url( $add_playlist_url ) . '">' . "\n";
-			echo '<div class="progress-label" title="' . esc_attr( __( 'Add Playlist', 'radio-station' ) ) . '">' . esc_html( __( 'Playlist', 'radio-station' ) ) . '</div>' . "\n";
-		echo '</a>' . "\n";
-		
-	echo '</div>' . "\n";
+				echo ' <span style="progress-count">' . esc_html( $active_show_count ) . '</span>';
+				echo ' ' . esc_html( __( 'Shows', 'radio-station' ) ) . ' ' . esc_html( __( 'with', 'radio-station' ) );
 
-	// --- Episodes ---
-	$content_items++;
-	echo '<div class="progress-line">' . "\n";
+				// --- show active percentage ---
+				echo ' ' . esc_html( $genre_percent ) . '% ';
+				if ( $genre_percent < 100 ) {
+					// TODO: link to shows list - without genres filter
+					$show_genres_url = add_query_arg( 'post_type', RADIO_STATION_SHOW_SLUG, admin_url( 'edit.php' ) );
+					$show_genres_url = add_query_arg( 'genre', 'none', $show_genres_url );
+					echo '<a href="' . esc_url( $show_genres_url ) . '">';
+				}
+				echo esc_html( __( 'Genre coverage', 'radio-station' ) );
+				if ( $genre_percent < 100 ) {
+					echo '</a>';
+				}
+				echo '.' . "\n";
 
-		// --- progress icon ---
-		echo '<div class="progress-icon dashicons ';
-		if ( 0 == $episode_count ) {
-			echo 'progress-alert dashicons-warning';
-			$content_progress = $content_progress + 0.5;
-		} else {
-			echo 'progress-tick dashicons-yes-alt';
-			$content_progress++;
-		}
-		echo '"></div>' . "\n";
+			echo '</td>' . "\n";
 
-		echo '<div class="progress-text">' . "\n";
-		
-			// --- episode count ---
-			echo '<span style="progress-count">' . esc_html( $episode_count ) . '</span>';
-			echo ' ' . esc_html( __( 'Episodes', 'radio-station' ) ) . ' ' . esc_html( __( 'published for', 'radio-station' ) );
+			// --- add genre icon ---
+			echo '<td>' . "\n";
+				$add_genre_url = add_query_arg( 'taxonomy', RADIO_STATION_GENRES_SLUG, admin_url( 'edit-tags.php' ) );
+				echo '<a class="progress-icon-link" href="' . esc_url( $add_genre_url ) . '">' . "\n";
+					echo '<div class="progress-icon progress-add dashicons dashicons-plus-alt"></div>' . "\n";
+				echo '</a>' . "\n";
+				echo '<a class="progress-label-link" href="' . esc_url( $add_genre_url ) . '">' . "\n";
+					echo '<div class="progress-label" title="' . esc_attr( __( 'Add Genre', 'radio-station' ) ) . '">' . esc_html( __( 'Genre', 'radio-station' ) ) . '</div>' . "\n";
+				echo '</a>' . "\n";
+			echo '</td>' . "\n";
+			
+		echo '</tr>' . "\n";
 
-			// --- episode show count ---
-			echo ' <span style="progress-count">' . esc_html( $episode_show_count ) . '</span>';
-			echo ' ' . esc_html( __( 'Shows', 'radio-station' ) ) . '.';
+		// --- Playlists ---
+		$content_items++;
+		echo '<tr class="progress-line">' . "\n";
 
-		echo '</div>' . "\n";
+			// --- progress icon ---
+			echo '<td><div class="progress-icon dashicons ';
+			if ( 0 == $playlist_count ) {
+				echo 'progress-alert dashicons-warning';
+				$content_progress = $content_progress + 0.5;
+			} else {
+				echo 'progress-tick dashicons-yes-alt';
+				$content_progress++;
+			}
+			echo '"></div></td>' . "\n";
 
-		// --- add episode icon ---
-		if ( defined( 'RADIO_STATION_PRO_FILE' ) ) {
+			echo '<td class="progress-text">' . "\n";
+			
+				// --- show count ---
+				echo '<span style="progress-count">' . esc_html( $playlist_count ) . '</span>';
+				echo ' ' . esc_html( __( 'Playlists', 'radio-station' ) ) . ' ' . esc_html( __( 'assigned to', 'radio-station' ) );
 
-			$add_episode_url = add_query_arg( 'post_type', RADIO_STATION_EPISODE_SLUG, admin_url( 'post-new.php' ) );
-			echo '<a class="progress-icon-link" href="' . esc_url( $add_episode_url ) . '">' . "\n";
-				echo '<div class="progress-icon progress-add dashicons dashicons-plus-alt"></div>' . "\n";
-			echo '</a>';
-			echo '<a class="progress-label-link" href="' . esc_url( $add_episode_url ) . '">' . "\n";
-				echo '<div class="progress-label" title="' . esc_attr( __( 'Add Episode', 'radio-station' ) ) . '">' . esc_html( __( 'Episode', 'radio-station' ) ) . '</div>' . "\n";
-			echo '</a>' . "\n";
-		
-		} else {
-			// --- upgrade to Pro / feature link ---
-			$upgrade_url = radio_station_get_upgrade_url();
-			echo '<a class="progress-icon-link" href="' . esc_url( $upgrade_url ) . '">' . "\n";
-				echo '<div class="progress-icon progress-upgrade dashicons dashicons-unlock"></div>' . "\n";
-			echo '</a>';
-			echo '<a class="progress-label-link" href="' . esc_url( $upgrade_url ) . '">' . "\n";
-				echo '<div class="progress-label" title="' . esc_attr( __( 'Upgrade to Radio Station PRO', 'radio-station' ) ) . '">' . esc_html( __( 'Go Pro', 'radio-station' ) ) . '</div>' . "\n";
-			echo '</a>' . "\n";
-		}
-		
-	echo '</div>' . "\n";
+				echo ' <span style="progress-count">' . esc_html( $playlist_show_count ) . '</span>';
+				echo ' ' . esc_html( __( 'Shows', 'radio-station' ) ) . ' ' . esc_html( __( 'and', 'radio-station' ) );
 
-	// --- content progress bar ---
-	$progress_percent = round( ( $content_progress / $content_items ), 2, PHP_ROUND_HALF_DOWN ) * 100;
-	$undone_percent = round( ( $content_notdone / $content_items ), 2, PHP_ROUND_HALF_DOWN ) * 100;
-	radio_station_progress_bar( $progress_percent, $undone_percent );
+				echo ' <span style="progress-count">' . esc_html( $episode_playlist_count ) . '</span>';
+				echo ' ' . esc_html( __( 'Episodes', 'radio-station' ) ) . '.';
+
+			echo '</td>' . "\n";
+
+			// --- add playlist icon ---
+			echo '<td>' . "\n";
+				$add_playlist_url = add_query_arg( 'post_type', RADIO_STATION_PLAYLIST_SLUG, admin_url( 'post-new.php' ) );
+				echo '<a class="progress-icon-link" href="' . esc_url( $add_playlist_url ) . '">' . "\n";
+					echo '<div class="progress-icon progress-add dashicons dashicons-plus-alt"></div>' . "\n";
+				echo '</a>' . "\n";
+				echo '<a class="progress-label-link" href="' . esc_url( $add_playlist_url ) . '">' . "\n";
+					echo '<div class="progress-label" title="' . esc_attr( __( 'Add Playlist', 'radio-station' ) ) . '">' . esc_html( __( 'Playlist', 'radio-station' ) ) . '</div>' . "\n";
+				echo '</a>' . "\n";
+			echo '</td>' . "\n";
+			
+		echo '</tr>' . "\n";
+
+		// --- Episodes ---
+		// $content_items++;
+		echo '<tr class="progress-line">' . "\n";
+
+			// --- progress icon ---
+			echo '<td><div class="progress-icon dashicons ';
+			if ( 0 == $episode_count ) {
+				echo 'progress-alert dashicons-warning';
+				// $content_progress = $content_progress + 0.5;
+			} else {
+				echo 'progress-tick dashicons-yes-alt';
+				// $content_progress++;
+			}
+			echo '"></div></td>' . "\n";
+
+			echo '<td class="progress-text">' . "\n";
+			
+				// --- episode count ---
+				echo '<span style="progress-count">' . esc_html( $episode_count ) . '</span>';
+				echo ' ' . esc_html( __( 'Episodes', 'radio-station' ) ) . ' ' . esc_html( __( 'published for', 'radio-station' ) );
+
+				// --- episode show count ---
+				echo ' <span style="progress-count">' . esc_html( $episode_show_count ) . '</span>';
+				echo ' ' . esc_html( __( 'Shows', 'radio-station' ) ) . '.';
+
+			echo '</td>' . "\n";
+
+			// --- add episode icon ---
+			echo '<td>' . "\n";
+			if ( defined( 'RADIO_STATION_PRO_FILE' ) ) {
+
+				$add_episode_url = add_query_arg( 'post_type', RADIO_STATION_EPISODE_SLUG, admin_url( 'post-new.php' ) );
+				echo '<a class="progress-icon-link" href="' . esc_url( $add_episode_url ) . '">' . "\n";
+					echo '<div class="progress-icon progress-add dashicons dashicons-plus-alt"></div>' . "\n";
+				echo '</a>';
+				echo '<a class="progress-label-link" href="' . esc_url( $add_episode_url ) . '">' . "\n";
+					echo '<div class="progress-label" title="' . esc_attr( __( 'Add Episode', 'radio-station' ) ) . '">' . esc_html( __( 'Episode', 'radio-station' ) ) . '</div>' . "\n";
+				echo '</a>' . "\n";
+			
+			} else {
+				// --- upgrade to Pro / feature link ---
+				$upgrade_url = radio_station_get_upgrade_url();
+				echo '<a class="progress-icon-link" href="' . esc_url( $upgrade_url ) . '">' . "\n";
+					echo '<div class="progress-icon progress-upgrade dashicons dashicons-unlock"></div>' . "\n";
+				echo '</a>';
+				echo '<a class="progress-label-link" href="' . esc_url( $upgrade_url ) . '">' . "\n";
+					echo '<div class="progress-label" title="' . esc_attr( __( 'Upgrade to Radio Station PRO', 'radio-station' ) ) . '">' . esc_html( __( 'Go Pro', 'radio-station' ) ) . '</div>' . "\n";
+				echo '</a>' . "\n";
+			}
+			echo '</td>' . "\n";
+			
+		echo '</tr>' . "\n";
+
+		// --- content progress bar ---
+		echo '<tr><td colspan="3">' . "\n";
+			$progress_percent = round( ( $content_progress / $content_items ), 2, PHP_ROUND_HALF_DOWN ) * 100;
+			$undone_percent = round( ( $content_notdone / $content_items ), 2, PHP_ROUND_HALF_DOWN ) * 100;
+			radio_station_progress_bar( $progress_percent, $undone_percent );
+		echo '</td></tr>' . "\n";
+
+	// --- close table ---
+	echo '</table>' . "\n";
 	
 }
 
@@ -818,397 +849,414 @@ function radio_station_settings_panel() {
 	
 	// --- settings progress ---
 	$settings_items = $settings_notdone = $settings_progress = 0;
+
+	echo '<table class="progress-table">' . "\n";
 	
-	// --- settings checks ---
-	echo '<div class="progress-heading">' . esc_html( 'Station Settings', 'radio-station' ) . '</div>' . "\n";
+		// --- settings checks ---
+		echo '<tr><td colspan="3" align="center">' . "\n";
+			echo '<div class="progress-heading">' . esc_html( 'Station Settings', 'radio-station' ) . '</div>' . "\n";
+		echo '</td></tr>' . "\n";
 
-	// --- Stream URLs ---
-	$settings_items++;
-	$settings_tab = 'general';
-	$settings_section = 'broadcast';
-	echo '<div class="progress-line">' . "\n";
+		// --- Stream URLs ---
+		$settings_items++;
+		$settings_tab = 'general';
+		$settings_section = 'broadcast';
+		echo '<tr class="progress-line">' . "\n";
 
-		// --- progress icon ---
-		echo '<div class="progress-icon dashicons ';
-		if ( '' == $settings['streaming_url'] ) {
-			echo 'progress-cross dashicons-dismiss';
-			$settings_notdone++;
-		} elseif ( ( '' != $settings['streaming_url'] ) && ( '' != $settings['fallback_url'] ) ) {
-			echo 'progress-tick dashicons-yes-alt';
-			$settings_progress++;
-		} else {
-			echo 'progress-alert dashicons-warning';
-			$settings_progress = $settings_progress + 0.5;
-		}
-		echo '"></div>' . "\n";
-
-		echo '<div class="progress-text">' . "\n";
-		
-			// --- stream URL ---
-			echo esc_html( __( 'Stream URL', 'radio-station' ) ) . ' ';
-			if ( '' != $settings['streaming_url'] ) {
-				echo esc_html( __( 'is set', 'radio-station' ) ) . '. ';
+			// --- progress icon ---
+			echo '<td><div class="progress-icon dashicons ';
+			if ( '' == $settings['streaming_url'] ) {
+				echo 'progress-cross dashicons-dismiss';
+				$settings_notdone++;
+			} elseif ( ( '' != $settings['streaming_url'] ) && ( '' != $settings['fallback_url'] ) ) {
+				echo 'progress-tick dashicons-yes-alt';
+				$settings_progress++;
 			} else {
-				echo esc_html( __( 'not set', 'radio-station' ) ) . '. ';
-			}
-
-			// --- fallback URL ---
-			echo ' ' . esc_html( __( 'Fallback stream URL', 'radio-station' ) ) . ' ';
-			if ( '' != $settings['fallback_url'] ) {
-				echo esc_html( __( 'is set', 'radio-station' ) ) . '. ';
-			} else {
-				echo esc_html( __( 'not set', 'radio-station' ) ) . '. ';
-			}
-
-		echo '</div>' . "\n";
-				
-		// --- fix setting icon ---
-		if ( 'dashboard' == $context ) {
-			$fix_setting_url = add_query_arg( 'page', 'radio-station', admin_url( 'admin.php' ) );
-			$fix_setting_url = add_query_arg( 'tab', $settings_tab, $fix_setting_url );
-			$fix_setting_url = add_query_arg( 'section', $settings_section, $fix_setting_url );
-		} else {
-			$fix_setting_url = 'javascript:void(0)';
-		}
-		echo '<a class="progress-icon-link" href="' . esc_url( $fix_setting_url ) . '"';
-		if ( 'settings' == $context ) {
-			echo ' onclick="jQuery(\'#' . esc_attr( $settings_tab ) . '-tab-button\').click();"';
-		}
-		echo '>';
-			echo '<span class="progress-icon progress-add dashicons dashicons-controls-volumeon"></span>';
-		echo '</a>' . "\n";
-		echo '<a class="progress-label-link" href="' . esc_url( $fix_setting_url ) . '">';
-			if ( ( '' == $settings['streaming_url'] ) || ( '' == $settings['fallback_url'] ) ) {
-				echo '<div class="progress-label" title="' . esc_attr( __( 'Fix this Setting', 'radio-station' ) ) . '">' . esc_html( __( 'Fix', 'radio-station' ) ) . '</div>';
-			} else {
-				echo '<div class="progress-label" title="' . esc_attr( __( 'Edit this Setting', 'radio-station' ) ) . '">' . esc_html( __( 'Edit', 'radio-station' ) ) . '</div>';
-			}
-		echo '</a>' . "\n";
-		
-	echo '</div>' . "\n";
-
-	// --- Player Bar ---
-	$settings_items++;
-	echo '<div class="progress-line">' . "\n";
-
-		// --- progress icon ---
-		echo '<div class="progress-icon dashicons ';
-		if ( !defined( 'RADIO_STATION_PRO_FILE' ) ) {	
-			echo 'progress-alert dashicons-warning';
-			$settings_progress = $settings_progress + 0.5;
-		} elseif ( 'off' == $settings['player_bar'] ) {
-			echo 'progress-cross dashicons-dismiss';
-			$settings_notdone++;
-		} else {
-			if ( 'yes' != $settings['player_bar_continuous'] ) {
 				echo 'progress-alert dashicons-warning';
-				$settings_progress = $settings_progress + 0.5;				
+				$settings_progress = $settings_progress + 0.5;
+			}
+			echo '"></div></td>' . "\n";
+
+			echo '<td class="progress-text">' . "\n";
+			
+				// --- stream URL ---
+				echo esc_html( __( 'Stream URL', 'radio-station' ) ) . ' ';
+				if ( '' != $settings['streaming_url'] ) {
+					echo esc_html( __( 'is set', 'radio-station' ) ) . '. ';
+				} else {
+					echo esc_html( __( 'not set', 'radio-station' ) ) . '. ';
+				}
+
+				// --- fallback URL ---
+				echo ' ' . esc_html( __( 'Fallback stream URL', 'radio-station' ) ) . ' ';
+				if ( '' != $settings['fallback_url'] ) {
+					echo esc_html( __( 'is set', 'radio-station' ) ) . '. ';
+				} else {
+					echo esc_html( __( 'not set', 'radio-station' ) ) . '. ';
+				}
+
+			echo '</td>' . "\n";
+					
+			// --- fix setting icon ---
+			echo '<td>' . "\n";
+				if ( 'dashboard' == $context ) {
+					$fix_setting_url = add_query_arg( 'page', 'radio-station', admin_url( 'admin.php' ) );
+					$fix_setting_url = add_query_arg( 'tab', $settings_tab, $fix_setting_url );
+					$fix_setting_url = add_query_arg( 'section', $settings_section, $fix_setting_url );
+				} else {
+					$fix_setting_url = 'javascript:void(0)';
+				}
+				echo '<a class="progress-icon-link" href="' . esc_url( $fix_setting_url ) . '"';
+				if ( 'settings' == $context ) {
+					echo ' onclick="jQuery(\'#' . esc_attr( $settings_tab ) . '-tab-button\').click();"';
+				}
+				echo '>';
+					echo '<span class="progress-icon progress-add dashicons dashicons-controls-volumeon"></span>';
+				echo '</a>' . "\n";
+				echo '<a class="progress-label-link" href="' . esc_url( $fix_setting_url ) . '">';
+					if ( ( '' == $settings['streaming_url'] ) || ( '' == $settings['fallback_url'] ) ) {
+						echo '<div class="progress-label" title="' . esc_attr( __( 'Fix this Setting', 'radio-station' ) ) . '">' . esc_html( __( 'Fix', 'radio-station' ) ) . '</div>';
+					} else {
+						echo '<div class="progress-label" title="' . esc_attr( __( 'Edit this Setting', 'radio-station' ) ) . '">' . esc_html( __( 'Edit', 'radio-station' ) ) . '</div>';
+					}
+				echo '</a>' . "\n";
+			echo '</td>' . "\n";
+			
+		echo '</tr>' . "\n";
+
+		// --- Player Bar ---
+		$settings_items++;
+		echo '<tr class="progress-line">' . "\n";
+
+			// --- progress icon ---
+			echo '<td><div class="progress-icon dashicons ';
+			if ( !defined( 'RADIO_STATION_PRO_FILE' ) ) {	
+				echo 'progress-alert dashicons-warning';
+				$settings_progress = $settings_progress + 0.5;
+			} elseif ( 'off' == $settings['player_bar'] ) {
+				echo 'progress-cross dashicons-dismiss';
+				$settings_notdone++;
+			} else {
+				if ( 'yes' != $settings['player_bar_continuous'] ) {
+					echo 'progress-alert dashicons-warning';
+					$settings_progress = $settings_progress + 0.5;				
+				} else {
+					echo 'progress-tick dashicons-yes-alt';
+					$settings_progress++;
+				}
+			} 
+			echo '"></div></td>' . "\n";
+
+			echo '<td class="progress-text">' . "\n";
+			
+				// --- player bar ---
+				if ( !defined( 'RADIO_STATION_PRO_FILE' ) ) {
+					echo esc_html( __( 'Player Bar with continuous playback available in Pro version.', 'radio-station' ) );
+				} else {
+				
+					if ( 'top' == $settings['player_bar'] ) {
+						echo esc_html( __( 'Header', 'radio-station' ) ) . ' ';
+					} elseif ( 'bottom' == $settings['player_bar'] ) {
+						echo esc_html( __( 'Footer', 'radio-station' ) ) . ' ';
+					}
+					echo esc_html( __( 'Player Bar', 'radio-station' ) ) . ' ';			
+					if ( 'off' == $settings['player_bar'] ) {
+						echo esc_html( __( 'not enabled', 'radio-station' ) ) . '. ';
+					} else {
+						echo esc_html( __( 'enabled', 'radio-station' ) ) . '. ';
+					}
+
+					// --- continuous playback ---
+					echo esc_html( __( 'Continuous playback', 'radio-station' ) ) . ' ';
+					if ( 'yes' == $settings['player_bar_continuous'] ) {
+						echo esc_html( __( 'enabled', 'radio-station' ) ) . '. ';
+					} else {
+						echo esc_html( __( 'disabled', 'radio-station' ) ) . '. ';
+					}
+				}
+
+			echo '</td>' . "\n";
+					
+			// --- fix setting icon ---
+			echo '<td>' . "\n";
+			if ( !defined( 'RADIO_STATION_PRO_FILE' ) ) {
+
+				$upgrade_url = radio_station_get_upgrade_url();
+				echo '<a class="progress-icon-link" href="' . esc_url( $upgrade_url ) . '">' . "\n";
+					echo '<div class="progress-icon progress-upgrade dashicons dashicons-unlock"></div>' . "\n";
+				echo '</a>' . "\n";
+				echo '<a class="progress-label-link" href="' . esc_url( $upgrade_url ) . '">' . "\n";
+					echo '<div class="progress-label" title="' . esc_attr( __( 'Upgrade to Radio Station PRO', 'radio-station' ) ) . '">' . esc_html( __( 'Go Pro', 'radio-station' ) ) . '</div>' . "\n";
+				echo '</a>' . "\n";
+
+			} else {
+
+				$settings_tab = 'player';
+				$settings_section = 'bar';
+				if ( 'dashboard' == $context ) {
+					$fix_setting_url = add_query_arg( 'page', 'radio-station', admin_url( 'admin.php' ) );
+					$fix_setting_url = add_query_arg( 'tab', $settings_tab, $fix_setting_url );
+					$fix_setting_url = add_query_arg( 'section', $settings_section, $fix_setting_url );
+				} else {
+					$fix_setting_url = 'javascript:void(0)';
+				}
+
+				echo '<a class="progress-icon-link" href="' . esc_url( $fix_setting_url ) . '"';
+				if ( 'settings' == $context ) {
+					echo ' onclick="jQuery(\'#' . esc_attr( $settings_tab ) . '-tab-button\').click();"';
+				}
+				echo '>';
+					echo '<span class="progress-icon progress-add dashicons dashicons-controls-play"></span>';
+				echo '</a>' . "\n";
+				echo '<a class="progress-label-link" href="' . esc_url( $fix_setting_url ) . '">';
+					if ( ( 'off' == $settings['player_bar'] ) || ( 'yes' != $settings['player_bar_continuous'] ) ) {
+						echo '<div class="progress-label" title="' . esc_attr( __( 'Fix this Setting', 'radio-station' ) ) . '">' . esc_html( __( 'Fix', 'radio-station' ) ) . '</div>';
+					} else {
+						echo '<div class="progress-label" title="' . esc_attr( __( 'Edit this Setting', 'radio-station' ) ) . '">' . esc_html( __( 'Edit', 'radio-station' ) ) . '</div>';
+					}
+				echo '</a>' . "\n";
+			}
+			echo '</td>' . "\n";
+			
+		echo '</tr>' . "\n";
+		
+		// --- Schedule Page ---
+		$settings_items++;
+		echo '<tr class="progress-line">' . "\n";
+
+			// --- progress icon ---
+			echo '<td><div class="progress-icon dashicons ';
+			if ( '' == $settings['schedule_page'] ) {
+				echo 'progress-cross dashicons-dismiss';
+				$settings_notdone++;
 			} else {
 				echo 'progress-tick dashicons-yes-alt';
 				$settings_progress++;
-			}
-		} 
-		echo '"></div>' . "\n";
+			} // else {
+			//	echo 'progress-alert dashicons-warning';
+			//	$settings_progress = $settings_progress + 0.5;
+			// }
+			echo '"></div></td>' . "\n";
 
-		echo '<div class="progress-text">' . "\n";
-		
-			// --- player bar ---
-			if ( !defined( 'RADIO_STATION_PRO_FILE' ) ) {
-				echo esc_html( __( 'Player Bar with continuous playback available in Pro version.', 'radio-station' ) );
-			} else {
+			echo '<td class="progress-text">' . "\n";
 			
-				if ( 'top' == $settings['player_bar'] ) {
-					echo esc_html( __( 'Header', 'radio-station' ) ) . ' ';
-				} elseif ( 'bottom' == $settings['player_bar'] ) {
-					echo esc_html( __( 'Footer', 'radio-station' ) ) . ' ';
-				}
-				echo esc_html( __( 'Player Bar', 'radio-station' ) ) . ' ';			
-				if ( 'off' == $settings['player_bar'] ) {
-					echo esc_html( __( 'not enabled', 'radio-station' ) ) . '. ';
+				// --- stream URL ---
+				echo ' ' . esc_html( __( 'Master Schedule Page', 'radio-station' ) ) . ' ';
+				if ( '' != $settings['schedule_page'] ) {
+					echo esc_html( __( 'is set', 'radio-station' ) ) . ' ';
+
+					// --- automatic schedule display ---
+					if ( 'yes' == $settings['schedule_auto'] ) {
+						echo esc_html( __( 'to display automatically', 'radio-station' ) ) . '.';
+					} else {
+						// TODO: check for shortcode on schedule page ?
+						echo esc_html( __( 'to manual display', 'radio-station' ) ) . '.';
+					}
 				} else {
-					echo esc_html( __( 'enabled', 'radio-station' ) ) . '. ';
+					echo esc_html( __( 'not set', 'radio-station' ) ) . '.';
 				}
 
-				// --- continuous playback ---
-				echo esc_html( __( 'Continuous playback', 'radio-station' ) ) . ' ';
-				if ( 'yes' == $settings['player_bar_continuous'] ) {
-					echo esc_html( __( 'enabled', 'radio-station' ) ) . '. ';
+			echo '</td>' . "\n";
+					
+			// --- fix setting icon ---
+			echo '<td>' . "\n";
+				$settings_tab = 'pages';
+				$settings_section = 'schedule';
+				if ( 'dashboard' == $context ) {
+					$fix_setting_url = add_query_arg( 'page', 'radio-station', admin_url( 'admin.php' ) );
+					$fix_setting_url = add_query_arg( 'tab', $settings_tab, $fix_setting_url );
+					$fix_setting_url = add_query_arg( 'section', $settings_section, $fix_setting_url );
 				} else {
-					echo esc_html( __( 'disabled', 'radio-station' ) ) . '. ';
+					$fix_setting_url = 'javascript:void(0)';
 				}
-			}
-
-		echo '</div>' . "\n";
-				
-		// --- fix setting icon ---
-		if ( !defined( 'RADIO_STATION_PRO_FILE' ) ) {
-
-			$upgrade_url = radio_station_get_upgrade_url();
-			echo '<a class="progress-icon-link" href="' . esc_url( $upgrade_url ) . '">' . "\n";
-				echo '<div class="progress-icon progress-upgrade dashicons dashicons-unlock"></div>' . "\n";
-			echo '</a>' . "\n";
-			echo '<a class="progress-label-link" href="' . esc_url( $upgrade_url ) . '">' . "\n";
-				echo '<div class="progress-label" title="' . esc_attr( __( 'Upgrade to Radio Station PRO', 'radio-station' ) ) . '">' . esc_html( __( 'Go Pro', 'radio-station' ) ) . '</div>' . "\n";
-			echo '</a>' . "\n";
-
-		} else {
-
-			$settings_tab = 'player';
-			$settings_section = 'bar';
-			if ( 'dashboard' == $context ) {
-				$fix_setting_url = add_query_arg( 'page', 'radio-station', admin_url( 'admin.php' ) );
-				$fix_setting_url = add_query_arg( 'tab', $settings_tab, $fix_setting_url );
-				$fix_setting_url = add_query_arg( 'section', $settings_section, $fix_setting_url );
-			} else {
-				$fix_setting_url = 'javascript:void(0)';
-			}
-
-			echo '<a class="progress-icon-link" href="' . esc_url( $fix_setting_url ) . '"';
-			if ( 'settings' == $context ) {
-				echo ' onclick="jQuery(\'#' . esc_attr( $settings_tab ) . '-tab-button\').click();"';
-			}
-			echo '>';
-				echo '<span class="progress-icon progress-add dashicons dashicons-controls-play"></span>';
-			echo '</a>' . "\n";
-			echo '<a class="progress-label-link" href="' . esc_url( $fix_setting_url ) . '">';
-				if ( ( 'off' == $settings['player_bar'] ) || ( 'yes' != $settings['player_bar_continuous'] ) ) {
-					echo '<div class="progress-label" title="' . esc_attr( __( 'Fix this Setting', 'radio-station' ) ) . '">' . esc_html( __( 'Fix', 'radio-station' ) ) . '</div>';
-				} else {
-					echo '<div class="progress-label" title="' . esc_attr( __( 'Edit this Setting', 'radio-station' ) ) . '">' . esc_html( __( 'Edit', 'radio-station' ) ) . '</div>';
+				echo '<a class="progress-icon-link" href="' . esc_url( $fix_setting_url ) . '"';
+				if ( 'settings' == $context ) {
+					echo ' onclick="jQuery(\'#' . esc_attr( $settings_tab ) . '-tab-button\').click();"';
 				}
-			echo '</a>' . "\n";
-		}
-		
-	echo '</div>' . "\n";
-	
-	// --- Schedule Page ---
-	$settings_items++;
-	echo '<div class="progress-line">' . "\n";
-
-		// --- progress icon ---
-		echo '<div class="progress-icon dashicons ';
-		if ( '' == $settings['schedule_page'] ) {
-			echo 'progress-cross dashicons-dismiss';
-			$settings_notdone++;
-		} else {
-			echo 'progress-tick dashicons-yes-alt';
-			$settings_progress++;
-		} // else {
-		//	echo 'progress-alert dashicons-warning';
-		//	$settings_progress = $settings_progress + 0.5;
-		// }
-		echo '"></div>' . "\n";
-
-		echo '<div class="progress-text">' . "\n";
-		
-			// --- stream URL ---
-			echo ' ' . esc_html( __( 'Master Schedule Page', 'radio-station' ) ) . ' ';
-			if ( '' != $settings['schedule_page'] ) {
-				echo esc_html( __( 'is set', 'radio-station' ) ) . ' ';
-
-				// --- automatic schedule display ---
-				if ( 'yes' == $settings['schedule_auto'] ) {
-					echo esc_html( __( 'to display automatically', 'radio-station' ) ) . '.';
-				} else {
-					// TODO: check for shortcode on schedule page ?
-					echo esc_html( __( 'to manual display', 'radio-station' ) ) . '.';
-				}
-			} else {
-				echo esc_html( __( 'not set', 'radio-station' ) ) . '.';
-			}
-
-		echo '</div>' . "\n";
-				
-		// --- fix setting icon ---
-		$settings_tab = 'pages';
-		$settings_section = 'schedule';
-		if ( 'dashboard' == $context ) {
-			$fix_setting_url = add_query_arg( 'page', 'radio-station', admin_url( 'admin.php' ) );
-			$fix_setting_url = add_query_arg( 'tab', $settings_tab, $fix_setting_url );
-			$fix_setting_url = add_query_arg( 'section', $settings_section, $fix_setting_url );
-		} else {
-			$fix_setting_url = 'javascript:void(0)';
-		}
-		echo '<a class="progress-icon-link" href="' . esc_url( $fix_setting_url ) . '"';
-		if ( 'settings' == $context ) {
-			echo ' onclick="jQuery(\'#' . esc_attr( $settings_tab ) . '-tab-button\').click();"';
-		}
-		echo '>';
-			echo '<span class="progress-icon progress-add dashicons dashicons-calendar-alt"></span>';
-		echo '</a>';
-		echo '<a class="progress-label-link" href="' . esc_url( $fix_setting_url ) . '">';
-			if ( '' == $settings['schedule_page'] ) {
-				echo '<div class="progress-label" title="' . esc_attr( __( 'Fix this Setting', 'radio-station' ) ) . '">' . esc_html( __( 'Fix', 'radio-station' ) ) . '</div>';
-			} else {
-				echo '<div class="progress-label" title="' . esc_attr( __( 'Edit this Setting', 'radio-station' ) ) . '">' . esc_html( __( 'Edit', 'radio-station' ) ) . '</div>';
-			}
-		echo '</a>' . "\n";
-		
-	echo '</div>' . "\n";
-
-	// --- Station Info ---
-	$settings_items++;
-	$infos = array( 'station_title', 'station_image', 'station_frequency', 'station_location', 'station_phone', 'station_email' );
-	$infos_count = count( $infos );
-	$info_count = 0;
-	foreach ( $infos as $info ) {
-		if ( isset( $settings[$info] ) && ( '' != $settings[$info] ) ) {
-			$info_count++;
-		}
-	}
-	$info_percent = round( ( $info_count / $infos_count ), 2, PHP_ROUND_HALF_DOWN ) * 100;
-
-	echo '<div class="progress-line">' . "\n";
-
-		// --- progress icon ---
-		echo '<div class="progress-icon dashicons ';
-		if ( 100 == $info_percent ) {
-			echo 'progress-tick dashicons-yes-alt';
-			$settings_progress++;
-		} elseif ( $info_percent > 49 ) {
-			echo 'progress-alert dashicons-warning';
-			$settings_progress = $settings_progress + 0.5;
-		} else {
-			echo 'progress-cross dashicons-dismiss';
-			$settings_notdone++;
-		}
-		echo '"></div>' . "\n";
-
-		echo '<div class="progress-text">' . "\n";
+				echo '>';
+					echo '<span class="progress-icon progress-add dashicons dashicons-calendar-alt"></span>';
+				echo '</a>';
+				echo '<a class="progress-label-link" href="' . esc_url( $fix_setting_url ) . '">';
+					if ( '' == $settings['schedule_page'] ) {
+						echo '<div class="progress-label" title="' . esc_attr( __( 'Fix this Setting', 'radio-station' ) ) . '">' . esc_html( __( 'Fix', 'radio-station' ) ) . '</div>';
+					} else {
+						echo '<div class="progress-label" title="' . esc_attr( __( 'Edit this Setting', 'radio-station' ) ) . '">' . esc_html( __( 'Edit', 'radio-station' ) ) . '</div>';
+					}
+				echo '</a>' . "\n";
+			echo '</td>' . "\n";
 			
-			echo esc_html( $info_count ) . ' ' . esc_html( __( 'out of', 'radio-station' ) ) . ' ' . esc_html( $infos_count );
-			echo ' ' . esc_html( __( 'Station information fields set', 'radio-station' ) ) . '. ';
+		echo '</tr>' . "\n";
 
-		echo '</div>' . "\n";
-				
-		// --- fix setting icon ---
-		$settings_tab = 'general';
-		$settings_section = 'broadcast';
-		if ( 'dashboard' == $context ) {
-			$fix_setting_url = add_query_arg( 'page', 'radio-station', admin_url( 'admin.php' ) );
-			$fix_setting_url = add_query_arg( 'tab', $settings_tab, $fix_setting_url );
-			$fix_setting_url = add_query_arg( 'section', $settings_section, $fix_setting_url );
-		} else {
-			$fix_setting_url = 'javascript:void(0)';
-		}
-		echo '<a class="progress-icon-link" href="' . esc_url( $fix_setting_url ) . '"';
-		if ( 'settings' == $context ) {
-			echo ' onclick="jQuery(\'#' . esc_attr( $settings_tab ) . '-tab-button\').click();"';
-		}
-		echo '>';
-			echo '<span class="progress-icon progress-add dashicons dashicons-edit"></span>';
-		echo '</a>';
-		echo '<a class="progress-label-link" href="' . esc_url( $fix_setting_url ) . '">';
-			if ( 100 == $info_percent ) {
-				echo '<div class="progress-label" title="' . esc_attr( __( 'Edit these Settings', 'radio-station' ) ) . '">' . esc_html( __( 'Edit', 'radio-station' ) ) . '</div>';
-			} else {
-				echo '<div class="progress-label" title="' . esc_attr( __( 'Fix this Setting', 'radio-station' ) ) . '">' . esc_html( __( 'Fix', 'radio-station' ) ) . '</div>';
-			}
-		echo '</a>';
-		
-	echo '</div>';
-
-
-	// --- Archive Pages ---
-	$settings_items++;
-	$archives = array( 'show', 'override', 'playlist', 'genre', 'language' );
-	$pro_archives = array( 'episode', 'team' );
-	if ( defined( 'RADIO_STATION_PRO_FILE' ) ) {
-		$archives = array_merge( $archives, $pro_archives );
-	}
-	$archives_count = count( $archives );
-	$archive_count = 0;
-	foreach ( $archives as $archive ) {
-		$key = $archive . '_archive_page';
-		if ( '' != $settings[$key] ) {
-			$archive_count++;
-		}
-	}
-	$archive_percent = round( ( $archive_count / $archives_count ), 2, PHP_ROUND_HALF_DOWN ) * 100;
-	
-	echo '<div class="progress-line">' . "\n";
-
-		// --- progress icon ---
-		echo '<div class="progress-icon dashicons ';
-		if ( 100 == $archive_percent ) {
-			echo 'progress-tick dashicons-yes-alt';
-			$settings_progress++;
-		} elseif ( $archive_percent > 49 ) {
-			echo 'progress-alert dashicons-warning';
-			$settings_progress = $settings_progress + 0.5;
-		} else {
-			echo 'progress-cross dashicons-dismiss';
-			$settings_notdone++;
-		}
-		echo '"></div>' . "\n";
-
-		echo '<div class="progress-text">' . "\n";
-			
-			echo esc_html( $archive_count ) . ' ' . esc_html( __( 'out of', 'radio-station' ) ) . ' ' . esc_html( $archives_count );
-			echo ' ' . esc_html( __( 'Archive pages set', 'radio-station' ) ) . '. ';
-			echo esc_html( $archive_percent ) . '% ' . esc_html( __( 'Archive coverage', 'radio-station' ) ) . '.';
-
-		echo '</div>' . "\n";
-				
-		// --- fix setting icon ---
-		$settings_tab = 'archives';
-		$settings_section = 'post-types';
-		if ( 'dashboard' == $context ) {
-			$fix_setting_url = add_query_arg( 'page', 'radio-station', admin_url( 'admin.php' ) );
-			$fix_setting_url = add_query_arg( 'tab', $settings_tab, $fix_setting_url );
-			$fix_setting_url = add_query_arg( 'section', $settings_section, $fix_setting_url );
-		} else {
-			$fix_setting_url = 'javascript:void(0)';
-		}
-		echo '<a class="progress-icon-link" href="' . esc_url( $fix_setting_url ) . '"';
-		if ( 'settings' == $context ) {
-			echo ' onclick="jQuery(\'#' . esc_attr( $settings_tab ) . '-tab-button\').click();"';
-		}
-		echo '>';
-			echo '<span class="progress-icon progress-add dashicons dashicons-playlist-audio"></span>';
-		echo '</a>' . "\n";
-		echo '<a class="progress-label-link" href="' . esc_url( $fix_setting_url ) . '">';
-			if ( 100 == $archive_percent ) {
-				echo '<div class="progress-label" title="' . esc_attr( __( 'Edit these Settings', 'radio-station' ) ) . '">' . esc_html( __( 'Edit', 'radio-station' ) ) . '</div>' . "\n";
-			} else {
-				echo '<div class="progress-label" title="' . esc_attr( __( 'Fix this Setting', 'radio-station' ) ) . '">' . esc_html( __( 'Fix', 'radio-station' ) ) . '</div>' . "\n";
-			}
-		echo '</a>' . "\n";
-		
-	echo '</div>' . "\n";
-
-	// --- Pro Archives Pages ---
-	if ( !defined( 'RADIO_STATION_PRO_FILE' ) ) {
-		
+		// --- Station Info ---
 		$settings_items++;
-		echo '<div class="progress-line">' . "\n";
+		$infos = array( 'station_title', 'station_image', 'station_frequency', 'station_location', 'station_phone', 'station_email' );
+		$infos_count = count( $infos );
+		$info_count = 0;
+		foreach ( $infos as $info ) {
+			if ( isset( $settings[$info] ) && ( '' != $settings[$info] ) ) {
+				$info_count++;
+			}
+		}
+		$info_percent = round( ( $info_count / $infos_count ), 2, PHP_ROUND_HALF_DOWN ) * 100;
+
+		echo '<tr class="progress-line">' . "\n";
 
 			// --- progress icon ---
-			echo '<div class="progress-icon dashicons progress-alert dashicons-warning"></div>' . "\n";
+			echo '<td><div class="progress-icon dashicons ';
+			if ( 100 == $info_percent ) {
+				echo 'progress-tick dashicons-yes-alt';
+				$settings_progress++;
+			} elseif ( $info_percent > 49 ) {
+				echo 'progress-alert dashicons-warning';
+				$settings_progress = $settings_progress + 0.5;
+			} else {
+				echo 'progress-cross dashicons-dismiss';
+				$settings_notdone++;
+			}
+			echo '"></div></td>' . "\n";
 
-			echo '<div class="progress-text">' . "\n";
-				echo esc_html( __( 'Episode and Team Archive pages available in Pro version.', 'radio-station' ) );
-			echo '</div>' . "\n";
+			echo '<td class="progress-text">' . "\n";
+				echo esc_html( $info_count ) . ' ' . esc_html( __( 'out of', 'radio-station' ) ) . ' ' . esc_html( $infos_count );
+				echo ' ' . esc_html( __( 'Station information fields set', 'radio-station' ) ) . '. ';
+			echo '</td>' . "\n";
 					
-			// --- upgrade to Pro / feature link ---
-			$upgrade_url = radio_station_get_upgrade_url();
-			echo '<a class="progress-icon-link" href="' . esc_url( $upgrade_url ) . '">' . "\n";
-				echo '<div class="progress-icon progress-upgrade dashicons dashicons-unlock"></div>' . "\n";
-			echo '</a>' . "\n";
-			echo '<a class="progress-label-link" href="' . esc_url( $upgrade_url ) . '">' . "\n";
-				echo '<div class="progress-label" title="' . esc_attr( __( 'Upgrade to Radio Station PRO', 'radio-station' ) ) . '">' . esc_html( __( 'Go Pro', 'radio-station' ) ) . '</div>' . "\n";
-			echo '</a>' . "\n";
+			// --- fix setting icon ---
+			echo '<td>' . "\n";
+				$settings_tab = 'general';
+				$settings_section = 'broadcast';
+				if ( 'dashboard' == $context ) {
+					$fix_setting_url = add_query_arg( 'page', 'radio-station', admin_url( 'admin.php' ) );
+					$fix_setting_url = add_query_arg( 'tab', $settings_tab, $fix_setting_url );
+					$fix_setting_url = add_query_arg( 'section', $settings_section, $fix_setting_url );
+				} else {
+					$fix_setting_url = 'javascript:void(0)';
+				}
+				echo '<a class="progress-icon-link" href="' . esc_url( $fix_setting_url ) . '"';
+				if ( 'settings' == $context ) {
+					echo ' onclick="jQuery(\'#' . esc_attr( $settings_tab ) . '-tab-button\').click();"';
+				}
+				echo '>';
+					echo '<span class="progress-icon progress-add dashicons dashicons-edit"></span>';
+				echo '</a>';
+				echo '<a class="progress-label-link" href="' . esc_url( $fix_setting_url ) . '">';
+					if ( 100 == $info_percent ) {
+						echo '<div class="progress-label" title="' . esc_attr( __( 'Edit these Settings', 'radio-station' ) ) . '">' . esc_html( __( 'Edit', 'radio-station' ) ) . '</div>';
+					} else {
+						echo '<div class="progress-label" title="' . esc_attr( __( 'Fix this Setting', 'radio-station' ) ) . '">' . esc_html( __( 'Fix', 'radio-station' ) ) . '</div>';
+					}
+				echo '</a>';
+			echo '</td>' . "\n";
 			
-		echo '</div>' . "\n";
-	}
+		echo '</tr>';
 
-	// ...
 
-	// --- settings progress bar ---
-	$progress_percent = round( ( $settings_progress / $settings_items ), 2, PHP_ROUND_HALF_DOWN ) * 100;
-	$undone_percent = round( ( $settings_notdone / $settings_items ), 2, PHP_ROUND_HALF_DOWN ) * 100;
-	radio_station_progress_bar( $progress_percent, $undone_percent );
+		// --- Archive Pages ---
+		$settings_items++;
+		$archives = array( 'show', 'override', 'playlist', 'genre', 'language' );
+		$pro_archives = array( 'episode', 'team' );
+		if ( defined( 'RADIO_STATION_PRO_FILE' ) ) {
+			$archives = array_merge( $archives, $pro_archives );
+		}
+		$archives_count = count( $archives );
+		$archive_count = 0;
+		foreach ( $archives as $archive ) {
+			$key = $archive . '_archive_page';
+			if ( '' != $settings[$key] ) {
+				$archive_count++;
+			}
+		}
+		$archive_percent = round( ( $archive_count / $archives_count ), 2, PHP_ROUND_HALF_DOWN ) * 100;
+		
+		echo '<tr class="progress-line">' . "\n";
 
+			// --- progress icon ---
+			echo '<td><div class="progress-icon dashicons ';
+			if ( 100 == $archive_percent ) {
+				echo 'progress-tick dashicons-yes-alt';
+				$settings_progress++;
+			} elseif ( $archive_percent > 49 ) {
+				echo 'progress-alert dashicons-warning';
+				$settings_progress = $settings_progress + 0.5;
+			} else {
+				echo 'progress-cross dashicons-dismiss';
+				$settings_notdone++;
+			}
+			echo '"></div></td>' . "\n";
+
+			echo '<td class="progress-text">' . "\n";
+				
+				echo esc_html( $archive_count ) . ' ' . esc_html( __( 'out of', 'radio-station' ) ) . ' ' . esc_html( $archives_count );
+				echo ' ' . esc_html( __( 'Archive pages set', 'radio-station' ) ) . '. ';
+				echo esc_html( $archive_percent ) . '% ' . esc_html( __( 'Archive coverage', 'radio-station' ) ) . '.';
+
+			echo '</td>' . "\n";
+					
+			// --- fix setting icon ---
+			echo '<td>' . "\n";
+				$settings_tab = 'archives';
+				$settings_section = 'post-types';
+				if ( 'dashboard' == $context ) {
+					$fix_setting_url = add_query_arg( 'page', 'radio-station', admin_url( 'admin.php' ) );
+					$fix_setting_url = add_query_arg( 'tab', $settings_tab, $fix_setting_url );
+					$fix_setting_url = add_query_arg( 'section', $settings_section, $fix_setting_url );
+				} else {
+					$fix_setting_url = 'javascript:void(0)';
+				}
+				echo '<a class="progress-icon-link" href="' . esc_url( $fix_setting_url ) . '"';
+				if ( 'settings' == $context ) {
+					echo ' onclick="jQuery(\'#' . esc_attr( $settings_tab ) . '-tab-button\').click();"';
+				}
+				echo '>';
+					echo '<span class="progress-icon progress-add dashicons dashicons-playlist-audio"></span>';
+				echo '</a>' . "\n";
+				echo '<a class="progress-label-link" href="' . esc_url( $fix_setting_url ) . '">';
+					if ( 100 == $archive_percent ) {
+						echo '<div class="progress-label" title="' . esc_attr( __( 'Edit these Settings', 'radio-station' ) ) . '">' . esc_html( __( 'Edit', 'radio-station' ) ) . '</div>' . "\n";
+					} else {
+						echo '<div class="progress-label" title="' . esc_attr( __( 'Fix this Setting', 'radio-station' ) ) . '">' . esc_html( __( 'Fix', 'radio-station' ) ) . '</div>' . "\n";
+					}
+				echo '</a>' . "\n";
+			echo '</td>' . "\n";
+			
+		echo '</tr>' . "\n";
+
+		// --- Pro Archives Pages ---
+		if ( !defined( 'RADIO_STATION_PRO_FILE' ) ) {
+			
+			$settings_items++;
+			echo '<tr class="progress-line">' . "\n";
+
+				// --- progress icon ---
+				echo '<td><div class="progress-icon dashicons progress-alert dashicons-warning"></div></td>' . "\n";
+
+				echo '<td class="progress-text">' . "\n";
+					echo esc_html( __( 'Episode and Team Archive pages available in Pro version.', 'radio-station' ) );
+				echo '</td>' . "\n";
+						
+				// --- upgrade to Pro / feature link ---
+				echo '<td>' . "\n";
+					$upgrade_url = radio_station_get_upgrade_url();
+					echo '<a class="progress-icon-link" href="' . esc_url( $upgrade_url ) . '">' . "\n";
+						echo '<div class="progress-icon progress-upgrade dashicons dashicons-unlock"></div>' . "\n";
+					echo '</a>' . "\n";
+					echo '<a class="progress-label-link" href="' . esc_url( $upgrade_url ) . '">' . "\n";
+						echo '<div class="progress-label" title="' . esc_attr( __( 'Upgrade to Radio Station PRO', 'radio-station' ) ) . '">' . esc_html( __( 'Go Pro', 'radio-station' ) ) . '</div>' . "\n";
+					echo '</a>' . "\n";
+				echo '</td>' . "\n";
+				
+			echo '</tr>' . "\n";
+		}
+
+		// ...
+
+		// --- settings progress bar ---
+		echo '<tr><td colspan="3">' . "\n";
+			$progress_percent = round( ( $settings_progress / $settings_items ), 2, PHP_ROUND_HALF_DOWN ) * 100;
+			$undone_percent = round( ( $settings_notdone / $settings_items ), 2, PHP_ROUND_HALF_DOWN ) * 100;
+			radio_station_progress_bar( $progress_percent, $undone_percent );
+		echo '</td></tr>' . "\n";
+
+	echo '</table>' . "\n";
 }
 
 
@@ -1259,14 +1307,16 @@ function radio_station_enqueue_onboarding_styles() {
 // Onboarding Styles
 // -----------------
 function radio_station_onboarding_styles() {
-	$css = ".progress-heading {text-align:center; font-size:16px; font-variant:small-caps; letter-spacing:3px; 
+	$css = ".progress-table {width: 100%;}
+	.progress-table td {text-align:center; vertical-align:top;}
+	.progress-heading {text-align:center; font-size:16px; font-variant:small-caps; letter-spacing:3px; 
 		margin-top:10px; margin-bottom:5px; max-width:500px;}
 	.progress-list {margin-bottom:7px;}
 	.progress-list-item {display:inline-block; margin-right:25px;}
 	.progress-list-item:last-child {margin-right:0;}
 	.progress-list-item a {text-decoration:none;}
-	.progress-list-item a:hover {text-decoration:underline; font-weight:bold;}
-	.progress-line {font-size:13px;}
+	.progress-list-item a:hover {font-weight:bold;}
+	.progress-table td.progress-text {text-align:left; font-size:12px;}
 	.progress-bar {width:96%; height:7px; margin-top:7px; margin-bottom:15px; padding:0;}
 	.progress-bar-label {font-size:13px; font-weight:bold; margin-top:7px; text-indent:15px; line-height:7px;}
 	/* .progress-bar, .progress-bar-done, .progress-bar-remainder, .progress-bar-label {display:inline-block; vertical-align:middle;} */
@@ -1274,20 +1324,35 @@ function radio_station_onboarding_styles() {
 	.progress-bar-remainder {background-color:#FF9900; height:7px; border:1px solid #555;}
 	.progress-bar-undone {background-color:#EE0000; height:7px; border:1px solid #555; border-left:0;}
 	.progress-count {font-weight:bold; font-size:14px; background-color:#CCC; border-radius:10px;}
-	.progress-icon {width:25px; height:25px;}
+	.progress-icon {width:25px; height:25px; color:#0077CC;}
 	.progress-icon.progress-tick, .progress-icon.progress-quickstart {color:#00AA00;}
 	.progress-icon.progress-cross {color:#EE0000;}
 	.progress-icon.progress-alert {color:#FF9900;}
-	.progress-icon.progress-add, .progress-icon.progress-settings {color:#0077CC;}
-	.progress-icon.progress-upgrade {color:#AA00AA; font-size:22px;}
+	.progress-icon.progress-add {color:#0077CC;}
+	.progress-icon.progress-settings {color:#B91245;}
 	.progress-icon.progress-docs {color:#CC7700;}
-	.progress-text {width:350px;}
+	.progress-icon.progress-account {color:#AA00AA;}
+	.progress-icon.progress-upgrade, .progress-icon.progress-docs, .progress-icon.progress-shows, .progress-icon.progress-playlists {font-size:22px; width:22px;}
 	.progress-icon, .progress-text, .progress-icon-link, .progress-label-link {display:inline-block; vertical-align:middle; line-height:25px;}
-	.progress-label-link {margin-left:5px; margin-top:5px; width:40px; text-align:center;}
+	.progress-icon-link {margin-left:2px; margin-top:2px;}
+	.progress-label-link {margin-left:2px; margin-top:2px; width:40px; text-align:center;}
 	.progress-text a, .progress-icon-link, .progress-label-link {text-decoration:none;}
 	.progress-text a:hover, .progress-label-link:hover {text-decoration:underline;}
 	.progress-label {font-size:11px; margin-top:-5px;}
 	";
+
+	if ( isset( $_REQUEST['page'] ) && ( 'radio-content' == $_REQUEST['page'] ) ) {
+		
+		$css .= ".progress-table {max-width:550px;}
+		.progress-heading {font-size: 20px; margin-top:20px; margin-bottom:10px;}
+		.progress-list-item {font-size:17px;}
+		.progress-list-item .progress-icon {font-size:30px; width:30px; height:30px;}
+		.progress-list-item .progress-icon.progress-docs, .progress-list-item .progress-icon.progress-shows, .progress-list-item .progress-icon.progress-playlists {font-size:27px; width:27px;}
+		.progress-text, .progress-label {font-size:15px;}
+		
+		";
+	}
+
 
 	return $css;
 }
