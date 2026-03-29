@@ -152,10 +152,10 @@ function radio_timezone_code(timezone) {
 
 /* Retrigger Responsive Schedules */
 function radio_responsive_schedules() {
-	if (jQuery('#master-program-schedule').length) {radio_table_responsive(false,false);}
-	if (jQuery('#master-schedule-tabs').length) {radio_tabs_responsive(false,false);}
-	if (jQuery('#master-schedule-grid').length) {radio_grid_responsive(false);}
-	if (jQuery('#master-schedule-calendar').length) {radio_calendar_responsive(false);}
+	if (jQuery('.master-program-schedule').length) {radio_table_responsive(false,false);}
+	if (jQuery('.master-schedule-tabs').length) {radio_tabs_responsive(false,false);}
+	if (jQuery('.master-schedule-grid').length) {radio_grid_responsive(false);}
+	if (jQuery('.master-schedule-calendar').length) {radio_calendar_responsive(false);}
 }
 
 /* Update Time Displays */

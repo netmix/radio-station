@@ -415,53 +415,118 @@ class radio_station_schedule_engine {
 				if ( $shifts && is_array( $shifts) && ( count( $shifts ) > 0 ) ) {
 					foreach ( $shifts as $i => $shift ) {
 
-						// 2.3.3.9: set shift ID to key
-						// 2.5.0: use already set key
-						if ( !isset( $shift['id'] ) ) {
-							$shift['id'] = $i;
-						}
+						// 2.5.18: match shift channel to specified channel
+						if ( ( ( '' == $channel ) && ( !isset( $shift['channel'] ) || ( '' == $shift['channel'] ) || ( '0' == $shift['channel'] ) ) )
+						  || ( ( '' != $channel ) && ( isset( $shift['channel'] ) && ( $channel == $shift['channel'] ) ) ) ) {
 
-						// --- make sure shift has sufficient info ---
-						$isdisabled = ( isset( $shift['disabled'] ) && ( 'yes' == $shift['disabled'] ) ) ? true : false;
-						$shift = $this->validate_shift( $shift );
-
-						if ( isset( $shift['disabled'] ) && ( 'yes' == $shift['disabled'] ) ) {
-
-							// --- if it was not already disabled, add to shift errors ---
-							if ( !$isdisabled ) {
-								$errors[$id][] = $shift;
+							// 2.3.3.9: set shift ID to key
+							// 2.5.0: use already set key
+							if ( !isset( $shift['id'] ) ) {
+								$shift['id'] = $i;
 							}
 
-						} else {
+							// --- make sure shift has sufficient info ---
+							$isdisabled = ( isset( $shift['disabled'] ) && ( 'yes' == $shift['disabled'] ) ) ? true : false;
+							$shift = $this->validate_shift( $shift );
 
-							// --- shift is valid so continue checking ---
-							// 2.3.2: replace strtotime with to_time for timezones
-							// 2.3.2: fix to conver to 24 hour format first
-							// # midnight calculation
-							$day = $shift['day'];
-							$thisdate = $weekdates[$day];
-							$midnight = $this->to_time( $thisdate . ' 23:59:59', $timezone ) + 1;
-							$start = $shift['start_hour'] . ':' . $shift['start_min'] . ' ' . $shift['start_meridian'];
-							$end = $shift['end_hour'] . ':' . $shift['end_min'] . ' ' . $shift['end_meridian'];
-							$start_time = $this->convert_shift_time( $start );
-							$start_time = $this->to_time( $thisdate . ' ' . $start_time, $timezone );
-							if ( ( '11:59:59 pm' == $end ) || ( '12:00 am' == $end ) ) {
-								// 2.3.2: simplify using existing midnight time
-								$end_time = $midnight;
+							if ( isset( $shift['disabled'] ) && ( 'yes' == $shift['disabled'] ) ) {
+
+								// --- if it was not already disabled, add to shift errors ---
+								if ( !$isdisabled ) {
+									$errors[$id][] = $shift;
+								}
+
 							} else {
-								$end_time = $this->convert_shift_time( $end );
-								$end_time = $this->to_time( $thisdate . ' ' . $end, $timezone );
-							}
-							$encore = ( isset( $shift['encore'] ) && ( 'on' == $shift['encore'] ) ) ? true : false;
-							$updated = $record['updated'];
 
-							if ( $split ) {
+								// --- shift is valid so continue checking ---
+								// 2.3.2: replace strtotime with to_time for timezones
+								// 2.3.2: fix to conver to 24 hour format first
+								// # midnight calculation
+								$day = $shift['day'];
+								$thisdate = $weekdates[$day];
+								$midnight = $this->to_time( $thisdate . ' 23:59:59', $timezone ) + 1;
+								$start = $shift['start_hour'] . ':' . $shift['start_min'] . ' ' . $shift['start_meridian'];
+								$end = $shift['end_hour'] . ':' . $shift['end_min'] . ' ' . $shift['end_meridian'];
+								$start_time = $this->convert_shift_time( $start );
+								$start_time = $this->to_time( $thisdate . ' ' . $start_time, $timezone );
+								if ( ( '11:59:59 pm' == $end ) || ( '12:00 am' == $end ) ) {
+									// 2.3.2: simplify using existing midnight time
+									$end_time = $midnight;
+								} else {
+									$end_time = $this->convert_shift_time( $end );
+									$end_time = $this->to_time( $thisdate . ' ' . $end, $timezone );
+								}
+								$encore = ( isset( $shift['encore'] ) && ( 'on' == $shift['encore'] ) ) ? true : false;
+								$updated = $record['updated'];
 
-								// --- check if show goes over midnight ---
-								if ( ( $end_time > $start_time ) || ( $end_time == $midnight ) ) {
+								if ( $split ) {
+
+									// --- check if show goes over midnight ---
+									if ( ( $end_time > $start_time ) || ( $end_time == $midnight ) ) {
+
+										// --- set the shift time as is ---
+										// 2.3.2: added date data
+										$all_shifts[$day][$start_time . '.' . $id] = array(
+											'ID'       => $id,
+											'day'      => $day,
+											'date'     => $thisdate,
+											'start'    => $start,
+											'end'      => $end,
+											// 'show'     => $id,
+											'encore'   => $encore,
+											'split'    => false,
+											'updated'  => $updated,
+											'shift'    => $shift,
+											'override' => false,
+										);
+
+									} else {
+
+										// --- split shift for this day ---
+										// 2.3.2: added date data
+										$all_shifts[$day][$start_time . '.' . $id] = array(
+											'ID'       => $id,
+											'day'      => $day,
+											'date'     => $thisdate,
+											'start'    => $start,
+											'end'      => '11:59:59 pm', // midnight
+											// 'show'     => $id,
+											'split'    => true,
+											'encore'   => $encore,
+											'updated'  => $updated,
+											'shift'    => $shift,
+											'real_end' => $end,
+											'override' => false,
+										);
+
+										// --- split shift for next day ---
+										// 2.3.2: added date data for next day
+										$nextday = $this->get_next_day( $day );
+										$nextdate = $weekdates[$nextday];
+										// 2.3.2: fix midnight timestamp for sorting
+										if ( strtotime( $nextdate ) < strtotime( $thisdate ) ) {
+											$midnight = $this->to_time( $nextdate . ' 00:00:00', $timezone );
+										}
+										$all_shifts[$nextday][$midnight . '.' . $id] = array(
+											'ID'         => $id,
+											'day'        => $nextday,
+											'date'       => $nextdate,
+											'start'      => '00:00 am', // midnight
+											'end'        => $end,
+											// 'show'       => $id,
+											'encore'     => $encore,
+											'split'      => true,
+											'updated'    => $updated,
+											'shift'      => $shift,
+											'real_start' => $start,
+											'override'   => false,
+										);
+									}
+
+								} else {
 
 									// --- set the shift time as is ---
-									// 2.3.2: added date data
+									// 2.3.2: added for non-split argument
 									$all_shifts[$day][$start_time . '.' . $id] = array(
 										'ID'       => $id,
 										'day'      => $day,
@@ -476,67 +541,7 @@ class radio_station_schedule_engine {
 										'override' => false,
 									);
 
-								} else {
-
-									// --- split shift for this day ---
-									// 2.3.2: added date data
-									$all_shifts[$day][$start_time . '.' . $id] = array(
-										'ID'       => $id,
-										'day'      => $day,
-										'date'     => $thisdate,
-										'start'    => $start,
-										'end'      => '11:59:59 pm', // midnight
-										// 'show'     => $id,
-										'split'    => true,
-										'encore'   => $encore,
-										'updated'  => $updated,
-										'shift'    => $shift,
-										'real_end' => $end,
-										'override' => false,
-									);
-
-									// --- split shift for next day ---
-									// 2.3.2: added date data for next day
-									$nextday = $this->get_next_day( $day );
-									$nextdate = $weekdates[$nextday];
-									// 2.3.2: fix midnight timestamp for sorting
-									if ( strtotime( $nextdate ) < strtotime( $thisdate ) ) {
-										$midnight = $this->to_time( $nextdate . ' 00:00:00', $timezone );
-									}
-									$all_shifts[$nextday][$midnight . '.' . $id] = array(
-										'ID'         => $id,
-										'day'        => $nextday,
-										'date'       => $nextdate,
-										'start'      => '00:00 am', // midnight
-										'end'        => $end,
-										// 'show'       => $id,
-										'encore'     => $encore,
-										'split'      => true,
-										'updated'    => $updated,
-										'shift'      => $shift,
-										'real_start' => $start,
-										'override'   => false,
-									);
 								}
-
-							} else {
-
-								// --- set the shift time as is ---
-								// 2.3.2: added for non-split argument
-								$all_shifts[$day][$start_time . '.' . $id] = array(
-									'ID'       => $id,
-									'day'      => $day,
-									'date'     => $thisdate,
-									'start'    => $start,
-									'end'      => $end,
-									// 'show'     => $id,
-									'encore'   => $encore,
-									'split'    => false,
-									'updated'  => $updated,
-									'shift'    => $shift,
-									'override' => false,
-								);
-
 							}
 						}
 					}
@@ -1222,9 +1227,11 @@ class radio_station_schedule_engine {
 				
 						// --- add show data back to shift ---
 						// 2.5.6: use apply_filters instead of prefixed functions
-						$show = apply_filters( 'schedule_engine_schedule_show_data_meta', $shift['ID'], $shift['id'], $context );
+						// 2.5.18: fix fo possibly missing show ID
+						$show_id = isset( $shift['ID'] ) ? $shift['ID'] : '';
+						$show = apply_filters( 'schedule_engine_schedule_show_data_meta', $show_id, $shift['id'], $context );
 						if ( ( '' != $context ) && is_string( $context ) ) {
-							$show = apply_filters( $context . '_schedule_show_data_meta', $shift['ID'], $shift['id'] );
+							$show = apply_filters( $context . '_schedule_show_data_meta', $show_id, $shift['id'] );
 						}
 						unset( $show['schedule'] );
 						$shift['show'] = $show_shifts[$day][$start]['show'] = $show;

@@ -42,6 +42,9 @@ function radio_station_master_schedule( $atts ) {
 		}
 		$radio_station_data['schedules']['instances']++;
 		$instances = $radio_station_data['schedules']['instances'];
+		// if ( RADIO_STATION_DEBUG ) {
+			echo '<span style="display:none;">Schedule Instance ' . esc_html( $instances ) . '</span>';
+		// }
 	}
 
 	// --- make attributes backward compatible ---
@@ -374,16 +377,10 @@ function radio_station_master_schedule( $atts ) {
 	if ( 'table' == $atts['view'] ) {
 
 		// 2.5.10.1: added check for specified instance
-		if ( !isset( $instance ) ) {
-			// 2.5.0: set view instance number
-			if ( !isset( $radio_station_data['schedules']['table'] ) ) {
-				$radio_station_data['schedules']['table'] = -1;
-			}
-			$radio_station_data['schedules']['table']++;
-			$instance = $radio_station_data['schedules']['table'];
-		}
+		// 2.5.0: set view instance number
 		// 2.5.6: fix for missing id definition
-		$id = ( 0 == $instance ) ? '' : '-' . $instance;
+		// 2.5.18: simplifiy use instance attribute
+		$id = ( 0 == $atts['instance']  ) ? '' : '-' . $atts['instance'] ;
 
 		// --- load table view template ---
 		ob_start();
@@ -409,16 +406,10 @@ function radio_station_master_schedule( $atts ) {
 	} elseif ( 'tabs' == $atts['view'] ) {
 
 		// 2.5.10.1: added check for specified instance
-		if ( !isset( $instance ) ) {
-			// 2.5.0: set view instance number
-			if ( !isset( $radio_station_data['schedules']['tabs'] ) ) {
-				$radio_station_data['schedules']['tabs'] = -1;
-			}
-			$radio_station_data['schedules']['tabs']++;
-			$instance = $radio_station_data['schedules']['tabs'];
-		}
+		// 2.5.0: set view instance number
 		// 2.5.6: fix for missing id definition
-		$id = ( 0 == $instance ) ? '' : '-' . $instance;
+		// 2.5.18: simplifiy use instance attribute
+		$id = ( 0 == $atts['instance'] ) ? '' : '-' . $atts['instance'];
 
 		// --- load tabs view template ---
 		ob_start();
@@ -444,16 +435,10 @@ function radio_station_master_schedule( $atts ) {
 	} elseif ( 'list' == $atts['view'] ) {
 
 		// 2.5.10.1: added check for specified instance
-		if ( !isset( $instance ) ) {
-			// 2.5.0: set view instance number
-			if ( !isset( $radio_station_data['schedules']['list'] ) ) {
-				$radio_station_data['schedules']['list'] = -1;
-			}
-			$radio_station_data['schedules']['list']++;
-			$instance = $radio_station_data['schedules']['list'];
-		}
+		// 2.5.0: set view instance number
 		// 2.5.6: fix for missing id definition
-		$id = ( 0 == $instance ) ? '' : '-' . $instance;
+		// 2.5.18: simplifiy use instance attribute
+		$id = ( 0 == $atts['instance'] ) ? '' : '-' . $atts['instance'];
 
 		// --- load list view template ---
 		ob_start();
@@ -701,21 +686,21 @@ function radio_station_master_schedule_loader_js( $atts ) {
 		newdate = new Date(new Date(startdate).getTime() + offset).toISOString().substr(0,10);
 		timestamp = Math.floor((new Date()).getTime() / 1000);
 		url = '" . esc_url( $loader_url );
-		// 2.6.0: add args directly to avoid double escaping
-		$ignore_keys = array( 'start_date', 'view', 'ajax' );
+		// 2.5.0: add these args directly to avoid double escaping
+		// 2.5.18: ignore channel attribute to check for it explicitly
+		$ignore_keys = array( 'start_date', 'view', 'ajax', 'channel' );
 		foreach ( $atts as $key => $value ) {
 			if ( !in_array( $key, $ignore_keys ) ) {
 				$js .= '&' . esc_js( $key ) . '=' . esc_js( $value );
 			}
 		}
-		$js .= "&view='+view+'&instance='+instance+'&timestamp='+timestamp+'&start_date='+newdate+'&active_date='+activedate;
+		$js .= "&view='+view+'&instance='+instance+'&timestamp='+timestamp+'&start_date='+newdate+'&active_date='+activedate;";
+		// 2.5.18: added optional channel selection value
+		$js .= "if (jQuery('#channel-select-'+instance).length) {url += '&channel='+jQuery('#channel-select-'+instance).val();}
 		if (startday != '') {url += '&start_day='+startday;}
 		if (activeday != '') {url += '&active_day='+activeday;}
 		if (clear) {url += '&clear=1';}
 		if (radio.debug) {url += '&rs-debug=1'; console.log('Reload View URL: '+url);}
-		/* if (document.getElementById('schedule-'+view+'-loader').src != url) {
-			document.getElementById('schedule-'+view+'-loader').src = url;
-		} */
 		iframe_id = 'master-schedule-'+view+'-'+instance+'-loader';
 		iframe = document.getElementById(iframe_id);
 		if (iframe) {
@@ -730,42 +715,59 @@ function radio_station_master_schedule_loader_js( $atts ) {
 	}" . "\n";
 
 	// 2.5.10.1: added multi-schedule reloader
-	$js .= "function radio_load_schedules() {
+	// 2.6.18: added optional instance argument
+	$js .= "function radio_load_schedules(instance) {
 		tables = jQuery('.master-program-schedule');
 		tabs = jQuery('.master-schedule-tabs');
 		lists = jQuery('.master-schedule-list');
 		grids = jQuery('.master-schedule-grid');
 		calendars = jQuery('.master-schedule-calendar');
 		if (tables.length) {tables.each(function() {
-			instance = jQuery(this).attr('id').replace('master-program-schedule-','');
-			if (radio.debug) {console.log('Refreshing Table Instance '+instance);}
-			radio_load_schedule(instance,false,'table',true);
+			inst = jQuery(this).attr('id').replace('master-program-schedule','').replace('-','');
+			console.log(instance+' - '+inst);
+			if (inst == '') {inst = 0;}
+			if (!instance || (parseInt(instance) == parseInt(inst))) {
+				if (radio.debug) {console.log('Refreshing Table Instance '+inst);}
+				radio_load_schedule(inst,false,'table',true);
+			}
 		}); }
 		if (tabs.length) {tabs.each(function() {
-			instance = jQuery(this).attr('id').replace('master-schedule-tabs-','');
-			if (radio.debug) {console.log('Refreshing Tabs Instance '+instance);}
-			radio_load_schedule(instance,false,'tabs',true);
+			inst = jQuery(this).attr('id').replace('master-schedule-tabs','').replace('-','');
+			if (inst == '') {inst = 0;}
+			if (!instance || (parseInt(instance) == parseInt(inst))) {
+				if (radio.debug) {console.log('Refreshing Tabs Instance '+inst);}
+				radio_load_schedule(inst,false,'tabs',true);
+			}
 		}); }
 		if (lists.length) {lists.each(function() {
-			instance = jQuery(this).attr('id').replace('master-schedule-list-','');
-			if (radio.debug) {console.log('Refreshing List Instance '+instance);}
-			radio_load_schedule(instance,false,'list',true);
+			inst = jQuery(this).attr('id').replace('master-schedule-list','').replace('-','');
+			if (inst == '') {inst = 0;}
+			if (!instance || (parseInt(instance) == parseInt(inst))) {
+				if (radio.debug) {console.log('Refreshing List Instance '+inst);}
+				radio_load_schedule(inst,false,'list',true);
+			}
 		}); }
 		if (grids.length) {grids.each(function() {
-			instance = jQuery(this).attr('id').replace('master-schedule-grid-','');
-			if (radio.debug) {console.log('Refreshing Grid Instance '+instance);}
-			radio_load_schedule(instance,false,'grid',true);
+			inst = jQuery(this).attr('id').replace('master-schedule-grid','').replace('-','');
+			if (inst == '') {inst = 0;}
+			if (!instance || (parseInt(instance) == parseInt(inst))) {
+				if (radio.debug) {console.log('Refreshing Grid Instance '+inst);}
+				radio_load_schedule(inst,false,'grid',true);
+			}
 		}); }
-		if (calendars.length) {calendars.each(function() {				
-			instance = jQuery(this).attr('id').replace('master-schedule-calendar-','');
-			if (radio.debug) {console.log('Refreshing Calendar Instance '+instance);
-			radio_load_schedule(instance,false,'calendar',true);}
+		if (calendars.length) {calendars.each(function() {
+			inst = jQuery(this).attr('id').replace('master-schedule-calendar','').replace('-','');
+			if (inst == '') {inst = 0;}
+			if (!instance || (parseInt(instance) == parseInt(inst))) {
+				if (radio.debug) {console.log('Refreshing Calendar Instance '+inst);
+				radio_load_schedule(inst,false,'calendar',true);}
+			}
 		}); }			
 	}" . "\n";
 
 	// 2.5.10.1: check for AJAX attribute to refresh schedule on pageload
 	if ( isset( $atts['ajax'] ) && $atts['ajax'] ) {
-		$js .= "jQuery(document).ready(function() {radio_load_schedules();}, 500);" . "\n";
+		$js .= "jQuery(document).ready(function() {radio_load_schedules(false);}, 500);" . "\n";
 	}
 	
 	// --- filter and return ---

@@ -2330,7 +2330,6 @@ function radio_station_sanitize_playlist_entry( $entry ) {
 // 2.5.0: updated to match changed shortcode keys
 function radio_station_sanitize_shortcode_values( $type, $extras = false ) {
 
-	// $atts = array();
 	if ( 'current-show' == $type ) {
 
 		// --- current show attribute keys ---
@@ -2495,6 +2494,7 @@ function radio_station_sanitize_shortcode_values( $type, $extras = false ) {
 
 	// 2.5.0: added filter for shortcode attribute key types
 	$keys = apply_filters( 'radio_station_shortcode_attribute_key_types', $keys, $type );
+	// echo 'Attribute Keys: ' . print_r( $keys, true ) . "\n";
 
 	// --- handle extra keys ---
 	if ( $extras && is_array( $extras ) && ( count( $extras ) > 0 ) ) {

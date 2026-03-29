@@ -67,6 +67,10 @@
 	font-weight: bold;
 }
 
+.master-genre-list .genre-highlight, .master-genre-list .genre-highlight:hover {
+	text-decoration: none;
+}
+
 .master-genre-list .genre-highlight.highlighted {
     font-weight: bold;
     background-color: rgba( 235, 235, 0, 0.4 );

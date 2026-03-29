@@ -77,14 +77,14 @@ $infokeys = array( 'avatar', 'title', 'hosts', 'times', 'encore', 'file', 'excer
 $infokeys = apply_filters( 'radio_station_schedule_table_info_order', $infokeys );
 
 // --- clear floats ---
-$table = '<div style="clear:both;"></div>' . "\n";
+echo '<div class="schedule-clearfix" style="clear:both;"></div>' . "\n";
 
 // --- start master program table ---
 // 2.5.0: maybe add instance to element ID
 // 2.5.0: set oddeven variable
 $oddeven = 'even';
-$id = ( 0 == $instance ) ? '' : '-' . $instance;
-$table .= '<table id="master-program-schedule' . esc_attr( $id ) . '" class="master-program-schedule" cellspacing="0" cellpadding="0">' . "\n";
+$id = ( 0 == $atts['instance'] ) ? '' : '-' . $atts['instance'];
+$table = '<table id="master-program-schedule' . esc_attr( $id ) . '" class="master-program-schedule" cellspacing="0" cellpadding="0">' . "\n";
 
 // --- weekday table headings row ---
 // 2.3.2: added hour column heading id
@@ -92,8 +92,8 @@ $table .= '<tr class="master-program-day-row">' . "\n";
 // 2.5.0: change element ID to class for selectors
 $table .= '<th class="master-program-hour-heading">' . "\n";
 	// 2.3.3.9: added filters for week loader controls
-	$table .= apply_filters( 'radio_station_schedule_loader_control', '', 'table', 'left', $instance );
-	$table .= apply_filters( 'radio_station_schedule_loader_control', '', 'table', 'right', $instance );
+	$table .= apply_filters( 'radio_station_schedule_loader_control', '', 'table', 'left', $atts['instance'] );
+	$table .= apply_filters( 'radio_station_schedule_loader_control', '', 'table', 'right', $atts['instance'] );
 $table .= '</th>' . "\n";
 
 // 2.5.0: set odd/even day variable
@@ -179,7 +179,7 @@ foreach ( $weekdays as $i => $weekday ) {
 		// 2.3.2: added check for optional display_date attribute
 		$table .= '<th class="' . esc_attr( $classlist ) . '">' . "\n";
 			$table .= '<div class="shift-left-arrow">' . "\n";
-				$table .= '<a href="javascript:void(0);" onclick="return radio_shift_day(\'left\',' . esc_attr( $instance ) . ');" title="' . esc_attr( __( 'Previous Day', 'radio-station' ) ) . '">' . $arrows['left'] . '</a>' . "\n";
+				$table .= '<a href="javascript:void(0);" onclick="return radio_shift_day(\'left\',' . esc_attr( $atts['instance'] ) . ');" title="' . esc_attr( __( 'Previous Day', 'radio-station' ) ) . '">' . $arrows['left'] . '</a>' . "\n";
 			$table .= '</div>' . "\n";
 			$table .= '<div class="headings">' . "\n";
 				$table .= '<div class="day-heading"';
@@ -192,7 +192,7 @@ foreach ( $weekdays as $i => $weekday ) {
 				}
 			$table .= '</div>' . "\n";
 			$table .= '<div class="shift-right-arrow">' . "\n";
-				$table .= '<a href="javacript:void(0);" onclick="return radio_shift_day(\'right\',' . esc_attr( $instance ) . ');" title="' . esc_attr( __( 'Next Day', 'radio-station' ) ) . '">' . $arrows['right'] . '</a>' . "\n";
+				$table .= '<a href="javacript:void(0);" onclick="return radio_shift_day(\'right\',' . esc_attr( $atts['instance'] ) . ');" title="' . esc_attr( __( 'Next Day', 'radio-station' ) ) . '">' . $arrows['right'] . '</a>' . "\n";
 			$table .= '</div>' . "\n";
 			// 2.3.2: add day start and end time date
 			$table .= '<span class="rs-time rs-start-time" data="' . esc_attr( $day_start_time ) . '"></span>' . "\n";

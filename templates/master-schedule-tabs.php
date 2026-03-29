@@ -77,13 +77,16 @@ $arrows = apply_filters( 'radio_station_schedule_arrows', $arrows, 'tabs' );
 $infokeys = array( 'title', 'hosts', 'times', 'encore', 'file', 'genres', 'custom' );
 $infokeys = apply_filters( 'radio_station_schedule_tabs_info_order', $infokeys );
 
+// --- clear floats ---
+echo '<div class="schedule-clearfix" style="clear:both;"></div>' . "\n";
+
 // --- reset loop variables ---
 $tabs = $panels = '';
 $tcount = 0;
 $start_tab = false;
 
 // 2.3.3.9: added filter for week loader control
-$load_prev = apply_filters( 'radio_station_schedule_loader_control', '', 'tabs', 'left', $instance );
+$load_prev = apply_filters( 'radio_station_schedule_loader_control', '', 'tabs', 'left', $atts['instance'] );
 if ( '' != $load_prev ) {
 	// 2.5.0: remove ID in favour of class
 	$tabs .= '<li class="master-schedule-tabs-loader master-schedule-tabs-loader-left">' . "\n";
@@ -189,7 +192,7 @@ foreach ( $weekdays as $i => $weekday ) {
 		// 2.3.1: added (negative) return to arrow onclick functions
 		$tabs .= '<li id="master-schedule-tabs-header-' . esc_attr( strtolower( $weekday ) ) . '" class="' . esc_attr( $classlist ) . '">' . "\n";
 			$tabs .= '<div class="shift-left-arrow">' . "\n";
-				$tabs .= '<a href="javacript:void(0);" onclick="return radio_shift_tab(\'left\',' . esc_attr( $instance ) . ');" title="' . esc_attr( __( 'Previous Day', 'radio-station' ) ) . '">' . $arrows['left'] . '</a>' . "\n";
+				$tabs .= '<a href="javacript:void(0);" onclick="return radio_shift_tab(\'left\',' . esc_attr( $atts['instance'] ) . ');" title="' . esc_attr( __( 'Previous Day', 'radio-station' ) ) . '">' . $arrows['left'] . '</a>' . "\n";
 			$tabs .= '</div>' . "\n";
 
 			// 2.3.2: added optional display_date attribute and subheading
@@ -205,7 +208,7 @@ foreach ( $weekdays as $i => $weekday ) {
 			$tabs .= '</div>' . "\n";
 
 			$tabs .= '<div class="shift-right-arrow">' . "\n";
-				$tabs .= '<a href="javacript:void(0);" onclick="return radio_shift_tab(\'right\', ' . esc_attr( $instance ) . ');" title="' . esc_attr( __( 'Next Day', 'radio-station' ) ) . '">' . $arrows['right'] . '</a>' . "\n";
+				$tabs .= '<a href="javacript:void(0);" onclick="return radio_shift_tab(\'right\', ' . esc_attr( $atts['instance'] ) . ');" title="' . esc_attr( __( 'Next Day', 'radio-station' ) ) . '">' . $arrows['right'] . '</a>' . "\n";
 			$tabs .= '</div>' . "\n";
 			$tabs .= '<div id="master-schedule-tab-bottom-' . esc_attr( strtolower( $weekday ) ) . '" class="master-schedule-tab-bottom"></div>' . "\n";
 			// 2.3.2: add start and end day times for automatic highlighting
@@ -660,7 +663,7 @@ foreach ( $weekdays as $i => $weekday ) {
 }
 
 // 2.3.3.9: added filter for week loader control
-$load_next = apply_filters( 'radio_station_schedule_loader_control', '', 'tabs', 'right', $instance );
+$load_next = apply_filters( 'radio_station_schedule_loader_control', '', 'tabs', 'right', $atts['instance'] );
 if ( '' != $load_next ) {
 	// 2.5.0; remove ID in favour of class
 	$tabs .= '<li class="master-schedule-tabs-loader master-schedule-tabs-loader-right">' . "\n";
@@ -670,7 +673,7 @@ if ( '' != $load_next ) {
 
 // --- add day tabs to output ---
 // 2.5.0: maybe add instance to element ID
-$id = ( 0 == $instance ) ? '' : '-' . $instance;
+$id = ( 0 == $atts['instance'] ) ? '' : '-' . $atts['instance'];
 echo '<ul id="master-schedule-tabs' . esc_attr( $id ) . '" class="master-schedule-tabs">' . "\n";
 	// TODO: test wp_kses on output
 	echo $tabs;

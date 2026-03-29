@@ -74,9 +74,13 @@ if ( $atts['show_desc'] ) {
 $infokeys = array( 'avatar', 'title', 'hosts', 'times', 'encore', 'file', 'genres', 'excerpt', 'custom' );
 $infokeys = apply_filters( 'radio_station_schedule_list_info_order', $infokeys );
 
+// --- clear floats ---
+echo '<div class="schedule-clearfix" style="clear:both;"></div>' . "\n";
+
 // --- start list schedule output ---
 // 2.5.0: append instance to element ID
-$list = '<ul id="master-list-' . esc_attr( $instance ) . '" class="master-list">' . "\n";
+$id = ( 0 == $atts['instance'] ) ? '' : '-' . $atts['instance'];
+$list = '<ul id="master-list-' . esc_attr( $atts['instance'] ) . '" class="master-list">' . "\n";
 
 $tcount = 0;
 // 2.3.0: loop weekdays instead of legacy master list
