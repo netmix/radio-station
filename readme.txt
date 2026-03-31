@@ -6,7 +6,7 @@ License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires at least: 3.3
 Tested up to: 6.9
-Stable tag: 2.5.18.2
+Stable tag: 2.5.18.3
 
 Radio Station lets you build and manage a Show Schedule for a radio station or Internet broadcaster's WordPress website. 
 
@@ -420,6 +420,7 @@ We recommend you test these on a Staging site (or a development copy of your liv
 * Added: Station Tagline, Callsign, Frequency, Location options
 * Added: Default Player display for Station Meta
 * Added: Special Overrides data routes/feed to Data API
+* Added: Solid and Solid with Transparent Outline Player Buttons
 * Added: Link main language term to filtered show archive
 * Added: Channel input support for Shifts and Overrides
 * Added: Genre and Description filters for admin Show list

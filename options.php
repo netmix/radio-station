@@ -449,27 +449,30 @@ function radio_station_plugin_options( $admin = false ) {
 		// --- [Player] Player Theme ---
 		'player_theme' => array(
 			'type'    => 'select',
-			'label'   => $admin ? __( 'Default Player Theme', 'radio-station' ) : '',
+			'label'   => $admin ? __( 'Default Control Theme', 'radio-station' ) : '',
 			'default' => 'light',
 			'options' => array(
 				'light' => $admin ? __( 'Light', 'radio-station' ) : '',
 				'dark'  => $admin ? __( 'Dark', 'radio-station' ) : '',
 			),
-			'helper'  => $admin ? __( 'Default Player Controls theme style.', 'radio-station' ) : '',
+			'helper'  => $admin ? __( 'Default Player Controls theme style. (Color spectrum options available in Pro.)', 'radio-station' ) : '',
 			'tab'     => 'player',
 			'section' => 'basic',
 		),
 
 		// --- [Player] Player Buttons ---
 		// 2.5.15: change default to circular
+		// 2.5.18: added solid button images options
 		'player_buttons' => array(
 			'type'    => 'select',
 			'label'   => $admin ? __( 'Default Player Buttons', 'radio-station' ) : '',
 			'default' => 'circular',
 			'options' => array(
-				'circular' => $admin ? __( 'Circular Buttons', 'radio-station' ) : '',
-				'rounded'  => $admin ? __( 'Rounded Buttons', 'radio-station' ) : '',
-				'square'   => $admin ? __( 'Square Buttons', 'radio-station' ) : '',
+				'solid'     => $admin ? __( 'Solid Buttons', 'radio-station' ) : '',
+				'semisolid' => $admin ? __( 'Semi Solid Buttons (Transparent Outline)', 'radio-station' ) : '',
+				'circular'  => $admin ? __( 'Hollow Circular Buttons', 'radio-station' ) : '',
+				'rounded'   => $admin ? __( 'Hollow Rounded Buttons', 'radio-station' ) : '',
+				'square'    => $admin ? __( 'Hollow Square Buttons', 'radio-station' ) : '',
 			),
 			'helper'  => $admin ? __( 'Default Player Buttons shape style.', 'radio-station' ) : '',
 			'tab'     => 'player',
@@ -1635,7 +1638,8 @@ function radio_station_plugin_options( $admin = false ) {
 			'pro'     => true,
 		),
 
-		// --- [Pro/Plus] Translate User Times ---
+		// --- Convert User Show Times ---
+		// 2.5.18: fix to remove incorrect pro flag on free feature
 		'convert_show_times' => array(
 			'type'    => 'checkbox',
 			'label'   => $admin ? __( 'Convert Show Times', 'radio-station' ) : '',
@@ -1644,7 +1648,6 @@ function radio_station_plugin_options( $admin = false ) {
 			'helper'  => $admin ? __( 'Automatically display Show times converted into the visitor timezone, based on their browser setting.', 'radio-station' ) : '',
 			'tab'     => 'widgets',
 			'section' => 'loading',
-			'pro'     => true,
 		),
 
 		// --- [Pro/Plus] Timezone Switching ---

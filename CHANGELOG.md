@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Added: Station Tagline, Callsign, Frequency, Location options
 * Added: Default Player display for Station Meta
 * Added: Special Overrides data routes/feed to Data API
+* Added: Solid and Solid with Transparent Outline Player Buttons
 * Added: Link main language term to filtered show archive
 * Added: Channel input support for Shifts and Overrides
 * Added: Genre and Description filters for admin Show list

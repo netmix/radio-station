@@ -478,11 +478,9 @@ function radio_player_output( $args = array(), $echo = false ) {
 		$html['controls'] .= '	</div>' . "\n";
 
 		// 2.5.18: preload the pause icon to prevent display delay glitch on play
-		$theme = radio_station_get_setting( 'player_theme' );
-		$buttons = radio_station_get_setting( 'player_buttons' );
-		$pause_icon_url = plugins_url( '/player/images/pause-' . $theme . '-' . $buttons . '.png', RADIO_STATION_FILE );
+		$pause_icon_url = plugins_url( '/player/images/pause-' . $args['theme'] . '-' . $args['buttons'] . '.png', RADIO_STATION_FILE );
 		$pause_icon_url = apply_filters( 'radio_player_pause_preload_url', $pause_icon_url );
-		$html['controls'] .= '<img class="rp-pause-image-preload" style="display:none !important; height: 0; width: 0;" src="' . $pause_icon_url . '?v=2">' . "\n";
+		$html['controls'] .= '<img class="rp-pause-image-preload" style="display:none !important; height: 0; width: 0;" src="' . esc_url( $pause_icon_url ) . '?v=2">' . "\n";
 
 	$html['controls'] .= '</div>' . "\n";
 
@@ -750,7 +748,9 @@ function radio_player_instance_args( $args, $instance ) {
 	global $radio_player;
 
 	// 2.5.0: store volume control arguments
-	$radio_player['instance-props'][$instance]['volume-controls'] = $args['volumes'];
+	// 2.5.18: store all args/atts for instance
+	// $radio_player['instance-props'][$instance]['volume-controls'] = $args['volumes'];
+	$radio_player['instance-props'][$instance] = $args;
 
 	return $args;
 }
@@ -3384,7 +3384,7 @@ function radio_player_enqueue_styles( $script = false, $skin = false ) {
 // Player Control Styles
 // ---------------------
 // 2.5.16: add optional attribute overrides argument
-function radio_player_control_styles( $instance, $atts = false ) {
+function radio_player_control_styles( $instance, $overrides = false ) {
 
 	global $radio_player;
 
@@ -3415,9 +3415,9 @@ function radio_player_control_styles( $instance, $atts = false ) {
 		$colors['track'] = radio_station_get_setting( 'player_range_color' );
 	}
 
-	// 2.5.16: maybe apply override attributes
-	if ( $atts ) {
-		foreach ( $atts as $key => $value ) {
+	// 2.5.16: maybe apply override attributes (AJAX)
+	if ( $overrides ) {
+		foreach ( $overrides as $key => $value ) {
 			$colors[$key] = $value;
 		}
 	}
@@ -3441,6 +3441,9 @@ function radio_player_control_styles( $instance, $atts = false ) {
 	// 2.5.0: improved instance and ID matching
 	if ( false !== $instance ) {
 		
+		$atts = $radio_player['instance-props'][$instance];
+		// echo '<span style="display:none;">INSTANCE ATTS: ' . print_r( $atts, true ) . '</span>';
+
 		// -- set instance container selector ---
 		$container = '#radio_container_' . $instance;
 		// 2.5.18: added secondary container option
@@ -3502,7 +3505,9 @@ function radio_player_control_styles( $instance, $atts = false ) {
 
 	// --- Play Button ---
 	// 2.4.0.2: fix to glowingloading animation reference
-	$css .= "/* Playing Button */
+	// 2.5.18: add check for solid/semisolid play/pause buttons
+	if ( !isset( $atts ) || !strstr( $atts['buttons'], 'solid' ) ) {
+		$css .= "/* Playing Button */
 " . esc_attr( $container ) . ".loaded .rp-play-pause-button-bg {background-color: " . esc_attr( $colors['buttons'] ) . ";}
 " . esc_attr( $container ) . ".playing .rp-play-pause-button-bg {background-color: " . esc_attr( $colors['playing'] ) . ";}
 " . esc_attr( $container ) . ".error .rp-play-pause-button-bg {background-color: #CC0000;}
@@ -3515,6 +3520,18 @@ function radio_player_control_styles( $instance, $atts = false ) {
 @keyframes glowingplaying {
 	from {background-color: " . esc_attr( $colors['playing'] ) . ";} to {background-color: " . esc_attr( $colors['playing'] ) . "C0;}
 }" . "\n";
+	} else {
+		// 2.5.18: no background colors/animations for solid/semisolid play/pause buttons
+		// TODO: maybe create matching SVG background layers for animation colors?
+		$css .= "/* Playing Button */
+" . esc_attr( $container ) . ".loaded .rp-play-pause-button-bg {background-color: transparent;}
+" . esc_attr( $container ) . ".playing .rp-play-pause-button-bg {background-color: transparent;}
+" . esc_attr( $container ) . ".error .rp-play-pause-button-bg {background-color: transparent;}
+" . esc_attr( $container ) . ".loading .rp-play-pause-button-bg,
+" . esc_attr( $container ) . ".playing .rp-play-pause-button-bg, 
+" . esc_attr( $container ) . ".playing.loaded .rp-play-pause-button-bg {animation: none;}
+" . "\n";
+	}
 
 	// --- Active Volume Buttons Color ---
 	// 2.5.0: added popup player button selector
@@ -3593,8 +3610,8 @@ function radio_player_control_styles( $instance, $atts = false ) {
 	// 2.4.1.4: added volume control visibility options filter
 	// 2.5.0: added check for instance property for volume controls
 	$volume_controls = array( 'slider', 'updown', 'mute', 'max' );
-	if ( isset( $radio_player['instance-props'][$instance]['volume-controls'] ) ) {
-		$volume_controls = $radio_player['instance-props'][$instance]['volume-controls'];
+	if ( isset( $radio_player['instance-props'][$instance]['volumes'] ) ) {
+		$volume_controls = $radio_player['instance-props'][$instance]['volumes'];
 	}
 
 	// --- volume display styles ---
@@ -3631,15 +3648,16 @@ function radio_player_control_styles_ajax() {
 
 	// --- get provided parameters ---
 	$instance = absint( $_REQUEST['instance'] );
-	$atts['text'] = sanitize_text_field( wp_unslash( $_REQUEST['text'] ) );
-	$atts['background'] = sanitize_text_field( wp_unslash( $_REQUEST['background'] ) );
-	$atts['playing'] = sanitize_text_field( wp_unslash( $_REQUEST['playing'] ) );
-	$atts['buttons'] = sanitize_text_field( wp_unslash( $_REQUEST['buttons'] ) );
-	$atts['thumb'] = sanitize_text_field( wp_unslash( $_REQUEST['thumb'] ) );
-	$atts['track'] = sanitize_text_field( wp_unslash( $_REQUEST['track'] ) );
+	$colors = array();
+	$colors['text'] = sanitize_text_field( wp_unslash( $_REQUEST['text'] ) );
+	$colors['background'] = sanitize_text_field( wp_unslash( $_REQUEST['background'] ) );
+	$colors['playing'] = sanitize_text_field( wp_unslash( $_REQUEST['playing'] ) );
+	$colors['buttons'] = sanitize_text_field( wp_unslash( $_REQUEST['buttons'] ) );
+	$colors['thumb'] = sanitize_text_field( wp_unslash( $_REQUEST['thumb'] ) );
+	$colors['track'] = sanitize_text_field( wp_unslash( $_REQUEST['track'] ) );
 	
 	// --- generate control styles ---
-	$css = radio_player_control_styles( $instance, $atts );
+	$css = radio_player_control_styles( $instance, $colors );
 	
 	// --- return result ---
 	if ( '' != $css ) {
