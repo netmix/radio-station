@@ -193,7 +193,7 @@ foreach ( $weekdays as $weekday ) {
 
 				// 2.3.3.8: reset info array
 				$show = $shift['show'];
-				$show_id = $show['id'];
+				$show_id = isset( $show['id'] ) ? $show['id'] : '';
 				$info = array();
 				$split_id = false;
 
@@ -237,8 +237,9 @@ foreach ( $weekdays as $weekday ) {
 				}
 
 				// 2.3.0: filter show link by show and context
+				// 2.5.18: added check that show URL is not empty
 				$show_link = false;
-				if ( $atts['show_link'] ) {
+				if ( $atts['show_link'] && isset( $show['url'] ) && ( '' != $show['url'] ) ) {
 					$show_link = $show['url'];
 				}
 				$show_link = apply_filters( 'radio_station_schedule_show_link', $show_link, $show_id, 'list' );

@@ -92,7 +92,7 @@ function radio_station_master_schedule( $atts ) {
 	}
 
 	if ( RADIO_STATION_DEBUG ) {
-		echo '<span style="display:none;">Master Schedule Shortcode Attributes: ' . esc_html( print_r( $atts, true ) ) . '</span>';
+		echo '<span style="display:none;">Master Schedule Shortcode Attributes In: ' . esc_html( print_r( $atts, true ) ) . '</span>';
 	}
 
 	// 2.5.10.1: get default AJAX loading setting
@@ -234,7 +234,7 @@ function radio_station_master_schedule( $atts ) {
 	// --- merge attributes with defaults ---
 	$atts = shortcode_atts( $defaults, $atts, 'master-schedule' );
 	if ( RADIO_STATION_DEBUG ) {
-		echo '<span style="display:none;">Master Schedule Shortcode Attributes: ' . esc_html( print_r( $atts, true ) ) . '</span>';
+		echo '<span style="display:none;">Master Schedule Shortcode Attributes Out: ' . esc_html( print_r( $atts, true ) ) . '</span>';
 	}
 	// 2.5.0: force empty start_day string to false
 	if ( '' == $atts['start_day'] ) {
@@ -265,7 +265,7 @@ function radio_station_master_schedule( $atts ) {
 	// 2.3.0: moved out from templates to apply to all views
 	// 2.3.2: moved shortcode calls inside and added filters
 	// 2.5.0: added instances IDs and use class for selector
-	$id = ( 0 == $instances ) ? '' : '-' . $instances;
+	$id = ( 0 == $atts['instance'] ) ? '' : '-' . $atts['instance'];
 	$output .= '<div id="master-schedule-controls-wrapper' . esc_attr( $id ) . '" class="master-schedule-controls-wrapper">' . "\n";
 
 		$controls = array();
@@ -294,7 +294,7 @@ function radio_station_master_schedule( $atts ) {
 		// --- genre selector ---
 		if ( $atts['selector'] ) {
 			$controls['selector'] = '<div id="master-schedule-selector-wrapper' . esc_attr( $id ) . '" class="master-schedule-selector-wrapper">' . "\n";
-				$controls['selector'] .= radio_station_master_schedule_genre_selector( $instances );
+				$controls['selector'] .= radio_station_master_schedule_genre_selector( $atts['instance'] );
 			$controls['selector'] .= "\n" . '</div>' . "\n";
 		}
 
@@ -792,8 +792,8 @@ function radio_station_ajax_schedule_loader() {
 	$instance = absint( $_REQUEST['instance'] );
 
 	// 2.5.13 use the active day if set
-	$active_date = sanitize_text_field( $_REQUEST['active_date'] );
-	$active_day = sanitize_text_field( $_REQUEST['active_day'] );
+	$active_date = isset( $_REQUEST['active_date'] ) ? sanitize_text_field( $_REQUEST['active_date'] ) : '';
+	$active_day = isset( $_REQUEST['active_day'] ) ? sanitize_text_field( $_REQUEST['active_day'] ) : '';
 	$day = ( '' != $active_day ) ? $active_day : strtolower( date( 'l', strtotime( $active_date ) ) );
 
 	// --- sanitize shortcode attributes ---
@@ -811,7 +811,7 @@ function radio_station_ajax_schedule_loader() {
 
 	// --- output schedule contents ---
 	// 2.5.0: remove unused schedule contents wrap
-	// TODO: test wp_kses on master schedule output
+	// TODO: test wp_kses on master schedule output?
 	echo radio_station_master_schedule( $atts );
 
 	$js = '';

@@ -416,7 +416,7 @@ class radio_station_schedule_engine {
 					foreach ( $shifts as $i => $shift ) {
 
 						// 2.5.18: match shift channel to specified channel
-						if ( ( ( '' == $channel ) && ( !isset( $shift['channel'] ) || ( '' == $shift['channel'] ) || ( '0' == $shift['channel'] ) ) )
+						if ( ( ( ( '' == $channel ) || ( '0' == $channel ) ) && ( !isset( $shift['channel'] ) || ( '' == $shift['channel'] ) || ( '0' == $shift['channel'] ) ) )
 						  || ( ( '' != $channel ) && ( isset( $shift['channel'] ) && ( $channel == $shift['channel'] ) ) ) ) {
 
 							// 2.3.3.9: set shift ID to key

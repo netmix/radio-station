@@ -263,10 +263,11 @@ foreach ( $weekdays as $i => $weekday ) {
 				$show = $shift['show'];
 				$info = array();
 				$split_id = false;
-
-				$show_link = false;
 				$show_id = $show['id'];
-				if ( $atts['show_link'] ) {
+
+				// 2.5.18: added check that show URL is not empty
+				$show_link = false;
+				if ( $atts['show_link'] && isset( $show['url'] ) && ( '' != $show['url'] ) ) {
 					$show_link = $show['url'];
 				}
 				$show_link = apply_filters( 'radio_station_schedule_show_link', $show_link, $show_id, 'tabs' );

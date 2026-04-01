@@ -478,7 +478,7 @@ function radio_player_output( $args = array(), $echo = false ) {
 		$html['controls'] .= '	</div>' . "\n";
 
 		// 2.5.18: preload the pause icon to prevent display delay glitch on play
-		$pause_icon_url = plugins_url( '/player/images/pause-' . $args['theme'] . '-' . $args['buttons'] . '.png', RADIO_STATION_FILE );
+		$pause_icon_url = plugins_url( '/player/images/' . $args['theme'] . '-pause-' . $args['buttons'] . '.png', RADIO_STATION_FILE );
 		$pause_icon_url = apply_filters( 'radio_player_pause_preload_url', $pause_icon_url );
 		$html['controls'] .= '<img class="rp-pause-image-preload" style="display:none !important; height: 0; width: 0;" src="' . esc_url( $pause_icon_url ) . '?v=2">' . "\n";
 
@@ -3520,18 +3520,6 @@ function radio_player_control_styles( $instance, $overrides = false ) {
 @keyframes glowingplaying {
 	from {background-color: " . esc_attr( $colors['playing'] ) . ";} to {background-color: " . esc_attr( $colors['playing'] ) . "C0;}
 }" . "\n";
-	} else {
-		// 2.5.18: no background colors/animations for solid/semisolid play/pause buttons
-		// TODO: maybe create matching SVG background layers for animation colors?
-		$css .= "/* Playing Button */
-" . esc_attr( $container ) . ".loaded .rp-play-pause-button-bg {background-color: transparent;}
-" . esc_attr( $container ) . ".playing .rp-play-pause-button-bg {background-color: transparent;}
-" . esc_attr( $container ) . ".error .rp-play-pause-button-bg {background-color: transparent;}
-" . esc_attr( $container ) . ".loading .rp-play-pause-button-bg,
-" . esc_attr( $container ) . ".playing .rp-play-pause-button-bg, 
-" . esc_attr( $container ) . ".playing.loaded .rp-play-pause-button-bg {animation: none;}
-" . "\n";
-	}
 
 	// --- Active Volume Buttons Color ---
 	// 2.5.0: added popup player button selector
@@ -3543,6 +3531,27 @@ function radio_player_control_styles( $instance, $overrides = false ) {
 " . esc_attr( $container ) . " .rp-popup-button:focus, " . esc_attr( $container ) . " .rp-popup-button:hover {
 	background-color: " . esc_attr( $colors['buttons'] ) . ";
 }" . "\n";
+
+	} else {
+		// 2.5.18: no background colors/animations for solid/semisolid play/pause buttons
+		// TODO: maybe create matching SVG background layers for animation colors?
+		$css .= "/* Playing Button */
+" . esc_attr( $container ) . ".loaded .rp-play-pause-button-bg {background-color: transparent;}
+" . esc_attr( $container ) . ".playing .rp-play-pause-button-bg {background-color: transparent;}
+" . esc_attr( $container ) . ".error .rp-play-pause-button-bg {background-color: transparent;}
+" . esc_attr( $container ) . ".loading .rp-play-pause-button-bg,
+" . esc_attr( $container ) . ".playing .rp-play-pause-button-bg, 
+" . esc_attr( $container ) . ".playing.loaded .rp-play-pause-button-bg {animation: none;}" . "\n";
+
+	// --- Active Volume Buttons Color ---
+	// 2.5.0: added popup player button selector
+	$css .= "/* Volume Buttons */
+" . esc_attr( $container ) . " .rp-mute, " . esc_attr( $container ) . " .rp-mute:hover, " . esc_attr( $container ) . ".muted .rp-mute, " . esc_attr( $container ) . ".muted .rp-mute:hover,
+" . esc_attr( $container ) . " .rp-volume-max, " . esc_attr( $container ) . " .rp-volume-max:focus, " . esc_attr( $container ) . " .rp-volume-max:hover, " . esc_attr( $container ) . ".maxed .rp-volume-max,
+" . esc_attr( $container ) . " .rp-volume-up, " . esc_attr( $container ) . " .rp-volume-up:focus, " . esc_attr( $container ) . " .rp-volume-up:hover,
+" . esc_attr( $container ) . " .rp-volume-down, " . esc_attr( $container ) . " .rp-volume-down:focus, " . esc_attr( $container ) . " .rp-volume-down:hover,
+" . esc_attr( $container ) . " .rp-popup-button, " . esc_attr( $container ) . " .rp-popup-button:focus, " . esc_attr( $container ) . " .rp-popup-button:hover {background-color: transparent;}" . "\n";
+	}
 
 	// --- Volume Range Input and Container ---
 	// ref: http://danielstern.ca/range.css/#/

@@ -262,11 +262,15 @@ function radio_station_get_current_schedule( $time = false, $weekstart = false )
 		}
 	}
 
+	// 2.5.18: added current schedule override filter
+	$timezone = radio_station_get_timezone();
+	$show_shifts = apply_filters( 'radio_station_current_schedule_override', $show_shifts, $time, $weekstart, $timezone, $channel );
+	// echo '<span style="display:none;">OVERRIDDEN SHIFTS: ' . print_r( $show_shifts, true ) . '</span>';
+
 	if ( !$show_shifts ) {
 
 		// --- get weekdates ---
 		$now  = $time ? $time : radio_station_get_now();
-		$timezone = radio_station_get_timezone();
 		// 2.3.3.5: add passthrough of optional week start argument
 		$weekdays = radio_station_get_schedule_weekdays( $weekstart, $now, $timezone );
 		$weekdates = radio_station_get_schedule_weekdates( $weekdays, $now, $timezone );
