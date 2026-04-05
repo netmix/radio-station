@@ -65,29 +65,29 @@
 .rp-play-pause-button {	opacity: 0.9; cursor: pointer;}
 .rp-play-pause-button:hover, .rp-play-pause-button:focus {opacity: 1; scale: 1.1;}
 
-.light.solid .rp-play-pause-button {background-image: url("../images/play-light-solid.png?v=2");}
-.light.semisolid .rp-play-pause-button {background-image: url("../images/play-light-semisolid.png?v=2");}
-.light.circular .rp-play-pause-button {background-image: url("../images/play-light-circular.png?v=2");}
-.light.rounded .rp-play-pause-button {background-image: url("../images/play-light-rounded.png?v=2");}
-.light.square .rp-play-pause-button {background-image: url("../images/play-light-square.png?v=2");}
+.light.solid .rp-play-pause-button {background-image: url("../images/light-play-solid.png?v=2");}
+.light.semisolid .rp-play-pause-button {background-image: url("../images/light-play-semisolid.png?v=2");}
+.light.circular .rp-play-pause-button {background-image: url("../images/light-play-circular.png?v=2");}
+.light.rounded .rp-play-pause-button {background-image: url("../images/light-play-rounded.png?v=2");}
+.light.square .rp-play-pause-button {background-image: url("../images/light-play-square.png?v=2");}
 
-.dark.solid .rp-play-pause-button {background-image: url("../images/play-dark-solid.png?v=2");}
-.dark.semisolid .rp-play-pause-button {background-image: url("../images/play-dark-semisolid.png?v=2");}
-.dark.circular .rp-play-pause-button {background-image: url("../images/play-dark-circular.png?v=2");}
-.dark.rounded .rp-play-pause-button {background-image: url("../images/play-dark-rounded.png?v=2");}
-.dark.square .rp-play-pause-button {background-image: url("../images/play-dark-square.png?v=2");}
+.dark.solid .rp-play-pause-button {background-image: url("../images/dark-play-solid.png?v=2");}
+.dark.semisolid .rp-play-pause-button {background-image: url("../images/dark-play-semisolid.png?v=2");}
+.dark.circular .rp-play-pause-button {background-image: url("../images/dark-play-circular.png?v=2");}
+.dark.rounded .rp-play-pause-button {background-image: url("../images/dark-play-rounded.png?v=2");}
+.dark.square .rp-play-pause-button {background-image: url("../images/dark-play-square.png?v=2");}
 
-.playing.light.solid .rp-play-pause-button {background-image: url("../images/pause-light-solid.png?v=2");}
-.playing.light.semisolid .rp-play-pause-button {background-image: url("../images/pause-light-semisolid.png?v=2");}
-.playing.light.circular .rp-play-pause-button {background-image: url("../images/pause-light-circular.png?v=2");}
-.playing.light.rounded .rp-play-pause-button {background-image: url("../images/pause-light-rounded.png?v=2");}
-.playing.light.square .rp-play-pause-button {background-image: url("../images/pause-light-square.png?v=2");}
+.playing.light.solid .rp-play-pause-button {background-image: url("../images/light-pause-solid.png?v=2");}
+.playing.light.semisolid .rp-play-pause-button {background-image: url("../images/light-pause-semisolid.png?v=2");}
+.playing.light.circular .rp-play-pause-button {background-image: url("../images/light-pause-circular.png?v=2");}
+.playing.light.rounded .rp-play-pause-button {background-image: url("../images/light-pause-rounded.png?v=2");}
+.playing.light.square .rp-play-pause-button {background-image: url("../images/light-pause-square.png?v=2");}
 
-.playing.dark.solid .rp-play-pause-button {background-image: url("../images/pause-dark-solid.png?v=2");}
-.playing.dark.semisolid .rp-play-pause-button {background-image: url("../images/pause-dark-semisolid.png?v=2");}
-.playing.dark.circular .rp-play-pause-button {background-image: url("../images/pause-dark-circular.png?v=2");}
-.playing.dark.rounded .rp-play-pause-button {background-image: url("../images/pause-dark-rounded.png?v=2");}
-.playing.dark.square .rp-play-pause-button {background-image: url("../images/pause-dark-square.png?v=2");}
+.playing.dark.solid .rp-play-pause-button {background-image: url("../images/dark-pause-solid.png?v=2");}
+.playing.dark.semisolid .rp-play-pause-button {background-image: url("../images/dark-pause-semisolid.png?v=2");}
+.playing.dark.circular .rp-play-pause-button {background-image: url("../images/dark-pause-circular.png?v=2");}
+.playing.dark.rounded .rp-play-pause-button {background-image: url("../images/dark-pause-rounded.png?v=2");}
+.playing.dark.square .rp-play-pause-button {background-image: url("../images/dark-pause-square.png?v=2");}
 
 /* .rp-stop, .rp-previous, .rp-next {width: 28px; height: 28px;	margin-top: 6px;}
 .rp-stop {background: url("jplayer.generic.jpg") 0 -83px no-repeat; margin-left: 10px;}

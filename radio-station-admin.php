@@ -117,6 +117,31 @@ function radio_station_admin_styles() {
 
 }
 
+// -----------------------
+// Custom Settings Scripts
+// -----------------------
+add_action( 'radio_station_settings_scripts', 'radio_station_admin_settings_scripts' );
+function radio_station_admin_settings_scripts() {
+	
+	$free_images_url = plugins_url( 'player/images', RADIO_STATION_FILE );
+	$pro_images_url = defined( 'RADIO_STATION_PRO_FILE' ) ? plugins_url( 'images', RADIO_STATION_PRO_FILE ) : '';
+	
+	echo "function custom_css_preview(css) {
+		jQuery('.setting').each(function() {
+			if (jQuery(this).attr('data-key') == 'player_theme') {
+				value = jQuery(this).val();
+				console.log('player_theme : '+value);
+				if ((value == 'light') || (value == 'dark')) {
+					images_url = '" . esc_url( $free_images_url ) . "';
+				} else {images_url = '" . esc_url( $pro_images_url ) . "';}
+				css = css.replaceAll('%%images_url%%',images_url);
+			}
+		});
+		console.log(css);
+		return css;
+	}" . "\n";
+}
+
 // --------------------------
 // Filter Plugin Action Links
 // --------------------------

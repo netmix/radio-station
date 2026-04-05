@@ -479,8 +479,9 @@ function radio_player_output( $args = array(), $echo = false ) {
 
 		// 2.5.18: preload the pause icon to prevent display delay glitch on play
 		$pause_icon_url = plugins_url( '/player/images/' . $args['theme'] . '-pause-' . $args['buttons'] . '.png', RADIO_STATION_FILE );
-		$pause_icon_url = apply_filters( 'radio_player_pause_preload_url', $pause_icon_url );
-		$html['controls'] .= '<img class="rp-pause-image-preload" style="display:none !important; height: 0; width: 0;" src="' . esc_url( $pause_icon_url ) . '?v=2">' . "\n";
+		$pause_icon_url = apply_filters( 'radio_player_pause_preload_url', $pause_icon_url, $args );
+		// $html['controls'] .= '<img class="rp-pause-image-preload" style="display:none !important; height: 0; width: 0;" src="' . esc_url( $pause_icon_url ) . '?v=2">' . "\n";
+		$html['controls'] .= '<div class="rp-pause-image-preload" style="display:none !important; height: 0; width: 0; background-image: url(\'' . esc_url( $pause_icon_url ) . '?v=2\');"></div>' . "\n";
 
 	$html['controls'] .= '</div>' . "\n";
 

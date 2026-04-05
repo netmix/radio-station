@@ -641,7 +641,7 @@ function radio_station_get_next_shows( $limit = 3, $show_shifts = false, $time =
 // -------------------------
 // (checks all existing show shifts for schedule)
 // 2.3.0: added show shift conflict checker
-// 2.5.18: rewrite unusued conflict checker function
+// 2.5.18: rewrite unused conflict checker function
 function radio_station_check_shifts() {
 
 	global $radio_station_data, $rs_se;

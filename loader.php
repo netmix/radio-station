@@ -5,7 +5,7 @@
 // =================================
 
 // -------------
-// Loader v1.3.7
+// Loader v1.3.8
 // -------------
 // Note: Changelog at end of file.
 
@@ -631,373 +631,374 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 				foreach ( $options as $key => $values ) {
 
 					// --- get option type and options ---
-					$type = $values['type'];
-					$valid = $validate_args = array();
-					if ( isset( $values['options'] ) ) {
-						$valid = $values['options'];
-					}
-
-					// --- get posted value ---
-					// 1.0.6: set null value for unchecked checkbox fix
-					// 1.2.5: moved get posted value to within each type with sanitization
-					$postkey = $args['settings'] . '_' . $key;
-					$newsettings = null;
-
-					// --- maybe validate special options ---
-					// 1.0.9: check for special options to prepare
-					if ( is_string( $valid ) ) {
-
-						// --- maybe get public post type slugs ---
-						if ( in_array( $valid, array( 'PUBLICTYPE', 'PUBLICTYPES' ) ) ) {
-							$valid = array();
-							if ( !isset( $public ) ) {
-								$cpts = array( 'page', 'post' );
-								$cptargs = array( 'public' => true, '_builtin' => false );
-								$cptlist = get_post_types( $cptargs, 'names', 'and' );
-								$public = array_merge( $cpts, $cptlist );
-							}
-							foreach ( $public as $cpt ) {
-								$valid[$cpt] = '';
-							}
+					if ( isset( $values['type'] ) ) {
+						$type = $values['type'];
+						$valid = $validate_args = array();
+						if ( isset( $values['options'] ) ) {
+							$valid = $values['options'];
 						}
 
-						// --- maybe get post type slugs ---
-						if ( in_array( $valid, array( 'POSTTYPE', 'POSTTYPES' ) ) ) {
-							$valid = array();
-							if ( !isset( $cpts ) ) {
-								$cpts = array( 'page', 'post' );
-								$cptargs = array( 'public' => true, '_builtin' => false );
-								$cptlist = get_post_types( $cptargs, 'names', 'and' );
-								$cpts = array_merge( $cpts, $cptlist );
-							}
-							foreach ( $cpts as $cpt ) {
-								$valid[$cpt] = '';
-							}
-						}
+						// --- get posted value ---
+						// 1.0.6: set null value for unchecked checkbox fix
+						// 1.2.5: moved get posted value to within each type with sanitization
+						$postkey = $args['settings'] . '_' . $key;
+						$newsettings = null;
 
-						// --- maybe get all post type slugs ---
-						if ( in_array( $valid, array( 'ALLTYPE', 'ALLTYPES' ) ) ) {
-							$valid = array();
-							if ( !isset( $allcpts ) ) {
-								$cptargs = array( '_builtin' => false );
-								$allcpts = get_post_types( $cptargs, 'names', 'and' );
-							}
-							foreach ( $allcpts as $cpt ) {
-								$valid[$cpt] = '';
-							}
-						}
-					}
-
-					if ( $this->debug ) {
-						// phpcs:ignore WordPress.PHP.DevelopmentFunctions
-						echo 'Saving Setting Key ' . esc_html( $key ) . ' (' . esc_html( $postkey ) . ')<br>' . "\n";
-						// phpcs:ignore WordPress.PHP.DevelopmentFunctions
-						echo 'Type: ' . esc_html( $type ) . ' - Valid Options ' . esc_html( $key ) . ': ' . esc_html( print_r( $valid, true ) ) . '<br>' . "\n";
-					}
-
-					// --- sanitize value according to type ---
-					if ( strstr( $type, '/' ) ) {
-
-						// --- implicit radio / select ---
-						$posted = isset( $_POST[$postkey] ) ? sanitize_text_field( wp_unslash( $_POST[$postkey] ) ) : null;
-						$valid = explode( '/', $type );
-						if ( in_array( $posted, $valid ) ) {
-							$settings[$key] = $posted;
-						}
-
-					} elseif ( ( 'checkbox' == $type ) || ( 'toggle' == $type ) ) {
-
-						// --- checkbox / toggle ---
-						// 1.0.6: fix to new unchecked checkbox value
-						// 1.0.9: maybe validate to specified checkbox value
-						$posted = isset( $_POST[$postkey] ) ? sanitize_text_field( wp_unslash( $_POST[$postkey] ) ) : null;
-						if ( isset( $values['value'] ) ) {
-							$valid = array( $values['value'] );
-						} else {
-							$valid = array( 'yes', '1', 'checked', 'on' );
-						}
-						if ( in_array( $posted, $valid ) ) {
-							$settings[$key] = $posted;
-						} elseif ( is_null( $posted ) ) {
-							$settings[$key] = '';
-						}
-
-					} elseif ( 'textarea' == $type ) {
-
-						// --- text area ---
-						// 1.2.5: use sanitize_textarea_field with stripslashes
-						$posted = isset( $_POST[$postkey] ) ? sanitize_textarea_field( wp_unslash( $_POST[$postkey] ) ) : null;
-						// 1.3.0: move use of stripslashes to separate line
-						if ( !is_null( $posted ) ) {
-							$posted = stripslashes( $posted );
-						}
-						$settings[$key] = $posted;
-
-					} elseif ( 'text' == $type ) {
-
-						// --- text field (slug) ---
-						// 1.0.9: move text field sanitization to validation
-						$posted = isset( $_POST[$postkey] ) ? sanitize_text_field( wp_unslash( $_POST[$postkey] ) ) : null;
-						if ( !is_string( $valid ) ) {
-							$valid = 'TEXT';
-						}
-						$newsettings = $posted;
-
-					} elseif ( 'email' == $type ) {
-
-						// --- email field ---
-						// 1.3.0: added explicitly for email field type
-						$posted = isset( $_POST[$postkey] ) ? sanitize_text_field( wp_unslash( $_POST[$postkey] ) ) : null;
-						if ( !is_string( $valid ) ) {
-							$valid = 'EMAIL';
-						}
-						$newsettings = $posted;
-
-					} elseif ( ( 'number' == $type ) || ( 'numeric' == $type ) ) {
-
-						// --- number field value ---
-						// 1.0.9: added support for number step, minimum and maximum
-						$posted = isset( $_POST[$postkey] ) ? sanitize_text_field( wp_unslash( $_POST[$postkey] ) ) : null;
-						$newsettings = $posted;
-						$valid = 'NUMERIC';
-						if ( isset( $values['step'] ) ) {
-							$validate_args['step'] = $values['step'];
-						}
-						if ( isset( $values['min'] ) ) {
-							$validate_args['min'] = $values['min'];
-						}
-						if ( isset( $values['max'] ) ) {
-							$validate_args['max'] = $values['max'];
-						}
-
-					} elseif ( 'multicheck' == $type ) {
-
-						// --- process multicheck boxes ---
-						// 1.0.9: added multicheck input type
-						// note: needs defined options (but works with post types)
-						$posted = array();
-						foreach ( $valid as $option => $label ) {
-							$optionkey = $args['settings'] . '_' . $key . '-' . $option;
-							if ( isset( $_POST[$optionkey] ) ) {
-								// 1.1.2: check for value if specified
-								// 1.2.5: apply sanitize_text_field to posted value
-								if ( ( isset( $values['value'] ) && ( sanitize_text_field( wp_unslash( $_POST[$optionkey] ) ) == $values['value'] ) )
-									|| ( !isset( $values['value'] ) && ( 'yes' == sanitize_text_field( wp_unslash( $_POST[$optionkey] ) ) ) ) ) {
-									// 1.1.0: fixed to save only array of key values
-									$posted[] = $option;
-								}
-							}
-						}
-						$settings[$key] = $posted;
-
-					} elseif ( 'csv' == $type ) {
-
-						// -- comma separated values ---
-						// 1.0.4: added comma separated values option
-						$posted = isset( $_POST[$postkey] ) ? sanitize_text_field( wp_unslash( $_POST[$postkey] ) ) : null;
-						if ( strstr( $posted, ',' ) ) {
-							$posted = explode( ',', $posted );
-						} else {
-							// 1.2.8: fix to convert string to array
-							$posted = array( $posted );
-						}
-						foreach ( $posted as $i => $value ) {
-							$posted[$i] = trim( $value );
-						}
+						// --- maybe validate special options ---
+						// 1.0.9: check for special options to prepare
 						if ( is_string( $valid ) ) {
-							$newsettings = $posted;
-						} elseif ( is_array( $valid ) && ( count( $valid ) > 0 ) ) {
-							// 1.2.0: fix to check for empty valid array
-							foreach ( $posted as $i => $value ) {
-								if ( !in_array( $value, $valid ) ) {
-									unset( $posted[$i] );
+
+							// --- maybe get public post type slugs ---
+							if ( in_array( $valid, array( 'PUBLICTYPE', 'PUBLICTYPES' ) ) ) {
+								$valid = array();
+								if ( !isset( $public ) ) {
+									$cpts = array( 'page', 'post' );
+									$cptargs = array( 'public' => true, '_builtin' => false );
+									$cptlist = get_post_types( $cptargs, 'names', 'and' );
+									$public = array_merge( $cpts, $cptlist );
+								}
+								foreach ( $public as $cpt ) {
+									$valid[$cpt] = '';
 								}
 							}
-							$settings[$key] = implode( ',', $posted );
-						} else {
-							$settings[$key] = implode( ',', $posted );
-						}
 
-					} elseif ( ( 'radio' == $type ) || ( 'select' == $type ) ) {
-
-						// --- explicit radio or select value ---
-						$posted = isset( $_POST[$postkey] ) ? sanitize_text_field( wp_unslash( $_POST[$postkey] ) ) : null;
-						if ( is_string( $valid ) ) {
-							$newsettings = $posted;
-						} elseif ( is_array( $valid ) && array_key_exists( $posted, $valid ) ) {
-							$settings[$key] = $posted;
-						}
-
-					} elseif ( 'multiselect' == $type ) {
-
-						// --- multiselect values ---
-						// 1.0.9: added multiselect value saving
-						$posted = isset( $_POST[$postkey] ) ? array_map( 'sanitize_text_field', wp_unslash( $_POST[$postkey] ) ) : array();
-						$newsettings = array_values( $posted );
-
-					} elseif ( 'image' == $type ) {
-
-						// --- check attachment ID value ---
-						// 1.1.7: add image attachment ID saving
-						$posted = isset( $_POST[$postkey] ) ? absint( wp_unslash( $_POST[$postkey] ) ) : null;
-						if ( $posted ) {
-							$attachment = wp_get_attachment_image_src( $posted, 'full' );
-							if ( is_array( $attachment ) ) {
-								$settings[$key] = $posted;
-							}
-						}
-
-					} elseif ( 'color' == $type ) {
-
-						// --- hex color setting ---
-						// 1.1.7: added color picker value saving
-						// 1.2.5: use sanitize_hex_color on color field
-						$posted = isset( $_POST[$postkey] ) ? sanitize_hex_color( wp_unslash( $_POST[$postkey] ) ) : null;
-						$settings[$key] = $posted;
-
-					} elseif ( 'coloralpha' == $type ) {
-
-						// --- color alpha setting ---
-						// 1.2.5: separated color alpha setting condition
-						// 1.2.5: added rgba version of sanitization
-						// ref: https://wordpress.stackexchange.com/a/262578/76440
-						$posted = isset( $_POST[$postkey] ) ? sanitize_text_field( wp_unslash( $_POST[$postkey] ) ) : null;
-						if ( !is_null( $posted ) ) {
-							$posted = str_replace( ' ', '', $posted );
-							$values = array();
-							// 1.2.7: fix color variable to posted
-							// 1.2.7: make alpha a value key not separate
-							// 1.2.7: check number of commas to see if alpha is set
-							$commas = substr_count( $posted, ',' );
-							if ( 3 == $commas ) {
-								sscanf( $posted, 'rgba(%d,%d,%d,%f)', $values['red'], $values['green'], $values['blue'], $values['alpha'] );
-							} elseif ( 2 == $commas ) {
-								// 1.2.8: remove a from rgba (failing for non-alpha selections)
-								sscanf( $posted, 'rgb(%d,%d,%d)', $values['red'], $values['green'], $values['blue'] );
-							}
-							// echo 'rgba sscanf values: ' . print_r( $values, true ) . "\n";
-							// 1.2.7: fix for use of duplicate key variable
-							foreach ( $values as $k => $v ) {
-								if ( 'alpha' != $k ) {
-									// --- sanitize rgb values ---
-									$v = absint( $v );
-									if ( $v < 0 ) {
-										$values[$k] = 0;
-									} elseif ( $v > 255 ) {
-										$values[$k] = 255;
-									}
-								} else {
-									// --- sanitize alpha value ---
-									if ( $v < 0 ) {
-										$values['alpha'] = 0;
-									} elseif ( $v > 1 ) {
-										$values['alpha'] = 1;
-									}
+							// --- maybe get post type slugs ---
+							if ( in_array( $valid, array( 'POSTTYPE', 'POSTTYPES' ) ) ) {
+								$valid = array();
+								if ( !isset( $cpts ) ) {
+									$cpts = array( 'page', 'post' );
+									$cptargs = array( 'public' => true, '_builtin' => false );
+									$cptlist = get_post_types( $cptargs, 'names', 'and' );
+									$cpts = array_merge( $cpts, $cptlist );
+								}
+								foreach ( $cpts as $cpt ) {
+									$valid[$cpt] = '';
 								}
 							}
-							if ( 3 == $commas ) {
-								$posted = 'rgba(' . $values['red'] . ',' . $values['green'] . ',' . $values['blue'] . ',' . $values['alpha'] . ')';
-							} elseif ( 2 == $commas ) {
-								// 1.2.8: remove a from rgba (for non-alpha selections)
-								$posted = 'rgb(' . $values['red'] . ',' . $values['green'] . ',' . $values['blue'] . ')';
-							}
-						}
-						$settings[$key] = $posted;
 
-					} else {
-						
-						// --- fallback to text type ---
-						// 1.3.0: added for unspecified option field type
-						$posted = isset( $_POST[$postkey] ) ? sanitize_text_field( wp_unslash( $_POST[$postkey] ) ) : null;
-						if ( !is_string( $valid ) ) {
-							$valid = 'TEXT';
-						}
-						$newsettings = $posted;						
-						
-					}
-
-					if ( $this->debug ) {
-						echo 'New Settings for Key ' . esc_html( $key ) . ': ';
-						// 1.2.0: added isset check for newsetting
-						if ( !is_null( $newsettings ) ) {
-							// phpcs:ignore WordPress.PHP.DevelopmentFunctions
-							echo '(To-validate) ' . esc_html( print_r( $newsettings, true ) ) . '<br>' . "\n";
-						} else {
-							// 1.1.7 handle if (new) key not set yet
-							if ( isset( $settings[$key] ) ) {
-								// phpcs:ignore WordPress.PHP.DevelopmentFunctions
-								echo '(Validated) ' . esc_html( print_r( $settings[$key], true ) ) . '<br>' . "\n";
-							} else {
-								echo 'No setting yet for key ' . esc_html( $key ) . '<br>' . "\n";
-							}
-						}
-					}
-
-					// --- maybe validate new settings ---
-					// 1.1.9: fix to allow saving of zero value
-					// 1.2.1: fix to allow saving of empty value
-					if ( !is_null( $newsettings ) ) {
-						if ( is_array( $newsettings ) ) {
-
-							// --- validate array of settings ---
-							// 1.1.9: fix to allow saving of zero value
-							// 1.2.1: fix to allow saving of empty value
-							foreach ( $newsettings as $newkey => $newvalue ) {
-								$newsetting = $this->validate_setting( $newvalue, $valid, $validate_args );
-								if ( $this->debug ) {
-									echo 'Validated Setting array value ' . esc_html( $newvalue ) . ' to ' . esc_html( $newsetting );
+							// --- maybe get all post type slugs ---
+							if ( in_array( $valid, array( 'ALLTYPE', 'ALLTYPES' ) ) ) {
+								$valid = array();
+								if ( !isset( $allcpts ) ) {
+									$cptargs = array( '_builtin' => false );
+									$allcpts = get_post_types( $cptargs, 'names', 'and' );
 								}
-								if ( $newsetting || ( '' == $newsetting ) ) {
-									$newsettings[$newkey] = $newsetting;
-								} elseif ( ( 0 == $newsetting ) || ( '0' == $newsetting ) ) {
-									$newsettings[$newkey] = $newsetting;
-								} else {
-									unset( $newsettings[$newkey] );
-								}
-							}
-							if ( 'csv' == $type ) {
-								$settings[$key] = implode( ',', $newsettings );
-							} else {
-								$settings[$key] = $newsettings;
-							}
-
-						} elseif ( $newsettings || ( '' == $newsettings ) || ( 0 === $newsettings ) || ( '0' === $newsettings ) ) {
-
-							// --- validate single setting ---
-							if ( 'csv' == $type ) {
-								// 1.1.5: fix to validate each of multiple CSV values
-								$values = explode( ',', $newsettings );
-								$newvalues = array();
-								foreach ( $values as $value ) {
-									$newvalue = $this->validate_setting( $value, $valid, $validate_args );
-									$newvalues[] = $newvalue;
-									if ( $this->debug ) {
-										echo 'Validated Setting value ' . esc_html( $value ) . ' to ' . esc_html( $newvalue ) . '<br>' . "\n";
-									}
-								}
-								$newsettings = implode( ',', $newvalues );
-								$settings[$key] = $newsettings;
-							} else {
-								$newsetting = $this->validate_setting( $newsettings, $valid, $validate_args );
-								// 1.1.9: fix to allow saving of zero value
-								// 1.2.1: fix to allow saving of empty value
-								if ( $this->debug ) {
-									echo 'Validated Setting single value ' . esc_html( $newsettings ) . ' to ' . esc_html( $newsetting ) . '<br>' . "\n";
-								}
-								if ( $newsetting || ( '' == $newsetting ) || ( 0 == $newsetting ) || ( '0' == $newsetting ) ) {
-									$settings[$key] = $newsetting;
+								foreach ( $allcpts as $cpt ) {
+									$valid[$cpt] = '';
 								}
 							}
 						}
 
 						if ( $this->debug ) {
 							// phpcs:ignore WordPress.PHP.DevelopmentFunctions
-							echo 'Valid Options for Key ' . esc_html( $key ) . ': ' . esc_html( print_r( $valid, true ) ) . '<br>' . "\n";
+							echo 'Saving Setting Key ' . esc_html( $key ) . ' (' . esc_html( $postkey ) . ')<br>' . "\n";
 							// phpcs:ignore WordPress.PHP.DevelopmentFunctions
-							echo 'Validated Settings for Key ' . esc_html( $key ) . ': ' . esc_html( print_r( $settings[$key], true ) ) . '<br>' . "\n";
+							echo 'Type: ' . esc_html( $type ) . ' - Valid Options ' . esc_html( $key ) . ': ' . esc_html( print_r( $valid, true ) ) . '<br>' . "\n";
+						}
+
+						// --- sanitize value according to type ---
+						if ( strstr( $type, '/' ) ) {
+
+							// --- implicit radio / select ---
+							$posted = isset( $_POST[$postkey] ) ? sanitize_text_field( wp_unslash( $_POST[$postkey] ) ) : null;
+							$valid = explode( '/', $type );
+							if ( in_array( $posted, $valid ) ) {
+								$settings[$key] = $posted;
+							}
+
+						} elseif ( ( 'checkbox' == $type ) || ( 'toggle' == $type ) ) {
+
+							// --- checkbox / toggle ---
+							// 1.0.6: fix to new unchecked checkbox value
+							// 1.0.9: maybe validate to specified checkbox value
+							$posted = isset( $_POST[$postkey] ) ? sanitize_text_field( wp_unslash( $_POST[$postkey] ) ) : null;
+							if ( isset( $values['value'] ) ) {
+								$valid = array( $values['value'] );
+							} else {
+								$valid = array( 'yes', '1', 'checked', 'on' );
+							}
+							if ( in_array( $posted, $valid ) ) {
+								$settings[$key] = $posted;
+							} elseif ( is_null( $posted ) ) {
+								$settings[$key] = '';
+							}
+
+						} elseif ( 'textarea' == $type ) {
+
+							// --- text area ---
+							// 1.2.5: use sanitize_textarea_field with stripslashes
+							$posted = isset( $_POST[$postkey] ) ? sanitize_textarea_field( wp_unslash( $_POST[$postkey] ) ) : null;
+							// 1.3.0: move use of stripslashes to separate line
+							if ( !is_null( $posted ) ) {
+								$posted = stripslashes( $posted );
+							}
+							$settings[$key] = $posted;
+
+						} elseif ( 'text' == $type ) {
+
+							// --- text field (slug) ---
+							// 1.0.9: move text field sanitization to validation
+							$posted = isset( $_POST[$postkey] ) ? sanitize_text_field( wp_unslash( $_POST[$postkey] ) ) : null;
+							if ( !is_string( $valid ) ) {
+								$valid = 'TEXT';
+							}
+							$newsettings = $posted;
+
+						} elseif ( 'email' == $type ) {
+
+							// --- email field ---
+							// 1.3.0: added explicitly for email field type
+							$posted = isset( $_POST[$postkey] ) ? sanitize_text_field( wp_unslash( $_POST[$postkey] ) ) : null;
+							if ( !is_string( $valid ) ) {
+								$valid = 'EMAIL';
+							}
+							$newsettings = $posted;
+
+						} elseif ( ( 'number' == $type ) || ( 'numeric' == $type ) ) {
+
+							// --- number field value ---
+							// 1.0.9: added support for number step, minimum and maximum
+							$posted = isset( $_POST[$postkey] ) ? sanitize_text_field( wp_unslash( $_POST[$postkey] ) ) : null;
+							$newsettings = $posted;
+							$valid = 'NUMERIC';
+							if ( isset( $values['step'] ) ) {
+								$validate_args['step'] = $values['step'];
+							}
+							if ( isset( $values['min'] ) ) {
+								$validate_args['min'] = $values['min'];
+							}
+							if ( isset( $values['max'] ) ) {
+								$validate_args['max'] = $values['max'];
+							}
+
+						} elseif ( 'multicheck' == $type ) {
+
+							// --- process multicheck boxes ---
+							// 1.0.9: added multicheck input type
+							// note: needs defined options (but works with post types)
+							$posted = array();
+							foreach ( $valid as $option => $label ) {
+								$optionkey = $args['settings'] . '_' . $key . '-' . $option;
+								if ( isset( $_POST[$optionkey] ) ) {
+									// 1.1.2: check for value if specified
+									// 1.2.5: apply sanitize_text_field to posted value
+									if ( ( isset( $values['value'] ) && ( sanitize_text_field( wp_unslash( $_POST[$optionkey] ) ) == $values['value'] ) )
+										|| ( !isset( $values['value'] ) && ( 'yes' == sanitize_text_field( wp_unslash( $_POST[$optionkey] ) ) ) ) ) {
+										// 1.1.0: fixed to save only array of key values
+										$posted[] = $option;
+									}
+								}
+							}
+							$settings[$key] = $posted;
+
+						} elseif ( 'csv' == $type ) {
+
+							// -- comma separated values ---
+							// 1.0.4: added comma separated values option
+							$posted = isset( $_POST[$postkey] ) ? sanitize_text_field( wp_unslash( $_POST[$postkey] ) ) : null;
+							if ( strstr( $posted, ',' ) ) {
+								$posted = explode( ',', $posted );
+							} else {
+								// 1.2.8: fix to convert string to array
+								$posted = array( $posted );
+							}
+							foreach ( $posted as $i => $value ) {
+								$posted[$i] = trim( $value );
+							}
+							if ( is_string( $valid ) ) {
+								$newsettings = $posted;
+							} elseif ( is_array( $valid ) && ( count( $valid ) > 0 ) ) {
+								// 1.2.0: fix to check for empty valid array
+								foreach ( $posted as $i => $value ) {
+									if ( !in_array( $value, $valid ) ) {
+										unset( $posted[$i] );
+									}
+								}
+								$settings[$key] = implode( ',', $posted );
+							} else {
+								$settings[$key] = implode( ',', $posted );
+							}
+
+						} elseif ( ( 'radio' == $type ) || ( 'select' == $type ) ) {
+
+							// --- explicit radio or select value ---
+							$posted = isset( $_POST[$postkey] ) ? sanitize_text_field( wp_unslash( $_POST[$postkey] ) ) : null;
+							if ( is_string( $valid ) ) {
+								$newsettings = $posted;
+							} elseif ( is_array( $valid ) && array_key_exists( $posted, $valid ) ) {
+								$settings[$key] = $posted;
+							}
+
+						} elseif ( 'multiselect' == $type ) {
+
+							// --- multiselect values ---
+							// 1.0.9: added multiselect value saving
+							$posted = isset( $_POST[$postkey] ) ? array_map( 'sanitize_text_field', wp_unslash( $_POST[$postkey] ) ) : array();
+							$newsettings = array_values( $posted );
+
+						} elseif ( 'image' == $type ) {
+
+							// --- check attachment ID value ---
+							// 1.1.7: add image attachment ID saving
+							$posted = isset( $_POST[$postkey] ) ? absint( wp_unslash( $_POST[$postkey] ) ) : null;
+							if ( $posted ) {
+								$attachment = wp_get_attachment_image_src( $posted, 'full' );
+								if ( is_array( $attachment ) ) {
+									$settings[$key] = $posted;
+								}
+							}
+
+						} elseif ( 'color' == $type ) {
+
+							// --- hex color setting ---
+							// 1.1.7: added color picker value saving
+							// 1.2.5: use sanitize_hex_color on color field
+							$posted = isset( $_POST[$postkey] ) ? sanitize_hex_color( wp_unslash( $_POST[$postkey] ) ) : null;
+							$settings[$key] = $posted;
+
+						} elseif ( 'coloralpha' == $type ) {
+
+							// --- color alpha setting ---
+							// 1.2.5: separated color alpha setting condition
+							// 1.2.5: added rgba version of sanitization
+							// ref: https://wordpress.stackexchange.com/a/262578/76440
+							$posted = isset( $_POST[$postkey] ) ? sanitize_text_field( wp_unslash( $_POST[$postkey] ) ) : null;
+							if ( !is_null( $posted ) ) {
+								$posted = str_replace( ' ', '', $posted );
+								$values = array();
+								// 1.2.7: fix color variable to posted
+								// 1.2.7: make alpha a value key not separate
+								// 1.2.7: check number of commas to see if alpha is set
+								$commas = substr_count( $posted, ',' );
+								if ( 3 == $commas ) {
+									sscanf( $posted, 'rgba(%d,%d,%d,%f)', $values['red'], $values['green'], $values['blue'], $values['alpha'] );
+								} elseif ( 2 == $commas ) {
+									// 1.2.8: remove a from rgba (failing for non-alpha selections)
+									sscanf( $posted, 'rgb(%d,%d,%d)', $values['red'], $values['green'], $values['blue'] );
+								}
+								// echo 'rgba sscanf values: ' . print_r( $values, true ) . "\n";
+								// 1.2.7: fix for use of duplicate key variable
+								foreach ( $values as $k => $v ) {
+									if ( 'alpha' != $k ) {
+										// --- sanitize rgb values ---
+										$v = absint( $v );
+										if ( $v < 0 ) {
+											$values[$k] = 0;
+										} elseif ( $v > 255 ) {
+											$values[$k] = 255;
+										}
+									} else {
+										// --- sanitize alpha value ---
+										if ( $v < 0 ) {
+											$values['alpha'] = 0;
+										} elseif ( $v > 1 ) {
+											$values['alpha'] = 1;
+										}
+									}
+								}
+								if ( 3 == $commas ) {
+									$posted = 'rgba(' . $values['red'] . ',' . $values['green'] . ',' . $values['blue'] . ',' . $values['alpha'] . ')';
+								} elseif ( 2 == $commas ) {
+									// 1.2.8: remove a from rgba (for non-alpha selections)
+									$posted = 'rgb(' . $values['red'] . ',' . $values['green'] . ',' . $values['blue'] . ')';
+								}
+							}
+							$settings[$key] = $posted;
+
+						} else {
+							
+							// --- fallback to text type ---
+							// 1.3.0: added for unspecified option field type
+							$posted = isset( $_POST[$postkey] ) ? sanitize_text_field( wp_unslash( $_POST[$postkey] ) ) : null;
+							if ( !is_string( $valid ) ) {
+								$valid = 'TEXT';
+							}
+							$newsettings = $posted;						
+							
+						}
+
+						if ( $this->debug ) {
+							echo 'New Settings for Key ' . esc_html( $key ) . ': ';
+							// 1.2.0: added isset check for newsetting
+							if ( !is_null( $newsettings ) ) {
+								// phpcs:ignore WordPress.PHP.DevelopmentFunctions
+								echo '(To-validate) ' . esc_html( print_r( $newsettings, true ) ) . '<br>' . "\n";
+							} else {
+								// 1.1.7 handle if (new) key not set yet
+								if ( isset( $settings[$key] ) ) {
+									// phpcs:ignore WordPress.PHP.DevelopmentFunctions
+									echo '(Validated) ' . esc_html( print_r( $settings[$key], true ) ) . '<br>' . "\n";
+								} else {
+									echo 'No setting yet for key ' . esc_html( $key ) . '<br>' . "\n";
+								}
+							}
+						}
+
+						// --- maybe validate new settings ---
+						// 1.1.9: fix to allow saving of zero value
+						// 1.2.1: fix to allow saving of empty value
+						if ( !is_null( $newsettings ) ) {
+							if ( is_array( $newsettings ) ) {
+
+								// --- validate array of settings ---
+								// 1.1.9: fix to allow saving of zero value
+								// 1.2.1: fix to allow saving of empty value
+								foreach ( $newsettings as $newkey => $newvalue ) {
+									$newsetting = $this->validate_setting( $newvalue, $valid, $validate_args );
+									if ( $this->debug ) {
+										echo 'Validated Setting array value ' . esc_html( $newvalue ) . ' to ' . esc_html( $newsetting );
+									}
+									if ( $newsetting || ( '' == $newsetting ) ) {
+										$newsettings[$newkey] = $newsetting;
+									} elseif ( ( 0 == $newsetting ) || ( '0' == $newsetting ) ) {
+										$newsettings[$newkey] = $newsetting;
+									} else {
+										unset( $newsettings[$newkey] );
+									}
+								}
+								if ( 'csv' == $type ) {
+									$settings[$key] = implode( ',', $newsettings );
+								} else {
+									$settings[$key] = $newsettings;
+								}
+
+							} elseif ( $newsettings || ( '' == $newsettings ) || ( 0 === $newsettings ) || ( '0' === $newsettings ) ) {
+
+								// --- validate single setting ---
+								if ( 'csv' == $type ) {
+									// 1.1.5: fix to validate each of multiple CSV values
+									$values = explode( ',', $newsettings );
+									$newvalues = array();
+									foreach ( $values as $value ) {
+										$newvalue = $this->validate_setting( $value, $valid, $validate_args );
+										$newvalues[] = $newvalue;
+										if ( $this->debug ) {
+											echo 'Validated Setting value ' . esc_html( $value ) . ' to ' . esc_html( $newvalue ) . '<br>' . "\n";
+										}
+									}
+									$newsettings = implode( ',', $newvalues );
+									$settings[$key] = $newsettings;
+								} else {
+									$newsetting = $this->validate_setting( $newsettings, $valid, $validate_args );
+									// 1.1.9: fix to allow saving of zero value
+									// 1.2.1: fix to allow saving of empty value
+									if ( $this->debug ) {
+										echo 'Validated Setting single value ' . esc_html( $newsettings ) . ' to ' . esc_html( $newsetting ) . '<br>' . "\n";
+									}
+									if ( $newsetting || ( '' == $newsetting ) || ( 0 == $newsetting ) || ( '0' == $newsetting ) ) {
+										$settings[$key] = $newsetting;
+									}
+								}
+							}
+
+							if ( $this->debug ) {
+								// phpcs:ignore WordPress.PHP.DevelopmentFunctions
+								echo 'Valid Options for Key ' . esc_html( $key ) . ': ' . esc_html( print_r( $valid, true ) ) . '<br>' . "\n";
+								// phpcs:ignore WordPress.PHP.DevelopmentFunctions
+								echo 'Validated Settings for Key ' . esc_html( $key ) . ': ' . esc_html( print_r( $settings[$key], true ) ) . '<br>' . "\n";
+							}
 						}
 					}
-
 				}
 			}
 
@@ -2475,7 +2476,9 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 							foreach ( $taboptions[$tab][$section] as $key => $option ) {
 								$option['key'] = $key;
 								// 1.2.5: use wp_kses on setting row output with custom allowed HTML
+								// echo $this->setting_row( $option );
 								echo wp_kses( $this->setting_row( $option ), $this->allowed_html( $option ) );
+								
 							}
 							echo '<tr height="25"><td> </td></tr>' . "\n";
 
@@ -2548,6 +2551,7 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 
 			// --- input ---
 			// 1.2.6: add missing checked attribute
+			// 1.3.8: added data attributes for previews
 			$allowed['input'] = array(
 				'id'			=> array(),
 				'class'			=> array(),
@@ -2559,6 +2563,10 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 				'checked'       => array(),
 				'data-alpha-enabled' => array(),
 				'data-default-color' => array(),
+				'data-key'      => array(),
+				'data-preview'  => array(),
+				'data-css'      => array(),
+				'data-settings' => array(),
 			);
 
 			// --- textarea ---
@@ -2572,6 +2580,10 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 				// 1.3.6: add rows and cols
 				'rows'			=> array(),
 				'cols'			=> array(),
+				'data-key'      => array(),
+				'data-preview'  => array(),
+				'data-css'      => array(),
+				'data-settings' => array(),
 			);
 
 			// --- select ---
@@ -2583,6 +2595,10 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 				'value'			=> array(),
 				'type'			=> array(),
 				'multiple'		=> array(),
+				'data-key'      => array(),
+				'data-preview'  => array(),
+				'data-css'      => array(),
+				'data-settings' => array(),
 			);
 
 			// --- select option ---
@@ -2595,6 +2611,11 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 			// --- option group ---
 			$allowed['optgroup'] = array(
 				'label' => array(),
+			);
+			
+			// --- style tags ---
+			$allowed['style'] = array(
+				'id' => array(),
 			);
 
 			$allowed = apply_filters( $namespace . '_settings_allowed_html', $allowed, $option );
@@ -2658,6 +2679,18 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 			$type = $option['type'];
 			$setting = $this->get_setting( $option['key'], false );
 
+			$preview_data = '';
+			if ( isset( $option['preview'] ) ) {
+				$preview = $option['preview'];
+				$preview_data = ' data-preview="1" ';
+				$props = array( 'css', 'settings', /* 'target', 'selector', 'alt-sel', 'property', 'alt-prop' */ );
+				foreach ( $props as $prop ) {
+					if ( isset( $preview[$prop] ) ) {
+						$preview_data .= 'data-' . $prop . '="' . esc_attr( $preview[$prop] ) . '" ';
+					}
+				}
+			}
+
 			// --- convert old option type names ---
 			if ( 'email' == $type ) {
 				$type = 'text';
@@ -2700,7 +2733,7 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 				$type = 'multiselect';
 				$option['options'] = 'POSTIDS';
 			}
-			// TODO: password and multitoggle
+			// TODO: password and multitoggle ?
 
 			// --- prepare row output ---
 			$row = '<tr class="settings-row">' . "\n";
@@ -2895,8 +2928,8 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 							$option['value'] = '1';
 						}
 						$checked = ( $setting == $option['value'] ) ? ' checked="checked"' : '';
-						$row .= '<label for="' . esc_attr( $name ) . '" class="setting-toggle">';
-						$row .= '<input type="checkbox" name="' . esc_attr( $name ) . '" class="setting-toggle" value="' . esc_attr( $option['value'] ) . '"' . $checked . '>' . "\n";
+						$row .= '<label for="' . esc_attr( $name ) . '" class="setting setting-toggle">';
+						$row .= '<input type="checkbox" name="' . esc_attr( $name ) . '" data-key="' . esc_attr( $option['key'] ) . '" class="setting-toggle" value="' . esc_attr( $option['value'] ) . '"' . $checked . $preview_data . '>' . "\n";
 						$row .= '<span class="setting-slider round"></span>' . "\n";
 						$row .= '</label>' . "\n";
 						if ( isset( $option['suffix'] ) ) {
@@ -2911,7 +2944,7 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 							$option['value'] = '1';
 						}
 						$checked = ( $setting == $option['value'] ) ? ' checked="checked"' : '';
-						$row .= '<input type="checkbox" name="' . esc_attr( $name ) . '" class="setting-checkbox" value="' . esc_attr( $option['value'] ) . '"' . $checked . '>' . "\n";
+						$row .= '<input type="checkbox" name="' . esc_attr( $name ) . '" data-key="' . esc_attr( $option['key'] ) . '" class="setting setting-checkbox" value="' . esc_attr( $option['value'] ) . '"' . $checked . $preview_data . '>' . "\n";
 						if ( isset( $option['suffix'] ) ) {
 							$row .= ' ' . $option['suffix'];
 						}
@@ -2925,7 +2958,7 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 							if ( is_array( $setting ) && in_array( $key, $setting ) ) {
 								$checked = ' checked="checked"';
 							}
-							$checkboxes[] = '<input type="checkbox" name="' . esc_attr( $name ) . "-" . esc_attr( $key ) . '" class="setting-checkbox" value="yes"' . $checked . '> ' . esc_html( $label ) . "\n";
+							$checkboxes[] = '<input type="checkbox" name="' . esc_attr( $name ) . "-" . esc_attr( $key ) . '" data-key="' . esc_attr( $option['key'] ) . '" class="setting setting-checkbox setting-multicheck" value="yes"' . $checked . $preview_data . '> ' . esc_html( $label ) . "\n";
 						}
 						$row .= implode( '<br>', $checkboxes );
 
@@ -2935,14 +2968,14 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 						$radios = array();
 						foreach ( $option['options'] as $value => $label ) {
 							$checked = ( $setting == $value ) ? ' checked="checked"' : '';
-							$radios[] = '<input type="radio" class="setting-radio" name="' . esc_attr( $name ) . "' value='" . esc_attr( $value ) . '"' . $checked . '> ' . esc_html( $label ) . "\n";
+							$radios[] = '<input type="radio" data-key="' . esc_attr( $option['key'] ) . '" class="setting setting-radio" name="' . esc_attr( $name ) . "' value='" . esc_attr( $value ) . '"' . $checked . $preview_data . '> ' . esc_html( $label ) . "\n";
 						}
 						$row .= implode( '<br>', $radios );
 
 					} elseif ( 'select' == $type ) {
 
 						// --- select dropdown ---
-						$row .= '<select class="setting-select" name="' . esc_attr( $name ) . '">' . "\n";
+						$row .= '<select data-key="' . esc_attr( $option['key'] ) . '" class="setting setting-select" name="' . esc_attr( $name ) . '"' . $preview_data . '>' . "\n";
 						foreach ( $option['options'] as $value => $label ) {
 							// 1.0.9: support option grouping (set unique key containing OPTGROUP-)
 							if ( strstr( $value, '*OPTGROUP*' ) ) {
@@ -2964,7 +2997,7 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 					} elseif ( 'multiselect' == $type ) {
 
 						// --- multiselect dropdown ---
-						$row .= '<select multiple="multiple" class="setting-select" name="' . esc_attr( $name ) . '[]">' . "\n";
+						$row .= '<select multiple="multiple" data-key="' . esc_attr( $option['key'] ) . '" class="setting setting-select setting-multiselect" name="' . esc_attr( $name ) . '[]"' . $preview_data . '>' . "\n";
 						foreach ( $option['options'] as $value => $label ) {
 							if ( '' != $value ) {
 								// 1.1.3: check for OPTGROUP instead of *OPTGROUP*
@@ -2986,14 +3019,14 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 						// 1.2.0: re-added missing csv field type
 
 						// --- text inputs ---
-						$class = 'setting-text';
-						if ( 'text' != $type ) {
-							$class .= ' setting-' . $type;
+						$class = 'setting setting-text';
+						if ( 'csv' == $type ) {
+							$class .= ' setting-csv';
 						}
 						$placeholder = isset( $option['placeholder'] ) ? $option['placeholder'] : '';
 
 						// 1.1.7: fix to attribute quoting output
-						$row .= '<input type="text" name="' . esc_attr( $name ) . '" class="' . esc_attr( $class ) . '" value="' . esc_attr( $setting ) . '" placeholder="' . esc_attr( $placeholder ) . '">' . "\n";
+						$row .= '<input type="text" name="' . esc_attr( $name ) . '" data-key="' . esc_attr( $option['key'] ) . '" class="' . esc_attr( $class ) . '" value="' . esc_attr( $setting ) . '" placeholder="' . esc_attr( $placeholder ) . '"' . $preview_data . '>' . "\n";
 						if ( isset( $option['suffix'] ) ) {
 							$row .= ' ' . $option['suffix'];
 						}
@@ -3007,7 +3040,7 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 
 						// 1.2.4: added missing esc_textarea on value
 						// 1.3.6: fixed rows attribute, added cols attribute
-						$row .= '<textarea class="setting-textarea" name="' . esc_attr( $name ) . '" rows="' . esc_attr( $rows ) . '" cols="' . esc_attr( $cols ) . '" placeholder="' . esc_attr( $placeholder ) . '">' . esc_textarea( $setting ) . '</textarea>' . "\n";
+						$row .= '<textarea name="' . esc_attr( $name ) . '" data-key="' . esc_attr( $option['key'] ) . '" class="setting setting-textarea" rows="' . esc_attr( $rows ) . '" cols="' . esc_attr( $cols ) . '" placeholder="' . esc_attr( $placeholder ) . '"' . $preview_data . '>' . esc_textarea( $setting ) . '</textarea>' . "\n";
 
 					} elseif ( ( 'numeric' == $type ) || ( 'number' == $type ) ) {
 
@@ -3026,7 +3059,7 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 							$row .= ' ' . $option['prefix'];
 						}
 						$data = esc_attr( $min ) . "," . esc_attr( $max ) . "," . esc_attr( $step );
-						$row .= '<input id="number-input-' . esc_attr( $name ) . '" class="setting-numeric" type="text" name="' . esc_attr( $name ) . '" value="' . esc_attr( $setting ) . '" placeholder="' . esc_attr( $placeholder ) . '" data="' . esc_attr( $data ) . '">' . "\n";
+						$row .= '<input id="number-input-' . esc_attr( $name ) . '" data-key="' . esc_attr( $option['key'] ) . '" class="setting setting-numeric" type="text" name="' . esc_attr( $name ) . '" value="' . esc_attr( $setting ) . '" placeholder="' . esc_attr( $placeholder ) . '" data="' . esc_attr( $data ) . '"' . $preview_data . '>' . "\n";
 						// $onclickup = "plugin_panel_number_step('up', '" . esc_attr( $name ) . "', " . esc_attr( $min ) . ", " . esc_attr( $max ) . ", " . esc_attr( $step ) . ");" . "\n";
 						// $row .= '<input class="setting-button button-secondary" type="button" value="+" onclick="' . $onclickup . '">' . "\n";
 						$row .= '<input class="number-button number-up-button setting-button button-secondary" type="button" value="+" data="' . esc_attr( $name ) . '">' . "\n";
@@ -3037,6 +3070,7 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 					} elseif ( 'image' == $type ) {
 
 						// 1.1.7: added image attachment selection from media library
+						// note: no preview data as the image IS the preview
 
 						// --- get current image ---
 						$image = wp_get_attachment_image_src( $setting, 'full' );
@@ -3075,12 +3109,70 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 					} elseif ( 'color' == $type ) {
 
 						// 1.1.7: added color picker field
-						$row .= '<input type="text" class="color-picker" data-default-color="' . esc_attr( $option['default'] ) . '" name="' . esc_attr( $name ) . '" value="' . esc_attr( $setting ) . '">' . "\n";
+						$row .= '<input type="text" data-key="' . esc_attr( $option['key'] ) . '" class="setting color-picker" data-default-color="' . esc_attr( $option['default'] ) . '" name="' . esc_attr( $name ) . '" value="' . esc_attr( $setting ) . '"' . $preview_data . '>' . "\n";
 
 					} elseif ( 'coloralpha' == $type ) {
 
 						// 1.1.7: added color picker alpha field
-						$row .= '<input type="text" class="color-picker" data-alpha-enabled="true" data-default-color="' . esc_attr( $option['default'] ) . '" name="' . esc_attr( $name ) . '" value="' . esc_attr( $setting ) . '">' . "\n";
+						$row .= '<input type="text" data-key="' . esc_attr( $option['key'] ) . '" class="setting color-picker" data-alpha-enabled="true" data-default-color="' . esc_attr( $option['default'] ) . '" name="' . esc_attr( $name ) . '" value="' . esc_attr( $setting ) . '"' . $preview_data . '>' . "\n";
+
+					} elseif ( 'preview' == $type ) {
+
+						// 1.3.8: added dynamic preview container optional
+						$settings = $this->get_settings( false );
+						$row .= '<div id="preview-' . esc_attr( $option['key'] ) . '"';
+						if ( isset( $option['width'] ) ) {
+							$row .= ' width="' . esc_attr( $option['width'] ) . '"';
+						}
+						if ( isset( $option['height'] ) ) {
+							$row .= ' height="' . esc_attr( $option['height'] ) . '"';
+						}
+						if ( isset( $option['classes'] ) ) {
+							$all_classes = $classes = explode( ',', $option['classes'] );
+							foreach ( $classes as $class ) {
+								$class = trim( $class );
+								foreach ( $settings as $key => $value ) {
+									if ( '%%' . $key . '%%' == $class ) {
+										if ( is_array( $value ) ) {
+											$value = implode( ' ', $value );
+										}
+										$all_classes[] = str_replace( '%%' . $key . '%%', $value, $class );
+									}
+								}
+							}
+							foreach ( $all_classes as $i => $class ) {
+								$all_classes[$i] = str_replace( '%%', '', $class );
+							}
+							$class_list = implode( ' ', $all_classes );
+							$row .= ' class="' . esc_attr( $class_list ) .'"';
+						}
+						$row .= '>' ."\n";
+							if ( isset( $option['html'] ) ) {
+								$html = $option['html'];
+								foreach ( $settings as $key => $value ) {
+									$find = '%%' . $key . '%%';
+									if ( strstr( $html, $find ) ) {
+										$html = str_replace( $find, $value, $html );
+									}
+								}
+								$row .= $html;
+							}
+						$row .= '</div>' . "\n";
+						
+						if ( isset( $option['css'] ) ) {
+							$css = $option['css'];
+							$target = $option['key'];
+							$target_selector = '#preview-' . esc_attr( $target );
+							$css = str_replace( '%%target%%', $target_selector, $css );
+							$settings = $this->get_settings( false );
+							foreach ( $settings as $key => $value ) {
+								$find = '%%' . $key . '%%';
+								if ( strstr( $css, $find ) ) {
+									$css = str_replace( $find, $value, $css );
+								}
+							}
+							$row .= '<style id="preview-' . esc_attr( $option['key'] ) . '-css">' . $css . '</style>' . "\n";
+						}
 
 					}
 
@@ -3092,10 +3184,61 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 					$row .= '<td width="25"></td>' . "\n";
 					$row .= '<td class="settings-helper">' . esc_html( $option['helper'] ) . '</td>' . "\n";
 				}
+
 			}
 
 			$row .= '</tr>' . "\n";
 
+			// --- setting preview ---
+			// 1.3.8: added image preview option
+			if ( isset( $option['preview'] ) ) {
+				$row .= '<tr>';
+					$row .= '<td style="text-align:right;">' . esc_html( __( 'Preview', 'radio-station' ) ) . ':</td>' . "\n";
+					$row .= '<td width="25"></td>' . "\n";
+					$row .= '<td>';
+					if ( 'image' == $option['preview']['type'] ) {
+						$width = $option['preview']['width'];
+						$height = $option['preview']['height'];
+						$sources = $this->get_preview_images( $option );
+						// echo 'Image Sources: ' . print_r( $sources, true );
+						$row .= '<div class="preview-image" id="preview-' . esc_attr( $option['key'] ) . '"></div>' . "\n";
+						$row .= '<style>#preview-' . esc_attr( $option['key'] ) . ' {background-image: url("' . esc_url( $sources['source'] ) . '"); background-size: 100% 100%;';
+						$row .= 'width: ' . esc_attr( $width ) . 'px; height: ' . esc_attr( $height ) . 'px';
+						$row .= '}' . "\n";
+						if ( isset( $sources['alt'] ) && ( '' != $sources['alt'] ) ) {
+							$row .= '#preview-' . esc_attr( $option['key'] ) . ' {cursor: pointer;}' . "\n";
+							$row .= '#preview-' . esc_attr( $option['key'] ) . ':hover, #preview-' . esc_attr( $option['key'] ) . '.active {background-image: url("' . esc_url( $sources['alt'] ) . '"); background-size: 100% 100%;}' . "\n";
+						}
+						// if ( isset( $option['preview']['css'] ) ) {
+							// $row .= '#preview-' . esc_attr( $option['key'] ) . ' {' . $option['preview']['css'] . '}' . "\n";
+						// }
+						$row .= '</style>' . "\n";
+					} elseif ( 'html' == $option['preview']['type'] ) {
+						
+						
+					}
+					if ( isset( $option['preview']['css'] ) ) {
+						/* $css = $option['preview']['css'];
+						if ( isset( $option['preview']['target'] ) ) {
+							$target = $option['preview']['target'];
+							$target_selector = '#preview-' . esc_attr( $target );
+							$css = str_replace( '%%target%%', $target_selector, $css );
+						}
+						$settings = $this->get_settings( false );
+						$css = $option['preview']['css'];
+						foreach ( $settings as $key => $value ) {
+							$find = '%%' . $key . '%%';
+							if ( strstr( $css, $find ) ) {
+								$css = str_replace( $find, $value, $css );
+							}
+						} */
+						$css = '';
+						$row .= '<style id="preview-' . esc_attr( $option['key'] ) . '-css">' . $css . '</style>';
+					}
+					$row .= '</td>' . "\n";
+				$row .= '</tr>' . "\n";
+			}
+				
 			// --- settings row spacer ---
 			$row .= '<tr class="settings-spacer"><td> </td></tr>' . "\n";
 
@@ -3103,6 +3246,36 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 			$row = apply_filters( $namespace . '_setting_row', $row, $option );
 
 			return $row;
+		}
+
+		// -----------------
+		// Get Preview Image
+		// -----------------
+		public function get_preview_images( $option ) {
+			$source = $alt = '';
+			$settings = $this->get_settings( false );
+			$setting = $this->get_setting( $option['key'], false );
+			// echo $option['key'] . ' - ' . $setting;
+			if ( isset( $option['preview']['sources'][$setting] ) ) {
+				$source = $option['preview']['sources'][$setting];
+				if ( isset( $option['preview']['sources-alt'][$setting] ) ) {
+					$alt = $option['preview']['sources-alt'][$setting];
+				}
+				foreach( $settings as $key => $value ) {
+					$find = '%%' . $key . '%%';
+					if ( strstr( $source, $find ) ) {
+						$source = str_replace( $find, $value, $source );
+					}
+					if ( strstr( $alt, $find ) ) {
+						$alt = str_replace( $find, $value, $alt );
+					}
+				}
+			}
+			$sources = array(
+				'source' => $source,
+				'alt'    => $alt,
+			);
+			return $sources;
 		}
 
 		// ---------------
@@ -3284,6 +3457,62 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 						echo "});" . "\n";
 
 					}
+					
+					// --- preview classes active toggle ---
+					// 1.3.8: toggle active class on preview clicks
+					echo "jQuery('.preview-image, .preview-button').on('click', function() {
+						if (!jQuery(this).hasClass('active')) {jQuery(this).addClass('active');}
+						else {jQuery(this).removeClass('active');}
+					});" . "\n";
+					
+					// --- add classes and preview css ---
+					// 1.3.8: added for previews
+					echo "jQuery(document).ready(function() {					
+						jQuery('.setting').each(function() {
+							if (jQuery(this).attr('data-preview') == '1') {
+								jQuery(this).on('change', function() {
+									target = jQuery(this).attr('data-target');
+									key = jQuery(this).attr('data-key');
+									css = jQuery(this).attr('data-css');
+									settings = jQuery(this).attr('data-settings');
+									if (settings.indexOf(',') > -1) {settings = settings.split(',');} else {settings = [settings];}
+									for (i = 0; i < settings.length; i++) {
+										value = null; values = []; options = [];
+										jQuery('.setting').each(function() {
+											if (jQuery(this).attr('data-key') == settings[i]) {
+												if (!jQuery(this).hasClass('setting-multicheck') && !jQuery(this).hasClass('setting-radio')) {
+													value = jQuery(this).val();
+													values = [value];
+													console.log(settings[i]+' : '+value);
+												} else {
+													/* TODO: multiselect */
+													val = jQuery(this).val();
+													options.push(val);
+													if (jQuery(this).prop('checked')) {values.push(val);}
+												}
+											}
+										});
+										if (jQuery('.'+settings[i]).length) {
+											jQuery('.'+settings[i]).each(function() {
+												for (j = 0; j < options.length; j++) {jQuery(this).removeClass(options[j]);}
+												for (j = 0; j < values.length; j++) {jQuery(this).addClass(values);}
+											});
+										}
+										find = '%%'+settings[i]+'%%';
+										if (value != null) {css = css.replaceAll(find,value);}
+									}
+									if (typeof custom_css_preview == 'function' ) {css = custom_css_preview(css);}
+									/* selector = jQuery(this).attr('data-selector');
+									property = jQuery(this).attr('data-property');
+									alt_sel = jQuery(this).attr('data-alt-sel');
+									alt_prop = jQuery(this).attr('data-alt-prop');
+									css = '#'+target+' '+selector+' {}'; */
+
+									jQuery('#preview-'+key+'-css').html(css);
+								});
+							}
+						});
+					});" . "\n";
 
 				}
 
