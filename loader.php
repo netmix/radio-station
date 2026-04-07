@@ -2552,6 +2552,7 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 			// --- input ---
 			// 1.2.6: add missing checked attribute
 			// 1.3.8: added data attributes for previews
+			// 1.3.8: add minimum and maximum attributes
 			$allowed['input'] = array(
 				'id'			=> array(),
 				'class'			=> array(),
@@ -2561,10 +2562,13 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 				'data'			=> array(),
 				'placeholder'	=> array(),
 				'checked'       => array(),
+				'min'           => array(),
+				'max'           => array(),
 				'data-alpha-enabled' => array(),
 				'data-default-color' => array(),
 				'data-key'      => array(),
 				'data-preview'  => array(),
+				'data-linked'   => array(),
 				'data-css'      => array(),
 				'data-settings' => array(),
 			);
@@ -2582,6 +2586,7 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 				'cols'			=> array(),
 				'data-key'      => array(),
 				'data-preview'  => array(),
+				'data-linked'   => array(),
 				'data-css'      => array(),
 				'data-settings' => array(),
 			);
@@ -2597,6 +2602,7 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 				'multiple'		=> array(),
 				'data-key'      => array(),
 				'data-preview'  => array(),
+				'data-linked'   => array(),
 				'data-css'      => array(),
 				'data-settings' => array(),
 			);
@@ -2630,7 +2636,8 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 		public function settings_resources( $media = true, $color_picker = true ) {
 
 			// 1.3.5: set default scripts to enqueue
-			$this->scripts = array( 'notice_boxer', 'tab_switcher', 'settings_reset' );
+			// 1.3.8: add preview script
+			$this->scripts = array( 'notice_boxer', 'tab_switcher', 'settings_reset', 'previews' );
 
 			// --- number input step script ---
 			// 1.0.9: added to script array
@@ -2683,7 +2690,7 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 			if ( isset( $option['preview'] ) ) {
 				$preview = $option['preview'];
 				$preview_data = ' data-preview="1" ';
-				$props = array( 'css', 'settings', /* 'target', 'selector', 'alt-sel', 'property', 'alt-prop' */ );
+				$props = array( 'css', 'settings', 'linked', /* 'target', 'selector', 'alt-sel', 'property', 'alt-prop' */ );
 				foreach ( $props as $prop ) {
 					if ( isset( $preview[$prop] ) ) {
 						$preview_data .= 'data-' . $prop . '="' . esc_attr( $preview[$prop] ) . '" ';
@@ -2799,7 +2806,11 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 
 				} else {
 
-					$row .= '<td class="settings-input">' . "\n";
+					$row .= '<td class="settings-input"';
+					if ( 'preview' == $type ) {
+						$row .= ' colspan="3"';
+					}
+					$row .= '>' . "\n";
 
 					// --- maybe prepare special options ---
 					if ( isset( $option['options'] ) && is_string( $option['options'] ) ) {
@@ -3109,12 +3120,14 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 					} elseif ( 'color' == $type ) {
 
 						// 1.1.7: added color picker field
-						$row .= '<input type="text" data-key="' . esc_attr( $option['key'] ) . '" class="setting color-picker" data-default-color="' . esc_attr( $option['default'] ) . '" name="' . esc_attr( $name ) . '" value="' . esc_attr( $setting ) . '"' . $preview_data . '>' . "\n";
+						$row .= '<input type="text" class="setting color-picker" data-default-color="' . esc_attr( $option['default'] ) . '" name="' . esc_attr( $name ) . '" value="' . esc_attr( $setting ) . '">' . "\n";
+						$row .= '<input type="hidden" data-key="' . esc_attr( $option['key'] ) . '" class="setting color-picker-input" value="' . esc_attr( $setting ) . '"' . $preview_data . '>' . "\n";
 
 					} elseif ( 'coloralpha' == $type ) {
 
 						// 1.1.7: added color picker alpha field
-						$row .= '<input type="text" data-key="' . esc_attr( $option['key'] ) . '" class="setting color-picker" data-alpha-enabled="true" data-default-color="' . esc_attr( $option['default'] ) . '" name="' . esc_attr( $name ) . '" value="' . esc_attr( $setting ) . '"' . $preview_data . '>' . "\n";
+						$row .= '<input type="text" class="setting color-picker" data-alpha-enabled="true" data-default-color="' . esc_attr( $option['default'] ) . '" name="' . esc_attr( $name ) . '" value="' . esc_attr( $setting ) . '">' . "\n";
+						$row .= '<input type="hidden" data-key="' . esc_attr( $option['key'] ) . '" class="setting color-picker-input"  value="' . esc_attr( $setting ) . '"' . $preview_data . '>' . "\n";
 
 					} elseif ( 'preview' == $type ) {
 
@@ -3181,8 +3194,12 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 
 				// --- setting helper text ---
 				if ( isset( $option['helper'] ) ) {
-					$row .= '<td width="25"></td>' . "\n";
-					$row .= '<td class="settings-helper">' . esc_html( $option['helper'] ) . '</td>' . "\n";
+					if ( 'preview' != $type ) {
+						$row .= '<td width="25"></td>' . "\n";
+						$row .= '<td class="settings-helper">' . esc_html( $option['helper'] ) . '</td>' . "\n";
+					} else {
+						$row .= '</tr><tr><td></td><td colspan="3" class="settings-helper">' . esc_html( $option['helper'] ) . '</td></tr>' . "\n";
+					}
 				}
 
 			}
@@ -3191,7 +3208,7 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 
 			// --- setting preview ---
 			// 1.3.8: added image preview option
-			if ( isset( $option['preview'] ) ) {
+			if ( isset( $option['preview'] ) && isset( $option['preview']['type'] ) ) {
 				$row .= '<tr>';
 					$row .= '<td style="text-align:right;">' . esc_html( __( 'Preview', 'radio-station' ) ) . ':</td>' . "\n";
 					$row .= '<td width="25"></td>' . "\n";
@@ -3209,38 +3226,36 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 							$row .= '#preview-' . esc_attr( $option['key'] ) . ' {cursor: pointer;}' . "\n";
 							$row .= '#preview-' . esc_attr( $option['key'] ) . ':hover, #preview-' . esc_attr( $option['key'] ) . '.active {background-image: url("' . esc_url( $sources['alt'] ) . '"); background-size: 100% 100%;}' . "\n";
 						}
-						// if ( isset( $option['preview']['css'] ) ) {
-							// $row .= '#preview-' . esc_attr( $option['key'] ) . ' {' . $option['preview']['css'] . '}' . "\n";
-						// }
 						$row .= '</style>' . "\n";
 					} elseif ( 'html' == $option['preview']['type'] ) {
-						
-						
+						$row .= '<div class="preview-html" id="preview-' . esc_attr( $option['key'] ) . '">' . wp_kses( $option['preview']['html'], $this->allowed_html( $option ) ) . '</div>' . "\n";					
 					}
-					if ( isset( $option['preview']['css'] ) ) {
-						/* $css = $option['preview']['css'];
-						if ( isset( $option['preview']['target'] ) ) {
-							$target = $option['preview']['target'];
-							$target_selector = '#preview-' . esc_attr( $target );
-							$css = str_replace( '%%target%%', $target_selector, $css );
-						}
-						$settings = $this->get_settings( false );
-						$css = $option['preview']['css'];
-						foreach ( $settings as $key => $value ) {
-							$find = '%%' . $key . '%%';
-							if ( strstr( $css, $find ) ) {
-								$css = str_replace( $find, $value, $css );
-							}
-						} */
-						$css = '';
-						$row .= '<style id="preview-' . esc_attr( $option['key'] ) . '-css">' . $css . '</style>';
-					}
+
 					$row .= '</td>' . "\n";
 				$row .= '</tr>' . "\n";
 			}
 				
 			// --- settings row spacer ---
-			$row .= '<tr class="settings-spacer"><td> </td></tr>' . "\n";
+			$row .= '<tr class="settings-spacer"><td>';
+			if ( isset( $option['preview']['css'] ) ) {
+				/* $css = $option['preview']['css'];
+				if ( isset( $option['preview']['target'] ) ) {
+					$target = $option['preview']['target'];
+					$target_selector = '#preview-' . esc_attr( $target );
+					$css = str_replace( '%%target%%', $target_selector, $css );
+				}
+				$settings = $this->get_settings( false );
+				$css = $option['preview']['css'];
+				foreach ( $settings as $key => $value ) {
+					$find = '%%' . $key . '%%';
+					if ( strstr( $css, $find ) ) {
+						$css = str_replace( $find, $value, $css );
+					}
+				} */
+				$css = '';
+				$row .= '<style id="preview-' . esc_attr( $option['key'] ) . '-css">' . $css . '</style>';
+			}
+			$row .= '</td></tr>' . "\n";
 
 			// --- filter and return setting row ---
 			$row = apply_filters( $namespace . '_setting_row', $row, $option );
@@ -3452,67 +3467,95 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 					} elseif ( 'colorpicker_init' == $script ) {
 
 						// --- initialize color pickers ---
-						echo "jQuery(document).ready(function(){" . "\n";
-						echo "	if (jQuery('.color-picker').length) {jQuery('.color-picker').wpColorPicker();}" . "\n";
+						echo "jQuery(document).ready(function() {" . "\n";
+							echo "if (jQuery('.color-picker').length) {" . "\n";
+								echo "jQuery('.color-picker').wpColorPicker({
+									change: function(event, ui) {
+										color = ui && ui.color ? ui.color.toString() : jQuery(this).val();
+										console.log('Color changed:', color);
+										console.log(jQuery(this));
+										input = jQuery(this).closest('.settings-input').find('.color-picker-input');
+										console.log(input);
+										input.val(color).trigger('change');
+									},
+									clear: function() {console.log('Color cleared');}
+								});" . "\n";
+							echo "}" . "\n";
 						echo "});" . "\n";
 
-					}
+					} elseif ( 'previews' == $script ) {
 					
-					// --- preview classes active toggle ---
-					// 1.3.8: toggle active class on preview clicks
-					echo "jQuery('.preview-image, .preview-button').on('click', function() {
-						if (!jQuery(this).hasClass('active')) {jQuery(this).addClass('active');}
-						else {jQuery(this).removeClass('active');}
-					});" . "\n";
-					
-					// --- add classes and preview css ---
-					// 1.3.8: added for previews
-					echo "jQuery(document).ready(function() {					
-						jQuery('.setting').each(function() {
-							if (jQuery(this).attr('data-preview') == '1') {
-								jQuery(this).on('change', function() {
-									target = jQuery(this).attr('data-target');
-									key = jQuery(this).attr('data-key');
-									css = jQuery(this).attr('data-css');
-									settings = jQuery(this).attr('data-settings');
-									if (settings.indexOf(',') > -1) {settings = settings.split(',');} else {settings = [settings];}
-									for (i = 0; i < settings.length; i++) {
-										value = null; values = []; options = [];
-										jQuery('.setting').each(function() {
-											if (jQuery(this).attr('data-key') == settings[i]) {
-												if (!jQuery(this).hasClass('setting-multicheck') && !jQuery(this).hasClass('setting-radio')) {
-													value = jQuery(this).val();
-													values = [value];
-													console.log(settings[i]+' : '+value);
-												} else {
-													/* TODO: multiselect */
-													val = jQuery(this).val();
-													options.push(val);
-													if (jQuery(this).prop('checked')) {values.push(val);}
+						// --- preview classes active toggle ---
+						// 1.3.8: toggle active class on preview clicks
+						echo "jQuery('.preview-image, .preview-button').on('click', function(e) {
+							/* if (jQuery(this).data('toggling')) {return;}
+							jQuery(this).data('toggling', true); */
+							if (!jQuery(this).hasClass('active')) {jQuery(this).addClass('active');}
+							else {jQuery(this).removeClass('active');}
+							/* setTimeout(() => jQuery(this).removeData('toggling'), 50); */
+						});" . "\n";
+						
+						// --- add classes and preview css ---
+						// 1.3.8: added for previews
+						echo "jQuery(document).ready(function() {					
+							jQuery('.setting').each(function() {
+								if (jQuery(this).attr('data-preview') == '1') {
+									jQuery(this).on('change', function() {
+										console.log(jQuery(this));
+										linked = jQuery(this).attr('data-linked');
+										if (typeof linked != 'undefined') {
+											jQuery('.setting').each(function() {
+												if (jQuery(this).attr('data-key') == linked) {
+													console.log('trigger change for linked setting: '+linked);
+													jQuery(this).trigger('change');
 												}
-											}
-										});
-										if (jQuery('.'+settings[i]).length) {
-											jQuery('.'+settings[i]).each(function() {
-												for (j = 0; j < options.length; j++) {jQuery(this).removeClass(options[j]);}
-												for (j = 0; j < values.length; j++) {jQuery(this).addClass(values);}
 											});
 										}
-										find = '%%'+settings[i]+'%%';
-										if (value != null) {css = css.replaceAll(find,value);}
-									}
-									if (typeof custom_css_preview == 'function' ) {css = custom_css_preview(css);}
-									/* selector = jQuery(this).attr('data-selector');
-									property = jQuery(this).attr('data-property');
-									alt_sel = jQuery(this).attr('data-alt-sel');
-									alt_prop = jQuery(this).attr('data-alt-prop');
-									css = '#'+target+' '+selector+' {}'; */
+										/* target = jQuery(this).attr('data-target'); */
+										key = jQuery(this).attr('data-key');
+										css = jQuery(this).attr('data-css');
+										if (typeof css == 'undefined') {css = '';}
+										settings = jQuery(this).attr('data-settings');
+										if (typeof settings == 'undefined') {settings = [key];}
+										else if (settings.indexOf(',') > -1) {settings = settings.split(',');}
+										else {settings = [settings];}
+										console.log(settings);
+										for (i = 0; i < settings.length; i++) {
+											value = null; values = []; options = [];
+											jQuery('.setting').each(function() {
+												if (jQuery(this).attr('data-key') == settings[i]) {
+													if (!jQuery(this).hasClass('setting-multicheck') && !jQuery(this).hasClass('setting-radio')) {
+														value = jQuery(this).val();
+														values = [value];
+														console.log(settings[i]+' -> '+value);
+													} else {
+														/* TODO: multiselect */
+														val = jQuery(this).val();
+														options.push(val);
+														if (jQuery(this).prop('checked')) {values.push(val);}
+													}
+												}
+											});
+											if (jQuery('.'+settings[i]).length) {
+												jQuery('.'+settings[i]).each(function() {
+													for (j = 0; j < options.length; j++) {jQuery(this).removeClass(options[j]);}
+													for (j = 0; j < values.length; j++) {jQuery(this).addClass(values);}
+												});
+											}
+											find = '%%'+settings[i]+'%%';
+											if (value != null) {css = css.replaceAll(find,value);}
+										}
+										if (typeof custom_css_preview == 'function' ) {css = custom_css_preview(css);}
+										jQuery('#preview-'+key+'-css').html(css);
 
-									jQuery('#preview-'+key+'-css').html(css);
-								});
-							}
-						});
-					});" . "\n";
+										/* selector = jQuery(this).attr('data-selector');
+										property = jQuery(this).attr('data-property');
+										jQuery('#'+selector).css({property:value}); */
+									});
+								}
+							});
+						});" . "\n";
+					}
 
 				}
 

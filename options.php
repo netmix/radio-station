@@ -27,7 +27,6 @@ function radio_station_plugin_options( $admin = false ) {
 	$timezones = radio_station_get_timezone_options( true, $admin );
 	$languages = radio_station_get_language_options( true, $admin );
 	$formats = radio_station_get_stream_formats();
-	$rs_pro_file = defined( 'RADIO_STATION_PRO_FILE' ) ? RADIO_STATION_PRO_FILE : RADIO_STATION_FILE;
 
 	// 2.6.16: add am/pm translations for schedule_start_hour
 	if ( $admin ) {
@@ -35,26 +34,65 @@ function radio_station_plugin_options( $admin = false ) {
 		$pm = radio_station_translate_meridiem( 'pm' );
 	}
 
-	// 2.5.18: set player preview HTML and CSS
-	$player_preview_html = $admin ? '<div class="play-pause-button preview-image"></div><div class="volume-controls"><div class="preview-button mute-button"></div><div class="preview-button minus-button"><div class="volume-slider-bg"><input type="range" class="volume-slider"></div><div class="preview-button plus-button"></div><div class="preview-button max-button"></div></div></div>' : '';
-	$player_preview_css = $admin ? '%%target%% .play-pause-button {display: inline-block; vertical-align: middle; width: 64px; height: 64px; background-size: 100% 100%; cursor: pointer;}
+	// 2.5.18: check pro defines for player preview URLs
+	if ( defined( 'RADIO_STATION_PRO_FILE' ) ) {
+		$pro_file = RADIO_STATION_PRO_FILE;
+	} elseif ( defined( 'STREAM_PLAYER_PRO_FILE' ) ) {
+		$pro_file = STREAM_PLAYER_PRO_FILE;
+	} else {
+		$pro_file = RADIO_STATION_FILE;
+	}
+
+	// 2.5.18: set player preview HTML 
+	$player_preview_html = $admin ? '<div class="play-pause-button preview-image"></div><div class="volume-controls"><div class="preview-button volume-button mute-button"></div><div class="volume-button minus-button"></div><div class="volume-slider-wrapper"><div class="volume-slider-bg"></div><input type="range" class="volume-slider" max="100" min="0" value="%%player_volume%%"><div class="volume-thumb"></div></div><div class="volume-button plus-button"></div><div class="preview-button volume-button max-button"></div></div></div>' : '';
+
+	// 2.5.18: set player preview CSS
+	$player_preview_css = $admin ? '/* Play/Pause Button */
+	%%target%% .play-pause-button {display: inline-block; vertical-align: middle; width: 64px; height: 64px; background-size: 100% 100%; cursor: pointer;}
 	%%target%%.light .play-pause-button, %%target%%.dark .play-pause-button {background-image: url("' . esc_url( plugins_url( '/player/images/%%player_theme%%-play-%%player_buttons%%.png', RADIO_STATION_FILE ) ) . '");}
-	%%target%%.light .play-pause-button.active, %%target%%.light .play-pause-button:hover, %%target%%.dark .play-pause-button.active, %%target%%.dark .play-pause-button:hover {background-image: url("' . esc_url( plugins_url( '/images/%%player_theme%%-pause-%%player_buttons%%.png', RADIO_STATION_FILE ) ) . '");}
-	%%target%% .play-pause-button {background-image: url("' . esc_url( plugins_url( '/images/%%player_theme%%-play-%%player_buttons%%.png', $rs_pro_file ) ) . '");}
-	%%target%% .play-pause-button.active, %%target%% .play-pause-button:hover {background-image: url("' . esc_url( plugins_url( '/images/%%player_theme%%-pause-%%player_buttons%%.png', $rs_pro_file ) ) . '");}
+	%%target%%.light .play-pause-button.active, %%target%%.dark .play-pause-button.active {background-image: url("' . esc_url( plugins_url( '/images/%%player_theme%%-pause-%%player_buttons%%.png', RADIO_STATION_FILE ) ) . '");}
+	%%target%% .play-pause-button {background-image: url("' . esc_url( plugins_url( '/images/%%player_theme%%-play-%%player_buttons%%.png', $pro_file ) ) . '");}
+	%%target%% .play-pause-button.active {background-image: url("' . esc_url( plugins_url( '/images/%%player_theme%%-pause-%%player_buttons%%.png', $pro_file ) ) . '");}
+	/* Volume Controls */
 	%%target%% .volume-controls {display: inline-block; vertical-align: middle; margin-left: 40px;}
-	%%target%% .volume-slider-bg {width: 150px;} %%target .volumer-slider {width: 100%;}
-	%%target%% .preview-button {width: 18px; height: 18px; padding: 0; margin: 0; background-size: 36px; background-repeat: no-repeat;}
-	%%target%% .preview-button:hover {opacity: 0.99; scale: 1.1;}
-	%%target%% .mute-button {display: none;} %%target%%.mute .mute-button {display: inline-block; background-position: 0 0;}
+	%%target%% .volume-button {width: 18px; height: 18px; padding: 0; margin: 0; background-size: 36px; background-repeat: no-repeat; background-image: url("' . esc_url( plugins_url( '/images/volume-controls-%%player_theme%%-%%player_buttons%%.png', $pro_file ) ) . '");}
+	%%target%%.semisolid .volume-button {background-image: url("' . esc_url( plugins_url( '/images/volume-controls-%%player_theme%%-solid.png', $pro_file ) ) . '");}
+	%%target%%.light .volume-button, %%target%%.dark .preview-button {background-image: url("' . esc_url( plugins_url( '/player/images/volume-controls-%%player_theme%%-%%player_buttons%%.png', RADIO_STATION_FILE ) ) . '");}
+	%%target%%.light.semisolid .volume-button, %%target%%.dark.semisolid .preview-button {background-image: url("' . esc_url( plugins_url( '/player/images/volume-controls-%%player_theme%%-solid.png', RADIO_STATION_FILE ) ) . '");}
+	%%target%% .volume-button:hover {opacity: 0.99; scale: 1.1;}
+	%%target%% .mute-button {display: none;} %%target%%.mute .mute-button {display: inline-block; vertical-align: middle; background-position: 0 0;}
 	%%target%%.mute .mute-button.active, %%target%%.mute .mute-button:hover {background-position: -18px -18px;}
-	%%target%% .minus-button {display: none;} %%target%%.updown .minus-button {display: inline-block; background-position: 0 72px;}
-	%%target%%.updown .minus-button.active, %%target%%.updown .minus-button:hover {background-position: -18px -72px;}
-	%%target%% .volume-slider-bg {display: none;} %%target%%.slider .volume-slider-bg {display: inline-block;}
-	%%target%% .plus-button {display: none;} %%target%%.updown .plus-button {display: inline-block; background-position: 0 -54px;}
-	%%target%%.updown .plus-button.active, %%target%%.updown .plus-button:hover {background-position: 0 -54px;}
-	%%target%% .max-button {display: none;} %%target%%.mute .max-button {display: inline-block; background-position: 0 -36px;;}
-	%%target%%.mute .max-button.active, %%target%%.mute .max-button:hover {background-position: -18px -36px;}' : '';
+	%%target%% .minus-button {display: none;} %%target%%.updown .minus-button {display: inline-block; vertical-align: middle; background-position: 0 -72px;}
+	%%target%%.updown .minus-button:hover {background-position: -18px -72px;}
+	%%target%% .volume-slider-bg {display: none;} %%target%%.slider .volume-slider-bg {display: inline-block; vertical-align: middle; }
+	%%target%% .plus-button {display: none;} %%target%%.updown .plus-button {display: inline-block; vertical-align: middle; background-position: 0 -54px;}
+	%%target%%.updown .plus-button:hover {background-position: 0 -54px;}
+	%%target%% .max-button {display: none;} %%target%%.mute .max-button {display: inline-block; vertical-align: middle; background-position: 0 -36px;;}
+	%%target%%.max .max-button.active, %%target%%.max .max-button:hover {background-position: -18px -36px;}
+	/* Volume Slider */
+	%%target%% .volume-slider-wrapper {position: relative; height: 30px; opacity: 0.85; display: inline-block; vertical-align: middle; width: 150px;}
+	%%target%% .volume-slider-bg {width: calc((%%player_volume%% / 100) * 130px);}
+	%%target%% .volume-slider-wrapper:hover {opacity: 0.99;}
+	%%target%% .volume-slider {width: 100%;}
+	%%target%% .volume-thumb {display: none; width: 18px;}
+	/* Range Input */
+	%%target%% input[type=range] {height: 100%; margin: 0; background-color: transparent; vertical-align: middle; -webkit-appearance: none; border: none;}
+	%%target%% input[type=range]:focus {outline: none; box-shadow: none;}
+	%%target%% input[type=range]::-moz-focus-inner, %%target%% .volume-controls input[type=range]::-moz-focus-outer {outline: none; box-shadow: none;}
+	/* Range Thumb */
+	%%target%% input[type=range]::-webkit-slider-thumb {width: 18px; height: 18px; cursor: pointer; border: 1px solid rgba(128, 128, 128, 0.5); border-radius: 9px; z-index: 2; -webkit-appearance: none; background: %%player_thumb_color%%;}
+	%%target%% input[type=range]::-moz-range-thumb {width: 18px; height: 18px; cursor: pointer; border: 1px solid rgba(128, 128, 128, 0.5); border-radius: 9px; z-index: 2; background: %%player_thumb_color%%;}
+	%%target%% input[type=range]::-ms-thumb {width: 18px; height: 18px; cursor: pointer; border: 1px solid rgba(128, 128, 128, 0.5); border-radius: 9px; z-index: 2; margin-top: 0px; background: %%player_thumb_color%%;}
+	%%target%%.rounded input[type=range]::-webkit-slider-thumb {border-radius: 5px !important;}
+	%%target%%.square input[type=range]::-webkit-slider-thumb {border-radius: 0px !important;}
+	%%target%% input[type=range]::-ms-tooltip {display: none;}
+	/* Range Track */
+	%%target%% .volume-slider-bg {position: absolute; top: 10px; bottom: 10px; overflow: hidden; height: 10px; margin-left: 9px; z-index: 1; border: 1px solid rgba(128, 128, 128, 0.5); border-radius: 3px; background: %%player_range_color%%;
+	%%target%% input[type=range]::-webkit-slider-runnable-track {height: 9px; background: transparent; -webkit-appearance: none; color: transparent}
+	%%target%% input[type=range]::-moz-range-track {height: 9px; background: transparent; color: transparent;}
+	%%target%% input[type=range]::-ms-track {height: 9px; color: transparent; background: transparent; border-color: transparent;}
+	/* @supports (-ms-ime-align:auto) { %%target%% input[type=range] {margin: 0;} */
+	' : '';
 		
 	$options = array(
 
@@ -397,8 +435,8 @@ function radio_station_plugin_options( $admin = false ) {
 		'player_preview' => array(
 			'type'    => 'preview',
 			'label'   => $admin ? __( 'Player Preview', 'radio-station' ) : '',
-			'html'    => $preview_html,
-			'css'     => $preview_css,
+			'html'    => $player_preview_html,
+			'css'     => $player_preview_css,
 			'classes' => '%%player_theme%%,%%player_buttons%%,%%player_volumes%%',
 			'tab'     => 'player',
 			'section' => 'basic',
@@ -526,26 +564,9 @@ function radio_station_plugin_options( $admin = false ) {
 				'square'    => $admin ? __( 'Hollow Square Buttons', 'radio-station' ) : '',
 			),
 			'helper'  => $admin ? __( 'Default Player Buttons shape style.', 'radio-station' ) : '',
-			/* 'preview' => array(
-				'type'     => 'image',
-				'sources'  => array(
-					'solid' => plugins_url( 'player/images/%%player_theme%%-play-solid.png', RADIO_STATION_FILE ),
-					'semisolid'  => plugins_url( 'player/images/%%player_theme%%-play-semisolid.png', RADIO_STATION_FILE ),
-					'circular'  => plugins_url( 'player/images/%%player_theme%%-play-circular.png', RADIO_STATION_FILE ),
-					'rounded'  => plugins_url( 'player/images/%%player_theme%%-play-rounded.png', RADIO_STATION_FILE ),
-					'square'  => plugins_url( 'player/images/%%player_theme%%-play-square.png', RADIO_STATION_FILE ),
-				),
-				'sources-alt' => array(
-					'solid'     => plugins_url( 'player/images/%%player_theme%%-pause-solid.png', RADIO_STATION_FILE ),
-					'semisolid' => plugins_url( 'player/images/%%player_theme%%-pause-semisolid.png', RADIO_STATION_FILE ),
-					'circular'  => plugins_url( 'player/images/%%player_theme%%-pause-circular.png', RADIO_STATION_FILE ),
-					'rounded'   => plugins_url( 'player/images/%%player_theme%%-pause-rounded.png', RADIO_STATION_FILE ),
-					'square'    => plugins_url( 'player/images/%%player_theme%%-pause-square.png', RADIO_STATION_FILE ),
-				),
-				'css'      => '#preview-player_preview .play-pause-button {background-image: url("%%images_url%%/%%player_theme%%-play-%%player_buttons%%.png") !important;}
-				#preview-player_preview .play-pause-button.active, #preview-player_preview .play-pause-button:hover {background-image: url("%%images_url%%/%%player_theme%%-pause-%%player_buttons%%.png") !important;}',
-				'settings' => 'player_theme,player_buttons',
-			), */
+			'preview' => array(
+				'linked' => 'player_theme',
+			),
 			'tab'     => 'player',
 			'section' => 'basic',
 		),
@@ -610,6 +631,11 @@ function radio_station_plugin_options( $admin = false ) {
 			'label'   => $admin ? __( 'Volume Knob Color', 'radio-station' ) : '',
 			'default' => '#80C080',
 			'helper'  => $admin ? __( 'Default Knob Color for Player Volume Slider.', 'radio-station' ) : '',
+			'preview' => array(
+				'css' => '#preview-player_preview .volume-slider-wrapper input[type=range]::-webkit-slider-thumb {background: %%player_thumb_color%% !important;};
+				#preview-player_preview .volume-slider-wrapper input[type=range]::-moz-range-thumb {background: %%player_thumb_color%% !important;}
+				#preview-player_preview .volume-slider-wrapper input[type=range]::-ms-thumb {background: %%player_thumb_color%% !important;}',
+			),
 			'tab'     => 'player',
 			'section' => 'colors',
 			'pro'     => true,
@@ -621,6 +647,9 @@ function radio_station_plugin_options( $admin = false ) {
 			'label'   => $admin ? __( 'Volume Track Color', 'radio-station' ) : '',
 			'default' => '#80C080',
 			'helper'  => $admin ? __( 'Default Track Color for Player Volume Slider.', 'radio-station' ) : '',
+			'preview' => array(
+				'css' => '#preview-player_preview .volume-slider-bg {background: %%player_range_color%% !important;}'
+			),
 			'tab'     => 'player',
 			'section' => 'colors',
 			'pro'     => true,

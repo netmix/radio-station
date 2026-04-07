@@ -3583,7 +3583,7 @@ function radio_player_control_styles( $instance, $overrides = false ) {
 " . esc_attr( $container ) . " .rp-volume-controls input[type=range]::-moz-range-track {height: 9px; background: transparent; color: transparent;}
 " . esc_attr( $container ) . " .rp-volume-controls input[type=range]::-ms-track {height: 9px; color: transparent; background: transparent; border-color: transparent;}" . "\n";
 // 2.4.0.3: remove float on range input (cross-browser display fix)
-// " . $container . " .rp-volume-controls input[type=range] {float: left; margin-top: -9px;}
+// " . esc_attr( $container ) . " .rp-volume-controls input[type=range] {float: left; margin-top: -9px;}
 
 	// --- Slider Range Thumb ---
 	// 2.5.10: fix to slider range thumb border radius (for default circle buttons)

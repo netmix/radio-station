@@ -126,20 +126,82 @@ function radio_station_admin_settings_scripts() {
 	$free_images_url = plugins_url( 'player/images', RADIO_STATION_FILE );
 	$pro_images_url = defined( 'RADIO_STATION_PRO_FILE' ) ? plugins_url( 'images', RADIO_STATION_PRO_FILE ) : '';
 	
+	// --- custom CSS preview function ---
 	echo "function custom_css_preview(css) {
 		jQuery('.setting').each(function() {
 			if (jQuery(this).attr('data-key') == 'player_theme') {
 				value = jQuery(this).val();
-				console.log('player_theme : '+value);
 				if ((value == 'light') || (value == 'dark')) {
 					images_url = '" . esc_url( $free_images_url ) . "';
 				} else {images_url = '" . esc_url( $pro_images_url ) . "';}
 				css = css.replaceAll('%%images_url%%',images_url);
 			}
 		});
-		console.log(css);
+		/* console.log(css); */
 		return css;
 	}" . "\n";
+
+	// --- volume slider background sync ---
+	echo "function radio_volume_slider(volume) {
+		preview = jQuery('#preview-player_preview');
+		slider = preview.find('.volume-slider');
+		slider.addClass('changed');
+		sliderbg = preview.find('.volume-slider-bg');
+		thumb = preview.find('.volume-thumb');
+		sliderbg.hide(); slider.val(volume); swidth = slider.width();
+		thumb.show(); twidth = thumb.width(); thumb.hide();
+		mwidth = parseInt(sliderbg.css('margin-left').replace('px',''));
+		bgwidth = parseInt((swidth - twidth) * (volume / 100)) - mwidth;
+		/* console.log(bgwidth + ' = (' + swidth + ' - ' + twidth + ') * ' +(volume/100)+ ' - '+mwidth); */
+		sliderbg.attr('style', 'width: '+bgwidth+'px !important;').show();
+		if (volume == 100) {preview.addClass('maxed');} else {preview.removeClass('maxed');}
+	}" . "\n";
+	
+	// --- volume slider background changes ---
+	echo "jQuery('.rp-volume-slider').on('mousemove', function() {
+		preview = jQuery('#preview-player_preview');
+		slider = preview.find('.volume-slider');
+		volume = parseInt(jQuery(this).val());
+		radio_volume_slider(volume);
+	});" . "\n";
+
+	// --- volume slider changes ---
+	echo "jQuery('.volume-slider').on('change', function() {
+		preview = jQuery('#preview-player_preview');
+		slider = preview.find('.volume-slider');
+		volume = parseInt(jQuery(this).val());
+		radio_volume_slider(volume);
+	});" . "\n";
+
+	// --- mute button click ---
+	echo "jQuery('.mute-button').on('click', function() {
+		preview = jQuery('#preview-player_preview');
+		slider = preview.find('.volume-slider');
+		if (!preview.hasClass('muted')) {preview.addClass('muted');}
+		else {preview.removeClass('muted');}
+	});" . "\n";
+
+	// --- max volume click --- */
+	echo "jQuery('.max-button').on('click', function() {
+		preview = jQuery('#preview-player_preview');
+		slider = preview.find('.volume-slider');
+		if (!preview.hasClass('maxed')) {preview.addClass('maxed');}
+		slider.val(100); radio_volume_slider(100);
+	});" . "\n";
+	
+	// --- player preview volume slider ---
+	echo "jQuery('.minus-button, .plus-button').on('click', function() {
+		preview = jQuery('#preview-player_preview');
+		slider = preview.find('.volume-slider');
+		oldvolume = parseInt(slider.val());
+		if (jQuery(this).hasClass('minus-button')) {
+			volume = oldvolume - 5; if (volume < 0) {volume = 0;} slider.val(volume);
+		} else if (jQuery(this).hasClass('plus-button')) {
+			volume = oldvolume + 5; if (volume > 100) {volume = 100;} slider.val(volume);
+		}
+		radio_volume_slider(volume);
+	});" . "\n";
+
 }
 
 // --------------------------
