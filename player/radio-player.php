@@ -1291,7 +1291,7 @@ function radio_player_ajax() {
 	// 2.5.10: moved up so that inline style can be in header
 	// 2.5.14: add body prefix to selector
 	// 2.5.18: reset body margins (from theme styles)
-	$css = 'body {margin: 0 !important; padding: 10px !important;}';
+	$css = 'body {margin: 0 !important; padding: 10px !important;}' . "\n";
 	if ( '' != $text_color ) {
 		if ( ( 'rgb' != substr( $text_color, 0, 3 ) ) && ( '#' != substr( $text_color, 0, 1 ) ) ) {
 			$text_color = '#' . $text_color;
@@ -3560,11 +3560,11 @@ function radio_player_control_styles( $instance, $overrides = false ) {
 	// 2.4.0.4: added no border style to range input (border added on some themes)
 	// 2.5.0: added input height 100% to fix vertical slider alignment
 	$css .= "/* Range Input */
-" . esc_attr( $container ) . " .rp-volume-controls input[type=range] {";
+" . esc_attr( $container ) . " .rp-volume-controls input[type=\"range\"] {";
 	$css .= "height: 100%; margin: 0; background-color: transparent; vertical-align: middle; -webkit-appearance: none; border: none;}
-" . esc_attr( $container ) . " .rp-volume-controls input[type=range]:focus {outline: none; box-shadow: none;}
-" . esc_attr( $container ) . " .rp-volume-controls input[type=range]::-moz-focus-inner,
-" . esc_attr( $container ) . " .rp-volume-controls input[type=range]::-moz-focus-outer {outline: none; box-shadow: none;}" . "\n";
+" . esc_attr( $container ) . " .rp-volume-controls input[type=\"range\"]:focus {outline: none; box-shadow: none;}
+" . esc_attr( $container ) . " .rp-volume-controls input[type=\"range\"]::-moz-focus-inner,
+" . esc_attr( $container ) . " .rp-volume-controls input[type=\"range\"]::-moz-focus-outer {outline: none; box-shadow: none;}" . "\n";
 
 	// --- Range Track (synced Background Div) ---
 	// 2.4.0.3: add position absolute/top on slider background (cross-browser display fix)
@@ -3579,36 +3579,36 @@ function radio_player_control_styles( $instance, $overrides = false ) {
 
 	// --- Slider Range Track (Clickable Transparent) ---
 	$css .= "/* Range Track */
-" . esc_attr( $container ) . " .rp-volume-controls input[type=range]::-webkit-slider-runnable-track {height: 9px; background: transparent; -webkit-appearance: none; color: transparent}
-" . esc_attr( $container ) . " .rp-volume-controls input[type=range]::-moz-range-track {height: 9px; background: transparent; color: transparent;}
-" . esc_attr( $container ) . " .rp-volume-controls input[type=range]::-ms-track {height: 9px; color: transparent; background: transparent; border-color: transparent;}" . "\n";
+" . esc_attr( $container ) . " .rp-volume-controls input[type=\"range\"]::-webkit-slider-runnable-track {height: 9px; background: transparent; -webkit-appearance: none; color: transparent}
+" . esc_attr( $container ) . " .rp-volume-controls input[type=\"range\"]::-moz-range-track {height: 9px; background: transparent; color: transparent;}
+" . esc_attr( $container ) . " .rp-volume-controls input[type=\"range\"]::-ms-track {height: 9px; color: transparent; background: transparent; border-color: transparent;}" . "\n";
 // 2.4.0.3: remove float on range input (cross-browser display fix)
-// " . esc_attr( $container ) . " .rp-volume-controls input[type=range] {float: left; margin-top: -9px;}
+// " . esc_attr( $container ) . " .rp-volume-controls input[type=\"range\"] {float: left; margin-top: -9px;}
 
 	// --- Slider Range Thumb ---
 	// 2.5.10: fix to slider range thumb border radius (for default circle buttons)
 	$css .= "/* Range Thumb */
-" . esc_attr( $container ) . " .rp-volume-controls input[type=range]::-webkit-slider-thumb {
+" . esc_attr( $container ) . " .rp-volume-controls input[type=\"range\"]::-webkit-slider-thumb {
 	width: 18px; height: 18px; cursor: pointer; background: rgba(128, 128, 128, 1);
 	border: 1px solid rgba(128, 128, 128, 0.5); border-radius: 9px; z-index: 2;
 	margin-top: -4.5px; -webkit-appearance: none;
 }
-" . esc_attr( $container ) . " .rp-volume-controls input[type=range]::-moz-range-thumb {
+" . esc_attr( $container ) . " .rp-volume-controls input[type=\"range\"]::-moz-range-thumb {
 	width: 18px; height: 18px; cursor: pointer; background: rgba(128, 128, 128, 1);
 	border: 1px solid rgba(128, 128, 128, 0.5); border-radius: 9px; z-index: 2;
 }
-" . esc_attr( $container ) . " .rp-volume-controls input[type=range]::-ms-thumb {
+" . esc_attr( $container ) . " .rp-volume-controls input[type=\"range\"]::-ms-thumb {
 	width: 18px; height: 18px; cursor: pointer; background: rgba(128, 128, 128, 1);
 	border: 1px solid rgba(128, 128, 128, 0.5); border-radius: 9px; z-index: 2; margin-top: 0px; 
 }
-" . esc_attr( $container ) . ".rounded .rp-volume-controls input[type=range]::-webkit-slider-thumb {border-radius: 5px !important;}
-" . esc_attr( $container ) . ".square .rp-volume-controls input[type=range]::-webkit-slider-thumb {border-radius: 0px !important;}
-" . esc_attr( $container ) . ".playing .rp-volume-controls input[type=range]::-webkit-slider-thumb {background: " . esc_attr( $colors['thumb'] ) . "};
-" . esc_attr( $container ) . ".playing .rp-volume-controls input[type=range]::-moz-range-thumb {background: " . esc_attr( $colors['thumb'] ) . "};
-" . esc_attr( $container ) . ".playing .rp-volume-controls input[type=range]::-ms-thumb {background: " . esc_attr( $colors['thumb'] ) . "};
+" . esc_attr( $container ) . ".rounded .rp-volume-controls input[type=\"range\"]::-webkit-slider-thumb {border-radius: 5px !important;}
+" . esc_attr( $container ) . ".square .rp-volume-controls input[type=\"range\"]::-webkit-slider-thumb {border-radius: 0px !important;}
+" . esc_attr( $container ) . ".playing .rp-volume-controls input[type=\"range\"]::-webkit-slider-thumb {background: " . esc_attr( $colors['thumb'] ) . "}
+" . esc_attr( $container ) . ".playing .rp-volume-controls input[type=\"range\"]::-moz-range-thumb {background: " . esc_attr( $colors['thumb'] ) . "}
+" . esc_attr( $container ) . ".playing .rp-volume-controls input[type=\"range\"]::-ms-thumb {background: " . esc_attr( $colors['thumb'] ) . "}
 " . esc_attr( $container ) . " input[type=range]::-ms-tooltip {display: none;}
 @supports (-ms-ime-align:auto) {
-  " . esc_attr( $container ) . " .rp-volume-controls input[type=range] {margin: 0;}
+  " . esc_attr( $container ) . " .rp-volume-controls input[type=\"range\"] {margin: 0;}
 }" . "\n";
 
 	// --- dummy element style for thumb width ---

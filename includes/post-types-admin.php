@@ -2122,7 +2122,7 @@ function radio_station_show_save_data( $post_id ) {
 		// --- check for errors ---
 		$error = false;
 		if ( !current_user_can( 'edit_shows' ) ) {
-			$error = __( 'Failed. Publish or Update instead.', 'radio-station' );
+			$error = __( 'Failed. Check your user permissions.', 'radio-station' );
 		} elseif ( !isset( $_POST['show_shifts_nonce'] ) || !wp_verify_nonce( sanitize_text_field( $_POST['show_shifts_nonce'] ), 'radio-station' ) ) {
 			$error = __( 'Expired. Publish or Update instead.', 'radio-station' );
 		} elseif ( !isset( $_POST['show_id'] ) || ( '' === sanitize_text_field( $_POST['show_id'] ) ) ) {
@@ -4547,23 +4547,24 @@ function radio_station_override_save_data( $post_id ) {
 		}
 
 		// --- make sure we have a post ID for AJAX save ---
-		if ( !isset( $_POST['override_id'] ) || ( '' === sanitize_text_field( $_POST['override_id'] ) ) ) {
+		if ( !isset( $_POST['override_id'] ) || ( '' == sanitize_text_field( $_POST['override_id'] ) ) ) {
 			return;
 		}
 		$post_id = absint( $_POST['override_id'] );
 		$post = get_post( $post_id );
+		print_r( $_POST );
 
 		// --- check for errors ---
 		$error = false;
 		if ( !isset( $_POST['show_override_nonce'] ) || !wp_verify_nonce( sanitize_text_field( $_POST['show_override_nonce'] ), 'radio-station' ) ) {
-			$error = __( 'Expired. Publish or Update instead.', 'radio-station' );
+			$error = __( 'Expired. Update or reload the page.', 'radio-station' );
 		} elseif ( !$post ) {
 			$error = __( 'Failed. Invalid Special Override.', 'radio-station' );
-		} elseif ( !current_user_can( 'edit_shows' ) ) {
-			$error = __( 'Failed. Publish or Update instead.', 'radio-station' );
+		// } elseif ( !current_user_can( 'edit_shows' ) ) {
+		//	$error = __( 'Expired. Update or reload the page.', 'radio-station' );
 		} elseif ( !current_user_can( 'edit_override', $post_id ) ) {
 			// 2.5.18: add permission check for editing this override
-			$error = __( 'Failed. You are not allowed to do that.', 'radio-station' );
+			$error = __( 'Failed. Check your user permissions.', 'radio-station' );
 		}
 
 		// --- send error to parent frame ---
@@ -4724,7 +4725,10 @@ function radio_station_override_save_data( $post_id ) {
 			$current_scheds = get_post_meta( $post_id, 'show_override_sched', true );
 			if ( isset( $_POST['new_override'] ) ) {
 				// 2.5.0: use sanitize_text_field on posted value
-				$new_shift = sanitize_text_field( $_POST['new_override'] );
+				// 2.5.18: removed as causing saving problems
+				$new_shift = $_POST['new_override'];
+				echo "New Override: " . print_r( $new_shift, true );
+				
 				$new_shift['id'] = radio_station_unique_shift_id();
 				$show_sched = $current_scheds;
 				$show_sched[] = $new_shift;

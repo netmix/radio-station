@@ -107,6 +107,7 @@
 }
 .rp-volume-controls button:hover, .rp-volume-controls button:focus,
 .rp-popup button:hover, .rp-popup button:focus {opacity: 0.99; scale: 1.1;}
+.minned .rp-volume-slider-bg {border: none !important;}
 
 .circular .rp-volume-controls button, .circular .rp-popup button {border-radius: 9px;}
 .rounded .rp-volume-controls button, .rounded .rp-popup button {border-radius: 6px;}
