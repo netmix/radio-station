@@ -196,7 +196,7 @@ function radio_station_get_all_overrides( $start_date = false, $end_date = false
 			$data['shifts'] = $override_shifts;
 
 			// --- get override metadata ---
-			$metadata = radio_station_get_override_data_meta( $override );
+			$metadata = radio_station_get_override_data_meta( $override_id );
 			$data['show'] = $metadata;
 
 			// --- set override data ---

@@ -739,7 +739,8 @@ class radio_station_schedule_engine {
 
 									// --- add the override as is ---
 									$override_data = array(
-										'show'     => $show['id'],
+										'ID'       => $show['id'],
+										'show'     => $show,
 										'id'       => $data['id'],
 										'name'     => $show['title'],
 										'slug'     => $show['slug'],
@@ -747,6 +748,7 @@ class radio_station_schedule_engine {
 										'day'      => $day,
 										'start'    => $start,
 										'end'      => $end,
+										'override' => $override['ID'],
 										'recurs'   => $recurs,
 										'url'      => get_permalink( $show['id'] ),
 										'split'    => false,
@@ -758,7 +760,8 @@ class radio_station_schedule_engine {
 
 									// --- split the override overnight ---
 									$override_data = array(
-										'override' => $show['id'],
+										'ID'       => $show['id'],
+										'show'     => $show,
 										'id'       => $data['id'],
 										'name'     => $show['title'],
 										'slug'     => $show['slug'],
@@ -767,6 +770,7 @@ class radio_station_schedule_engine {
 										'start'    => $start,
 										'end'      => '11:59:59 pm',
 										'real_end' => $end,
+										'override' => $override['ID'],
 										'recurs'   => $recurs,
 										'url'      => get_permalink( $show['id'] ),
 										'split'    => true,
@@ -784,7 +788,8 @@ class radio_station_schedule_engine {
 									$nextday = $this->get_next_day( $day );
 
 									$override_data = array(
-										'override'   => $show['id'],
+										'ID'         => $show['id'],
+										'show'       => $show,
 										'id'         => $data['id'],
 										'name'       => $show['title'],
 										'slug'       => $show['slug'],
@@ -793,7 +798,8 @@ class radio_station_schedule_engine {
 										'real_start' => $start,
 										'start'      => '00:00 am',
 										'end'        => $end,
-										'recurs'   => $recurs,
+										'override'   => $override['ID'],
+										'recurs'     => $recurs,
 										'url'        => get_permalink( $show['id'] ),
 										'split'      => true,
 									);
@@ -1036,6 +1042,7 @@ class radio_station_schedule_engine {
 												unset( $shifts[$start] );
 												$shift['start'] = $override['end'];
 												$shift['trimmed'] = 'start';
+												$shift['override'] = '1';
 												$shifts[$override['end']] = $shift;
 												$show_shifts[$day] = $shifts;
 											}
@@ -1067,6 +1074,7 @@ class radio_station_schedule_engine {
 											if ( $override_end_time < $end_time ) {
 												$shift['start'] = $override['end'];
 												$shift['trimmed'] = 'start';
+												$shift['override'] = '1';
 												$shifts[$override['end']] = $shift;
 												$show_shifts[$day] = $shifts;
 												if ( $day == $debugday ) {
@@ -1090,6 +1098,7 @@ class radio_station_schedule_engine {
 											$shift['start'] = $start;
 											$shift['end'] = $override['start'];
 											$shift['trimmed'] = 'end';
+											$shift['override'] = '1';
 											$shifts[$start] = $shift;
 											$show_shifts[$day] = $shifts;
 
@@ -1107,6 +1116,7 @@ class radio_station_schedule_engine {
 												$shift['start'] = $override['end'];
 												$shift['end'] = $end;
 												$shift['trimmed'] = 'start';
+												$shift['override'] = '1';
 												$shifts[$override['end']] = $shift;
 												$show_shifts[$day] = $shifts;
 											}
@@ -1127,6 +1137,7 @@ class radio_station_schedule_engine {
 							// 2.3.3.7: remove check if override already done
 							// if ( !in_array( $date . '--' . $i, $done_overrides ) ) {
 								// $done_overrides[] = $date . '--' . $i;
+								$overrides['override'] = '1';
 								$show_shifts[$day][$override['start']] = $override;
 								if ( $day == $debugday ) {
 									$debugshifts .= "Added Override: " . print_r( $override, true ) . PHP_EOL;
@@ -1177,6 +1188,20 @@ class radio_station_schedule_engine {
 				}
 			}
 
+		}
+
+		// 2.5.18: added duration field
+		foreach ( $show_shifts as $day => $shifts ) {
+			foreach ( $shifts as $i => $shift ) {
+				$date = $weekdates[$day];				
+				$start_time = $this->to_time( $date . ' ' . $shift_start, $timezone );
+				$end_time = $this->to_time( $date . ' ' . $shift_end, $timezone );
+				if ( $end_time <= $start_time ) {
+					$end_time = $end_time + ( 24 * 60 * 60 );
+				}			
+				$duration = $end_time - $start_time;
+				$show_shifts[$day][$i]['duration'] = $duration;
+			}
 		}
 
 		if ( $this->debug ) {

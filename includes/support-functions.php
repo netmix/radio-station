@@ -773,6 +773,7 @@ function radio_station_get_override_data_meta( $override ) {
 		$override = get_post( $override );
 	}
 	$override_id = $override->ID;
+	// echo '<span style="display:none;">OVERRIDE: ' . $override_id . ': ' . print_r( $override, true ) . '</span>';
 
 	// --- get override terms ---
 	$genre_list = $language_list = array();
@@ -887,7 +888,7 @@ function radio_station_get_override_data_meta( $override ) {
 	}
 
 	// --- filter and return ---
-	// echo 'OVERRIDE DATA META: ' . print_r( $override_data, true ) . "\n";
+	// echo '<span style="display:none;">OVERRIDE META: ' . $override_id . ': ' . print_r( $override_data, true ) . '</span>';
 	$override_data = apply_filters( 'radio_station_override_data', $override_data, $override_id );
 	return $override_data;
 }
