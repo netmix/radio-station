@@ -1194,8 +1194,8 @@ class radio_station_schedule_engine {
 		foreach ( $show_shifts as $day => $shifts ) {
 			foreach ( $shifts as $i => $shift ) {
 				$date = $weekdates[$day];				
-				$start_time = $this->to_time( $date . ' ' . $shift_start, $timezone );
-				$end_time = $this->to_time( $date . ' ' . $shift_end, $timezone );
+				$start_time = $this->to_time( $date . ' ' . $shift['start'], $timezone );
+				$end_time = $this->to_time( $date . ' ' . $shift['end'], $timezone );
 				if ( $end_time <= $start_time ) {
 					$end_time = $end_time + ( 24 * 60 * 60 );
 				}			
