@@ -442,10 +442,12 @@ function radio_station_show_info_metabox() {
 
 	// --- get show meta ---
 	// 2.3.2: added show download disable switch
+	// 2.5.18: added text number field
 	$active = get_post_meta( $post_id, 'show_active', true );
 	$link = get_post_meta( $post_id, 'show_link', true );
 	$email = get_post_meta( $post_id, 'show_email', true );
 	$phone = get_post_meta( $post_id, 'show_phone', true );
+	$text = get_post_meta( $post_id, 'show_text', true );
 	$file = get_post_meta( $post_id, 'show_file', true );
 	$download = get_post_meta( $post_id, 'show_download', true );
 	$patreon_id = get_post_meta( $post_id, 'show_patreon', true );
@@ -501,6 +503,17 @@ function radio_station_show_info_metabox() {
 				echo '</label></div>' . "\n";
 				echo '<div class="input-field">' . "\n";
 					echo '<input type="text" name="show_phone" size="100" style="max-width:80%;" value="' . esc_attr( $phone ) . '">' . "\n";
+				echo '</div>' . "\n";
+			echo '</li>' . "\n";
+			
+			// --- show text number ---
+			// 2.5.18: added show text number input field
+			echo '<li class="show-item">' . "\n";
+				echo '<div class="input-label"><label>' . "\n";
+					echo esc_html( __( 'Show Text Number', 'radio-station' ) ) . ':' . "\n";
+				echo '</label></div>' . "\n";
+				echo '<div class="input-field">' . "\n";
+					echo '<input type="text" name="show_text" size="100" style="max-width:80%;" value="' . esc_attr( $text ) . '">' . "\n";
 				echo '</div>' . "\n";
 			echo '</li>' . "\n";
 
@@ -2195,6 +2208,7 @@ function radio_station_show_save_data( $post_id ) {
 		$link = radio_station_sanitize_input( 'show' , 'link' );
 		$patreon_id = radio_station_sanitize_input( 'show', 'patreon' );
 		$phone = radio_station_sanitize_input( 'show', 'phone' );
+		$text = radio_station_sanitize_input( 'show', 'text' );
 		$active = radio_station_sanitize_input( 'show', 'active' );
 		$download = radio_station_sanitize_input( 'show', 'download' );
 
@@ -2206,13 +2220,14 @@ function radio_station_show_save_data( $post_id ) {
 		$prev_download = get_post_meta( $post_id, 'show_download', true );
 		$prev_email = get_post_meta( $post_id, 'show_email', true );
 		$prev_phone = get_post_meta( $post_id, 'show_phone', true );
+		$prev_text = get_post_meta( $post_id, 'show_text', true );
 		$prev_active = get_post_meta( $post_id, 'show_active', true );
 		$prev_link = get_post_meta( $post_id, 'show_link', true );
 		$prev_patreon_id = get_post_meta( $post_id, 'show_patreon', true );
 		if ( ( $prev_active != $active ) || ( $prev_link != $link )
 				|| ( $prev_email != $email ) || ( $prev_phone != $phone )
-				|| ( $prev_file != $file ) || ( $prev_download != $download )
-				|| ( $prev_patreon_id != $patreon_id ) ) {
+				|| ( $prev_text != $text ) || ( $prev_file != $file )
+				|| ( $prev_download != $download ) || ( $prev_patreon_id != $patreon_id ) ) {
 			$show_meta_changed = true;
 		}
 
@@ -2222,6 +2237,7 @@ function radio_station_show_save_data( $post_id ) {
 		update_post_meta( $post_id, 'show_download', $download );
 		update_post_meta( $post_id, 'show_email', $email );
 		update_post_meta( $post_id, 'show_phone', $phone );
+		update_post_meta( $post_id, 'show_text', $text );
 		update_post_meta( $post_id, 'show_active', $active );
 		update_post_meta( $post_id, 'show_link', $link );
 		update_post_meta( $post_id, 'show_patreon', $patreon_id );
@@ -3202,10 +3218,12 @@ function radio_station_override_show_metabox() {
 		echo '</ul><br>' . "\n";
 
 		// --- get show meta ---
+		// 2.5.18: added text number field
 		// $active = get_post_meta( $post->ID, 'show_active', true );
 		$link = get_post_meta( $post_id, 'show_link', true );
 		$email = get_post_meta( $post_id, 'show_email', true );
 		$phone = get_post_meta( $post_id, 'show_phone', true );
+		$text = get_post_meta( $post_id, 'show_text', true );
 		$file = get_post_meta( $post_id, 'show_file', true );
 		$download = get_post_meta( $post_id, 'show_download', true );
 		$patreon_id = get_post_meta( $post_id, 'show_patreon', true );
@@ -3438,6 +3456,30 @@ function radio_station_override_show_metabox() {
 					echo '</div>' . "\n";
 				echo '</td></tr>' . "\n";
 
+				// --- text ---
+				// 2.5.18: added text number field
+				echo '<tr><td>' . "\n";
+					echo '<input type="checkbox" class="override-checkbox" id="override-show-text" name="show_text_link" value="yes" onclick="radio_check_linked(\'text\');"';
+					if ( isset( $linked_fields['show_text'] ) && $linked_fields['show_text'] ) {
+						echo ' checked="checked"';
+					}
+					echo '> <label>' . esc_html( __( 'Show Text Number', 'radio-station' ) ) . '</label>' . "\n";
+				echo '</td><td width="30"></td><td>' . "\n";
+					echo '<div id="override-input-text" class="override-input"';
+					if ( !isset( $linked_fields['show_text'] ) || !$linked_fields['show_text'] ) {
+						echo ' style="display:none;"';
+					}
+					echo '>' . "\n";
+						echo '<input type="text" name="show_text" size="100" value="' . esc_attr( $text ) . '" style="max-width:200px;">';
+					echo '</div>' . "\n";
+					echo '<div id="override-data-text"';
+					if ( isset( $linked_fields['show_text'] ) && $linked_fields['show_text'] ) {
+						echo ' style="display:none;"';
+					}
+					echo '</div>' . "\n";
+				echo '</td></tr>' . "\n";
+
+
 				// --- audio file ---
 				echo '<tr><td>' . "\n";
 					echo '<input type="checkbox" class="override-checkbox" id="override-show-file" name="show_file_link" value="yes" onclick="radio_check_linked(\'file\');"';
@@ -3600,6 +3642,7 @@ function radio_station_override_show_script() {
 
 	// --- check for linked show value ---
 	// 2.3.3.9: check linked show value
+	// 2.5.1.8: added text number key
 	$js = "function radio_link_check() {
 		linked_id = jQuery('#override-link').val();
 		if (linked_id == '') {
@@ -3608,7 +3651,7 @@ function radio_station_override_show_script() {
 			jQuery('#linked-fields-message').hide();
 		} else {
 			jQuery('.override-label, .override-checkbox, #override-genres, #override-languages').show();
-			keys = ['website', 'email', 'phone', 'file', 'download', 'patreon', 'hosts', 'producers'];
+			keys = ['website', 'email', 'phone', 'text', 'file', 'download', 'patreon', 'hosts', 'producers'];
 			for (i = 0; i < keys.length; i++) {radio_check_linked(keys[i]);}
 			jQuery('#linked-fields-message').show();
 			radio_sync_genres(); radio_sync_languages();
@@ -4677,8 +4720,9 @@ function radio_station_override_save_data( $post_id ) {
 			}
 
 			// --- update linked show fields ---
+			// 2.5.18: added text number field
 			$linked_show_fields = array();
-			$show_fields = array( 'title', 'content', 'excerpt', 'avatar', 'image', 'user_list', 'producer_list', 'link', 'email', 'phone', 'file', 'download', 'patreon' );
+			$show_fields = array( 'title', 'content', 'excerpt', 'avatar', 'image', 'user_list', 'producer_list', 'link', 'email', 'phone', 'text', 'file', 'download', 'patreon' );
 			// 2.5.18: added missing show_avatar and show_image non-input fields
 			$non_input_fields = array( 'show_title', 'show_content', 'show_excerpt', 'show_avatar', 'show_image' );
 			foreach ( $show_fields as $field ) {
@@ -7663,7 +7707,7 @@ function radio_station_show_select_options( $type, $selected, $shows = false ) {
 	} elseif ( ( 'yes' == $editor_caps ) && in_array( 'editor', $user->roles ) ) {
 		$full_permissions = true;
 	} elseif ( ( 'override' != $type ) && current_user_can( 'edit_others_' . $type . 's' ) ) {
-		// 2.5.1.8: remove full permissions for overrides
+		// 2.5.18: remove full permissions for overrides
 		$full_permissions = true;
 	}
 

@@ -164,9 +164,24 @@ function radio_station_phone_number( $phone, $post_id ) {
 	$shows_phone = radio_station_get_setting( 'shows_phone' );
 	if ( 'yes' == $shows_phone ) {
 		$phone = radio_station_get_setting( 'station_phone' );
-		return $phone;
 	}
-	return false;
+	return $phone;
+}
+
+// ------------------------------------
+// Station Text Number for Shows Filter
+// ------------------------------------
+// 2.5.18: added text number for show filter
+add_filter( 'radio_station_show_text', 'radio_station_text_number', 10, 2 );
+function radio_station_text_number( $text, $post_id ) {
+	if ( $text ) {
+		return $text;
+	}
+	$shows_text = radio_station_get_setting( 'shows_text' );
+	if ( 'yes' == $shows_text ) {
+		$text = radio_station_get_setting( 'station_text' );
+	}
+	return $text;
 }
 
 // --------------------------------------
@@ -181,9 +196,8 @@ function radio_station_email_address( $email, $post_id ) {
 	$shows_email = radio_station_get_setting( 'shows_email' );
 	if ( 'yes' == $shows_email ) {
 		$email = radio_station_get_setting( 'station_email' );
-		return $email;
 	}
-	return false;
+	return $email;
 }
 
 // ------------------------------

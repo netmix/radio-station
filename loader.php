@@ -228,7 +228,9 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 
 			// --- set plugin options ---
 			// 1.0.6: added options filter
+			// 1.3.8: fix to set class options on construct
 			$args['options'] = apply_filters( $args['namespace'] . '_options', $args['options'] );
+			$this->options = $args['options'];
 
 			// --- set plugin args and namespace ---
 			// 1.1.9: filter all arguments
@@ -3937,6 +3939,11 @@ if ( !function_exists( 'radio_station_load_prefixed_functions' ) ) {
 // =========
 // CHANGELOG
 // =========
+
+// == 1.3.8 ==
+// - fix: explicitly set class options variable on construct
+// - added setting preview containers and preview images
+// - added allowed HTML data and min/max attributes for previews
 
 // == 1.3.7 ==
 // - updates for loading delayed string translations
