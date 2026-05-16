@@ -237,7 +237,7 @@ function radio_player_play_on_load(player, script, instance) {
 					if (radio_player.jplayer_ready) {
 						clearInterval(radio_player.jplayer_load);
 						if (radio_player.debug) {console.log('Triggering jPlayer play.');}
-						try {player = radio_player_data,players[radio_player.jplayer_instance];
+						try {player = radio_player_data.players[radio_player.jplayer_instance];
 							player.jPlayer('play'); radio_player_custom_event('rp-play', detail);
 						} catch(e) {console.log(script+' error: jPlayer could not play stream.'); console.log(e);}
 					}
@@ -337,6 +337,17 @@ function radio_player_switch_script(instance, script) {
 }
 
 /* === Player Functions and Event Callbacks === */
+
+/* --- get instance audio element --- */
+function radio_player_audio_element(instance) {
+	if (typeof radio_player_data.players[instance] == 'undefined') {return false;}
+	player = radio_player_data.players[instance];
+	script = radio_player_data.scripts[instance];
+	if (script == 'amplitude') {audio = player.getAudio();}
+	else if (script == 'jplayer') {audio = player.data('jPlayer').htmlElement.audio;}
+	/* else if (script == 'howler') {audio = ???;} */
+	return audio;
+}
 
 // --- get player source ---
 function radio_player_get_source(player, script) {
@@ -1050,6 +1061,10 @@ function radio_player_howler(instance, url, format, fallback, fformat) {
 	});
 	radio_player_data.players[instance] = radio_player_instance;
 	radio_player_data.scripts[instance] = 'howler';
+
+	audio = radio_player_instance.data('jPlayer').htmlElement.audio;
+	if (radio_player.debug) {console.log('jPlayer Audio Element:'); console.log(audio);}
+	audio.setAttribute('instance-id', instance);
 
 	/* match script select dropdown value */
 	if (jQuery('#'+container_id+' .rp-script-select').length) {

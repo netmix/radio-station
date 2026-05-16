@@ -1187,16 +1187,16 @@ function radio_station_plugin_options( $admin = false ) {
 		),
 
 		// --- Text for Shows ---
-		// TODO: text number display on show pages
-		/* 'shows_text' => array(
+		// 2.5.18: add text number default to station text option
+		'shows_text' => array(
 			'type'    => 'checkbox',
 			'default' => '',
 			'value'   => 'yes',
-			'label'   => $admin ? __( 'Show Email Default', 'radio-station' ) : '',
+			'label'   => $admin ? __( 'Show Text Default', 'radio-station' ) : '',
 			'helper'  => $admin ? __( 'Display Station text number on Shows where a Show text number is not set.', 'radio-station' ) : '',
 			'tab'     => 'pages',
 			'section' => 'show',
-		), */
+		),
 		
 		// --- Email for Shows ---
 		// 2.3.3.8: added default to email address option

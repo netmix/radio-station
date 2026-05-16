@@ -6,7 +6,7 @@ Plugin Name: Radio Station
 Plugin URI: https://radiostation.pro/radio-station
 Description: Adds Show pages, DJ role, playlist and on-air programming functionality to your site.
 Author: Tony Zeoli, Tony Hayes
-Version: 2.5.18.9
+Version: 2.5.18.11
 Requires at least: 3.3.1
 Text Domain: radio-station
 Domain Path: /languages
@@ -1027,6 +1027,7 @@ function radio_station_localization_script() {
 	$js .= "radio.labels.timecommencing = '" . esc_js( __( 'Commencing in', 'radio-station' ) ) . "';" . "\n";
 	$js .= "radio.labels.timeremaining = '" . esc_js( __( 'Remaining Time', 'radio-station' ) ) . "';" . "\n";
 	$js .= "radio.labels.showwith = '" . esc_js( __( 'with', 'radio-station' ) ) . "';" . "\n";
+	$js .= "radio.labels.showand = '" . esc_js( __( 'and', 'radio-station' ) ) . "';" . "\n";
 
 	// --- translated time unit strings ---
 	$js .= "radio.units.am = '" . esc_js( radio_station_translate_meridiem( 'am' ) ) . "'; ";

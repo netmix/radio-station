@@ -40,6 +40,7 @@ $show_file = get_post_meta( $post_id, 'show_file', true );
 $show_link = get_post_meta( $post_id, 'show_link', true );
 $show_email = get_post_meta( $post_id, 'show_email', true );
 $show_phone = get_post_meta( $post_id, 'show_phone', true );
+$show_text = get_post_meta( $post_id, 'show_text', true );
 $show_patreon = get_post_meta( $post_id, 'show_patreon', true );
 // $show_rss = get_post_meta( $post_id, 'show_rss', true );
 $show_rss = false; // TEMP
@@ -66,6 +67,7 @@ $show_download = apply_filters( 'radio_station_show_download', $show_download, $
 $show_link = apply_filters( 'radio_station_show_link', $show_link, $post_id );
 $show_email = apply_filters( 'radio_station_show_email', $show_email, $post_id );
 $show_phone = apply_filters( 'radio_station_show_phone', $show_phone, $post_id );
+$show_text = apply_filters( 'radio_station_show_text', $show_text, $post_id );
 $show_patreon = apply_filters( 'radio_station_show_patreon', $show_patreon, $post_id );
 $show_rss = apply_filters( 'radio_station_show_rss', $show_rss, $post_id );
 $social_icons = apply_filters( 'radio_station_show_social_icons', false, $post_id );
@@ -87,7 +89,8 @@ $icon_colors = radio_station_get_icon_colors( 'show-page' );
 // --- show home link icon ---
 // 2.3.3.4: added filter for title attribute
 // 2.3.3.8: added alt text to span for screen readers
-if ( $show_link ) {
+// 2.5.18: added check for empty home link
+if ( $show_link && ( trim( $show_link ) != '' ) ) {
 	$title = __( 'Visit Show Website', 'radio-station' );
 	$title = apply_filters( 'radio_station_show_website_title', $title, $post_id );
 	$icon = '<span style="color:' . esc_attr( $icon_colors['website'] ) . ';" class="dashicons dashicons-admin-links" aria-hidden="true"></span>' . "\n";
@@ -102,7 +105,8 @@ if ( $show_link ) {
 // --- phone number icon ---
 // 2.3.3.6: added show phone icon
 // 2.3.3.8: added aria label to link and hidden to span icon
-if ( $show_phone ) {
+// 2.5.18: added check for empty phone
+if ( $show_phone && ( trim( $show_phone ) != '' ) ) {
 	$title = __( 'Call in Phone Number', 'radio-station' );
 	$title = apply_filters( 'radio_station_show_phone_title', $title, $post_id );
 	$icon = '<span style="color:' . esc_attr( $icon_colors['phone'] ) . ';" class="dashicons dashicons-phone" aria-hidden="true"></span>' . "\n";
@@ -114,10 +118,25 @@ if ( $show_phone ) {
 	$show_icons['phone'] .= '</div>' . "\n";
 }
 
+// --- text number icon ---
+// 2.5.18: added text line icon
+if ( $show_text && ( trim( $show_text ) != '' ) ) {
+	$title = __( 'Text Line Number', 'radio-station' );
+	$title = apply_filters( 'radio_station_show_text_title', $title, $post_id );
+	$icon = '<span style="color:' . esc_attr( $icon_colors['text'] ) . ';" class="dashicons dashicons-smartphone" aria-hidden="true"></span>' . "\n";
+	$icon = apply_filters( 'radio_station_show_text_icon', $icon, $post_id );
+	$show_icons['text'] = '<div class="show-icon show-text">' . "\n";
+		$show_icons['text'] .= '<a href="sms:' . esc_attr( $show_text ) . '" title="' . esc_attr( $title ) . '" aria-label="' . esc_attr( $title ) . '">' . "\n";
+				$show_icons['text'] .= $icon . "\n";
+			$show_icons['text'] .= '</a>' . "\n";
+	$show_icons['text'] .= '</div>' . "\n";
+}
+
 // --- email DJ / host icon ---
 // 2.3.3.4: added filter for title attribute
 // 2.3.3.8: added aria label to link and hidden to span icon
-if ( $show_email ) {
+// 2.5.18: added check for empty email
+if ( $show_email && ( trim( $show_email ) != '' ) ) {
 	$title = __( 'Email Show Host', 'radio-station' );
 	$title = apply_filters( 'radio_station_show_email_title', $title, $post_id );
 	$icon = '<span style="color:' . esc_attr( $icon_colors['email'] ) . ';" class="dashicons dashicons-email" aria-hidden="true"></span>' . "\n";

@@ -1832,10 +1832,12 @@ function radio_station_check_directory_ping() {
 // ---------------
 // 2.3.3.9: moved out from single-show-content.php template
 function radio_station_get_icon_colors( $context = false ) {
+	// 2.5.18: add text number color
 	$icon_colors = array(
 		'website'  => '#A44B73',
 		'email'    => '#0086CC',
 		'phone'    => '#008000',
+		'text'     => '#0000CC',
 		'download' => '#7DBB00',
 		'rss'      => '#FF6E01',
 	);
@@ -2256,6 +2258,7 @@ function radio_station_sanitize_input( $prefix, $key ) {
 // 2.3.3.9: added for meta input type mapping
 function radio_station_get_meta_input_types() {
 
+	// 2.5.1.8: added text to phone types
 	$types = array(
 		'numeric'  => array( 'avatar', 'image', 'number' ),
 		'checkbox' => array( 'active', 'download' ),
@@ -2264,7 +2267,7 @@ function radio_station_get_meta_input_types() {
 		'email'    => array( 'email' ),
 		'url'      => array( 'link', 'url' ),
 		'slug'     => array( 'slug', 'patreon' ),
-		'phone'    => array( 'phone' ),
+		'phone'    => array( 'phone', 'text' ),
 		'date'     => array( 'date' ),
 		'hour'     => array( 'hour' ),
 		'mins'     => array( 'mins', 'minutes', 'secs', 'seconds' ),

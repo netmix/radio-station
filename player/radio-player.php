@@ -2863,6 +2863,11 @@ function radio_player_script_jplayer() {
 		radio_player_data.players[instance] = radio_player_instance;
 		radio_player_data.scripts[instance] = 'jplayer';
 
+		/* set instance on audio source */
+		audio = radio_player_instance.data('jPlayer').htmlElement.audio;
+		if (radio_player.debug) {console.log('jPlayer Audio Element:'); console.log(audio);}
+		audio.setAttribute('instance-id', instance);
+
 		/* bind load event */
 		jQuery('#'+player_id).bind(jQuery.jPlayer.event.load, function(e) {
 			radio_player.loading = false;
@@ -3508,30 +3513,30 @@ function radio_player_control_styles( $instance, $overrides = false ) {
 	// 2.4.0.2: fix to glowingloading animation reference
 	// 2.5.18: add check for solid/semisolid play/pause buttons
 	if ( !isset( $atts ) || !strstr( $atts['buttons'], 'solid' ) ) {
-		$css .= "/* Playing Button */
-" . esc_attr( $container ) . ".loaded .rp-play-pause-button-bg {background-color: " . esc_attr( $colors['buttons'] ) . ";}
-" . esc_attr( $container ) . ".playing .rp-play-pause-button-bg {background-color: " . esc_attr( $colors['playing'] ) . ";}
-" . esc_attr( $container ) . ".error .rp-play-pause-button-bg {background-color: #CC0000;}
-" . esc_attr( $container ) . ".loading .rp-play-pause-button-bg {animation: glowingloading 1s infinite alternate;}
-" . esc_attr( $container ) . ".playing .rp-play-pause-button-bg, 
-" . esc_attr( $container ) . ".playing.loaded .rp-play-pause-button-bg {animation: glowingplaying 1s infinite alternate;}
-@keyframes glowingloading {
-	from {background-color: " . esc_attr( $colors['buttons'] ) . ";} to {background-color: " . esc_attr( $colors['buttons'] ) . "80;}
-}
-@keyframes glowingplaying {
-	from {background-color: " . esc_attr( $colors['playing'] ) . ";} to {background-color: " . esc_attr( $colors['playing'] ) . "C0;}
-}" . "\n";
+		$css .= "/* Playing Button */" . "\n";
+		$css .= esc_attr( $container ) . ".error .rp-play-pause-button-bg {background-color: #CC0000;}" . "\n";
+		if ( '' != $colors['buttons'] ) {
+			$css .= esc_attr( $container ) . ".loaded .rp-play-pause-button-bg {background-color: " . esc_attr( $colors['buttons'] ) . ";}" . "\n";
+			$css .= esc_attr( $container ) . ".loading .rp-play-pause-button-bg {animation: glowingloading 1s infinite alternate;}" . "\n";
+			$css .= "@keyframes glowingloading { from {background-color: " . esc_attr( $colors['buttons'] ) . ";} to {background-color: " . esc_attr( $colors['buttons'] ) . "80;} }" . "\n";
+		}
+		if ( '' != $colors['playing'] ) {
+			$css .= esc_attr( $container ) . ".playing .rp-play-pause-button-bg {background-color: " . esc_attr( $colors['playing'] ) . ";}" . "\n";
+			$css .= esc_attr( $container ) . ".playing .rp-play-pause-button-bg, " . esc_attr( $container ) . ".playing.loaded .rp-play-pause-button-bg {animation: glowingplaying 1s infinite alternate;}" . "\n";
+			$css .= "@keyframes glowingplaying { from {background-color: " . esc_attr( $colors['playing'] ) . ";} to {background-color: " . esc_attr( $colors['playing'] ) . "C0;} }" . "\n";
+		}
 
-	// --- Active Volume Buttons Color ---
-	// 2.5.0: added popup player button selector
-	$css .= "/* Volume Buttons */
+		// --- Active Volume Buttons Color ---
+		// 2.5.0: added popup player button selector
+		if ( '' != $buttons['color'] ) {
+			$css .= "/* Volume Buttons */
 " . esc_attr( $container ) . " .rp-mute:hover, " . esc_attr( $container ) . ".muted .rp-mute, " . esc_attr( $container ) . ".muted .rp-mute:hover,
 " . esc_attr( $container ) . " .rp-volume-max:focus, " . esc_attr( $container ) . " .rp-volume-max:hover, " . esc_attr( $container ) . ".maxed .rp-volume-max,
 " . esc_attr( $container ) . " .rp-volume-up:focus, " . esc_attr( $container ) . " .rp-volume-up:hover,
 " . esc_attr( $container ) . " .rp-volume-down:focus, " . esc_attr( $container ) . " .rp-volume-down:hover,
-" . esc_attr( $container ) . " .rp-popup-button:focus, " . esc_attr( $container ) . " .rp-popup-button:hover {
-	background-color: " . esc_attr( $colors['buttons'] ) . ";
+" . esc_attr( $container ) . " .rp-popup-button:focus, " . esc_attr( $container ) . " .rp-popup-button:hover {background-color: " . esc_attr( $colors['buttons'] ) . ";
 }" . "\n";
+		}
 
 	} else {
 		// 2.5.18: no background colors/animations for solid/semisolid play/pause buttons
