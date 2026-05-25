@@ -161,32 +161,6 @@ function radio_station_plugin_options( $admin = false ) {
 			'pro'     => true,
 		),
 
-		// --- StreamGuys Rewind ---
-		// 2.5.18: added option for SG rewind support
-		'stream_sg_rewind' => array(
-			'label'   => $admin ? __( 'SG Rewind', 'radio-station' ) : '',
-			'type'    => 'checkbox',
-			'value'   => 'yes',
-			'default' => '',
-			'helper'  => $admin ? __( 'Enable stream support for StreamGuys Rewind service.', 'radio-station' ) : '',
-			'tab'     => 'general',
-			'section' => 'broadcast',
-			'pro'     => true,
-		),
-
-		// --- StreamGuys Endpoint ---
-		// 2.5.18: added option for SG rewind support
-		'stream_sg_endpoint' => array(
-			'label'   => $admin ? __( 'Rewind Endpoint', 'radio-station' ) : '',
-			'type'    => 'text',
-			'default' => '',
-			'helper'  => $admin ? __( 'Endpoint URL for StreamGuys Rewind service.', 'radio-station' ) : '',
-			'tab'     => 'general',
-			'section' => 'broadcast',
-			'pro'     => true,	
-		),
-
-	
 		// === Broadcast ===
 
 		// --- Main Radio Language ---
@@ -972,8 +946,6 @@ function radio_station_plugin_options( $admin = false ) {
 			'helper'  => $admin ? __( 'Now playing metadata is normally retrieved via the Stream URL. Use this setting if you need to provide an alternative metadata location.', 'radio-station' ) : '',
 			'pro'     => true,
 		),
-		
-		
 
 		// --- [Pro/Player] Store Track Metadata ---
 		// 2.5.6: added option to store stream

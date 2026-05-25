@@ -1421,8 +1421,8 @@ function radio_player_add_inline_style( $css ) {
 		// 2.5.18: enqueue late to allow for in-between additions
 		// 2.5.18: allow for admin footer position
 		$hook = is_admin() ? 'admin_footer' : 'wp_footer';
-		if ( !has_action( $hook, 'radio_player_enqueue_footer_styles', 9 ) ) {
-			add_action( $hook, 'radio_player_enqueue_footer_styles', 9 );
+		if ( !has_action( $hook, 'radio_player_enqueue_footer_styles', 5 ) ) {
+			add_action( $hook, 'radio_player_enqueue_footer_styles', 5 );
 		}
 	}
 }
