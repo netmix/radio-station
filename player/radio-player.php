@@ -2346,17 +2346,7 @@ function radio_player_get_player_settings( $echo = false ) {
 
 	// --- set debug mode ---
 	// 2.5.10: moved conditions to radio_player_set_debug_mode
-	// 2.5.18: added sync debug switch mode
 	$debug = RADIO_PLAYER_DEBUG ? 'true' : 'false';
-	$sync_debug = 'false';
-	if ( isset( $_REQUEST['sync-debug'] ) ) {
-		$switch = sanitize_text_field( wp_unslash( $_REQUEST['sync-debug'] ) );
-		if ( ( '1' == $switch ) || ( 'on' == $switch ) ) {
-			$sync_debug = 'on';
-		} elseif ( ( '0' == $switch ) || ( 'off' == $switch ) ) {
-			$sync_debug = 'off';
-		}
-	}			
 
 	// 2.5.6: added explicit touchscreen detection setting
 	echo "matchmedia = window.matchMedia || window.msMatchMedia;" . "\n";
@@ -2365,8 +2355,10 @@ function radio_player_get_player_settings( $echo = false ) {
 	// --- set radio player settings and radio data objects ---
 	// (with empty arrays for instances, script types, failbacks, audio targets and stream data)
 	// 2.5.18: added sync debug switch
-	echo "var radio_player = {settings:player_settings, scripts:scripts, formats:formats, loading:false, touchscreen:touchscreen, debug:" . esc_js( $debug ) . ", sync_debug:" . esc_js( $sync_debug ) . "}" . "\n";
+	// 2.5.19: added debug scope variable
+	echo "var radio_player = {settings:player_settings, scripts:scripts, formats:formats, loading:false, touchscreen:touchscreen, debug:" . esc_js( $debug ) . "}" . "\n";
 	echo "var radio_player_data = {state:{}, players:[], scripts:[], failed:[], data:[], types:[], channels:[], faders:[]}" . "\n";
+	echo "var radio_player_debug = {};" . "\n";
 
 	// --- logged in / user state settings ---
 	$loggedin = 'false';
@@ -3528,7 +3520,8 @@ function radio_player_control_styles( $instance, $overrides = false ) {
 
 		// --- Active Volume Buttons Color ---
 		// 2.5.0: added popup player button selector
-		if ( '' != $buttons['color'] ) {
+		// 2.5.19: fix to incorrect variable buttons['colors']
+		if ( '' != $colors['buttons'] ) {
 			$css .= "/* Volume Buttons */
 " . esc_attr( $container ) . " .rp-mute:hover, " . esc_attr( $container ) . ".muted .rp-mute, " . esc_attr( $container ) . ".muted .rp-mute:hover,
 " . esc_attr( $container ) . " .rp-volume-max:focus, " . esc_attr( $container ) . " .rp-volume-max:hover, " . esc_attr( $container ) . ".maxed .rp-volume-max,
