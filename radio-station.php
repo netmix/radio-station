@@ -6,7 +6,7 @@ Plugin Name: Radio Station
 Plugin URI: https://radiostation.pro/radio-station
 Description: Adds Show pages, DJ role, playlist and on-air programming functionality to your site.
 Author: Tony Zeoli, Tony Hayes
-Version: 2.5.19.1
+Version: 2.5.20
 Requires at least: 3.3.1
 Text Domain: radio-station
 Domain Path: /languages
@@ -64,6 +64,7 @@ if ( !defined( 'ABSPATH' ) ) exit;
 // - Add Inline Style
 // - Enqueue Footer Styles
 // x Print Admin Footer Styles
+// - Print Missed Footer Resources
 // - Enqueue Datepicker
 // - Enqueue Localized Script Values
 // - Localization Script
@@ -717,15 +718,6 @@ function radio_station_enqueue_footer_scripts() {
 // Print Admin Footer Scripts
 // --------------------------
 // 2.5.7: deprecated in favour of adding inline to dummy script
-/* function radio_station_admin_print_footer_scripts() {
-	global $radio_station_admin_scripts;
-	if ( is_array( $radio_station_admin_scripts ) && ( count( $radio_station_admin_scripts ) > 0 ) ) {
-		foreach ( $radio_station_admin_scripts as $handle => $js ) {
-			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-			echo '<script id="' . esc_attr( $handle ) . '-js-after">' . $js . '</script>';
-		}
-	}
-} */
 
 // -------------------------
 // Enqueue Plugin Stylesheet
@@ -813,14 +805,17 @@ function radio_station_enqueue_footer_styles() {
 // Print Admin Footer Styles
 // -------------------------
 // 2.5.0: added for missed inline styles
-/* function radio_station_admin_print_footer_styles() {
-	global $radio_station_admin_styles;
-	if ( is_array( $radio_station_admin_styles ) && ( count( $radio_station_admin_styles ) > 0 ) ) {
-		foreach ( $radio_station_admin_styles as $handle => $css ) {
-			echo '<style>' . wp_kses_post( $css ) . '</style>';
-		}
-	}
-} */
+// 2.5.7: deprecated in favour of adding inline to dummy script
+
+// -----------------------------
+// Print Missed Footer Resources
+// -----------------------------
+// 2.1.19: added for theme compatibility (shortcode loaded styles to footer)
+add_action( 'wp_footer', 'radio_station_print_missed_footer_resources', 11 );
+function radio_station_print_missed_footer_resources() {
+	wp_print_footer_scripts(); // probably unecessary
+	wp_print_styles(); // sometimes this is necessary
+}
 
 // ------------------
 // Enqueue Datepicker
