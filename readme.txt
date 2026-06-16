@@ -6,7 +6,7 @@ License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires at least: 3.3
 Tested up to: 7.0
-Stable tag: 2.5.20
+Stable tag: 2.7.0
 
 Radio Station lets you build and manage a Show Schedule for a radio station or Internet broadcaster's WordPress website. 
 
@@ -404,7 +404,10 @@ We recommend you test these on a Staging site (or a development copy of your liv
 
 == Changelog ==
 
-= 2.5.18 =
+= 2.7.0 =
+* Updated: Radio Player Script (1.0.5)
+
+= 2.5.20 =
 * Updated: Freemius SDK (2.13.0)
 * Updated: Plugin Panel (1.3.7) for delayed translations
 * Updated: Radio Player (1.0.4)
@@ -1114,6 +1117,13 @@ We recommend you test these on a Staging site (or a development copy of your liv
 * Initial release
 
 == Upgrade Notice ==
+
+= 2.7.0 =
+* Major Player Upgrade and Stability Release
+* https://radiostation.pro/radio-station-2-7-0-and-radio-station-pro-2-8-0-release/
+* Improved Player Script and Preview
+* New Radio Content Menu / Dashboard
+* Cumulative Feedback Bugfixes
 
 = 2.5.0 =
 * Radio Station Blocks for Gutenberg Block Editor!

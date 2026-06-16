@@ -1,6 +1,6 @@
 /* =============================== */
 /* === Radio Player Javascript === */
-/* --------- Version 1.0.4 ------- */
+/* --------- Version 1.0.5 ------- */
 /* =============================== */
 
 /* === Debounce Delay Callback === */
@@ -49,6 +49,7 @@ radio_player_cookie = {
 /* --- check data for format/script --- */
 function radio_player_check_format(data) {
 
+	if (radio_player.debug) {console.log(data);}
 	script = false; scripts = radio_player.scripts;
 	url = data.url; fallback = data.fallback; format = fformat = '';
 	if (typeof data.format != 'undefined') {format = data.format.toLowerCase();}
@@ -58,17 +59,31 @@ function radio_player_check_format(data) {
 	/* TODO: add more possible formats for detection ? */
 	formats = ['mp3','aac','m4a','mp4','ogg','oga','webm','rtmpa','wav','flac'];
 	if (format == '') {
-		if (radio_player.debug) {console.log('Detecting stream format from URL.');}
+		if (radio_player.debug) {console.log('Detecting stream format from URL '+url);}
 		for (i = 0; i < formats.length; i++) {
 			length = formats[i].length;
 			if (url.substr(-length,length) == formats[i]) {format = formats[i];}
 		}
+		/* 2.5.18: added partial path match URL checking */
+		if (format == '') {
+			for (i = 0; i < formats.length; i++) {
+				checkurl = new URL(url); urlpath = checkurl.pathname + checkurl.search;
+				if (urlpath.indexOf(formats[i]) > -1) {format = formats[i];}
+			}
+		}
 	}
 	if (fformat == '') {
-		if (radio_player.debug) {console.log('Detecting fallback format from URL.');}
+		if (radio_player.debug) {console.log('Detecting fallback format from URL '+url);}
 		for (i = 0; i < formats.length; i++) {
 			length = formats[i].length;
 			if (fallback.substr(-length,length) == formats[i]) {fformat = formats[i];}
+		}
+		/* 2.5.18: added partial path match URL checking */
+		if (fformat = '') {
+			for (i = 0; i < formats.length; i++) {
+				checkurl = new URL(fallback); urlpath = checkurl.pathname + checkurl.search;
+				if (urlpath.indexOf(formats[i]) > -1) {fformat = formats[i];}
+			}
 		}
 	}
 
@@ -90,19 +105,22 @@ function radio_player_check_format(data) {
 	if (!script) {
 		if (('amplitude' in scripts) && (format in radio_player.formats.amplitude)) {script = 'amplitude';}
 		else if (('jplayer' in scripts) && (format in radio_player.formats.jplayer)) {script = 'jplayer';}
+		/* else if (('audio5' in scripts) && (format in radio_player.formats.audio5)) {script = 'audio5';}
 		else if (('howler' in scripts) && (format in radio_player.formats.howler)) {script = 'howler';}
-		/* else if (('mediaelements' in scripts) && (format in radio_player.formats.mediaelements)) {script = 'mediaelements';} */
+		else if (('mediaelements' in scripts) && (format in radio_player.formats.mediaelements)) {script = 'mediaelements';} */
 		if (!script) {
 			if (('amplitude' in scripts) && (fformat in radio_player.formats.amplitude)) {script = 'amplitude';}
 			else if (('jplayer' in scripts) && (fformat in radio_player.formats.jplayer)) {script = 'jplayer';}
+			/* else if (('audio5' in scripts) && (fformat in radio_player.formats.audio5)) {script = 'audio5';}
 			else if (('howler' in scripts) && (fformat in radio_player.formats.howler)) {script = 'howler';}
-			/* else if (('mediaelements' in scripts) && (fformat in radio_player.formats.mediaelements)) {script = 'mediaelements';} */
+			else if (('mediaelements' in scripts) && (fformat in radio_player.formats.mediaelements)) {script = 'mediaelements';} */
 			if (script) {a = url; b = format; url = fallback; format = fformat; fallback = a; fformat = b;}
 		}
 		if (!script) {
 			if ('amplitude' in scripts) {script = 'amplitude';}
 			else if ('jplayer' in scripts) {script = 'jplayer';}
-			else if ('howler' in scripts) {script = 'howler';}
+			/* else if ('audio5' in scripts) {script = 'audio5';}
+			else if ('howler' in scripts) {script = 'howler';} */
 		}
 	}
 
@@ -113,39 +131,57 @@ function radio_player_check_format(data) {
 /* --- load default radio stream --- */
 function radio_player_load_radio(start) {
 	script = radio_player.settings.script; instance = radio_player_data.state.instance;
-	data = radio_player.stream_data;
+	data = radio_player.stream_data; data.type = 'stream';
 	player = radio_player_load_stream(script, instance, data, start);
 }
 
-/* --- load a station --- */
-function radio_player_load_station(instance, station, data, start) {
-
-	/* set channel ID for instance */
+/* --- load HLS source --- */
+function radio_player_load_hls(script, instance, data, start) {
 	if (!instance) {instance = radio_player_default_instance();}
-	radio_player_data.types[instance] = 'station';
-	channel = station; radio_player_data.channels[instance] = channel;
-	/* jQuery('#radio_player_'+instance).attr('station-id', station); */
-	if (radio_player.debug) {console.log('Set Station Channel ID '+channel+' on Instance '+instance);}
+	data.type = 'hls'; radio_player_data.data[instance] = data;
+	jQuery('#radio_player_'+instance).attr('data-channel', data.channel);
+	player = radio_player_load_audio(script, instance, data, false);
+	radio_player_hls_source(instance, data.url, start);
+}
+
+/* --- load a station --- */
+function radio_player_load_station(script, instance, data, start) {
+
+	if (!instance) {instance = radio_player_default_instance();}
+	data.type = 'station'; radio_player_data.data[instance] = data;
+	jQuery('#radio_player_'+instance).attr('data-station', data.station);
 
 	data = radio_player_check_format(data); script = data.script;
 	player = radio_player_load_audio(script, instance, data, start);
+	if (radio_player.debug) {console.log('Load Station '+station+' - Script: '+script+' - Instance: '+instance+' URL: '+data.url+' Format: '+data.format+' Start:'+start);}
 	if (player && start) {
-		setTimeout(function() {radio_player_play_on_load(player, script, instance);}, 250);
+		setTimeout(function() {radio_player_play_on_load(player, script, instance);}, 50);
+	}
+}
+
+/* --- load a channel --- */
+function radio_player_load_channel(script, instance, data, start) {
+
+	if (!instance) {instance = radio_player_default_instance();}
+	data.type = 'channel'; radio_player_data.data[instance] = data;
+	jQuery('#radio_player_'+instance).attr('data-channel', data.channel);
+
+	data = radio_player_check_format(data); script = data.script;
+	player = radio_player_load_audio(script, instance, data, start);
+	if (radio_player.debug) {console.log('Load Channel '+channel+' - Script: '+script+' - Instance: '+instance+' URL: '+data.url+' Format: '+data.format+' Start:'+start);}
+	if (player && start) {
+		setTimeout(function() {radio_player_play_on_load(player, script, instance);}, 50);
 	}
 }
 
 /* --- load a stream --- */
 function radio_player_load_stream(script, instance, data, start) {
 
-	/* set channel ID for instance */
 	if (!instance) {instance = radio_player_default_instance();}
-	radio_player_data.types[instance] = 'stream';
-	radio_player_data.channels[instance] = data;
-	if (radio_player.debug) {console.log('Set Stream Data '+data+' on Instance '+instance);}
+	data.type = 'stream'; radio_player_data.data[instance] = data;
 
-	/* load the audio stream */
 	data = radio_player_check_format(data); script = data.script;
-	/* console.log('Script: '+script+' - Instance: '+instance+' URL: '+data.url+' Format: '+data.format+' Start:'+start); */
+	if (radio_player.debug) {console.log('Load Stream - Script: '+script+' - Instance: '+instance+' URL: '+data.url+' Format: '+data.format+' Start:'+start);}
 	player = radio_player_load_audio(script, instance, data, start);
 	if (player && start) {radio_player_play_on_load(player, script, instance);}
 }
@@ -153,21 +189,19 @@ function radio_player_load_stream(script, instance, data, start) {
 /* --- load a file --- */
 function radio_player_load_file(script, instance, data, start) {
 
-	/* set channel ID for instance */
 	if (!instance) {instance = radio_player_default_instance();}
-	radio_player_data.types[instance] = 'file'; radio_player_data.channels[instance] = data;
-	if (radio_player.debug) {console.log('Set File Data '+data+' on Instance '+instance);}
+	data.type = 'file'; radio_player_data.data[instance] = data;
 
-	/* load the audio stream */
 	data = radio_player_check_format(data); script = data.script;
 	player = radio_player_load_audio(script, instance, data, start);
+	if (radio_player.debug) {console.log('Load File - Script: '+script+' - Instance: '+instance+' URL: '+data.url+' Format: '+data.format+' Start:'+start);}
 	if (player && start) {radio_player_play_on_load(player, script, instance);}
 }
 
 /* --- load audio in player --- */
 function radio_player_load_audio(script, instance, data, start) {
-	if (typeof radio_player_cancel_autoresume == 'function') {radio_player_cancel_autoresume({message:'Audio Loading'});}
-	url = data.url; format = data.format; fallback = data.fallback; fformat = data.fformat;
+	if (typeof radio_player_cancel_autoresume == 'function') {radio_player_cancel_autoresume({message:'Audio Loading'});} /* ??? */
+	url = data.url; format = data.format; fallback = data.fallback; fformat = data.fformat; type = data.type;
 	radio_player_set_data_state(script, instance, data, start);
 	loaded = radio_player_check_script(script);
 	if (loaded) {
@@ -175,10 +209,11 @@ function radio_player_load_audio(script, instance, data, start) {
 		/* initialize the player if script is already loaded */
 		if (script == 'amplitude') {player =  radio_player_amplitude(instance, url, format, fallback, fformat);}
 		else if (script == 'jplayer') {player = radio_player_jplayer(instance, url, format, fallback, fformat);}
+		/* else if (script == 'audio5') {player = radio_player_audio5(instance, url, format, fallback, fformat);}
 		else if (script == 'howler') {player = radio_player_howler(instance, url, format, fallback, fformat);}
-		/* else if (script == 'mediaelements') {player = radio_player_mediaelements(instance, url, format, fallback, fformat);} */
+		else if (script == 'mediaelements') {player = radio_player_mediaelements(instance, url, format, fallback, fformat);} */
 		if (player) {
-			detail = {script: script, instance: instance, url: url, format: format, fallback: fallback, fformat: fformat, start: start}
+			detail = {script:script, instance:instance, url:url, format:format, fallback:fallback, fformat:fformat, type:type, start:start}
 			radio_player_event_handler('loading', detail);
 			/* note: radio_player_play_on_load called outside this function */
 		}
@@ -189,18 +224,21 @@ function radio_player_load_audio(script, instance, data, start) {
 		radio_player.delayed_data = {'time':0, 'start':start, 'script':script, 'instance':instance, 'url':url, 'format':format, 'fallback':fallback, 'fformat':fformat};
 		if (radio_player.hasOwnProperty('delayed_player')) {clearInterval(radio_player.delayed_player);}
 		radio_player.delayed_player = setInterval(function() {
-			radio_player.delayed_data.time++; data = radio_player.delayed_data; player = false;
+			radio_player.delayed_data.time++; data = radio_player.delayed_data; script = data.script; player = false;
 			if (data.time > 10) {console.log('Script load timed out. Please try again...'); clearInterval(radio_player.delayed_player);}
-			if ((data.script == 'amplitude') && (typeof window.Amplitude != 'undefined') && (typeof radio_player_amplitude != 'undefined')) {
+			if ((script == 'amplitude') && (typeof window.Amplitude != 'undefined') && (typeof radio_player_amplitude != 'undefined')) {
 				clearInterval(radio_player.delayed_player);
 				player = radio_player_amplitude(data.instance, data.url, data.format, data.fallback, data.fformat);
-			} else if ((data.script == 'jplayer') && (typeof jQuery.jPlayer != 'undefined') && (typeof radio_player_jplayer != 'undefined')) {
+			} else if ((script == 'jplayer') && (typeof jQuery.jPlayer != 'undefined') && (typeof radio_player_jplayer != 'undefined')) {
 				clearInterval(radio_player.delayed_player);
 				player = radio_player_jplayer(data.instance, data.url, data.format, data.fallback, data.fformat);
-			} else if ((data.script == 'howler') && (typeof window.Howl != 'undefined') && (typeof radio_player_howler != 'undefined')) {
+			} /* else if ((script == 'audio5') && (typeof window.audio5 != 'undefined') && (typeof radio_player_audio5 != 'undefined')) {
+				clearInterval(radio_player.delayed_player);
+				player = radio_player_audio5(data.instance, data.url, data.format, data.fallback, data.fformat);
+			} else if ((script == 'howler') && (typeof window.Howl != 'undefined') && (typeof radio_player_howler != 'undefined')) {
 				clearInterval(radio_player.delayed_player);
 				player = radio_player_howler(data.instance, data.url, data.format, data.fallback, data.fformat);
-			} /* else if ((script == 'mediaelement') && (typeof window.???? != 'undefined') && (typeof radio_player_mediaelement != 'undefined')) {
+			} else if ((script == 'mediaelement') && (typeof window.???? != 'undefined') && (typeof radio_player_mediaelement != 'undefined')) {
 				clearInterval(radio_player.delayed_player);
 				player = radio_player_mediaelements(instance, url, format, fallback, fformat);}
 			*/
@@ -243,8 +281,11 @@ function radio_player_play_on_load(player, script, instance) {
 					}
 				}, 250);
 			}
+		} else if (script == 'audio5') {
+			try {console.log(script+': Play'); player.play();
+				radio_player_custom_event('rp-play', detail);
+			} catch(e) {console.log(script+' error: could not play stream.'); console.log(e);}
 		}
-		/* if (!jQuery('#radio_container_'+instance).hasClass('playing')) {jQuery('#radio_container_'+instance).addClass('playing');} */
 	} else if (radio_player.debug) {
 		 console.log(script+' script not yet loaded...'); console.log(player);
 	}
@@ -263,12 +304,17 @@ function radio_player_check_script(script) {
 			if (radio_player.debug) {console.log('Dynamically Loading jPlayer Script...');}
 			el = document.createElement('script'); el.src = radio_player.scripts.jplayer; head.appendChild(el); loading = true;
 		}
+	} /* else if (script == 'audio5') {
+		if (typeof window.audio5 == 'undefined') {
+			if (radio_player.debug) {console.log('Dynamically Loading audio5 Player Script...');}
+			el = document.createElement('script'); el.src = radio_player.scripts.audio5; head.appendChild(el); loading = true;
+		}
 	} else if (script == 'howler') {
 		if (typeof window.Howl == 'undefined') {
 			if (radio_player.debug) {console.log('Dynamically Loading Howler Player Script...');}
 			el = document.createElement('script'); el.src = radio_player.scripts.howler; head.appendChild(el); loading = true;
 		}
-	} /* else if ( ( script == 'mediaelement') && (typeof mejs == 'undefined' ) ) {
+	} else if ( ( script == 'mediaelement') && (typeof mejs == 'undefined' ) ) {
 		el = document.createElement('script'); el.src = radio_player.scripts.media; head.appendChild(el);
 		el = document.createElement('script'); el.src = radio_player.scripts.elements; head.appendChild(el);
 		el = document.createElement('script'); el.src = funcs; head.appendChild(el);
@@ -282,40 +328,62 @@ function radio_player_check_script(script) {
 function radio_player_player_fallback(instance, script) {
 	if (typeof radio_player.delayed_player != 'undefined') {clearInterval(radio_player.delayed_player);}
 	if (typeof radio_player_data.failed[instance] != 'undefined') {j = radio_player_data.failed[instance].length;}
-	else {radio_player_data.failed[instance] = new Array(); j = 0;}
-	if (!(script in radio_player_data.failed[instance])) {radio_player_data.failed[instance][j] = script;}
+	else {radio_player_data.failed[instance] = []; j = 0;}
+
+	scripta = script+'-a'; scriptb = script+'-b';
+	if (!(scripta in radio_player_data.failed[instance])) {
+		radio_player_data.failed[instance][j] = scripta;
+	} else if (!(scriptb in radio_player_data.failed[instance])) {
+		radio_player_data.failed[instance][j] = scriptb;
+	}
 	jQuery('#radio_container_'+instance).removeClass('playing').removeClass('loaded');
 	data = radio_player_data.data[instance]; data.instance = instance;
 	radio_player_event_handler('failed', data);
 
 	/* retry different script with stored player instance data */
-	newscript = false;
+	newscript = twoscript = false;
 	if (radio_player.scripts.length) {
 		for (k in radio_player.scripts) {
-			if (!newscript) {
-				found = false;
-				for (j = 0; j < radio_player_data.failed[instance].length; j++) {
-					if (radio_player_data.failed[instance][j] == k) {found = true;}
-				}
-				if (!found) {newscript = k;}
+			founda = foundb = false;
+			for (j = 0; j < radio_player_data.failed[instance].length; j++) {
+				if (radio_player_data.failed[instance][j] == k+'-a') {founda = true;}
+				if (radio_player_data.failed[instance][j] == k+'-b') {foundb = true;}
+			}
+			if (!founda || !foundb) {
+				if (!newscript) {newscript = k;} else {twoscript = k;}
 			}
 		}
 	}
-	if (!newscript) {
-		if (radio_player.debug) {console.log('Exhausted All Player Script Type Attempts');}
-		radio_player_data.failed = new Array(); /* reset */
-		/* maybe swap to fallback stream data to retry */
-		data = radio_player_data.data[instance];
+	
+	/* maybe swap to fallback stream data to retry */
+	if (newscript && !foundb) {
 		if (data.fallback != '') {
 			if (radio_player.debug) {console.log('Switching to Fallback Stream');}
 			tmpa = data.url; data.url = data.fallback; data.fallback = tmpa;
 			tmpb = data.format; data.fformat = data.format; data.fformat = tmpb;
-			radio_player_load_audio(script, instance, data, data.start);
+			data.switched = true; radio_player_data.data[instance] = data;
+			radio_player_load_audio(newscript,instance,data,data.start); return;
+		} else {
+			/* no fallback, set as failed and try next script */
+			j++; radio_player_data.failed[instance][j] = scriptb;
+			if (twoscript) {newscript = twoscript;} else {newscript = false;}
 		}
-	} else {
-		radio_player_data.data[instance].script = newscript; data = radio_player_data.data[instance];
+	}
+
+	/* try new script */
+	if (newscript) {
+		if ((typeof data.switched != 'undefined') && data.switched) {
+			/* switch data back to original for new script retry */
+			tmpa = data.url; data.url = data.fallback; data.fallback = tmpa;
+			tmpb = data.format; data.fformat = data.format; data.fformat = tmpb;
+			data.switched = false; radio_player_data.data[instance] = data;
+		}
+		radio_player_data.data[instance].script = newscript;
 		if (radio_player.debug) {console.log('Trying New Player Script: '+newscript); console.log(data);}
-		radio_player_load_audio(newscript, instance, data, data.start);
+		radio_player_load_audio(newscript,instance,data,data.start);
+	} else {
+		if (radio_player.debug) {console.log('Exhausted All Player Script Type Attempts');}
+		radio_player_data.failed = []; /* reset */
 	}
 }
 
@@ -329,14 +397,22 @@ function radio_player_show_switcher(instance) {
 function radio_player_switch_script(instance, script) {
 	radio_player.loading = true;
 	data = radio_player_data.data[instance];
-	if ((typeof radio_player_data.players[instance] != 'undefined') && (typeof radio_player_data.scripts[instance] != script)) {
-		radio_player_stop_instance(instance, false);
-	}
-	player = radio_player_load_audio(script, instance, data, data.start);
-	if (player && data.start) {radio_player_play_on_load(player, script, instance);}
+	if ((typeof radio_player_data.players[instance] != 'undefined') && (typeof radio_player_data.scripts[instance] != script)) {radio_player_stop_instance(instance,true);}
+	player = radio_player_load_audio(script,instance,data,data.start);
+	if (player && data.start) {radio_player_play_on_load(player,script,instance);}
 }
 
 /* === Player Functions and Event Callbacks === */
+
+/* --- get player source --- */
+function radio_player_get_source(player, script) {
+	src = false;
+	if (script == 'amplitude') {src = player.getAudio().src;}
+	else if (script == 'jplayer') {src = player.data('jPlayer').status.src;}
+	/* else if (script == 'audio5') {src = player.???;} */
+	/* else if (script == 'howler') {src = player.???;} */
+	return src;
+}
 
 /* --- get instance audio element --- */
 function radio_player_audio_element(instance) {
@@ -349,120 +425,228 @@ function radio_player_audio_element(instance) {
 	return audio;
 }
 
-// --- get player source ---
-function radio_player_get_source(player, script) {
-	if (script == 'amplitude') {src = player.getAudio().src;}
-	else if (script == 'jplayer') {src = player.data('jPlayer').status.src;}
-	/* else if (script == 'howler') {src = player.???;} */
+/* --- get event source --- */
+function radio_player_event_source(e) {
+	src = false; instance = e.detail.instance;
+	if (e.detail.player != null) {
+		player = e.detail.player; script = e.detail.script;
+		src = radio_player_get_source(player,script);
+	} else if (typeof radio_player_data.players[instance] != 'undefined') {
+		player = radio_player_data.players[instance];
+		script = radio_player_data.scripts[instance];
+		src = radio_player_get_source(player,script);
+	} else if (typeof radio_player_data.data[instance] != 'undefined') {
+		src = radio_player_data.data[instance].url;
+	}
 	return src;
 }
+	
+/* --- get data for channel id --- */
+function radio_player_channel_data(channel) {
+	for (i in radio_player_data.channels) {
+		data = radio_player_data.channels[i];
+		if (parseInt(data.id) == parseInt(channel)) {return data;}
+	}
+	return false;
+}
 
+/* --- get data for station id --- */
+function radio_player_station_data(station) {
+	for (i in radio_player_data.stations) {
+		data = radio_player_data.stations[i];
+		if (parseInt(data.id) == parseInt(station)) {return data;}
+	}
+	return false;
+}
+
+/* --- play source --- */
+function radio_player_play_source(instance) {
+	container = jQuery('#radio_container_'+instance);
+	script = radio_player.settings.script;
+	if (typeof container.attr('data-script') != 'undefined') {script = container.attr('data-script');}
+	
+	data = radio_player_get_data(instance);
+	if (data.type == 'file') {
+		radio_player_load_file(script, instance, data, true);
+	} else if (data.type == 'channel') {
+		radio_player_load_channel(script, instance, data, true);
+	} else if (data.type == 'station') {
+		radio_player_load_station(script, instance, data, true);
+	} else if (data.type == 'stream') {
+		radio_player_load_stream(script, instance, data, true);
+	} else if (data.type == 'hls') {
+		radio_player_load_hls(script, instance, data, true);
+	}
+}
+
+/* --- get data to play --- */
+function radio_player_get_data(instance) {
+	container = jQuery('#radio_container_'+instance);
+	data = false; /* ensure reset */
+	if (typeof container.attr('data-href') != 'undefined') {
+		href = container.attr('data-href');
+		if (href.trim() != '') {
+			format = container.attr('data-format');
+			fallback = container.attr('data-fallback');
+			fformat = container.attr('data-fformat');
+			data = {url:href, format:format, fallback:fallback, fformat:fformat, type:'file'};
+			if (radio_player.debug) {console.log('File Source Data:');}
+		}
+	}
+	if (!data) {
+		/* get HLS data */
+		if ((typeof container.attr('data-hls') != 'undefined') && (container.attr('data-hls') != '')) {
+			url = container.attr('data-hls');
+			channel = parseInt(container.attr('data-channel'));
+			if (Number.isNaN(channel)) {channel = 0;}
+			data = {url:url, format:'hls', fallback:false, fformat:false, channel:channel, type:'hls'};
+			if (radio_player.debug) {console.log('HLS Source Data:');}
+		}
+	}
+	if (!data) {
+		/* get channel data */
+		channel = parseInt(container.attr('data-channel'));
+		if (!Number.isNaN(channel)) {
+			data = radio_player_channel_data(channel); data.type = 'channel'; data.channel = channel;
+			if (radio_player.debug) {console.log('Channel Source Data:');}
+		}
+	}
+	if (!data) {
+		/* get station data */
+		station = parseInt(container.attr('data-station'));
+		if (!Number.isNaN(station)) {
+			data = radio_player_station_data(station); data.type = 'station'; data.station = station;
+			if (radio_player.debug) {console.log('Station Source Data:');}
+		}		
+	}
+	/* get default stream data */
+	if (!data) {
+		data = radio_player.stream_data; data.type = 'stream';
+		if (radio_player.debug) {console.log('Stream Source Data:');}
+	}
+	if (radio_player.debug) {console.log(data);}
+	return data;
+}
+				
 /* --- play player instance --- */
 var radio_player_retry = {}
 function radio_player_play_instance(instance) {
 	if (typeof radio_player_autoresume == 'object') {radio_player_autoresume.cancelled = true;}
+	if (radio_player_is_playing(instance)) {return;}
 	radio_player.loading = true;
-	player = radio_player_data.players[instance];
-	script = radio_player_data.scripts[instance];
-	if (script == 'amplitude') {
-		/* if (radio_player_retry.hasOwnProperty('instance') && (radio_player_retry.instance == instance)) {return;} */
-		player.play(); 
-		/* radio_player_retry.player = player; radio_player_retry.instance = instance;
-		if (radio_player_retry.hasOwnProperty('cycle')) {clearInterval(radio_player_retry.cycle);}
-		radio_player_retry.cycle = setInterval(function() {
-			player = radio_player_retry.player;
-			if (player.getPlayerState() == 'stopped') {player.play();}
-			else {clearInterval(radio_player_retry.cycle); radio_player_retry = {};}
-		}, 250); */
-	} else if (script == 'howler') {player.play();}
-	else if (script == 'jplayer') {player.jPlayer('play');}
-	if (radio_player.debug) {console.log('Playing '+script+' Player Instance '+instance);}
-	radio_player_custom_event('rp-play', {player: player, script: script, instance: instance});
+	container = jQuery('#radio_container_'+instance);
+	if (container.hasClass('rewound') || container.hasClass('timeshift')) {
+		audio = radio_player_audio_element(instance);
+		if (typeof hls != 'undefined') {
+			hls.config.autoStartLoad = true; hls.startLoad(); hls.attachMedia(audio);
+		}
+		audio.play().catch( () => { radio_player_hls_source(instance,false,true); });
+	} /* else { */
+		player = radio_player_data.players[instance]; script = radio_player_data.scripts[instance];
+		if (script == 'amplitude') {player.play();}
+		else if (script == 'jplayer') {player.jPlayer('play');}
+		else if ((script == 'audio5') || (script == 'howler')) {player.play();}
+		if (radio_player.debug) {console.log('Playing '+script+' Player Instance '+instance);}
+	/* } */
+	radio_player_custom_event('rp-play', {player:player, script:script, instance:instance});
 }
 
 /* --- pause player instance --- */
 function radio_player_pause_instance(instance) {
-	radio_player.loading = false;
+	/* if (!radio_player_is_loading(instance) && !radio_player_is_playing(instance)) {return;} */
 	player = radio_player_data.players[instance]; script = radio_player_data.scripts[instance];
+	detail = {player:player, script:script, instance:instance};
+	radio_player_custom_event('rp-before-pause', detail);
 	if (radio_player.debug) {console.log('Pausing '+script+' Player Instance '+instance);}
-	/* if (radio_player_retry.hasOwnProperty('instance') && (radio_player_retry.instance == instance)) {
-		clearInterval(radio_player_retry.cycle); radio_player_retry = {};
-	} */
-	if (script == 'amplitude') {src = player.getAudio().src;}
-	if ((script == 'amplitude') || (script == 'howler')) {player.pause();}
+	container = jQuery('#radio_container_'+instance);
+	audio = radio_player_audio_element(instance);
+	if (script == 'amplitude') {
+		if (container.hasClass('rewound') || container.hasClass('timeshift')) {audio.pause();}
+		else {src = player.getAudio().src;}
+	}
+	if ((script == 'amplitude') || (script == 'audio5') || (script == 'howler')) {player.pause();}
 	else if (script == 'jplayer') {player.jPlayer('pause');}
-	if (script == 'amplitude') {player.getAudio().src = src;} /* amplitude error fix */
-	radio_player_custom_event('rp-pause', {player:player, script:script, instance: instance});
+	if (script == 'amplitude') {
+		/* amplitude empty src on pause error fix! */
+		if (container.hasClass('rewound') || container.hasClass('timeshift')) {
+			if (typeof hls != 'undefined') {hls.config.autoStartLoad = false; hls.stopLoad();}
+			audio.pause();
+		} else {player.getAudio().src = src;}
+	}
+	radio_player_custom_event('rp-pause', detail);
 }
 
 /* --- stop player instance --- */
-function radio_player_stop_instance(instance, fadeout) {
-	radio_player.loading = false;
+function radio_player_stop_instance(instance) {
 	player = radio_player_data.players[instance]; script = radio_player_data.scripts[instance];
-	if (radio_player.debug) {console.log('Stopping '+script+' Player Instance '+instance); radio_player_is_playing(instance);}
-	/* if (radio_player_retry.hasOwnProperty('cycle')) {
-		clearInterval(radio_player_retry.cycle); radio_player_retry = {};
-	} */
-	if (fadeout) {radio_player_fade_volume(instance, fadeout, 0, 'stop');}
-	else {
-		if (script == 'amplitude') {
-			/* ? amplitude (.min?) bug: 'stop is not a function'! ? */
-			audio = player.getAudio();
-			try {player.stop();} catch(e) {player.pause();}
-			audio.remove();
-		} else if (script == 'howler') {player.unload();}
-		else if (script == 'jplayer') {player.jPlayer('stop');}
-	}
-	radio_player_custom_event('rp-stop', {player:player, script:script, instance: instance});
+	if (radio_player.debug) {console.log('Stopping '+script+' Player Instance '+instance);}
+	if (script == 'amplitude') {
+		/* ? amplitude bug: 'stop is not a function'! ? */
+		try {player.stop();} catch(e) {player.pause();}
+	} else if (script == 'jplayer') {player.jPlayer('stop');}
+	else if (script == 'audio5') {player.destroy();}
+	else if (script == 'howler') {player.unload();}
+	radio_player_custom_event('rp-stop', {player:player, script:script, instance:instance});
 }
 
-/* --- fade volume for player instance --- */
-function radio_player_fade_volume(instance, fadetime, target, complete) {
-	volume = radio_player_get_volume(instance);
-	if (radio_player.debug) {console.log('Fade Instance '+instance+' Volume from '+volume+' to '+target);}
-	if (target == volume) {return;}
-	if (target > volume) {updown = 'up'; oldinstance = 'fadedown-'+instance;}
-	else if (volume > target) {updown = 'down'; oldinstance = 'fadeup-'+instance;}
-	if (typeof radio_player_data.faders[oldinstance] != 'undefined') {
-		clearInterval(radio_player_data.faders[oldinstance]); radio_player_data.faders.splice(oldinstance, 1);
-	}
-	finstance = 'fade'+updown+'-'+instance;
-	if (typeof radio_player_data.faders[finstance] != 'undefined') {clearInterval(radio_player_data.faders[finstance]);}
-	player = radio_player_data.players[finstance] = radio_player_data.players[instance];
-	script = radio_player_data.scripts[finstance] = radio_player_data.scripts[instance];
-	steps = Math.ceil(volume / 5); steptime = Math.floor(fadetime / steps);
-	radio_player_data.faders[finstance] = setInterval(function(finstance, updown, target, complete) {
-		player = radio_player_data.players[finstance]; script = radio_player_data.scripts[finstance];
-		volume = radio_player_get_volume(finstance);
-		if (updown == 'up') {volume = volume + 5; if (volume > target) {volume = target;} }
-		else if (updown == 'down') {volume = volume - 5;	if (volume < target) {volume = target;} }
-		if (script == 'amplitude') {player.setVolume(volume);}
-		else if (script == 'howler') {volume = parseFloat(volume / 100); player.volume(volume);}
-		else if (script == 'jplayer') {volume = parseFloat(volume / 100); try {player.jPlayer('volume', volume);} catch(e) {} }
-		if (radio_player.debug) {console.log('Fade '+finstance+' Volume to '+volume);}
-		if (volume == target) {
-			if (complete == 'pause') {radio_player_pause_instance(finstance, false);}
-			else if (complete == 'stop') {radio_player_stop_instance(finstance, false);}
-			radio_player_data.players.splice(finstance, 1); radio_player_data.scripts.splice(finstance, 1);
-			clearInterval(radio_player_data.faders[finstance]);
+/* --- mute or unmute player --- */
+function radio_player_mute_instance(instance, player, script, mute) {
+	container = jQuery('#radio_container_'+instance);
+	if (script == 'amplitude') {
+		volume = player.getVolume();
+		if (mute) {
+			container.attr('data-volume',volume);
+			if (radio_player.debug) {console.log('Set Pre-muted Volume: '+volume);}
+			player.setVolume(0);
+		} else if (volume == 0) {
+			if (typeof container.attr('data-volume') != 'undefined') {
+				volume = container.attr('data-volume');
+				if (radio_player.debug) {console.log('Restore Pre-muted Volume: '+volume);}
+				try {player.setVolume(volume);} catch(e) {}
+			}
 		}
-	}, steptime);
+	} else if (script == 'audio5') {
+		volume = player.volume();
+		if (mute) {
+			container.attr('data-volume',(volume * 100));
+			if (radio_player.debug) {console.log('Set Pre-muted Volume: '+volume);}
+			player.volume(0);
+		} else if (volume == 0) {
+			if (typeof container.attr('data-volume') != 'undefined') {
+				volume = parseInt(container.attr('data-volume')) / 100;
+				if (radio_player.debug) {console.log('Restore Pre-muted Volume: '+volume);}
+				try {player.volume(volume);} catch(e) {}
+			}
+		}
+	} else if (script == 'jplayer') {
+		if (mute) {player.jPlayer('mute');} else {player.jPlayer('unmute');}
+	} else if (script == 'howler') {
+		if (mute) {player.mute(true);} else {player.mute(false);}
+	}
 }
 
 /* --- check if player is playing */
 function radio_player_is_playing(instance) {
-	if (!(instance in radio_player_data.players)) {return false;}
-	player = radio_player_data.players[instance]; script = radio_player_data.scripts[instance];
-	/* if (radio_player.debug) {console.log(player);} */
-	if (script == 'amplitude') {
-		state = player.getPlayerState();
-		if (state == 'playing') {playing = true;} else {playing = false;}
-	} else if (script == 'howler') {
-		playing = player.playing();
-	} else if (script == 'jplayer') {
-		/* ? possible bug: get status not working ? */
-		try {playing = !player.data('jPlayer').status.paused;}
-		catch(e) {playing = !player.data().jPlayer.status.paused;}
+	if (typeof jQuery('#radio_container_'+instance).attr('data-hls') != 'undefined') {
+		audio = radio_player_audio_element(instance)
+		playing = (audio && !audio.paused && !audio.ended && (audio.currentTime > 0) && (audio.readyState > 2));
+		script = 'HLS';
+	} else {
+		instances = Object.keys(radio_player_data.players);
+		if (!instances.includes(instance)) {return false;}
+		player = radio_player_data.players[instance]; script = radio_player_data.scripts[instance];
+		if (script == 'amplitude') {
+			state = player.getPlayerState();
+			playing = (state == 'playing');
+		} else if (script == 'jplayer') {
+			/* ? possible bug: get status not working ? */
+			try {playing = !player.data('jPlayer').status.paused;}
+			catch(e) {playing = !player.data().jPlayer.status.paused;}
+		} else if (script == 'audio5') {
+			playing = player.playing;
+		} else if (script == 'howler') {
+			playing = player.playing();
+		}
 	}
 	if (radio_player.debug) {
 		if (playing) {console.log('Player Instance '+instance+' ('+script+') is playing.');}
@@ -471,28 +655,53 @@ function radio_player_is_playing(instance) {
 	return playing;
 }
 
+/* --- check if player instance is loading --- */
+function radio_player_is_loading(instance) {
+	player = jQuery('#radio_player_'+instance);
+	if (player.hasClass('loading')) {return true;}
+	return false;	
+}
+	
 /* --- change player volume --- */
 function radio_player_change_volume(instance, volume) {
-	player = radio_player_data.players[instance]; script = radio_player_data.scripts[instance];
 	container = jQuery('#radio_container_'+instance);
-	if (volume == 100) {if (!container.hasClass('maxed')) {container.addClass('maxed');}} else {container.removeClass('maxed');}
+	container.attr('data-volume',volume);
+	if ((volume == 100) && !container.hasClass('maxed')) {container.addClass('maxed');}
+	else {container.removeClass('maxed');}
 	slider = jQuery('#radio_container_'+instance+' .rp-volume-slider');
 	if (!slider.hasClass('changed')) {slider.addClass('changed');}
+
+	if (typeof radio_player_data.players[instance] != 'undefined') {
+		player = radio_player_data.players[instance]; script = radio_player_data.scripts[instance];
+		radio_player_set_volume(instance,volume);
+		detail = {player:player, script:script, instance:instance, volume:volume};
+		radio_player_custom_event('rp-volume', detail);
+	} else {
+		detail = {player:null, script: null, instance: instance, volume: volume};
+	}
+	radio_player_custom_event('rp-volume',detail);
+}
+
+/* --- set player volume --- */
+function radio_player_set_volume(instance, volume) {
+	player = radio_player_data.players[instance]; script = radio_player_data.scripts[instance];
 	if (script == 'amplitude') {
 		player.setVolume(volume); newvolume = player.getVolume();
-		if (radio_player.debug) {console.log('Amplitude New Volume: '+volume+' : Now '+newvolume);}
+		if (radio_player.debug) {console.log('Amplitude New Volume: '+volume+' - Now: '+newvolume);}
 	} else if (script == 'jplayer') {
 		volume = parseFloat(volume / 100);
 		/* note: this catches (browser?) error "cannot set to non-finite value" in jPlayer _html_setProperty */
 		try {player.jPlayer('volume', volume); newvolume = player.jPlayer('volume');} catch(e) {}
-		if (radio_player.debug) {console.log('jPlayer New Volume: '+volume+' : Now '+newvolume);}
+		if (radio_player.debug) {console.log('jPlayer New Volume: '+volume+' - Now: '+newvolume);}
+	} else if (script == 'audio5') {
+		volume = parseFloat(volume / 100);
+		player.volume(volume); newvolume = player.volume();
+		if (radio_player.debug) {console.log('audio5 New Volume: '+volume+' - Now: '+newvolume);}
 	} else if (script == 'howler') {
 		volume = parseFloat(volume / 100);
 		player.volume(volume); newvolume = player.volume();
-		if (radio_player.debug) {console.log('Howler New Volume: '+volume+' : Now '+newvolume);}
-	} 
-	detail = {player:player, script: script, instance: instance, volume: volume}
-	radio_player_custom_event('rp-volume', detail);
+		if (radio_player.debug) {console.log('Howler New Volume: '+volume+' - Now: '+newvolume);}
+	}
 }
 
 /* --- get player volume --- */
@@ -500,69 +709,55 @@ function radio_player_get_volume(instance) {
 	player = radio_player_data.players[instance]; script = radio_player_data.scripts[instance];
 	if (script == 'amplitude') {volume = player.getVolume();}
 	else if (script == 'jplayer') {volume = (player.jPlayer('volume') * 100);}
-	else if (script == 'howler') {volume = (player.volume() * 100);}
+	else if ((script == 'audio5') || (script == 'howler')) {volume = (player.volume() * 100);}
 	return volume;
 }
 
 /* --- set all volume sliders --- */
 function radio_player_volume_sliders(volume) {
-	jQuery('.radio-container, .rp-container').each(function() {
-		instance = jQuery(this).attr('id').replace('radio_container_','');
-		console.log('Set volume on instance '+instance+' to '+volume);
-		radio_player_volume_slider(instance, volume);
+	jQuery('.radio-container').each(function() {
+		instance = jQuery(this).attr('data-instance');
+		radio_player_volume_slider(instance,volume);
 	});
 }
 
 /* --- set slider volume with background div width fix --- */
 function radio_player_volume_slider(instance, volume) {
-	container = jQuery('#radio_container_'+instance);
-	slider = jQuery('#radio_container_'+instance+' .rp-volume-slider');
-	slider.addClass('changed');
-	sliderbg = jQuery('#radio_container_'+instance+' .rp-volume-slider-bg');
-	thumb = jQuery('#radio_container_'+instance+' .rp-volume-thumb');
-	if (slider.length) {
-		sliderbg.hide(); slider.val(volume); swidth = slider.width();
-		thumb.show(); twidth = thumb.width(); thumb.hide();
-		mwidth = parseInt(sliderbg.css('margin-left').replace('px',''));
-		bgwidth = parseInt((swidth - twidth) * (volume / 100)) - mwidth;
-		sliderbg.attr('style', 'width: '+bgwidth+'px !important;').show();
-		/* if (radio_player.debug) {
-			newwidth = parseInt(sliderbg.css('width')); console.log('Volume Slider BF: Slider '+swidth+' : Thumb '+twidth+' : Margin '+mwidth+' : BG '+bgwidth+' : Now '+newwidth);
-		} */
-		if (volume == 100) {container.addClass('maxed');} else {container.removeClass('maxed');}
-	}
+	jQuery('#radio_container_'+instance+', #rp_container_'+instance).each(function() {
+		slider = jQuery(this).find('.rp-volume-slider');
+		slider.addClass('changed');
+		sliderbg = jQuery(this).find('.rp-volume-slider-bg');
+		thumb = jQuery(this).find('.rp-volume-thumb');
+		if (slider.length) {
+			sliderbg.hide(); slider.val(volume); swidth = slider.width();
+			thumb.show(); twidth = thumb.width(); thumb.hide();
+			mwidth = parseInt(sliderbg.css('margin-left').replace('px',''));
+			bgwidth = parseInt((swidth - twidth) * (volume / 100)) - mwidth;
+			sliderbg.attr('style', 'width: '+bgwidth+'px !important;').show();
+			/* if (radio_player.debug) {
+				newwidth = parseInt(sliderbg.css('width')); console.log('Volume Slider BF: Slider '+swidth+' : Thumb '+twidth+' : Margin '+mwidth+' : BG '+bgwidth+' : Now '+newwidth);
+			} */
+			if (volume == 0) {jQuery(this).addClass('minned');} else {jQuery(this).removeClass('minned');}
+			if (volume == 100) {jQuery(this).addClass('maxed');} else {jQuery(this).removeClass('maxed');}	
+		}
+	});
 }
 
 /* --- mute or unmute a player -- */
 function radio_player_mute_unmute(instance, mute) {
-	player = radio_player_data.players[instance]; script = radio_player_data.scripts[instance];
-	container = jQuery('#radio_container_'+instance);
-	if (mute) {container.addClass('muted'); eventprefix = '';}
-	else {container.removeClass('muted'); eventprefix = 'un';}
-	if (script == 'amplitude') {
-		volume = player.getVolume();
-		if (mute) {
-			container.attr('pre-muted-volume', volume);
-			if (radio_player.debug) {console.log('Set Pre-muted Volume: '+volume);}
-			player.setVolume(0);}
-		else if (volume == 0) {
-			volume = container.attr('pre-muted-volume');
-			if (volume != 'undefined') {
-				if (radio_player.debug) {console.log('Get Pre-muted Volume: '+volume);}
-				try {player.setVolume(volume);} catch(e) {}
-			}
-		}
-	} else if (script == 'jplayer') {
-		if (mute) {player.jPlayer('mute');} else {player.jPlayer('unmute');}
-	} else if (script == 'howler') {
-		if (mute) {player.mute(true);} else {player.mute(false);}
+	jQuery('#radio_container_'+instance+', #rp_container_'+instance).each(function() {
+		if (mute) {jQuery(this).addClass('muted').removeClass('maxed');} else {jQuery(this).removeClass('muted');}
+	});
+	detail = {player:null, script:null, instance:instance, mute:mute};
+	if (typeof radio_player_data.players[instance] != 'undefined') {
+		player = radio_player_data.players[instance]; script = radio_player_data.scripts[instance];
+		radio_player_mute_instance(instance,player,script,mute);
+		detail = {player:player, script:script, instance:instance, mute:mute};
 	}
-	if (typeof window.top.current_radio == 'undefined') {radio_player_set_state('mute', mute);}
-
-	detail = {player:player, instance:instance, script:script, mute:mute}
-	radio_player_custom_event('rp-'+eventprefix+'muted', detail);
+	if (mute) {radio_player_custom_event('rp-muted', detail);}
+	else {radio_player_custom_event('rp-unmuted', detail);}
 }
-
+	
 /* --- get page default instance --- */
 function radio_player_default_instance() {
 	instance = false;
@@ -578,19 +773,7 @@ function radio_player_default_instance() {
 /* --- pause all other instances */
 function radio_player_pause_others(instance) {
 	if (!radio_player.settings.singular) {return;}
-	if (radio_player_data.players.length) {
-		if (radio_player.debug) {console.log(radio_player_data.players);}
-		for (i in radio_player_data.players) {
-			if (i != instance) {
-				/* TODO: if the stream is the same, maybe swap-fade players ? */
-				if (radio_player.debug) {console.log('Pausing Player Instance '+i);}
-				/* temporarily disabled as conflicting with multiple instances usage */
-				/* player = radio_player_data.players[i]; script = radio_player_data.scripts[i];
-				if ((script == 'amplitude') || (script == 'howler')) {player.pause();}
-				else if (script == 'jplayer') {player.jPlayer('pause');} */
-			}
-		}
-	}
+	if (typeof radio_player_toggle_current == 'function') {return;} /* skip for pro */
 	/* broadcast playing message to other windows */
 	radio_player_broadcast_playing(instance);
 }
@@ -601,7 +784,7 @@ function radio_player_event_instance(e, name, script) {
 	if (radio_player.debug) {
 		console.log(script+' Player Event: '+name);
 		if ((script == 'jplayer') && (typeof e.jPlayer.error != 'undefined')) {console.log(e.jPlayer.error);}
-		else {console.log(e.target.error);}
+		else if ((typeof e.target.error != 'undefined') && (e.target.error != null)) {console.log(e.target.error);}
 	}
 	if ((typeof e.target != 'undefined') && (e.target != null)) {
 		if (radio_player.debug) {console.log('Event Target'); console.log(e.target);}
@@ -611,14 +794,13 @@ function radio_player_event_instance(e, name, script) {
 			instance = parseInt(jQuery(e.target).attr('id').replace('radio_player_',''));
 		}
 	}
-	if (instance && radio_player.debug) {console.log('Event Player Instance: '+instance);}
+	/* if (instance && radio_player.debug) {console.log('Event Player Instance: '+instance);} */
 	return instance;
 }
 
 /* --- match instance from player object --- */
 function radio_player_match_instance(obj, e, script) {
 	instance = false;
-	/* if (radio_player.debug) {console.log(script+' Player Event'); console.log(e);} */
 	for (i = 0; i < radio_player_data.players.length; i++) {
 		if (obj == radio_player_data.players[i]) {instance = i;}
 	}
@@ -633,22 +815,26 @@ function radio_player_event_handler(action, detail) {
 	}
 	instance = detail.instance; script = detail.script;
 	if (radio_player.debug) {console.log(script+' Player Instance '+instance+' : '+action);}
-	container = jQuery('#radio_container_'+instance);
-	if (action == 'loading') {container.removeClass('loaded playing stopped paused error');}
-	else if (action == 'loaded') {container.removeClass('loading error');}
-	else if (action == 'playing') {container.removeClass('paused stopped error'); radio_player_set_state('playing', true);}
-	else if (action == 'paused') {container.removeClass('playing stopped'); radio_player_set_state('playing',false);}
-	else if (action == 'stopped') {container.removeClass('playing paused loaded loading'); radio_player_set_state('playing',false);}
-	else if (action == 'error') {container.removeClass('playing paused loaded loading');}
-	if (!container.hasClass(action)) {container.addClass(action);}
+	jQuery('#radio_container_'+instance+', #rp_container_'+instance).each(function() {
+		if (action == 'loading') {jQuery(this).removeClass('loaded playing stopped paused error');}
+		else if (action == 'loaded') {jQuery(this).removeClass('loading error');}
+		else if (action == 'playing') {jQuery(this).removeClass('paused stopped error');}
+		else if (action == 'paused') {jQuery(this).removeClass('playing stopped'); }
+		else if (action == 'stopped') {jQuery(this).removeClass('playing paused loaded loading'); radio_player_set_state('playing',false);}
+		else if (action == 'error') {jQuery(this).removeClass('playing paused loaded loading');}
+		if (!jQuery(this).hasClass(action)) {jQuery(this).addClass(action);}
+	});
+	if (action == 'playing') {radio_player_set_state('playing',true);}
+	if ((action == 'paused') || (action == 'stopped')) {radio_player_set_state('playing',false);}
 	radio_player_custom_event('rp-'+action, detail);
 }
 
-/* --- player volume change --- */
-function radio_player_player_volume(instance, script, volume) {
-	if (radio_player.debug) {console.log(script+' Player Instance '+instance+' : Change Volume to '+volume);}
+/* --- player volume changed --- */
+function radio_player_volume_changed(instance, script, volume) {
+	if (radio_player.debug) {console.log(script+' Player Instance '+instance+': Changed Volume to '+volume);}
 	slider = jQuery('#radio_container_'+instance+' .rp-volume-slider');
 	if (!slider.hasClass('changed')) {jQuery('#radio_container_'+instance+' .rp-volume-slider').addClass('changed');}
+
 	radio_player_custom_event('rp-volume-changed', {instance:instance, script:script, volume:volume});
 	radio_player_set_state('volume', volume);
 }
@@ -664,7 +850,6 @@ function radio_player_sleep_delay(sleep_ms) {
 /* --- load player state --- */
 function radio_player_load_state() {
 	if (typeof radio_player_data.state.checked == 'undefined') {
-		/* radio_player_data.state.transition = false; */
 		playing = radio_player_cookie.get('playing');
 		if (playing) {radio_player_data.state.playing = playing;}
 		channel = radio_player_cookie.get('channel');
@@ -685,10 +870,22 @@ function radio_player_load_state() {
 			radio_player_data.data[data.instance] = data;
 			if (radio_player.debug) {console.log('Radio State Data:'); console.log(radio_player_data.data);}
 		}
-		if ((volume != null) && (data != null)) {
-			/* radio_player_volume_slider(data.instance, volume); */
-			radio_player_volume_sliders(volume);
-		}
+		if ((volume != null) && (data != null)) {radio_player_volume_sliders(volume);}
+		
+		/* set sync debug cookie switch */
+		if (typeof radio_player.sync_debug != 'undefined') {
+			if (radio_player.sync_debug == 'on') {
+				radio_player.sync_debug = true;
+				radio_player_cookie.set('sync_debug',1,7);
+			} else if (radio_player.sync_debug == 'off') {
+				radio_player.sync_debug = false;
+				radio_player_cookie.delete('sync_debug');
+			} else {
+				sync_debug = radio_player_cookie.get('sync_debug');
+				if (sync_debug != null) {radio_player.sync_debug = true;}
+				else {radio_player.sync_debug = false;}
+			}
+		} else {radio_player.sync_debug = false;}
 		radio_player_data.state.checked = true;
 	}
 }
@@ -698,7 +895,7 @@ function radio_player_set_state(key, value) {
 	changed = false;
 	if ((key == 'playing') && (value != radio_player_data.state.playing)) {
 		radio_player_cookie.set('playing', value, 7);
-		radio_player_data.state.playing = value;	changed = true;
+		radio_player_data.state.playing = value; changed = true;
 	} else if ((key == 'channel') && value && (value > 0) && (value != radio_player_data.state.channel)) {
 		radio_player_cookie.set('channel', value, 30);
 		radio_player_data.state.channel = value; changed = true;
@@ -719,7 +916,7 @@ function radio_player_set_state(key, value) {
 
 /* --- store player instance data */
 function radio_player_set_data_state(script, instance, data, start) {
-	url = data.url; format = data.format; fallback = data.fallback; fformat = data.fformat;
+	url = data.url; format = data.format; fallback = data.fallback; fformat = data.fformat; type = data.type;
 	if (typeof radio_player_data.data[instance] != 'undefined') {
 		cdata = radio_player_data.data[instance];
 		if ( (cdata.script != script) || (cdata.url != url) || (cdata.format != format) || (cdata.fallback != fallback) || (cdata.fformat != fformat) || (cdata.start != start) ) {
@@ -727,7 +924,7 @@ function radio_player_set_data_state(script, instance, data, start) {
 		}
 		radio_player.previous_data = data;
 	}
-	data = {'script': script, 'instance': instance, 'url': url, 'format': format, 'fallback': fallback, 'fformat': fformat, 'start': start};
+	data = {'script':script, 'instance':instance, 'url':url, 'format':format, 'fallback':fallback, 'fformat':fformat, 'type':type, 'start':start};
 	if (radio_player.debug) {console.log('Setting Data State:'); console.log(data);}
 	radio_player_data.data[instance] = data;
 	if (radio_player_data.state.data != data) {
@@ -744,12 +941,13 @@ function radio_player_save_user_state() {
 		if (state.loggedin && !state.saving) {
 			if (state.playing) {playing = '1';} else {playing = '0';}
 			if (state.station) {station = state.station;} else {station = '0';}
+			if (state.channel) {channel = state.channel;} else {channel = '0';}
 			if (state.volume) {volume = state.volume;} else {volume = '';}
 			if (state.mute) {mute = '1';} else {mute = '0';}
 			timestamp = Math.floor( (new Date()).getTime() / 1000 );
 			url = radio_player.settings.ajaxurl+'?action=radio_player_state';
 			/* ? TODO: instance ? */
-			url += '&playing='+playing+'&station='+station+'&volume='+volume+'&mute='+mute+'&timestamp='+timestamp;
+			url += '&playing='+playing+'&station='+station+'&channel='+channel+'&volume='+volume+'&mute='+mute+'&timestamp='+timestamp;
 			if (radio_player.debug) {url += '&player-debug=1';}
 			/* document.getElementById('radio-player-state-iframe').src = url; */
 			radio_player_data.state.saving = true;
@@ -791,68 +989,40 @@ function radio_player_window_guid() {
 			window.tabId = Math.floor(Math.random() * 10000000);
 		}
 	}
+	/* console.log('Window Guid:'+window.tabId); */
 	return window.tabId;
 }
 
 /* --- broadcast pause all message to other windows --- */
 function radio_player_broadcast_playing(instance) {
-	if (instance === false) {return;}
-	if (typeof sysend != 'undefined') {
-		if (typeof radio_player_data.types[instance] == 'undefined') {type = 0;}
-		else {type = radio_player_data.types[instance];}
-		if (typeof radio_player_data.channels[instance] == 'undefined') {channel = 0;}
-		else {
-			channel = radio_player_data.channels[instance];
-			if (typeof channel == 'object') {console.log('Channel Data:'); console.log(channel);}
-			data = channel;
-		}
-		windowid = radio_player_window_guid();
-		message = windowid+'::'+instance+'::'+type+'::'+data;
-		console.log('Broadcast Message: '+message);
-		sysend.broadcast('radio-play', {message: message});
-	}
+	if ((instance === false) || (typeof sysend == 'undefined')) {return;}
+	if (!radio_player.settings.singular) {return;}
+
+	action = 'pauseothers';
+	player = radio_player_data.players[instance];
+	script = radio_player_data.scripts[instance]
+	url = radio_player_get_source(player,script);
+	windowid = radio_player_window_guid();
+	
+	message = windowid+'::'+instance+'::'+action+'::'+url;
+	if (radio_player.sync_debug) {console.log('Broadcast Message: '+message);}
+	sysend.broadcast('radio-play', {message: message});
 }
 
 /* --- check to pause player on receiving message --- */
 function radio_player_check_to_pause(broadcast) {
 	if (!radio_player.settings.singular) {return;}
-	console.log('Received Message: '); console.log(broadcast);
 	parts = broadcast.message.split('::');
-	winid = parseInt(parts[0]); winstance = parseInt(parts[1]);	type = parseInt(parts[2]); data = parts[3];
+	winid = parseInt(parts[0]); winstance = parseInt(parts[1]); action = parts[2]; url = parts[3];
+	if (radio_player.sync_debug) {console.log('Received Message from Window ID '+winid+' Instance '+winstance+' Type '+action+' URL '+url);}
 	windowid = radio_player_window_guid();
-	if (radio_player_data.players.length) {
-		for (instance in radio_player_data.players) {
-			if ( (winid != windowid) || (winstance != instance) ) {
-				/* TODO: if the station is the same, swap/fade player volumes gracefully? */
-				console.log('Pausing Window '+windowid+' Instance '+instance);
+	if (!radio_player_data.players.length) {return;}
+	for (instance in radio_player_data.players) {
+		if ( (winid != windowid) || ((winid == windowid) && (winstance != instance)) ) {
+			if (radio_player_is_playing(instance)) {
+				if (radio_player.sync_debug) {console.log('Pausing Window '+windowid+' Instance '+instance);}
 				radio_player_pause_instance(instance);
 			}
-		}
-	}
-}
-
-/* --- send radio broadcast request --- */
-function radio_player_broadcast_request(windowid, instance, action, data) {
-	message = windowid+'::'+instance+'::'+action+'::'+data;
-	console.log('Broadcast Message: '+message);
-	sysend.broadcast('radio-request', {message: message});
-}
-
-/* --- respond to broadcast with radio action --- */
-function radio_player_broadcast_action(broadcast) {
-	parts = broadcast.message.split('::');
-	winid = parseInt(parts[0]); parseInt(instance = parts[1]);
-	action = parts[2]; data = parseInt(parts[3]);
-	windowid = radio_player_window_guid();
-	if (windowid != winid) {return;}
-	if (instance in radio_player_data.players) {
-		if (action == 'play') {radio_player_play_instance(instance);}
-		else if (action == 'pause') {radio_player_pause_instance(instance);}
-		else if (action == 'stop') {radio_player_stop_instance(instance, false);}
-		else if (action == 'volume') {radio_player_change_volume(instance, data);}
-		else if (action == 'mute') {
-			if (data == 1) {mute = true;} else {mute = false;}
-			radio_player_mute_unmute(instance, mute);
 		}
 	}
 }
@@ -864,12 +1034,11 @@ function radio_player_broadcast_action(broadcast) {
 var radio_player_amp_doc_listeners = false;
 function radio_player_amplitude(instance, url, format, fallback, fformat) {
 
-	player_id = 'radio_player_'+instance;
-	container_id = 'radio_container_'+instance;
+	container = jQuery('#radio_container_'+instance);
 	if (url == '') {url = radio_player.settings.url;}
 	if (url == '') {return;}
 	if (!format || (format == '')) {format = 'aac';}
-	if (fallback == '') {fallback = radio_player.settings.fallback;}
+	/* if (fallback == '') {fallback = radio_player.settings.fallback;} */
 	if (!fallback || !fformat || (fformat == '')) {fallback = ''; fformat = '';}
 
 	/* set song streams */
@@ -878,15 +1047,17 @@ function radio_player_amplitude(instance, url, format, fallback, fformat) {
 	/* if ('' != fallback) {songs[1] = {'name': '', 'artist': '', 'album': '', 'url': fallback, 'cover_art_url': '', 'live': true};} */
 
 	/* set volume */
-	if (jQuery('#'+container_id+' .rp-volume-slider').hasClass('changed')) {
-		volume = jQuery('#'+container_id+' .rp-volume-slider').val();
-	} else if (typeof radio_player_data.state.volume != 'undefined') {volume = radio_player_data.state.volume;}
-	else {volume = radio_player.settings.volume;}
+	if (container.find('.rp-volume-slider').length && container.find('.rp-volume-slider').hasClass('changed')) {
+		volume = container.find('.rp-volume-slider').val();
+	} else if (typeof container.attr('data-volume') != 'undefined') {
+		volume = container.attr('data-volume');
+	} else if (typeof radio_player_data.state.volume != 'undefined') {
+		volume = radio_player_data.state.volume;
+	} else {volume = radio_player.settings.volume;}
 	radio_player_volume_slider(instance, volume);
-	if (radio_player.debug) {console.log('Amplitude init Volume: '+volume);}
 
 	/* initialize player */
-	if (radio_player.debug) {console.log('Init Amplitude: '+instance+' : '+url+' : '+format+' : '+fallback+' : '+fformat);}
+	if (radio_player.debug) {console.log('Init Amplitude: '+instance+' : '+url+' : '+format+' : '+fallback+' : '+fformat+' : '+volume);}
 	radio_player_instance = Amplitude;
 	radio_player_instance.init({
 		'debug': radio_player.debug,
@@ -911,11 +1082,6 @@ function radio_player_amplitude(instance, url, format, fallback, fformat) {
 		radio_player.loading = false;
 		instance = radio_player_event_instance(e, 'Loaded', 'amplitude');
 		radio_player_event_handler('loaded', {instance:instance, script:'amplitude'});
-
-		channel = radio_player_data.channels[instance];
-		if (channel) {radio_player_set_state('channel', channel);}
-		station = jQuery('#radio_player_'+instance).attr('station-id');
-		if (station) {radio_player_set_state('station', station);}
 	}, false);
 
 	/* amp 5.0.3: bind play(ing) event (as play callback not firing!) */
@@ -932,14 +1098,14 @@ function radio_player_amplitude(instance, url, format, fallback, fformat) {
 		instance = radio_player_event_instance(e, 'Volume', 'amplitude');
 		if (instance && (radio_player_data.scripts[instance] == 'amplitude')) {
 			volume = radio_player_data.players[instance].getConfig().volume;
-			radio_player_player_volume(instance, 'amplitude', volume);
+			radio_player_volume_changed(instance, 'amplitude', volume);
 		}
 	}, false);
 	
 	/* bind error event (as event not being passed in callback) */
 	/* warning: triggered if audio src is not reset after pause! */
 	audio.addEventListener('error', function(e) {
-		if (e.target.error.code == 4) {
+		if ((typeof e.target.error.code != 'undefined') && e.target.error.code == 4) {
 			if (radio_player.debug) {console.log('Skipping Amplitude Empty Audio Source Bug');}
 			return;
 		}
@@ -952,6 +1118,7 @@ function radio_player_amplitude(instance, url, format, fallback, fformat) {
 	/* add document listeners only once */
 	if (!radio_player_amp_doc_listeners) {
 		radio_player_amp_doc_listeners = true;
+
 		/* listen for pause event */
 		document.addEventListener('rp-pause', function(e) {
 			instance = e.detail.instance;
@@ -970,150 +1137,54 @@ function radio_player_amplitude(instance, url, format, fallback, fformat) {
 	}
 
 	/* match script select dropdown value */
-	if (jQuery('#'+container_id+' .rp-script-select').length) {
-		jQuery('#'+container_id+' .rp-script-select').val('amplitude');
-	}
+	if (container.find(' .rp-script-select').length) {container.find('.rp-script-select').val('amplitude');}
 
 	return radio_player_instance;
 }
 
-/* jPlayer Player Script */
-
-/* Howler Player Script */
-function radio_player_howler(instance, url, format, fallback, fformat) {
-
-	player_id = 'radio_player_'+instance;
-	container_id = 'radio_container_'+instance;
-	if (url == '') {url = radio_player.settings.url;}
-	if (url == '') {return;}
-	if (!format || (format == '')) {format = 'aac';}
-	if (fallback == '') {fallback = radio_player.settings.fallback;}
-	if (!fallback || !fformat || (fformat == '')) {fallback = ''; fformat = '';}
-
-	/* set sources */
-	sources = new Array(); formats = new Array();
-	sources[0] = url; /* if (fallback != '') {sources[1] = fallback;} */
-	formats[0] = format; /* if ((fallback != '') && (fformat != '')) {formats[1] = fformat;} */
-
-	/* set volume */
-	if (jQuery('#'+container_id+' .rp-volume-slider').hasClass('changed')) {
-		volume = jQuery('#'+container_id+' .rp-volume-slider').val();
-	} else if (typeof radio_player_data.state.volume != 'undefined') {volume = radio_player_data.state.volume;}
-	else {volume = radio_player.settings.volume;}
-	radio_player_volume_slider(instance, volume);
-	volume = parseFloat(volume / 100);
-	if (radio_player.debug) {console.log('Howler init Volume: '+volume);}
-
-	/* intialize player */
-	if (radio_player.debug) {console.log('Init Howler: '+instance+' : '+url+' : '+format+' : '+fallback+' : '+fformat);}
-	radio_player_instance = new Howl({
-		src: sources,
-		format: formats,
-		html5: false,
-		autoplay: false,
-		preload: false,
-		volume: volume,
-		onload: function(e) {
-			/* possible bug: maybe not always being triggered ? */
-			radio_player.loading = false;
-			instance = radio_player_match_instance(this, e, 'howler');
-			radio_player_event_handler('loaded', {instance:instance, script:'howler'});
-
-			channel = radio_player_data.channels[instance];
-			if (channel) {radio_player_set_state('channel', channel);}
-			station = jQuery('#radio_player_'+instance).attr('station-id');
-			if (station) {radio_player_set_state('station', station);}
-		},
-		onplay: function(e) {
-			radio_player.loading = false;
-			instance = radio_player_match_instance(this, e, 'howler');
-			radio_player_event_handler('playing', {instance:instance, script:'howler'});
-			radio_player_pause_others(instance);
-		},
-		onpause: function(e) {
-			instance = radio_player_match_instance(this, e, 'howler');
-			radio_player_event_handler('paused', {instance:instance, script:'howler'});
-		},
-		onstop: function(e) {
-			instance = radio_player_match_instance(this, e, 'howler');
-			radio_player_event_handler('stopped', {instance:instance, script:'howler'});
-		},
-		onvolume: function(e) {
-			instance = radio_player_match_instance(this, e, 'howler');
-			if (instance && (radio_player_data.scripts[instance] == 'howler')) {
-				volume = this.volume() * 100;
-				if (volume > 100) {volume = 100;}
-				radio_player_player_volume(instance, 'howler', volume);
-			}
-		},
-		onloaderror: function(id,e) {
-			instance = radio_player_match_instance(this, e, 'howler');
-			radio_player_event_handler('error', {instance:instance, script:'howler'});
-			if (radio_player.debug) {console.log('Load Error, Howler Instance: '+instance+', Sound ID: '+id);}
-			radio_player_player_fallback(instance, 'howler', 'Howler Load Error');
-		},
-		onplayerror: function(id,e) {
-			instance = radio_player_match_instance(this, e, 'howler');
-			radio_player_event_handler('error', {instance:instance, script:'howler'});
-			if (radio_player.debug) {console.log('Play Error, Howler Instance: '+instance+', Sound ID: '+id);}
-			radio_player_player_fallback(instance, 'howler', 'Howler Play Error');
-		},
-	});
-	radio_player_data.players[instance] = radio_player_instance;
-	radio_player_data.scripts[instance] = 'howler';
-
-	audio = radio_player_instance.data('jPlayer').htmlElement.audio;
-	if (radio_player.debug) {console.log('jPlayer Audio Element:'); console.log(audio);}
-	audio.setAttribute('instance-id', instance);
-
-	/* match script select dropdown value */
-	if (jQuery('#'+container_id+' .rp-script-select').length) {
-		jQuery('#'+container_id+' .rp-script-select').val('howler');
-	}
-
-	return radio_player_instance;
-}
 
 /* jPlayer Player Script */
 function radio_player_jplayer(instance, url, format, fallback, fformat) {
 
 	player_id = 'radio_player_'+instance;
 	container_id = 'radio_container_'+instance;
+	container = jQuery('#'+container_id);
 	if (url == '') {url = radio_player.settings.url;}
 	if (url == '') {return;}
 	if (!format || (format == '') || (format == 'aac')) {format = 'm4a';}
-	if (fallback == '') {fallback = radio_player.settings.fallback;}
+	/* if (fallback == '') {fallback = radio_player.settings.fallback;} */
 	if (!fallback || !fformat || (fformat == '')) {fallback = ''; fformat = '';}
 	if (fformat == 'aac') {fformat = 'm4a';}
 
 	/* set volume */
-	if (jQuery('#'+container_id+' .rp-volume-slider').hasClass('changed')) {
-		volume = jQuery('#'+container_id+' .rp-volume-slider').val();
-	} else if (typeof radio_player_data.state.volume != 'undefined') {volume = radio_player_data.state.volume;}
-	else {volume = radio_player.settings.volume;}
-	radio_player_volume_slider(instance, volume);
+	if (container.find('.rp-volume-slider').length && container.find('.rp-volume-slider').hasClass('changed')) {
+		volume = container.find('.rp-volume-slider').val();
+	} else if (typeof container.attr('data-volume') != 'undefined') {
+		volume = container.attr('data-volume');
+	} else if (typeof radio_player_data.state.volume != 'undefined') {
+		volume = radio_player_data.state.volume;
+	} else {volume = radio_player.settings.volume;}
+	radio_player_volume_slider(instance,volume);
 	volume = parseFloat(volume / 100);
 	if (radio_player.debug) {console.log('jPlayer init Volume: '+volume);}
 
 	media = {}; /* media.title = ''; */ media[format] = url; supplied = format;
 	/* if (fallback && fformat) {media[fformat] = fallback; supplied += ', '+fformat;} */
 	radio_player.jplayer_media = media;
-	console.log(radio_player.jplayer_media);
 	radio_player.jplayer_ready = false;
 	radio_player.jplayer_instance = instance;
 
 	/* load jplayer */
-	if (radio_player.debug) {console.log('Init jPlayer: '+instance+' : '+url+' : '+format+' : '+fallback+' : '+fformat);}
+	if (radio_player.debug) {console.log('Init jPlayer: '+instance+' : '+url+' : '+format+' : '+fallback+' : '+fformat+' : '+volume);}
 	radio_player_instance = jQuery('#'+player_id).jPlayer({
 		ready: function () {
-			console.log('jPlayer Ready.');
 			console.log(radio_player.jplayer_media);
 			jQuery(this).jPlayer('setMedia', radio_player.jplayer_media);
 			radio_player.jplayer_ready = true;
 		},
 		supplied: supplied,
 		cssSelectorAncestor: '#'+container_id,
-		swfPath: radio_player.settings.swf_path,
+		swfPath: '', /* radio_player.settings.swf_path, */
 		idPrefix: 'rp',
 		preload: 'none',
 		volume: volume,
@@ -1129,16 +1200,15 @@ function radio_player_jplayer(instance, url, format, fallback, fformat) {
 	radio_player_data.players[instance] = radio_player_instance;
 	radio_player_data.scripts[instance] = 'jplayer';
 
+	audio = radio_player_instance.data('jPlayer').htmlElement.audio;
+	if (radio_player.debug) {console.log('jPlayer Audio Element:'); console.log(audio);}
+	audio.setAttribute('instance-id', instance);
+
 	/* bind load event */
 	jQuery('#'+player_id).bind(jQuery.jPlayer.event.load, function(e) {
 		radio_player.loading = false;
 		instance = radio_player_event_instance(e, 'Loaded', 'jplayer');
 		radio_player_event_handler('loaded', {instance:instance, script:'jplayer'});
-
-		channel = radio_player_data.channels[instance];
-		if (channel) {radio_player_set_state('channel', channel);}
-		/* station = jQuery('#radio_player_'+instance).attr('station-id');
-		if (station) {radio_player_set_state('station', station);} */
 	});
 
 	/* bind play event */
@@ -1163,7 +1233,7 @@ function radio_player_jplayer(instance, url, format, fallback, fformat) {
 	jQuery('#'+player_id).bind(jQuery.jPlayer.event.volumechange, function(e) {
 		instance = radio_player_event_instance(e, 'Volume', 'jplayer');
 		if (instance && (radio_player_data.scripts[instance] == 'jplayer')) {
-			radio_player_player_volume(instance, 'jplayer', volume);
+			radio_player_volume_changed(instance, 'jplayer', volume);
 		}
 	});
 
@@ -1182,9 +1252,92 @@ function radio_player_jplayer(instance, url, format, fallback, fformat) {
 	});
 
 	/* match script select dropdown value */
-	if (jQuery('#'+container_id+' .rp-script-select').length) {
-		jQuery('#'+container_id+' .rp-script-select').val('jplayer');
-	}
+	if (container.find('.rp-script-select').length) {container.find('.rp-script-select').val('jplayer');}
+
+	return radio_player_instance;
+}
+
+/* Howler Player Script */
+function radio_player_howler(instance, url, format, fallback, fformat) {
+
+	container = jQuery('#radio_container_'+instance);
+	if (url == '') {url = radio_player.settings.url;}
+	if (url == '') {return;}
+	if (!format || (format == '')) {format = 'aac';}
+	/* if (fallback == '') {fallback = radio_player.settings.fallback;} */
+	if (!fallback || !fformat || (fformat == '')) {fallback = ''; fformat = '';}
+
+	/* set sources */
+	sources = new Array(); formats = new Array();
+	sources[0] = url; /* if (fallback != '') {sources[1] = fallback;} */
+	formats[0] = format; /* if ((fallback != '') && (fformat != '')) {formats[1] = fformat;} */
+
+	/* set volume */
+	if (container.find('.rp-volume-slider').length && container.find('.rp-volume-slider').hasClass('changed')) {
+		volume = container.find('.rp-volume-slider').val();
+	} else if (typeof container.attr('data-volume') != 'undefined') {
+		volume = container.attr('data-volume');
+	} else if (typeof radio_player_data.state.volume != 'undefined') {
+		volume = radio_player_data.state.volume;
+	} else {volume = radio_player.settings.volume;}
+	radio_player_volume_slider(instance,volume);
+	volume = parseFloat(volume / 100);
+
+	/* intialize player */
+	if (radio_player.debug) {console.log('Init Howler: '+instance+' : '+url+' : '+format+' : '+fallback+' : '+fformat+' : '+volume);}
+	radio_player_instance = new Howl({
+		src: sources,
+		format: formats,
+		html5: false,
+		autoplay: false,
+		preload: false,
+		volume: volume,
+		onload: function(e) {
+			/* possible bug: maybe not always being triggered ? */
+			radio_player.loading = false;
+			instance = radio_player_match_instance(this, e, 'howler');
+			radio_player_event_handler('loaded', {instance:instance, script:'howler'});
+		},
+		onplay: function(e) {
+			radio_player.loading = false;
+			instance = radio_player_match_instance(this, e, 'howler');
+			radio_player_event_handler('playing', {instance:instance, script:'howler'});
+			radio_player_pause_others(instance);
+		},
+		onpause: function(e) {
+			instance = radio_player_match_instance(this, e, 'howler');
+			radio_player_event_handler('paused', {instance:instance, script:'howler'});
+		},
+		onstop: function(e) {
+			instance = radio_player_match_instance(this, e, 'howler');
+			radio_player_event_handler('stopped', {instance:instance, script:'howler'});
+		},
+		onvolume: function(e) {
+			instance = radio_player_match_instance(this, e, 'howler');
+			if (instance && (radio_player_data.scripts[instance] == 'howler')) {
+				volume = this.volume() * 100;
+				if (volume > 100) {volume = 100;}
+				radio_player_volume_changed(instance, 'howler', volume);
+			}
+		},
+		onloaderror: function(id,e) {
+			instance = radio_player_match_instance(this, e, 'howler');
+			radio_player_event_handler('error', {instance:instance, script:'howler'});
+			if (radio_player.debug) {console.log('Load Error, Howler Instance: '+instance+', Sound ID: '+id);}
+			radio_player_player_fallback(instance, 'howler', 'Howler Load Error');
+		},
+		onplayerror: function(id,e) {
+			instance = radio_player_match_instance(this, e, 'howler');
+			radio_player_event_handler('error', {instance:instance, script:'howler'});
+			if (radio_player.debug) {console.log('Play Error, Howler Instance: '+instance+', Sound ID: '+id);}
+			radio_player_player_fallback(instance, 'howler', 'Howler Play Error');
+		},
+	});
+	radio_player_data.players[instance] = radio_player_instance;
+	radio_player_data.scripts[instance] = 'howler';
+
+	/* match script select dropdown value */
+	if (container.find('.rp-script-select').length) {container.find('.rp-script-select').val('howler');}
 
 	return radio_player_instance;
 }
@@ -1192,51 +1345,54 @@ function radio_player_jplayer(instance, url, format, fallback, fformat) {
 
 /* === Document Ready Functions === */
 
-/* --- add events after document loaded --- */
+/* --- add player event listeners --- */
+var radio_player_initializing;
 jQuery(document).ready(function() {
 
-	/* set window unique ID */
+	/* --- set window unique ID --- */
 	radio_player_window_guid();
 
-	/* preserve window tab ID on tab reload */
+	/* --- preserve window tab ID on tab reload --- */
 	window.addEventListener('beforeunload', function (e) {
 	    window.sessionStorage.tabId = window.tabId; return null;
 	});
 
-	/* listen for window broadcast messages */
-	if (typeof sysend != 'undefined') {
-		sysend.on('radio-play', function(message) {radio_player_check_to_pause(message);} );
-		sysend.on('radio-request', function(message) {radio_player_broadcast_action(message);} );
-		radio_player_custom_event('rp-sysend', false);
-	}
-});
-
-/* === Pageload Functions === */
-var radio_player_initializing;
-jQuery(document).ready(function() {
-
 	/* --- prevent conflict on duplicate script load --- */
 	if (radio_player_initializing) {return;}
 	radio_player_initializing = true;
+
+	/* --- preload pause image --- */
+	/* src = jQuery('.rp-pause-image-preload').attr('src');	image = new Image(); image.src = src; */
+
+	/* listen for window broadcast messages */
+	if (typeof sysend != 'undefined') {
+		sysend.on('radio-play', function(message) {radio_player_check_to_pause(message);} );
+		/* sysend.on('radio-request', function(message) {radio_player_broadcast_action(message);} ); */
+		radio_player_custom_event('rp-sysend', false);
+	}
 
 	/* --- hide all volume controls if no support (iOS) --- */
 	novolumesupport = radio_player_volume_test();
 	if (novolumesupport) {
 		jQuery('.rp-volume-controls').each(function() {
 			jQuery(this).hide();
+			jQuery('.rp-volume-button').hide();
 			container = jQuery(this).closest('.radio-container');
-			container.addClass('no-volume-controls');
-			container.find('.rp-play-pause-button-bg').css('margin-right','0');
+			if (container.length) {container.addClass('no-volume-controls');}
+			container = jQuery(this).closest('.rp-container');
+			if (container.length) {container.addClass('no-volume-controls');}
 		});
+		jQuery('.rp-volume-button').hide();
 	}
 
 	/* --- bind pause/play button clicks --- */
 	jQuery('.rp-play-pause-button').on('click', function(e) {
 		e.stopImmediatePropagation(); e.preventDefault();
-		container = jQuery(this).parents('.radio-container');
-		instance = container.attr('id').replace('radio_container_','');
-		/* radio_player.debug = true; */
-		if (radio_player.debug) {console.log('Play/Pause Button Click:'); console.log(jQuery(this));}
+		container = jQuery(this).closest('.radio-container');
+		if (!container.length) {container = jQuery(this).closest('.rp-container');}
+		instance = container.attr('data-instance');
+		if (radio_player.debug) {console.log('Play/Pause Button Click on Instance '+instance);}
+
 		/* maybe toggle currently playing radio */
 		inst = instance;
 		if (typeof radio_player_toggle_current == 'function') {
@@ -1247,112 +1403,134 @@ jQuery(document).ready(function() {
 		instance = inst; /* <- this is a fix */
 		
 		/* check to pause or play */
-		if (radio_player_is_playing(instance)) {
+		if (radio_player_is_loading(instance) || radio_player_is_playing(instance)) {
 			if (radio_player.debug) {console.log('Trigger Pause of Player Instance '+instance);}
 			radio_player_pause_instance(instance);
 		} else {
 			if (radio_player.debug) {console.log('Trigger Play of Player Instance '+instance);}
 			instances = Object.keys(radio_player_data.players);
+			jQuery('#radio_player_'+instance).addClass('loading');
 			if (instances.includes(instance)) {
 				radio_player_play_instance(instance);
 			} else {
-				source = container.attr('data-href');
-				if (source != '') {
-					/* play the specified URL */
-					format = container.attr('data-format');
-					fallback = container.attr('data-fallback');
-					fformat = container.attr('data-fformat');
-					script = radio_player.settings.script;
-					data = {url: source, format: format, fallback: fallback, fformat: fformat};
-					radio_player_load_file(script, instance, data, true);
-				} else {
-					/* play default radio stream */
-					if (radio_player.debug) {console.log('Stream Data:'); console.log(radio_player.stream_data);}
-					data = radio_player.stream_data; script = radio_player.settings.script;
-					radio_player_load_stream(script, instance, data, true);
-				}
+				radio_player_play_source(instance);
 			}
 		}
 	});
 
 	/* --- bind volume slider background changes --- */
 	jQuery('.rp-volume-slider').on('mousemove', function() {
-		container = jQuery(this).parents('.radio-container')
-		instance = container.attr('id').replace('radio_container_','');
+		container = jQuery(this).closest('.radio-container, .rp-container');
+		instance = container.attr('data-instance');
 		volume = parseInt(jQuery(this).val());
-		radio_player_volume_slider(instance, volume);
+		radio_player_volume_slider(instance,volume);
 	});
 
 	/* --- bind volume slider changes --- */
 	jQuery('.rp-volume-slider').on('change', function() {
-		container = jQuery(this).parents('.radio-container')
-		instance = container.attr('id').replace('radio_container_','');
+		container = jQuery(this).closest('.radio-container, .rp-container');
+		instance = container.attr('data-instance');
+		if (radio_player.debug) {console.log('Volume Click Instance '+instance+': '+volume);}
 		volume = parseInt(jQuery(this).val());
 		if (volume == 0) {mute = true;} else {mute = false;}
-		radio_player_volume_slider(instance, volume);
-		if (typeof radio_player_data.players[instance] != 'undefined') {
-			if (radio_player.debug) {console.log('Volume Click Change: '+volume);}
-			radio_player_change_volume(instance, volume);
-			if (typeof window.top.current_radio != 'object') {radio_player_set_state('volume', volume);}
-		}
-		if (typeof radio_player_sync_volume == 'function') {radio_player_sync_volume(instance, volume, mute);}
+		radio_player_volume_slider(instance,volume);
+		radio_player_change_volume(instance,volume);
+		radio_player_set_state('volume',volume);
 	});
 
 	/* ---- bind mute clicks --- */
 	jQuery('.rp-mute').on('click', function() {
-		container = jQuery(this).parents('.radio-container');
-		instance = container.attr('id').replace('radio_container_','');
-		if (radio_player.debug) {console.log('mute click '+instance);}
-		if (container.hasClass('muted')) {mute = false;} else {mute = true;}
-		if (typeof radio_player_data.players[instance] != 'undefined') {
-			if (radio_player.debug) {console.log('Mute/Unmute Player '+instance);}
-			radio_player_mute_unmute(instance, mute);
-			if (typeof window.top.current_radio != 'object') {radio_player_set_state('mute', mute);}
-		} else {
-			if (mute) {container.addClass('muted').removeClass('maxed');} else {container.removeClass('muted');}
+		container = jQuery(this).closest('.radio-container, .rp-container');
+		instance = container.attr('data-instance');
+		if (radio_player.debug) {console.log('Mute Click Instance '+instance);}
+		if (typeof radio_player_toggle_mute == 'function') {
+			done = radio_player_toggle_mute(instance); if (done) {return;}
 		}
-		if (typeof radio_player_sync_volume == 'function') {radio_player_sync_volume(instance, null, mute);}
+		mute = (!container.hasClass('muted'));
+		radio_player_mute_unmute(instance,mute);
+		radio_player_set_state('mute',mute);
 	});
 
 	/* --- bind max volume clicks --- */
 	jQuery('.rp-volume-max').on('click', function() {
-		container = jQuery(this).parents('.radio-container');
-		instance = container.attr('id').replace('radio_container_','');
-		console.log('max volume click '+instance);
+		container = jQuery(this).closest('.radio-container, .rp-container');
+		instance = container.attr('data-instance');
 		if (!container.hasClass('maxed')) {container.addClass('maxed');}
 		container.find('.rp-volume-slider').val(100);
-		radio_player_volume_slider(instance, 100);
-		radio_player_change_volume(instance, 100);
-		if (typeof window.top.current_radio != 'object') {radio_player_set_state('mute', false);}
-		if (typeof radio_player_sync_volume == 'function') {radio_player_sync_volume(instance, 100, 0);}
+		radio_player_volume_slider(instance,100);
+		radio_player_change_volume(instance,100);
+		radio_player_mute_unmute(instance,false);
+		radio_player_set_state('mute',false);
 	});
 
 	/* --- bind volume decrease/increase clicks --- */
 	jQuery('.rp-volume-down, .rp-volume-up').on('click', function() {
-		container = jQuery(this).parents('.radio-container');
-		instance = container.attr('id').replace('radio_container_','');
-		slider = jQuery('#radio_container_'+instance+' .rp-volume-slider');
+		container = jQuery(this).closest('.radio-container, .rp-container');
+		instance = container.attr('data-instance');
+		slider = container.find('.rp-volume-slider');
 		oldvolume = parseInt(slider.val());
 		if (jQuery(this).hasClass('rp-volume-down')) {
 			volume = oldvolume - 5; if (volume < 0) {volume = 0;} slider.val(volume);
-			if (radio_player.debug) {console.log('Volume Down: '+oldvolume+' to '+volume);}
+			if (radio_player.debug) {console.log('Volume Down Instance '+instance+': '+oldvolume+' to '+volume);}
 		} else if (jQuery(this).hasClass('rp-volume-up')) {
 			volume = oldvolume + 5; if (volume > 100) {volume = 100;} slider.val(volume);
-			if (radio_player.debug) {console.log('Volume Up: '+oldvolume+' to '+volume);}
+			if (radio_player.debug) {console.log('Volume Up Instance '+instance+': '+oldvolume+' to '+volume);}
 		}
-		radio_player_volume_slider(instance, volume);
-		if (volume > 0) {mute = false;} else {mute = true;}
-		if (typeof radio_player_data.players[instance] != 'undefined') {radio_player_change_volume(instance, volume);}
-		if (typeof window.top.current_radio != 'object') {radio_player_set_state('volume', volume); radio_player_set_state('mute', mute);}
-		if (typeof radio_player_sync_volume == 'function') {radio_player_sync_volume(instance, volume, mute);}
+		radio_player_volume_slider(instance,volume);
+		radio_player_change_volume(instance,volume);
+		radio_player_set_state('volume',volume);
+		/* if (volume > 0) {mute = false;} else {mute = true;}
+		radio_player_mute_unmute(instance,mute);
+		radio_player_set_state('mute',mute); */
 	});
 
 	/* --- detect script selection switcher change --- */
 	jQuery('.rp-script-select').change(function() {
-		instance = jQuery(this).parents('.radio-container').attr('id').replace('radio_container_','');
-		script = jQuery(this).val(); radio_player_switch_script(instance, script);
+		container = jQuery(this).closest('.radio-container, .rp-container');
+		instance = container.attr('data-instance');
+		script = jQuery(this).val(); radio_player_switch_script(instance,script);
 	});
 
+	/* --- add player listener to cancel loading flag --- */
+	document.addEventListener('rp-play', function(e) {
+		instance = e.detail.instance;
+		jQuery('#radio_player_'+instance).addClass('loading');
+	}, false);
+	document.addEventListener('rp-playing', function(e) {
+		instance = e.detail.instance;
+		jQuery('#radio_player_'+instance).removeClass('loading');
+	}, false);
+	document.addEventListener('rp-pause', function(e) {
+		instance = e.detail.instance;
+		jQuery('#radio_player_'+instance).removeClass('loading');
+	}, false);
+	document.addEventListener('rp-stop', function(e) {
+		instance = e.detail.instance;
+		jQuery('#radio_player_'+instance).removeClass('loading');
+	}, false);
+
+	/* --- pause on media elements player play --- */
+	jQuery('audio.mejs__player').on('play', function(e) {
+		if (!radio_player.settings.singular) {return;}
+		jQuery('.radio-container').each(function() {
+			instance = jQuery(this).attr('data-instance');
+			radio_player_pause_instance(instance);
+			radio_player_broadcast_playing(instance);
+		});
+	});
+	
+	/* --- pause media elements on player play --- */
+	document.addEventListener('rp-play', function(e) {
+		if (!radio_player.settings.singular) {return;}
+		jQuery('audio.mejs__player').each(function() {
+			el = jQuery(this)[0];
+			if (!el.paused) {
+				el.pause();
+				if (radio_player.debug) {console.log( 'Paused MediaElement Audio: '+el.src);}
+			}
+		});
+	}, false);
+	
 });
 
 
