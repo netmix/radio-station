@@ -21,7 +21,8 @@
 // === Show Related Shortcodes ===
 // - Show List Shortcode Abstract
 // - Show Posts Archive Shortcode
-// - Show Playlists List Shortcode
+// - Show Overrides Archive Shortcode
+// - Show Playlists Archive Shortcode
 // - Show Lists Pagination Javascript
 // === Widget Shortcodes ===
 // - Current Show Shortcode
@@ -40,29 +41,13 @@
 // === Time Shortcodes ===
 // -----------------------
 
-// ------------------------
-// Radio Timezone Shortcode
-// ------------------------
-add_shortcode( 'radio-timezone', 'radio_station_timezone_shortcode' );
-function radio_station_timezone_shortcode( $atts = array() ) {
-
-	global $radio_station_data;
-	
-	// 2.5.0: added shortcode_atts call for filtering
-	$defaults = array();
-	$atts = shortcode_atts( $defaults, $atts, 'radio-timezone' );
-
-	// --- set shortcode instance ---
-	// 2.5.0: simplified instance data
-	if ( !isset( $radio_station_data['instances']['timezone_shortcode'] ) ) {
-		$radio_station_data['instances']['timezone_shortcode'] = 0;
-	}
-	$radio_station_data['instances']['timezone_shortcode']++;
-	$instance = $radio_station_data['instances']['timezone_shortcode'];
+// --------------------
+// Get Timezone Display
+// --------------------
+// 2.5.18: added for use by both clock and timezone shortcodes
+function radio_station_get_timezone_display( $timezone, $atts ) {
 
 	// --- get radio timezone values ---
-	// $timezone = radio_station_get_setting( 'timezone_location' );
-	$timezone = radio_station_get_timezone();
 	if ( !$timezone || ( '' == $timezone ) ) {
 		// --- fallback to WordPress timezone ---
 		$timezone = get_option( 'timezone_string' );
@@ -115,35 +100,100 @@ function radio_station_timezone_shortcode( $atts = array() ) {
 		}
 		$code = radio_station_get_timezone_code( $timezone );
 		// 2.3.2: display full timezone location as well
-		$location = str_replace( '/', ', ', $timezone );
-		$location = str_replace( '_', ' ', $location );
-		$timezone_display = $code . ' (' . $location . ') ' . $utc_offset;
+		// $location = str_replace( '/', ', ', $timezone );
+		$loc = explode( '/', $timezone );
+		$region = str_replace( '_', ' ', $loc[0] );
+		$location = str_replace( '_', ' ', $loc[1] );
+		
+		// 2.5.18: display based on specified attributes
+		$timezone_display = '';
+		if ( $atts['code'] ) {
+			$timezone_display .= $code . ' ';
+		}
+		if ( $atts['region'] || $atts['location'] ) {
+			if ( $atts['code'] ) {
+				$timezone_display .= '(';
+			}
+			if ( $atts['location'] ) {
+				$timezone_display .= $location;
+			}
+			if ( $atts['region'] && $atts['location'] ) {
+				$timezone_display .= ', ';
+			}
+			if ( $atts['region'] ) {
+				$timezone_display .= $region;
+			}
+			if ( $atts['code'] ) {
+				$timezone_display .= ')';
+			}
+		}
+		if ( $atts['offset'] ) {
+			$timezone_display .= ' ' . $utc_offset;
+		}
 	}
+	
+	return $timezone_display;
+}
+
+// ------------------------
+// Radio Timezone Shortcode
+// ------------------------
+add_shortcode( 'radio-timezone', 'radio_station_timezone_shortcode' );
+function radio_station_timezone_shortcode( $atts = array() ) {
+
+	global $radio_station_data;
+	
+	// 2.5.0: added shortcode_atts call for filtering
+	$defaults = array();
+	$atts = shortcode_atts( $defaults, $atts, 'radio-timezone' );
+
+	// --- set shortcode instance ---
+	// 2.5.0: simplified instance data
+	if ( !isset( $radio_station_data['instances']['timezone_shortcode'] ) ) {
+		$radio_station_data['instances']['timezone_shortcode'] = 0;
+	}
+	$radio_station_data['instances']['timezone_shortcode']++;
+	$instance = $radio_station_data['instances']['timezone_shortcode'];
+
+	// 2.5.18: allow for timezone attribute override
+	$timezone = radio_station_get_timezone();
+	$defaults = array(
+		'timezone' => $timezone,
+		'code'     => 1,
+		'region'   => 1,
+		'location' => 1,
+		'offset'   => 1,
+		'channel'  => '',
+	);
+	// 2.5.18: added filter for default attributes
+	$defaults = apply_filters( 'radio_station_timezone_default_atts', $defaults );
+	$atts = shortcode_atts( $defaults, $atts, 'radio-timezone' );
+	$timezone = $atts['timezone'];
+
+	// --- set timezone display and format ---
+	// 2.5.18: added for display consistency
+	$timezone_display = radio_station_get_timezone_display( $timezone, $atts );
+	$timezone_format = (string) $atts['code'] . '-' . (string) $atts['region'] . '-' . (string) $atts['location'] . '-' . (string) $atts['offset'];
 
 	// --- set shortcode output ---
 	// 2.5.0: added instance ID to timezone div wrapper 
 	$output = '<div id="radio-timezone-' . esc_attr( $instance ) . '" class="radio-timezone-wrapper">' . "\n";
 
-	// --- radio timezone ---
-	$output .= '<div class="radio-timezone-title">' . "\n";
-		$output .= esc_html( __( 'Radio Timezone', 'radio-station' ) ) . "\n";
-	$output .= ':</div> ' . "\n";
-	$output .= '<div class="radio-timezone">' . "\n";
-		$output .= esc_html( $timezone_display ) . "\n";
-	$output .= '</div><br>' . "\n";
+		// --- radio timezone ---
+		$output .= '<div class="radio-timezone-title">' . "\n";
+			$output .= esc_html( __( 'Radio Timezone', 'radio-station' ) ) . "\n";
+		$output .= ':</div> ' . "\n";
+		// 2.5.18: added data-timezone attribute
+		$output .= '<div class="radio-timezone" data-format="' . esc_attr( $timezone_format ) . '" data-timezone="' . esc_attr( $timezone ) . '">' . "\n";
+			$output .= esc_html( $timezone_display ) . "\n";
+		$output .= '</div><br>' . "\n";
 
-	// --- user timezone ---
-	// 2.3.3.9: change span elements to divs
-	$output .= '<div class="radio-user-timezone-title">' . "\n";
-		$output .= esc_html( __( 'Your Timezone', 'radio-station' ) ) . "\n";
-	$output .= ':</div> ' . "\n";
-	$output .= '<div class="radio-user-timezone"></div>' . "\n";
-
-	// 2.3.2 allow for timezone selector test
-	// $select = apply_filters( 'radio_station_timezone_select', '', 'radio-station-timezone-' . $instance, $atts );
-	// if ( '' != $select ) {
-	// 	$output .= $select;
-	// }
+		// --- user timezone ---
+		// 2.3.3.9: change span elements to divs
+		$output .= '<div class="radio-user-timezone-title">' . "\n";
+			$output .= esc_html( __( 'Your Timezone', 'radio-station' ) ) . "\n";
+		$output .= ':</div> ' . "\n";
+		$output .= '<div class="radio-user-timezone" data-format="' . esc_attr( $timezone_format ) . '"></div>' . "\n";
 
 	$output .= '</div>' . "\n";
 
@@ -183,17 +233,33 @@ function radio_station_clock_shortcode( $atts = array() ) {
 
 	// --- merge default attributes ---
 	// 2.3.3: fix to incorrect setting key (clock_format)
+	// 2.5.18: add optional timezone attribute override
+	// 2.5.18: added optional timezone display attributes
 	$time_format = radio_station_get_setting( 'clock_time_format' );
+	$timezone = radio_station_get_timezone();
 	$defaults = array(
 		'time_format' => $time_format,
+		'timezone'    => $timezone,
+		'code'        => 1,
+		'region'      => 1,
+		'location'    => 1,
+		'offset'      => 1,
 		'day'         => 'full', // full / short / none
 		'date'        => 1,
 		'month'       => 'full', // full / short / none
 		'zone'        => 1,
 		'seconds'     => 1,
 		'widget'      => 0,
+		'channel'     => '',
 	);
+	// 2.5.18: added default attributes filter
+	$defaults = apply_filters( 'radio_station_clock_default_atts', $defaults );
 	$atts = shortcode_atts( $defaults, $atts, 'radio-clock' );
+
+	// --- set timezone display and format ---
+	// 2.5.18: added for display consistency
+	$timezone_display = radio_station_get_timezone_display( $timezone, $atts );
+	$timezone_format = (string) $atts['code'] . '-' . (string) $atts['region'] . '-' . (string) $atts['location'] . '-' . (string) $atts['offset'];
 
 	// --- set clock display classes ---
 	$classes = array( 'radio-station-clock' );
@@ -242,7 +308,8 @@ function radio_station_clock_shortcode( $atts = array() ) {
 			$clock .= ':</div>' . "\n";
 			$clock .= '<div class="radio-server-time" data-format="' . esc_attr( $atts['time_format'] ) . '"></div>' . "\n";
 			$clock .= '<div class="radio-server-date"></div>' . "\n";
-			$clock .= '<div class="radio-server-zone"></div>' . "\n";
+			// 2.5.18: added data-timezone attribute
+			$clock .= '<div class="radio-server-zone" data-format="' . esc_attr( $timezone_format ) . '" data-timezone="' . esc_attr( $timezone ) . '"></div>' . "\n";
 		$clock .= '</div>' . "\n";
 
 		// --- user clock ---
@@ -252,7 +319,7 @@ function radio_station_clock_shortcode( $atts = array() ) {
 			$clock .= ':</div>' . "\n";
 			$clock .= '<div class="radio-user-time" data-format="' . esc_attr( $atts['time_format'] ) . '"></div>' . "\n";
 			$clock .= '<div class="radio-user-date"></div>' . "\n";
-			$clock .= '<div class="radio-user-zone"></div>' . "\n";
+			$clock .= '<div class="radio-user-zone" data-format="' . esc_attr( $timezone_format ) . '"></div>' . "\n";
 		$clock .= '</div>' . "\n";
 
 	$clock .= '</div>' . "\n";
@@ -277,8 +344,6 @@ function radio_station_clock_shortcode( $atts = array() ) {
 // Archive List Shortcode Router
 // -----------------------------
 function radio_station_archive_list( $atts ) {
-	
-	// echo '<span style="display:none;">' . print_r( $atts, true ) . '</span>';
 	
 	if ( 'shows' == $atts['archive_type'] ) {
 		return radio_station_show_archive_list( $atts );
@@ -350,7 +415,7 @@ function radio_station_archive_list_shortcode( $post_type, $atts ) {
 		'with_shifts'  => 1,
 		// 'show_shifts' => 0,
 		// --- for overrides only ---
-		'show_dates' => 1,
+		'show_dates'   => 1,
 		// --- for shows and overrides ---
 		// 'display_genres' => 0,
 		// 'display_languages' => 0,
@@ -363,6 +428,8 @@ function radio_station_archive_list_shortcode( $post_type, $atts ) {
 		'show'         => false,
 		'override'     => false,
 		'playlist'     => false,
+		// --- channel ---
+		'channel'      => '',
 	);
 
 	// 2.4.1.8: change default description value for grid view
@@ -386,6 +453,8 @@ function radio_station_archive_list_shortcode( $post_type, $atts ) {
 	}
 
 	// --- process shortcode attributes ---
+	// 2.5.18: added default attributes filter
+	$defaults = apply_filters( 'radio_station_archive_default_atts', $defaults );
 	$atts = shortcode_atts( $defaults, $atts, $post_type . '-archive' );
 	if ( RADIO_STATION_DEBUG ) {
 		echo '<span style="display:none;">' . esc_html( $type ) . ' Archive Shortcode Atts: ' . esc_html( print_r( $atts, true ) ) . '</span>' . "\n";
@@ -859,7 +928,7 @@ function radio_station_archive_list_shortcode( $post_type, $atts ) {
 			// 2.3.3.9: filter meta display for different post types
 			// 2.5.0: added meta div close wrapper
 			$info['meta'] .= '</div>';
-			$info['meta'] = apply_filters ( 'radio_station_archive_shortcode_meta', $info['meta'], $post_id, $post_type, $atts );
+			$info['meta'] = apply_filters( 'radio_station_archive_shortcode_meta', $info['meta'], $post_id, $post_type, $atts );
 
 			// TODO: display genre and language terms ?
 			// if ( in_array( $post_type, array( RADIO_STATION_SHOW_SLUG, RADIO_STATION_OVERRIDE_SLUG ) ) ) {
@@ -1001,6 +1070,8 @@ function radio_station_genre_archive_list( $atts ) {
 		'thumbnails'   => 0,
 		'avatar_width' => 75,
 		'show_desc'    => 1,
+		// --- channel ---
+		'channel'      => '',
 	);
 
 	// 2.5.0: change show description default for grid view
@@ -1024,6 +1095,8 @@ function radio_station_genre_archive_list( $atts ) {
 	}
 
 	// --- process shortcode attributes ---
+	// 2.5.18: added filter for default attributes
+	$defaults = apply_filters( 'radio_station_genre_archive_default_atts', $defaults );
 	$atts = shortcode_atts( $defaults, $atts, 'genre-archive' );
 	if ( RADIO_STATION_DEBUG ) {
 		echo '<span style="display:none;">Genre Archive Shortcode Atts: ' . esc_html( print_r( $atts, true ) ) . '</span>' . "\n";
@@ -1040,7 +1113,9 @@ function radio_station_genre_archive_list( $atts ) {
 			$genre = radio_station_get_genre( $genre_slug );
 			if ( $genre ) {
 				// 2.5.10: fix to get first array key
-				$name = array_key_first( $genre );
+				// 2.5.18: make backwards compatible
+				reset( $genre );
+				$name = key( $genre );
 				$genres[$name] = $genre[$name];
 				$genre_ids[] = $genre[$name]['id'];
 			}
@@ -1414,6 +1489,8 @@ function radio_station_language_archive_list( $atts ) {
 		'thumbnails'      => 0,
 		'avatar_width'    => 75,
 		'show_desc'       => 1,
+		// --- channel ---
+		'channel'         => '',
 	);
 
 	// 2.5.0: change show description default for grid view
@@ -1437,6 +1514,8 @@ function radio_station_language_archive_list( $atts ) {
 	}
 
 	// --- process shortcode attributes ---
+	// 2.5.18: added filter for default attributes
+	$defaults = apply_filters( 'radio_station_language_archive_default_atts', $defaults );
 	$atts = shortcode_atts( $defaults, $atts, 'language-archive' );
 	if ( RADIO_STATION_DEBUG ) {
 		echo '<span style="display:none;">Language Archive Shortcode Atts: ' . esc_html( print_r( $atts, true ) ) . '</span>' . "\n";
@@ -1456,7 +1535,9 @@ function radio_station_language_archive_list( $atts ) {
 			$language = radio_station_get_language( $language_slug );
 			if ( $language ) {
 				// 2.5.10: fix to get first array key
-				$name = array_key_first( $language );
+				// 2.5.18: make backwards compatible
+				reset( $language );
+				$name = key( $language );
 				$languages[$name] = $language[$name];
 				$language_ids[] = $language[$name]['id'];
 			}
@@ -1910,7 +1991,7 @@ function radio_station_archive_pagination_javascript() {
 function radio_station_show_list_shortcode( $type, $atts ) {
 
 	global $radio_station_data;
-
+	
 	// --- set shortcode instance ---
 	// 2.5.0: added for consistency
 	if ( !isset( $radio_station_data['instances']['show-' . $type . '-list'] ) ) {
@@ -1942,6 +2023,7 @@ function radio_station_show_list_shortcode( $type, $atts ) {
 		// 2.5.6: add ordering defaults
 		'orderby'    => 'date',
 		'order'      => 'DESC',
+		'channel'    => '',
 	);
 	// 2.5.6: add filter for default attributes
 	$defaults = apply_filters( 'radio_station_show_list_defaults_atts', $defaults, $type );
@@ -1983,10 +2065,27 @@ function radio_station_show_list_shortcode( $type, $atts ) {
 		if ( isset( $atts['limit'] ) ) {
 			$args['limit'] = $atts['limit'];
 		}
+		
 		if ( 'post' == $type ) {
 			// 2.5.5: added filter for show posts
 			$posts = radio_station_get_show_posts( $show_id, $args );
 			$posts = apply_filters( 'radio_station_get_show_posts', $posts, $show_id, $args, $atts );
+		} elseif ( RADIO_STATION_OVERRIDE_SLUG == $type ) {
+			// 2.5.18: added for linked overrides
+			$overrides  = radio_station_get_linked_override_times( $show_id );
+			echo '<span style="display:none;">OVERRIDES: ' . print_r( $overrides, true ) . '</span>' . "\n";
+			if ( !$overrides || !is_array( $overrides ) || count( $overrides ) == 0 ) {
+				return '';
+			}
+			$override_ids = $posts = array();
+			foreach ( $overrides as $override ) {
+				if ( !in_array( $override['override_id'], $override_ids ) ) {
+					$posts[] = get_post( $override['override_id'], ARRAY_A );
+					$override_ids[] = $override['override_id'];
+				}
+			}
+			$posts = apply_filters( 'radio_station_get_show_overrides', $posts, $show_id, $args, $atts );
+			$type = 'override';
 		} elseif ( RADIO_STATION_PLAYLIST_SLUG == $type ) {
 			// 2.5.5: added filter for show playlists
 			$posts = radio_station_get_show_playlists( $show_id, $args );
@@ -2020,10 +2119,91 @@ function radio_station_show_list_shortcode( $type, $atts ) {
 	// --- show list div ---
 	$list = '<div id="show-' . esc_attr( $show_id ) . '-' . esc_attr( $type ) . 's-list" class="show-' . esc_attr( $type ) . 's-list">' . "\n";
 
+	// 2.5.18: date/time formatting (for override meta)
+	if ( isset( $overrides ) ) {
+		$date_format = apply_filters( 'radio_station_override_date_format', 'j F' );
+		$time_format = (int) radio_station_get_setting( 'clock_time_format', $show_id );
+		$start_data_format = $end_data_format = ( 24 == (int) $time_format ) ? 'H:i' : 'g:i a';
+		$start_data_format = apply_filters( 'radio_station_time_format_start', $start_data_format, 'show-template', $show_id );
+		$end_data_format = apply_filters( 'radio_station_time_format_end', $end_data_format, 'show-template', $show_id );
+		$show_post = get_post( $show_id, ARRAY_A );
+	}
+
 	// --- loop show posts ---
 	$post_pages = 1;
 	$j = 0;
 	foreach ( $posts as $post ) {
+
+		$meta = '';
+
+		if ( is_object( $post ) && is_a( $post, 'WP_Post' ) ) {
+			$post = get_post( $post->ID, ARRAY_A );
+		} elseif ( is_int( $post ) || is_string( $post ) ) {
+			$post = get_post( $post, ARRAY_A );
+		}
+				
+		// 2.5.18: handle special overrides
+		if ( isset( $overrides ) ) {
+
+			// --- maybe use linked show data ---
+			$linked_fields = get_post_meta( $post['ID'], 'linked_show_fields', true );
+			// echo '<span style="display:none;">LINKED FIELDS: ' . print_r( $linked_fields, true ) . '</span>' . "\n";
+
+			if ( is_array( $linked_fields ) ) {
+				if ( isset( $linked_fields['show_title'] ) && !$linked_fields['show_title'] ) {
+					$post['post_title'] = $show_post['post_title'];
+				}
+				if ( isset( $linked_fields['show_content'] ) && !$linked_fields['show_content'] ) {
+					$post['post_content'] = $show_post['post_content'];
+				}
+				if ( isset( $linked_fields['show_excerpt'] ) && !$linked_fields['show_excerpt'] ) {
+					$post['post_excerpt'] = $show_post['post_excerpt'];
+				}				
+			}
+
+			// 2.5.18: meta display of date/time for overrides
+			foreach ( $overrides as $override ) {
+				
+				if ( $override['override_id'] == $post['ID'] ) {
+
+					$start = $override['date'] . ' ' . $override['start_hour'] . ':' . $override['start_min'] . ' ' . $override['start_meridian'];
+					$end = $override['date'] . ' ' . $override['end_hour'] . ':' . $override['end_min'] . ' ' . $override['end_meridian'];
+					$override_start_time = radio_station_to_time( $start );
+					$override_end_time = radio_station_to_time( $end );
+					if ( $override_end_time <= $override_start_time ) {
+						$override_end_time = $override_end_time + ( 24 * 60 * 60 );
+					}
+
+					$start_display = radio_station_get_time( $start_data_format, $override_start_time );
+					$end_display = radio_station_get_time( $end_data_format, $override_end_time );
+					$start_display = radio_station_translate_time( $start_display );
+					$end_display = radio_station_translate_time( $end_display );
+					$date_time = radio_station_to_time( $override['date'] . ' 00:00' );
+					$date = radio_station_get_time( $date_format, $date_time );
+
+					$separator = ' - ';
+					$separator = apply_filters( 'radio_station_show_times_separator', $separator, 'override-content' );
+
+					$meta .= '<div class="override-time">' . "\n";
+						$meta .= '<span class="rs-date rs-start-date" data-format="' . esc_attr( $date_format ) . '" data="' . esc_attr( $date_time ) . '">' . esc_html( $date ) . '</span>' . "\n";
+						$meta .= '<span class="rs-time rs-start-time" data-format="' . esc_attr( $start_data_format ) . '" data="' . esc_attr( $override_start_time ) . '">' . esc_html( $start_display ) . '</span>' . "\n";
+						$meta .= '<span class="rs-sep">' . esc_html( $separator ) . '</span>' . "\n";
+						$meta .= '<span class="rs-time rs-end-time" data-format="' . esc_attr( $end_data_format ) . '" data="' . esc_attr( $override_end_time ) . '">' . esc_html( $end_display ) . '</span>' . "\n";
+					$meta .= '</div>' . "\n";
+
+					$meta .= '<div class="show-user-time">' . "\n";
+						$meta .= '[<span class="rs-date rs-start-date"></span>' . "\n";
+						$meta .= '<span class="rs-time rs-start-time"></span>' . "\n";
+						$meta .= '<span class="rs-sep">' . esc_html( $separator ) . '</span>' . "\n";
+						$meta .= '<span class="rs-time rs-end-time"></span>]' . "\n";
+					$meta .= '</div>' . "\n";
+			
+					// echo '<span style="display:none;">META: ' . $meta . '</span>' . "\n";
+
+				}
+			}
+		}
+		
 		$newpage = $firstpage = false;
 		if ( 0 == $j ) {
 			$newpage = $firstpage = true;
@@ -2098,19 +2278,26 @@ function radio_station_show_list_shortcode( $type, $atts ) {
 		} else {
 
 			// 2.5.0: fix to maybe get post object
-			if ( is_object( $post ) && !is_a( $post, 'WP_Post' ) ) {
+			// 2.5.18: fix for different data types
+			/* if ( is_object( $post ) && is_a( $post, 'WP_Post' ) ) {
+				$post = get_post( $post->ID, ARRAY_A );
+			} elseif ( is_int( $post ) || is_string( $post ) ) {
 				$post = get_post( $post, ARRAY_A );
-			}
+			} */
 
 			// --- post thumbnail ---
 			if ( $atts['thumbnails'] ) {
-				$thumbnail = false;	
-				$has_thumbnail = has_post_thumbnail( $post['ID'] );
+				$thumbnail = false;
+				$thumbnail_source = $post['ID'];
+				// if ( isset( $overrides ) && !in_array( 'show_avatar', $linked_fields ) ) {
+					// $thumbnail_source = $show_post['ID'];
+				// }
+				$has_thumbnail = has_post_thumbnail( $thumbnail_source );
 				if ( $has_thumbnail ) {
 					$attr = array( 'class' => 'show-' . esc_attr( $type ) . '-thumbnail-image' );
-					$thumbnail = get_the_post_thumbnail( $post['ID'], 'thumbnail', $attr );
+					$thumbnail = get_the_post_thumbnail( $thumbnail_source, 'thumbnail', $attr );
 				}
-				$thumbnail = apply_filters( 'radio_station_show_list_archive_avatar', $thumbnail, $post['ID'], $type );
+				$thumbnail = apply_filters( 'radio_station_show_list_archive_avatar', $thumbnail, $thumbnail_source, $type );
 				if ( $thumbnail ) {
 					$list .= '<div class="show-' . esc_attr( $type ) . '-thumbnail">' . "\n";
 						// 2.5.0: use wp_kses on thumbnail output
@@ -2135,10 +2322,13 @@ function radio_station_show_list_shortcode( $type, $atts ) {
 
 			// --- post meta ---
 			// 2.5.6: add filtered post meta
-			$meta = apply_filters( 'radio_station_show_' . $type . '_shortcode_meta', '', $post, $type, $atts );
+			$meta = apply_filters( 'radio_station_show_' . $type . '_shortcode_meta', $meta, $post, $type, $atts );
 			if ( '' != $meta ) {
-				$allowed = radio_station_allowed_html( 'content', 'meta' );
-				$list .= wp_kses( $meta, $allowed ) . "\n";
+				// 2.5.18: added meta wrapper
+				$list .= '<div class="show-' . esc_attr( $type ) . '-meta">' . "\n";
+					$allowed = radio_station_allowed_html( 'content', 'meta' );
+					$list .= wp_kses( $meta, $allowed ) . "\n";
+				$list .= '</div>';
 			}
 
 			// --- post excerpt ---
@@ -2245,6 +2435,17 @@ add_shortcode( 'show-latests-archive', 'radio_station_show_latest_archive' );
 add_shortcode( 'show-latest-archive', 'radio_station_show_latest_archive' );
 function radio_station_show_latest_archive( $atts ) {
 	$output = radio_station_show_list_shortcode( 'latest', $atts );
+	return $output;
+}
+
+// --------------------------------
+// Show Overrides Archive Shortcode
+// --------------------------------
+// 2.5.18: added for displaying linked overrides on show page
+add_shortcode( 'show-overrides-archive', 'radio_station_show_overrides_archive' );
+add_shortcode( 'show-override-archive', 'radio_station_show_overrides_archive' );
+function radio_station_show_overrides_archive( $atts ) {
+	$output = radio_station_show_list_shortcode( RADIO_STATION_OVERRIDE_SLUG, $atts );
 	return $output;
 }
 
@@ -2408,6 +2609,8 @@ function radio_station_current_show_shortcode( $atts ) {
 		'block'          => 0,
 		'id'             => '',
 		'for_time'       => 0,
+		// --- channel ---
+		'channel'        => '',
 	);
 	// 2.3.0: convert old attributes for DJs to hosts
 	if ( isset( $atts['display_djs'] ) && !isset( $atts['display_hosts'] ) ) {
@@ -2419,6 +2622,8 @@ function radio_station_current_show_shortcode( $atts ) {
 		unset( $atts['link_djs'] );
 	}
 	// 2.3.0: renamed shortcode identifier to current-show
+	// 2.5.18: added filter for default Attributes
+	$defaults = apply_filters( 'radio_station_current_show_default_atts', $defaults );
 	$atts = shortcode_atts( $defaults, $atts, 'current-show' );
 
 	// 2.3.2: enqueue countdown script earlier
@@ -2604,14 +2809,14 @@ function radio_station_current_show_shortcode( $atts ) {
 
 		// --- check show schedule ---
 		// 2.3.1: check early for later display
-		if ( $atts['show_sched'] || $atts['show_all_sched'] ) {
-
-			$shift_display = '<div class="current-show-schedule on-air-dj-schedule">' . "\n";
+		// 2.5.17: remove condition so reloading/countdown always have current show start/end data
+		// if ( $atts['show_sched'] || $atts['show_all_sched'] ) {
 
 			// --- show times subheading ---
 			// 2.3.0: added for all shift display
 			if ( $atts['show_all_sched'] ) {
-				$shift_display .= '<div class="current-show-schedule-title on-air-dj-schedule-title">' . "\n";
+				$shift_display = '<div class="current-show-schedule on-air-dj-schedule">' . "\n";
+				$shift_display = '<div class="current-show-schedule-title on-air-dj-schedule-title">' . "\n";
 					$shift_display .= esc_html( __( 'Show Times', 'radio-station' ) ) . "\n";
 				$shift_display .= '</div>' . "\n";
 			}
@@ -2712,30 +2917,34 @@ function radio_station_current_show_shortcode( $atts ) {
 				$classlist = implode( ' ', $classes );
 
 				// --- shift display output ---
-				$shift_display .= '<div class="' . esc_attr( $classlist ) . '">' . "\n";
-					if ( in_array( 'current-shift', $classes ) ) {
-						// (this highlights the current shift item in the full schedule list)
-						$shift_display .= '<ul class="current-shift-list"><li class="current-shift-list-item">' . "\n";
-					}
-					$shift_display .= '<span class="rs-time rs-start-time" data="' . esc_attr( $shift_start_time ) . '" data-format="' . esc_attr( $start_data_format ) . '">' . esc_html( $start ) . '</span>' . "\n";
-					$shift_display .= '<span class="rs-sep rs-shift-sep">' . esc_html( $separator ) . '</span>' . "\n";
-					$shift_display .= '<span class="rs-time rs-end-time" data="' . esc_attr( $shift_end_time ) . '" data-format="' . esc_attr( $end_data_format ) . '">' . esc_html( $end ) . '</span>' . "\n";
+				if ( $atts['show_all_sched'] ) {
+					$shift_display .= '<div class="' . esc_attr( $classlist ) . '">' . "\n";
+						if ( in_array( 'current-shift', $classes ) ) {
+							// (this highlights the current shift item in the full schedule list)
+							$shift_display .= '<ul class="current-shift-list"><li class="current-shift-list-item">' . "\n";
+						}
+						$shift_display .= '<span class="rs-time rs-start-time" data="' . esc_attr( $shift_start_time ) . '" data-format="' . esc_attr( $start_data_format ) . '">' . esc_html( $start ) . '</span>' . "\n";
+						$shift_display .= '<span class="rs-sep rs-shift-sep">' . esc_html( $separator ) . '</span>' . "\n";
+						$shift_display .= '<span class="rs-time rs-end-time" data="' . esc_attr( $shift_end_time ) . '" data-format="' . esc_attr( $end_data_format ) . '">' . esc_html( $end ) . '</span>' . "\n";
 
-					// 2.3.3.9: add show user time div
-					$shift_display .= '<div class="show-user-time">' . "\n";
-					$shift_display .= '[<span class="rs-user-time rs-start-time"></span>' . "\n";
-					$shift_display .= '<span class="rs-sep rs-shift-sep">' . esc_html( $separator ) . '</span>' . "\n";
-					$shift_display .= '<span class="rs-user-time rs-end-time"></span>]' . "\n";
-					$shift_display .= '</div>';
+						// 2.3.3.9: add show user time div
+						$shift_display .= '<div class="show-user-time">' . "\n";
+						$shift_display .= '[<span class="rs-user-time rs-start-time"></span>' . "\n";
+						$shift_display .= '<span class="rs-sep rs-shift-sep">' . esc_html( $separator ) . '</span>' . "\n";
+						$shift_display .= '<span class="rs-user-time rs-end-time"></span>]' . "\n";
+						$shift_display .= '</div>';
 
-					if ( in_array( 'current-shift', $classes ) ) {
-						$shift_display .= '</li></ul>' . "\n";
-					}
-				$shift_display .= '</div>' . "\n";
+						if ( in_array( 'current-shift', $classes ) ) {
+							$shift_display .= '</li></ul>' . "\n";
+						}
+					$shift_display .= '</div>' . "\n";
+				}
 			}
 
-			$shift_display .= '</div>' . "\n";
-		}
+			if ( $atts['show_all_sched'] ) {
+				$shift_display .= '</div>' . "\n";
+			}
+		// }
 
 		// --- set clear div ---
 		$html['clear'] = '<span class="radio-clear"></span>' . "\n";
@@ -3252,8 +3461,11 @@ function radio_station_upcoming_shows_shortcode( $atts ) {
 		'block'             => 0,
 		'id'                => '',
 		'for_time'          => 0,
+		// --- channel ---
+		'channel'           => '',
 	);
 	// 2.3.0: renamed shortcode identifier to upcoming-shows
+	$defaults = apply_filters( 'radio_station_upcomings_shows_default_atts', $defaults );
 	$atts = shortcode_atts( $defaults, $atts, 'upcoming-shows' );
 
 	// 2.3.2: enqueue countdown script earlier
@@ -3909,9 +4121,13 @@ function radio_station_current_playlist_shortcode( $atts ) {
 		'block'          => 0,
 		'id'             => '',
 		'for_time'       => 0,
+		// --- channel ---
+		'channel'        => '',
 	);
 
 	// 2.3.0: renamed shortcode identifier to current-playlist
+	// 2.5.18: added filter for default attributes
+	$defaults = apply_filters( 'radio_station_current_playlist_atts', $defaults );
 	$atts = shortcode_atts( $defaults, $atts, 'current-playlist' );
 
 	// 2.3.2: enqueue countdown script earlier

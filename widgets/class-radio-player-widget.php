@@ -296,6 +296,13 @@ class Radio_Player_Widget extends WP_Widget {
 		}
 		$instance['volumes'] = implode( ',', $volumes );
 
+		// 2.5.18: save (or preserve) channel setting
+		if ( isset( $new_instance['channel'] ) ) {
+			$instance['channel'] = $new_instance['channel'];
+		} elseif ( isset( $old_instance['channel'] ) ) {
+			$instance['channel'] = $old_instance['channel'];
+		}
+
 		// --- additional displays ---
 		// $instance['show_display'] = isset( $new_instance['show_display'] ) ? 1 : 0;
 		// $instance['show_hosts'] = isset( $new_instance['show_hosts'] ) ? 1 : 0;
@@ -375,7 +382,7 @@ class Radio_Player_Widget extends WP_Widget {
 			'widget'         => 1,
 			'id'             => $id,
 		);
-
+	
 		// 2.5.0: add filter for default widget attributes
 		$atts = apply_filters( 'radio_station_player_widget_atts', $atts, $instance );
 

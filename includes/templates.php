@@ -27,7 +27,7 @@ if ( !defined( 'ABSPATH' ) ) exit;
 // - Show Posts Adjacent Links
 // === Query Filters ===
 // - Playlist Archive Query Filter
-// - Schedule Override Filters
+// - Language Archive Query Filter
 // === Schedule Override Filters ===
 // - Add Override Template Filters
 // - Override Show Title
@@ -164,9 +164,24 @@ function radio_station_phone_number( $phone, $post_id ) {
 	$shows_phone = radio_station_get_setting( 'shows_phone' );
 	if ( 'yes' == $shows_phone ) {
 		$phone = radio_station_get_setting( 'station_phone' );
-		return $phone;
 	}
-	return false;
+	return $phone;
+}
+
+// ------------------------------------
+// Station Text Number for Shows Filter
+// ------------------------------------
+// 2.5.18: added text number for show filter
+add_filter( 'radio_station_show_text', 'radio_station_text_number', 10, 2 );
+function radio_station_text_number( $text, $post_id ) {
+	if ( $text ) {
+		return $text;
+	}
+	$shows_text = radio_station_get_setting( 'shows_text' );
+	if ( 'yes' == $shows_text ) {
+		$text = radio_station_get_setting( 'station_text' );
+	}
+	return $text;
 }
 
 // --------------------------------------
@@ -181,9 +196,8 @@ function radio_station_email_address( $email, $post_id ) {
 	$shows_email = radio_station_get_setting( 'shows_email' );
 	if ( 'yes' == $shows_email ) {
 		$email = radio_station_get_setting( 'station_email' );
-		return $email;
 	}
-	return false;
+	return $email;
 }
 
 // ------------------------------
@@ -1120,7 +1134,8 @@ function radio_station_get_show_post_link( $output, $format, $link, $adjacent_po
 		}
 
 		// --- generate adjacent Show link ---
-		if ( isset( $show ) ) {
+		// 2.5.18: added is_array check to ignore false values
+		if ( isset( $show ) && is_array( $show ) ) {
 
 			// 2.5.0: fix to maybe get show key data
 			if ( isset( $show['show'] ) ) {
@@ -1354,6 +1369,43 @@ function radio_station_show_playlist_query( $query ) {
 				'value' => $show_id,
 			);
 			$query->set( $meta_query );
+		}
+	}
+}
+
+// -----------------------------
+// Language Archive Query Filter
+// -----------------------------
+// 2.5.18: added for main language link to post type archive
+add_filter( 'pre_get_posts', 'radio_station_show_language_query' );
+function radio_station_show_language_query( $query ) {
+
+	if ( !is_admin() && $query->is_main_query && is_post_type_archive( RADIO_STATION_SHOW_SLUG ) ) {
+
+		if ( isset( $_REQUEST['language'] ) && ( 'main' == sanitize_text_field( wp_unslash( $_REQUEST['language'] ) ) ) ) {
+
+			// --- get main language slug ---
+			$lang = get_option( 'WPLANG' );
+			if ( !$lang ) {
+				$lang = 'en_US';
+			}
+
+			// --- exclude posts with any specified language terms other than main ---
+			$query->set( 'tax_query', array(
+				'relation' => 'OR',
+				array(
+					'taxonomy' => RADIO_STATION_LANGUAGES_SLUG,
+					'field'    => 'term_id',
+					'terms'    => array(),
+					'operator' => 'NOT EXISTS',
+				),
+				array(
+					'taxonomy' => RADIO_STATION_LANGUAGES_SLUG,
+					'field'    => 'slug',
+					'terms'    => $lang,
+					'operator' => 'IN',
+				),
+			) );
 		}
 	}
 }

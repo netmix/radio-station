@@ -103,8 +103,8 @@ Here is a full list of available filters within the plugin, grouped by file and 
 | |`radio_station_route_languages` | ` $language_list` | `$request`|
 |**includes/master-schedule.php**||||
 |*radio_station_master_schedule*|`radio_station_master_schedule_default_atts` | ` $defaults` | `$view`, `$views`|
-| |`radio_station_schedule_clock` | ` array()` | `$atts`|
-| |`radio_station_schedule_clock` | ` array()` | `$atts`|
+| |`radio_station_schedule_clock_atts` | ` array()` | `$atts`|
+| |`radio_station_schedule_timezone_atts` | ` array()` | `$atts`|
 | |`radio_station_schedule_control_order` | ` $control_order` | `$atts`|
 | |`radio_station_schedule_controls` | ` $controls` | `$atts`|
 | |`radio_station_schedule_controls_output` | ` $output` | `$atts`|

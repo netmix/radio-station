@@ -10,6 +10,7 @@
 .show-user-time {
 	display: none;
 	font-style: italic;
+	font-size: 0.95em;
 }
 
 /* Edit / Add Links */
@@ -64,6 +65,10 @@
 
 .master-genre-list span.heading {
 	font-weight: bold;
+}
+
+.master-genre-list .genre-highlight, .master-genre-list .genre-highlight:hover {
+	text-decoration: none;
 }
 
 .master-genre-list .genre-highlight.highlighted {

@@ -27,20 +27,24 @@ function radio_station_master_schedule( $atts ) {
 
 	global $radio_station_data;
 
-	// 2.5.0: maybe set schedule instances array
-	if ( !isset( $radio_station_data['schedules'] ) ) {
-		$radio_station_data['schedules'] = array();
-	}
-	if ( !isset( $radio_station_data['schedules']['instances'] ) ) {
-		$radio_station_data['schedules']['instances'] = -1;
-	}
-	$radio_station_data['schedules']['instances']++;
-	$instances = $radio_station_data['schedules']['instances'];
-
 	// 2.5.10.1: allow specifying instance value for AJAX loading
+	// 2.5.18: only increment instances if not specified
 	if ( isset( $atts['instance'] ) ) {
 		$instance = $atts['instance'];
 		unset( $atts['instance'] );
+	} else {
+		// 2.5.0: maybe set schedule instances array
+		if ( !isset( $radio_station_data['schedules'] ) ) {
+			$radio_station_data['schedules'] = array();
+		}
+		if ( !isset( $radio_station_data['schedules']['instances'] ) ) {
+			$radio_station_data['schedules']['instances'] = -1;
+		}
+		$radio_station_data['schedules']['instances']++;
+		$instances = $radio_station_data['schedules']['instances'];
+		// if ( RADIO_STATION_DEBUG ) {
+			echo '<span style="display:none;">Schedule Instance ' . esc_html( $instances ) . '</span>';
+		// }
 	}
 
 	// --- make attributes backward compatible ---
@@ -88,7 +92,7 @@ function radio_station_master_schedule( $atts ) {
 	}
 
 	if ( RADIO_STATION_DEBUG ) {
-		echo '<span style="display:none;">Master Schedule Shortcode Attributes: ' . esc_html( print_r( $atts, true ) ) . '</span>';
+		echo '<span style="display:none;">Master Schedule Shortcode Attributes In: ' . esc_html( print_r( $atts, true ) ) . '</span>';
 	}
 
 	// 2.5.10.1: get default AJAX loading setting
@@ -144,9 +148,11 @@ function radio_station_master_schedule( $atts ) {
 
 		// --- instance values ---
 		// 2.5.10.1: add AJAX attribute value
+		// 2.5.18: added optional channel attribute
 		'ajax'				=> $ajax,
 		'widget'            => 0,
 		'block'             => 0,
+		'channel'           => 0,
 		// 'instance'			=> $instance,
 
 		// --- converted and deprecated ---
@@ -228,7 +234,7 @@ function radio_station_master_schedule( $atts ) {
 	// --- merge attributes with defaults ---
 	$atts = shortcode_atts( $defaults, $atts, 'master-schedule' );
 	if ( RADIO_STATION_DEBUG ) {
-		echo '<span style="display:none;">Master Schedule Shortcode Attributes: ' . esc_html( print_r( $atts, true ) ) . '</span>';
+		echo '<span style="display:none;">Master Schedule Shortcode Attributes Out: ' . esc_html( print_r( $atts, true ) ) . '</span>';
 	}
 	// 2.5.0: force empty start_day string to false
 	if ( '' == $atts['start_day'] ) {
@@ -247,11 +253,19 @@ function radio_station_master_schedule( $atts ) {
 	// 2.5.0: just set new line for output readability
 	// $newline = "\n";
 
+	// 2.5.10.1: maybe merge instance ID back into atts value
+	// 2.5.18: merge earlier for control filters
+	if ( isset( $instance ) ) {
+		$atts['instance'] = $instance;
+	} elseif ( isset( $instances ) ) {
+		$atts['instance'] = $instances;
+	}
+
 	// --- table for selector and clock  ---
 	// 2.3.0: moved out from templates to apply to all views
 	// 2.3.2: moved shortcode calls inside and added filters
 	// 2.5.0: added instances IDs and use class for selector
-	$id = ( 0 == $instances ) ? '' : '-' . $instances;
+	$id = ( 0 == $atts['instance'] ) ? '' : '-' . $atts['instance'];
 	$output .= '<div id="master-schedule-controls-wrapper' . esc_attr( $id ) . '" class="master-schedule-controls-wrapper">' . "\n";
 
 		$controls = array();
@@ -260,7 +274,8 @@ function radio_station_master_schedule( $atts ) {
 		if ( $atts['clock'] ) {
 
 			// --- radio clock ---
-			$clock_atts = apply_filters( 'radio_station_schedule_clock', array(), $atts );
+			// 2.5.18: fix for conflicting filter radio_station_schedule_clock
+			$clock_atts = apply_filters( 'radio_station_schedule_clock_atts', array(), $atts );
 			$controls['clock'] = '<div id="master-schedule-clock-wrapper' . esc_attr( $id ) . '" class="master-schedule-clock-wrapper">' . "\n";
 				$controls['clock'] .= radio_station_clock_shortcode( $clock_atts );
 			$controls['clock'] .= "\n" . '</div>' . "\n";
@@ -268,7 +283,8 @@ function radio_station_master_schedule( $atts ) {
 		} elseif ( $atts['timezone'] ) {
 
 			// --- radio timezone ---
-			$timezone_atts = apply_filters( 'radio_station_schedule_clock', array(), $atts );
+			// 2.5.18: fix for conflicting filter radio_station_schedule_clock
+			$timezone_atts = apply_filters( 'radio_station_schedule_timezone_atts', array(), $atts );
 			$controls['timezone'] = '<div id="master-schedule-timezone-wrapper' . esc_attr( $id ) . '" class="master-schedule-timezone-wrapper">' . "\n";
 				$controls['timezone'] .= radio_station_timezone_shortcode( $timezone_atts );
 			$controls['timezone'] .= "\n" . '</div>' . "\n";
@@ -278,7 +294,7 @@ function radio_station_master_schedule( $atts ) {
 		// --- genre selector ---
 		if ( $atts['selector'] ) {
 			$controls['selector'] = '<div id="master-schedule-selector-wrapper' . esc_attr( $id ) . '" class="master-schedule-selector-wrapper">' . "\n";
-				$controls['selector'] .= radio_station_master_schedule_genre_selector( $instances );
+				$controls['selector'] .= radio_station_master_schedule_genre_selector( $atts['instance'] );
 			$controls['selector'] .= "\n" . '</div>' . "\n";
 		}
 
@@ -339,10 +355,6 @@ function radio_station_master_schedule( $atts ) {
 	// --- schedule display override ---
 	// 2.3.1: add full schedule override filter
 	// 2.3.3.9: add existing controls output to filter
-	// 2.5.10.1: maybe merge instance ID back into atts value
-	if ( isset( $instance ) ) {
-		$atts = array_merge( $atts, array( 'instance' => $instance ) );
-	}
 	$override = apply_filters( 'radio_station_schedule_override', $output, $atts );
 	if ( strstr( $override, '<!-- SCHEDULE OVERRIDE -->' ) ) {
 		$override = str_replace( '<!-- SCHEDULE OVERRIDE -->', '', $override );
@@ -365,16 +377,10 @@ function radio_station_master_schedule( $atts ) {
 	if ( 'table' == $atts['view'] ) {
 
 		// 2.5.10.1: added check for specified instance
-		if ( !isset( $instance ) ) {
-			// 2.5.0: set view instance number
-			if ( !isset( $radio_station_data['schedules']['table'] ) ) {
-				$radio_station_data['schedules']['table'] = -1;
-			}
-			$radio_station_data['schedules']['table']++;
-			$instance = $radio_station_data['schedules']['table'];
-		}
+		// 2.5.0: set view instance number
 		// 2.5.6: fix for missing id definition
-		$id = ( 0 == $instance ) ? '' : '-' . $instance;
+		// 2.5.18: simplifiy use instance attribute
+		$id = ( 0 == $atts['instance']  ) ? '' : '-' . $atts['instance'] ;
 
 		// --- load table view template ---
 		ob_start();
@@ -400,16 +406,10 @@ function radio_station_master_schedule( $atts ) {
 	} elseif ( 'tabs' == $atts['view'] ) {
 
 		// 2.5.10.1: added check for specified instance
-		if ( !isset( $instance ) ) {
-			// 2.5.0: set view instance number
-			if ( !isset( $radio_station_data['schedules']['tabs'] ) ) {
-				$radio_station_data['schedules']['tabs'] = -1;
-			}
-			$radio_station_data['schedules']['tabs']++;
-			$instance = $radio_station_data['schedules']['tabs'];
-		}
+		// 2.5.0: set view instance number
 		// 2.5.6: fix for missing id definition
-		$id = ( 0 == $instance ) ? '' : '-' . $instance;
+		// 2.5.18: simplifiy use instance attribute
+		$id = ( 0 == $atts['instance'] ) ? '' : '-' . $atts['instance'];
 
 		// --- load tabs view template ---
 		ob_start();
@@ -435,16 +435,10 @@ function radio_station_master_schedule( $atts ) {
 	} elseif ( 'list' == $atts['view'] ) {
 
 		// 2.5.10.1: added check for specified instance
-		if ( !isset( $instance ) ) {
-			// 2.5.0: set view instance number
-			if ( !isset( $radio_station_data['schedules']['list'] ) ) {
-				$radio_station_data['schedules']['list'] = -1;
-			}
-			$radio_station_data['schedules']['list']++;
-			$instance = $radio_station_data['schedules']['list'];
-		}
+		// 2.5.0: set view instance number
 		// 2.5.6: fix for missing id definition
-		$id = ( 0 == $instance ) ? '' : '-' . $instance;
+		// 2.5.18: simplifiy use instance attribute
+		$id = ( 0 == $atts['instance'] ) ? '' : '-' . $atts['instance'];
 
 		// --- load list view template ---
 		ob_start();
@@ -692,21 +686,21 @@ function radio_station_master_schedule_loader_js( $atts ) {
 		newdate = new Date(new Date(startdate).getTime() + offset).toISOString().substr(0,10);
 		timestamp = Math.floor((new Date()).getTime() / 1000);
 		url = '" . esc_url( $loader_url );
-		// 2.6.0: add args directly to avoid double escaping
-		$ignore_keys = array( 'start_date', 'view', 'ajax' );
+		// 2.5.0: add these args directly to avoid double escaping
+		// 2.5.18: ignore channel attribute to check for it explicitly
+		$ignore_keys = array( 'start_date', 'view', 'ajax', 'channel' );
 		foreach ( $atts as $key => $value ) {
 			if ( !in_array( $key, $ignore_keys ) ) {
 				$js .= '&' . esc_js( $key ) . '=' . esc_js( $value );
 			}
 		}
-		$js .= "&view='+view+'&instance='+instance+'&timestamp='+timestamp+'&start_date='+newdate+'&active_date='+activedate;
+		$js .= "&view='+view+'&instance='+instance+'&timestamp='+timestamp+'&start_date='+newdate+'&active_date='+activedate;";
+		// 2.5.18: added optional channel selection value
+		$js .= "if (jQuery('#channel-select-'+instance).length) {url += '&channel='+jQuery('#channel-select-'+instance).val();}
 		if (startday != '') {url += '&start_day='+startday;}
 		if (activeday != '') {url += '&active_day='+activeday;}
 		if (clear) {url += '&clear=1';}
 		if (radio.debug) {url += '&rs-debug=1'; console.log('Reload View URL: '+url);}
-		/* if (document.getElementById('schedule-'+view+'-loader').src != url) {
-			document.getElementById('schedule-'+view+'-loader').src = url;
-		} */
 		iframe_id = 'master-schedule-'+view+'-'+instance+'-loader';
 		iframe = document.getElementById(iframe_id);
 		if (iframe) {
@@ -721,42 +715,59 @@ function radio_station_master_schedule_loader_js( $atts ) {
 	}" . "\n";
 
 	// 2.5.10.1: added multi-schedule reloader
-	$js .= "function radio_load_schedules() {
+	// 2.6.18: added optional instance argument
+	$js .= "function radio_load_schedules(instance) {
 		tables = jQuery('.master-program-schedule');
 		tabs = jQuery('.master-schedule-tabs');
 		lists = jQuery('.master-schedule-list');
 		grids = jQuery('.master-schedule-grid');
 		calendars = jQuery('.master-schedule-calendar');
 		if (tables.length) {tables.each(function() {
-			instance = jQuery(this).attr('id').replace('master-program-schedule-','');
-			if (radio.debug) {console.log('Refreshing Table Instance '+instance);}
-			radio_load_schedule(instance,false,'table',true);
+			inst = jQuery(this).attr('id').replace('master-program-schedule','').replace('-','');
+			console.log(instance+' - '+inst);
+			if (inst == '') {inst = 0;}
+			if (!instance || (parseInt(instance) == parseInt(inst))) {
+				if (radio.debug) {console.log('Refreshing Table Instance '+inst);}
+				radio_load_schedule(inst,false,'table',true);
+			}
 		}); }
 		if (tabs.length) {tabs.each(function() {
-			instance = jQuery(this).attr('id').replace('master-schedule-tabs-','');
-			if (radio.debug) {console.log('Refreshing Tabs Instance '+instance);}
-			radio_load_schedule(instance,false,'tabs',true);
+			inst = jQuery(this).attr('id').replace('master-schedule-tabs','').replace('-','');
+			if (inst == '') {inst = 0;}
+			if (!instance || (parseInt(instance) == parseInt(inst))) {
+				if (radio.debug) {console.log('Refreshing Tabs Instance '+inst);}
+				radio_load_schedule(inst,false,'tabs',true);
+			}
 		}); }
 		if (lists.length) {lists.each(function() {
-			instance = jQuery(this).attr('id').replace('master-schedule-list-','');
-			if (radio.debug) {console.log('Refreshing List Instance '+instance);}
-			radio_load_schedule(instance,false,'list',true);
+			inst = jQuery(this).attr('id').replace('master-schedule-list','').replace('-','');
+			if (inst == '') {inst = 0;}
+			if (!instance || (parseInt(instance) == parseInt(inst))) {
+				if (radio.debug) {console.log('Refreshing List Instance '+inst);}
+				radio_load_schedule(inst,false,'list',true);
+			}
 		}); }
 		if (grids.length) {grids.each(function() {
-			instance = jQuery(this).attr('id').replace('master-schedule-grid-','');
-			if (radio.debug) {console.log('Refreshing Grid Instance '+instance);}
-			radio_load_schedule(instance,false,'grid',true);
+			inst = jQuery(this).attr('id').replace('master-schedule-grid','').replace('-','');
+			if (inst == '') {inst = 0;}
+			if (!instance || (parseInt(instance) == parseInt(inst))) {
+				if (radio.debug) {console.log('Refreshing Grid Instance '+inst);}
+				radio_load_schedule(inst,false,'grid',true);
+			}
 		}); }
-		if (calendars.length) {calendars.each(function() {				
-			instance = jQuery(this).attr('id').replace('master-schedule-calendar-','');
-			if (radio.debug) {console.log('Refreshing Calendar Instance '+instance);
-			radio_load_schedule(instance,false,'calendar',true);}
+		if (calendars.length) {calendars.each(function() {
+			inst = jQuery(this).attr('id').replace('master-schedule-calendar','').replace('-','');
+			if (inst == '') {inst = 0;}
+			if (!instance || (parseInt(instance) == parseInt(inst))) {
+				if (radio.debug) {console.log('Refreshing Calendar Instance '+inst);
+				radio_load_schedule(inst,false,'calendar',true);}
+			}
 		}); }			
 	}" . "\n";
 
 	// 2.5.10.1: check for AJAX attribute to refresh schedule on pageload
 	if ( isset( $atts['ajax'] ) && $atts['ajax'] ) {
-		$js .= "jQuery(document).ready(function() {radio_load_schedules();}, 500);" . "\n";
+		$js .= "jQuery(document).ready(function() {radio_load_schedules(false);}, 500);" . "\n";
 	}
 	
 	// --- filter and return ---
@@ -781,8 +792,8 @@ function radio_station_ajax_schedule_loader() {
 	$instance = absint( $_REQUEST['instance'] );
 
 	// 2.5.13 use the active day if set
-	$active_date = sanitize_text_field( $_REQUEST['active_date'] );
-	$active_day = sanitize_text_field( $_REQUEST['active_day'] );
+	$active_date = isset( $_REQUEST['active_date'] ) ? sanitize_text_field( $_REQUEST['active_date'] ) : '';
+	$active_day = isset( $_REQUEST['active_day'] ) ? sanitize_text_field( $_REQUEST['active_day'] ) : '';
 	$day = ( '' != $active_day ) ? $active_day : strtolower( date( 'l', strtotime( $active_date ) ) );
 
 	// --- sanitize shortcode attributes ---
@@ -800,7 +811,7 @@ function radio_station_ajax_schedule_loader() {
 
 	// --- output schedule contents ---
 	// 2.5.0: remove unused schedule contents wrap
-	// TODO: test wp_kses on master schedule output
+	// TODO: test wp_kses on master schedule output?
 	echo radio_station_master_schedule( $atts );
 
 	$js = '';

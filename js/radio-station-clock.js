@@ -97,34 +97,6 @@ function radio_clock_date_time() {
 		}
 	}
 
-	/* user timezone offset */
-	userzone = userzone.replace('/',', ');
-	userzone = userzone.replace('_',' ');
-	houroffset = parseInt(useroffset);
-	if (houroffset == 0) {userzone += ' [UTC]';}
-	else {
-		if ((typeof radio.timezone.zonename_override != 'undefined') && radio.timezone.zonename_override) {
-			userzone += ' ['+radio.timezone.zonename_override+']';
-		}
-		houroffset = houroffset / 60;
-		if (houroffset > 0) {userzone += ' [UTC+'+houroffset+']';}
-		else {userzone += ' [UTC'+houroffset+']';}
-	}
-
-	/* server timezone */
-	serverzone = '';
-	if (radio.timezone.utczone) {
-		serverzone += ' [UTC'+radio.timezone.utc+']';
-	} else {
-		serverzone = radio.timezone.location;
-		serverzone = serverzone.replace('/',', ');
-		serverzone = serverzone.replace('_',' ');
-		if (typeof radio.timezone.code != 'undefined') {
-			serverzone += ' ['+radio.timezone.code+']';
-		}
-		serverzone += ' ['+radio.timezone.utc+']';
-	}
-
 	/* loop clock instances */
 	clock = document.getElementsByClassName('radio-station-clock');
 	for (i = 0; i < clock.length; i++) {
@@ -158,7 +130,27 @@ function radio_clock_date_time() {
 						for (k = 0; k < divs.length; k++) {
 							if ((divs[k].className == 'radio-server-time') && (divs[k].innerHTML != servertime)) {divs[k].innerHTML = servertime;}
 							else if ((divs[k].className == 'radio-server-date') && (divs[k].innerHTML != serverdate)) {divs[k].innerHTML = serverdate;}
-							else if (init && zone && (divs[k].className == 'radio-server-zone') && (divs[k].innerHTML != serverzone)) {divs[k].innerHTML = serverzone;}
+							else if (init && zone && (divs[k].className == 'radio-server-zone')) {
+								/* server timezone */
+								format = divs[k].getAttribute('data-format'); f = format.split('-');
+								serverzone = radio.timezone.location; szone = '';
+								serverzone = serverzone.replace('_',' '); parts = serverzone.split('/');
+								if (typeof radio.timezone.code != 'undefined') {code = radio.timezone.code} else {code = '';}
+								if ((f[0] == '1') && (code != '')) {szone += code+' ';}
+								if ((f[3] == '1') && radio.timezone.utczone) {
+									szone += ' [UTC'+radio.timezone.utc+']';
+								} else {
+									if ((f[1] == '1') || (f[2] == '1')) {
+										if ((f[0] == '1') && (code != '')) {szone += '(';}
+										if (f[2] == '1') {szone += parts[1];}
+										if ((f[1] == '1') && (f[2] == '1')) {szone += ', ';}
+										if (f[1] == '1') {szone += parts[0];}
+										if ((f[0] == '1') && (code != '')) {szone += ')';}
+									}
+									if (f[3] == '1') {szone += ' ['+radio.timezone.utc+']';}
+								}
+								if (divs[k].innerHTML != szone) {divs[k].innerHTML = szone;}
+							}
 						}
 					}
 
@@ -168,7 +160,33 @@ function radio_clock_date_time() {
 						for (k = 0; k < divs.length; k++) {
 							if ((divs[k].className == 'radio-user-time') && (divs[k].innerHTML != usertime)) {divs[k].innerHTML = usertime;}
 							else if ((divs[k].className == 'radio-user-date') && (divs[k].innerHTML != userdate)) {divs[k].innerHTML = userdate;}
-							else if (init && zone && (divs[k].className == 'radio-user-zone') && (divs[k].innerHTML != userzone)) {divs[k].innerHTML = userzone;}
+							else if (init && zone && (divs[k].className == 'radio-user-zone')) {
+								/* user timezone offset */
+								format = divs[k].getAttribute('data-format'); f = format.split('-');
+								code = radio_timezone_code(userzone); /* console.log(code); */
+								/* console.log(radio.timezone.zonename_override); */
+								if ((typeof radio.timezone.zonename_override != 'undefined') && radio.timezone.zonename_override) {code = radio.timezone.zonename_override;}
+								uzone = userzone.replace('_',' '); parts = uzone.split('/');
+								uzone = '';
+								if ((f[0] == '1') && (code != '')) {uzone += code+' ';}
+								if ((f[1] == '1') || (f[2] == '1')) {
+									if ((f[0] == '1') && (code != '')) {uzone += '(';}
+									if (f[2] == '1') {uzone += parts[1];}
+									if ((f[1] == '1') && (f[2] == '1')) {uzone += ', ';}
+									if (f[1] == '1') {uzone += parts[0];}
+									if ((f[0] == '1') && (code != '')) {uzone += ')';}
+								}
+								if (f[3] == '1') {
+									houroffset = parseInt(useroffset);
+									if (houroffset == 0) {uzone += ' [UTC]';}
+									else {
+										houroffset = houroffset / 60;
+										if (houroffset > 0) {uzone += ' [UTC+'+houroffset+']';}
+										else {uzone += ' [UTC'+houroffset+']';}
+									}
+								}
+								if (divs[k].innerHTML != uzone) {divs[k].innerHTML = uzone;}
+							}
 						}
 					}
 				}

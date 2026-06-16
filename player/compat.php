@@ -40,6 +40,26 @@ if ( !function_exists( 'sanitize_text_field' ) ) {
  }
 }
 
+// -----------------
+// Trailing Slash It
+// -----------------
+if ( !function_exists( 'trailingslashit' ) ) {
+ function trailingslashit( $url ) {
+	if ( substr( $url, -1, 1 ) !== '/' ) {
+		$url .= '/';
+	}
+	return $url;
+ }
+}
+
+
+// ----------------------------
+// Backwards Compatible Defines
+// ----------------------------
+// 2.5.18: added for Radio Player no-conflict backwards compatibility
+if ( !defined( 'RADIO_PLAYER_URL' ) && defined( 'RADIO_PLAYER_DIR_URL' ) ) {
+	define( 'RADIO_PLAYER_URL', RADIO_PLAYER_DIR_URL );
+}
 
 // ----------------------------------------
 // Player Backwards Compatibility Functions
@@ -207,5 +227,12 @@ if ( !function_exists( 'radio_station_player_style_tag' ) ) {
 if ( !function_exists( 'radio_station_player_validate_boolean' ) ) {
 	function radio_station_player_validate_boolean( $value ) {
 		return (bool) $value;
+	}
+}
+
+// 2.5.18: back compat for radio_player_inline_script name change
+if ( !function_exists( 'radio_player_inline_script' ) ) {
+	function radio_player_inline_script( $js ) {
+		radio_player_add_inline_script( $js );
 	}
 }

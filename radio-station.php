@@ -6,7 +6,7 @@ Plugin Name: Radio Station
 Plugin URI: https://radiostation.pro/radio-station
 Description: Adds Show pages, DJ role, playlist and on-air programming functionality to your site.
 Author: Tony Zeoli, Tony Hayes
-Version: 2.5.17
+Version: 2.5.20
 Requires at least: 3.3.1
 Text Domain: radio-station
 Domain Path: /languages
@@ -42,6 +42,8 @@ if ( !defined( 'ABSPATH' ) ) exit;
 // - Start Plugin Loader Instance
 // - Include Plugin Admin Files
 // - Load Plugin Text Domain
+// x Add Pricing Page Path Filter
+// x Freemius Pricing Page Path Filter
 // === Plugin Functions ===
 // - Check Plan Options
 // - Check Plugin Version
@@ -56,12 +58,13 @@ if ( !defined( 'ABSPATH' ) ) exit;
 // - Register Moment JS
 // - Enqueue Plugin Script
 // - Add Inline Script
-// - Print Footer Scripts
-// - Print Admin Footer Scripts
+// - Enqueue Footer Scripts
+// x Print Admin Footer Scripts
 // - Enqueue Plugin Stylesheet
 // - Add Inline Style
-// - Print Footer Styles
-// - Print Admin Footer Styles
+// - Enqueue Footer Styles
+// x Print Admin Footer Styles
+// - Print Missed Footer Resources
 // - Enqueue Datepicker
 // - Enqueue Localized Script Values
 // - Localization Script
@@ -211,11 +214,10 @@ function radio_station_back_compat_player() {
 // 2.3.0: added plugin options
 // 2.4.0.8: moved options array to separate file
 // 2.5.0: move plan options check to separate function
-$timezones = radio_station_get_timezone_options( true );
-$languages = radio_station_get_language_options( true );
-$formats = radio_station_get_stream_formats();
-$plan_options = radio_station_check_plan_options();
+// 2.5.18: get options via function
 require RADIO_STATION_DIR . '/options.php';
+$plan_options = radio_station_check_plan_options();
+$options = radio_station_plugin_options();
 
 // ----------------------
 // Plugin Loader Settings
@@ -236,11 +238,8 @@ $settings = array(
 	'home'         => RADIO_STATION_HOME_URL,
 	'docs'         => RADIO_STATION_DOCS_URL,
 	'support'      => 'https://github.com/netmix/radio-station/issues/',
-	'ratetext'     => __( 'Rate on WordPress.org', 'radio-station' ),
 	'share'        => RADIO_STATION_HOME_URL . '#share',
-	'sharetext'    => __( 'Share the Plugin Love', 'radio-station' ),
 	'donate'       => 'https://patreon.com/radiostation',
-	'donatetext'   => __( 'Support this Plugin', 'radio-station' ),
 	'readme'       => false,
 	'settingsmenu' => false,
 
@@ -272,6 +271,21 @@ $settings = array(
 	'affiliation'  => 'selected',
 
 );
+
+// ---------------------
+// Settings Text Filters
+// ---------------------
+// 2.5.18: added to avoid translations loading early
+add_filter( 'radio_station_admin_args', 'radio_station_settings_texts' );
+function radio_station_settings_texts( $args ) {
+	$texts = array(
+		'sharetext'    => __( 'Share the Plugin Love', 'radio-station' ),
+		'ratetext'     => __( 'Rate on WordPress.org', 'radio-station' ),
+		'donatetext'   => __( 'Support this Plugin', 'radio-station' ),
+	);
+	$args = array_merge( $args, $texts );
+	return $args;
+}
 
 // ---------------------------
 // Bundle Plan Settings Filter
@@ -313,8 +327,8 @@ if ( is_admin() ) {
 
 	// --- Admin Includes ---
 	require RADIO_STATION_DIR . '/radio-station-admin.php';
-	// require RADIO_STATION_DIR . '/includes/onboarding.php';
 	require RADIO_STATION_DIR . '/includes/post-types-admin.php';
+	require RADIO_STATION_DIR . '/includes/onboarding.php';
 
 	// --- Contextual Help ---
 	// 2.3.0: maybe load contextual help config
@@ -337,22 +351,24 @@ function radio_station_init() {
 // Add Pricing Page Path Filter
 // ----------------------------
 // 2.5.0: added for Freemius Pricing Page v2
-add_action( 'radio_station_loaded', 'radio_station_add_pricing_path_filter' );
-function radio_station_add_pricing_path_filter() {
-	global $radio_station_freemius;
-	if ( method_exists( $radio_station_freemius, 'add_filter' ) ) {
-		$radio_station_freemius->add_filter( 'freemius_pricing_js_path', 'radio_station_pricing_page_path' );
-	}
-}
+// 2.5.18: disabled as since included in Freemius by default
+// add_action( 'radio_station_loaded', 'radio_station_add_pricing_path_filter' );
+// function radio_station_add_pricing_path_filter() {
+//	global $radio_station_freemius;
+//	if ( method_exists( $radio_station_freemius, 'add_filter' ) ) {
+//		$radio_station_freemius->add_filter( 'freemius_pricing_js_path', 'radio_station_pricing_page_path' );
+//	}
+// }
 
 // ---------------------------------
 // Freemius Pricing Page Path Filter
 // ---------------------------------
 // 2.5.0: added for Freemius Pricing Page v2
-function radio_station_pricing_page_path( $default_pricing_js_path ) {
-	$suffix = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) || RADIO_STATION_DEBUG ? '' : '.min';
-	return RADIO_STATION_DIR . '/freemius-pricing/freemius-pricing' . $suffix . '.js';
-}
+// 2.5.18: disabled as since included in Freemius by default
+// function radio_station_pricing_page_path( $default_pricing_js_path ) {
+//	$suffix = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) || RADIO_STATION_DEBUG ? '' : '.min';
+//	return RADIO_STATION_DIR . '/freemius-pricing/freemius-pricing' . $suffix . '.js';
+// }
 
 
 // ------------------------
@@ -580,9 +596,16 @@ function radio_station_enqueue_plugin_scripts() {
 	// 2.3.0: added for automatic custom style loading
 	radio_station_enqueue_style( 'custom' );
 
+	// --- register moment js ---
+	// 2.5.0: move to separate function for reusability
+	// 2.5.18: move earlier to add as radio station dependency
+	radio_station_register_moment();
+	wp_enqueue_script( 'moment' );
+
 	// --- enqueue plugin script ---
 	// 2.3.0: added jquery dependency for inline script fragments
-	radio_station_enqueue_script( 'radio-station', array( 'jquery' ), true );
+	// 2.5.18: add moment as a dependency to prevent pageload conflicts
+	radio_station_enqueue_script( 'radio-station', array( 'jquery', 'moment' ), true );
 
 	// --- set script suffix ---
 	$suffix = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
@@ -593,10 +616,6 @@ function radio_station_enqueue_plugin_scripts() {
 	$jstz_url = plugins_url( 'js/jstz' . $suffix . '.js', RADIO_STATION_FILE );
 	wp_enqueue_script( 'jstz', $jstz_url, array(), '1.0.6', false );
 
-	// --- register moment js ---
-	// 2.5.0: move to separate function for reusability
-	radio_station_register_moment();
-	wp_enqueue_script( 'moment' );
 }
 
 // ------------------
@@ -656,12 +675,6 @@ function radio_station_enqueue_script( $scriptkey, $deps = array(), $infooter = 
 // 2.5.0: added for missed inline scripts (via shortcodes)
 function radio_station_add_inline_script( $handle, $js, $position = 'after' ) {
 
-	// --- maybe enqueue footer dummy script ---
-	/* if ( ( 'rs-footer' == $handle ) && !wp_script_is( 'rs-footer', 'enqueued' ) ) {
-		$script_url = plugins_url( '/js/rs-footer.js', RADIO_STATION_FILE );
-		wp_enqueue_script( 'rs-footer', $script_url, array(), '1.0.0', true );
-	} */
-
 	// --- add check if script is already done ---
 	if ( wp_script_is( $handle, 'registered' ) && !wp_script_is( $handle, 'done' ) ) {
 
@@ -673,51 +686,38 @@ function radio_station_add_inline_script( $handle, $js, $position = 'after' ) {
 		// 2.5.7: enqueue dummy javascript file to output in footer
 		// 2.5.10: fix slug from rp-footer to rs-footer
 		// 2.5.10: change from register_script to enqueue_script
-		/* if ( !wp_script_is( 'rs-footer', 'enqueued' ) ) {
-			$script_url = plugins_url( '/js/rs-footer.js', RADIO_STATION_FILE );
-			wp_enqueue_script( 'rs-footer', $script_url, array(), '1.0.0', true );
+		// 2.5.18: register here but enqueue later
+		if ( !wp_script_is( RADIO_STATION_SLUG . '-footer', 'registered' ) ) {
+			$version = function_exists( 'radio_station_plugin_version' ) ? radio_station_plugin_version() : '2.5.0';
+			wp_register_script( RADIO_STATION_SLUG . '-footer', null, array( 'jquery' ), $version, true );
+			// wp_enqueue_script( RADIO_STATION_SLUG . '-footer' );
 		}
-		wp_add_inline_script( 'rs-footer', $js, $position ); */
+		wp_add_inline_script( RADIO_STATION_SLUG . '-footer', $js, $position );
 		
-		// 2.5.7: enqueue dummy javascript file to output in footer
-		if ( !wp_script_is( 'radio-station-footer', 'registered' ) ) {
-			$version = functIon_exists( 'radio_station_plugin_version' ) ? radio_station_plugin_version() : '2.5.0';
-			wp_register_script( 'radio-station-footer', null, array( 'jquery' ), $version, true );
-			wp_enqueue_script( 'radio-station-footer' );
+		// 2.5.18: enqueue in footer
+		// 2.5.18: allow for admin footer hook
+		$hook = is_admin() ? 'admin_footer' : 'wp_footer';
+		if ( !has_action( $hook, 'radio_station_enqueue_footer_scripts', 5 ) ) {
+			add_action( $hook, 'radio_station_enqueue_footer_scripts', 5 );
 		}
-		wp_add_inline_script( 'radio-station-footer', $js, $position );
 
 	}
 }
 
-// --------------------
-// Print Footer Scripts
-// --------------------
-// 2.5.0: added for missed inline scripts
-// 2.5.7: deprecated in favour of adding inline to dummy script
-/* function radio_station_print_footer_scripts() {
-	global $radio_station_scripts;
-	if ( is_array( $radio_station_scripts ) && ( count( $radio_station_scripts ) > 0 ) ) {
-		foreach ( $radio_station_scripts as $handle => $js ) {
-			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-			echo '<script id="' . esc_attr( $handle ) . '-js-after">' . $js . '</script>';
-		}
-	}
-} */
+// ----------------------
+// Enqueue Footer Scripts
+// ----------------------
+// 2.5.0: added print footer scripts for missed inline scripts
+// 2.5.7: deprecated print script in favour of adding inline to dummy script
+// 2.5.18: repurpose to enqueue footer scripts
+function radio_station_enqueue_footer_scripts() {
+	wp_enqueue_script( RADIO_STATION_SLUG . '-footer' );
+}
 
 // --------------------------
 // Print Admin Footer Scripts
 // --------------------------
 // 2.5.7: deprecated in favour of adding inline to dummy script
-/* function radio_station_admin_print_footer_scripts() {
-	global $radio_station_admin_scripts;
-	if ( is_array( $radio_station_admin_scripts ) && ( count( $radio_station_admin_scripts ) > 0 ) ) {
-		foreach ( $radio_station_admin_scripts as $handle => $js ) {
-			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-			echo '<script id="' . esc_attr( $handle ) . '-js-after">' . $js . '</script>';
-		}
-	}
-} */
 
 // -------------------------
 // Enqueue Plugin Stylesheet
@@ -776,56 +776,46 @@ function radio_station_add_inline_style( $handle, $css ) {
 		wp_add_inline_style( $handle, $css );
 
 	} else {
-		// --- store extra styles for later output ---
-		/* if ( !strstr( $handle, '-admin' ) ) {
-			global $radio_station_styles;
-			add_action( 'wp_print_footer_scripts', 'radio_station_print_footer_styles', 20 );
-			if ( !isset( $radio_station_styles[$handle] ) ) {
-				$radio_station_styles[$handle] = '';
-			}
-			$radio_station_styles[$handle] .= $css;
-		} else {
-			global $radio_station_admin_styles;
-			add_action( 'admin_print_footer_scripts', 'radio_station_admin_print_footer_styles', 20 );
-			if ( !isset( $radio_station_admin_styles[$handle] ) ) {
-				$radio_station_admin_styles[$handle] = '';
-			}
-			$radio_station_admin_styles[$handle] .= $css;
-		} */
-		if ( !wp_style_is( 'radio-station-footer', 'registered' ) ) {
+		// 2.5.18: register inline style but enqueue later
+		if ( !wp_style_is( RADIO_STATION_SLUG . '-footer', 'registered' ) ) {
 			$version = function_exists( 'radio_station_plugin_version' ) ? radio_station_plugin_version() : '2.5.0';
-			wp_register_style( 'radio-station-footer', null, array(), $version, 'all' );
-			wp_enqueue_style( 'radio-station-footer' );
+			wp_register_style( RADIO_STATION_SLUG . '-footer', null, array(), $version, 'all' );
+			// wp_enqueue_style( RADIO_STATION_SLUG . '-footer' );
 		}
-		wp_add_inline_style( 'radio-station-footer', $css );
+		wp_add_inline_style( RADIO_STATION_SLUG . '-footer', $css );
+
+		// 2.5.18: allow for admin footer position
+		$hook = is_admin() ? 'admin_footer' : 'wp_footer';
+		if ( !has_action( $hook, 'radio_station_enqueue_footer_styles', 5 ) ) {
+			add_action( $hook, 'radio_station_enqueue_footer_styles', 5 );
+		}
 	}
 }
 
-// -------------------
-// Print Footer Styles
-// -------------------
-// 2.5.0: added for missed inline styles
-/* function radio_station_print_footer_styles() {
-	global $radio_station_styles;
-	if ( is_array( $radio_station_styles ) && ( count( $radio_station_styles ) > 0 ) ) {
-		foreach ( $radio_station_styles as $handle => $css ) {
-			echo '<style>' . wp_kses_post( $css ) . '</style>';
-		}
-	}
-} */
+// ---------------------
+// Enqueue Footer Styles
+// ---------------------
+// 2.5.0: added print in footer for missed inline styles
+// 2.5.18: repurpose to enqueue footer Styles
+function radio_station_enqueue_footer_styles() {
+	wp_enqueue_style( RADIO_STATION_SLUG . '-footer' );
+}
 
 // -------------------------
 // Print Admin Footer Styles
 // -------------------------
 // 2.5.0: added for missed inline styles
-/* function radio_station_admin_print_footer_styles() {
-	global $radio_station_admin_styles;
-	if ( is_array( $radio_station_admin_styles ) && ( count( $radio_station_admin_styles ) > 0 ) ) {
-		foreach ( $radio_station_admin_styles as $handle => $css ) {
-			echo '<style>' . wp_kses_post( $css ) . '</style>';
-		}
-	}
-} */
+// 2.5.7: deprecated in favour of adding inline to dummy script
+
+// -----------------------------
+// Print Missed Footer Resources
+// -----------------------------
+// 2.1.19: added for theme compatibility (shortcode loaded styles to footer)
+add_action( 'wp_footer', 'radio_station_print_missed_footer_resources', 11 );
+function radio_station_print_missed_footer_resources() {
+	wp_print_footer_scripts(); // probably unecessary
+	wp_print_styles(); // sometimes this is necessary
+}
 
 // ------------------
 // Enqueue Datepicker
@@ -1025,11 +1015,14 @@ function radio_station_localization_script() {
 
 	// --- set countdown labels ---
 	// 2.5.0: moved here from countdown enqueue function
+	// 2.5.18: added with label for host metadata display
 	$js .= "radio.labels.showstarted = '" . esc_js( __( 'This Show has started.', 'radio-station' ) ) . "';" . "\n";
 	$js .= "radio.labels.showended = '" . esc_js( __( 'This Show has ended.', 'radio-station' ) ) . "';" . "\n";
 	$js .= "radio.labels.playlistended = '" . esc_js( __( 'This Playlist has ended.', 'radio-station' ) ) . "';" . "\n";
 	$js .= "radio.labels.timecommencing = '" . esc_js( __( 'Commencing in', 'radio-station' ) ) . "';" . "\n";
 	$js .= "radio.labels.timeremaining = '" . esc_js( __( 'Remaining Time', 'radio-station' ) ) . "';" . "\n";
+	$js .= "radio.labels.showwith = '" . esc_js( __( 'with', 'radio-station' ) ) . "';" . "\n";
+	$js .= "radio.labels.showand = '" . esc_js( __( 'and', 'radio-station' ) ) . "';" . "\n";
 
 	// --- translated time unit strings ---
 	$js .= "radio.units.am = '" . esc_js( radio_station_translate_meridiem( 'am' ) ) . "'; ";

@@ -131,7 +131,8 @@ function radio_station_get_timezone_code( $timezone ) {
 // Get Timezone Options
 // --------------------
 // ref: (based on) https://stackoverflow.com/a/17355238/5240159
-function radio_station_get_timezone_options( $include_wp_timezone = false ) {
+// 2.5.18: add admin argument for optional translation
+function radio_station_get_timezone_options( $include_wp_timezone = false, $admin = false ) {
 
 	global $rs_se;
 
@@ -145,7 +146,8 @@ function radio_station_get_timezone_options( $include_wp_timezone = false ) {
 
 	// --- maybe add WordPress timezone (default) option ---
 	if ( $include_wp_timezone ) {
-		$wp_timezone = array( '' => __( 'WordPress Timezone', 'radio-station' ) );
+		// 2.5.18: add operator for optional translation
+		$wp_timezone = array( '' => $admin ? __( 'WordPress Timezone', 'radio-station' ) : '' );
 		$options = array_merge( $wp_timezone, $options );
 	}
 

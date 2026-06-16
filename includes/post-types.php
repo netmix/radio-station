@@ -138,28 +138,29 @@ function radio_station_create_post_types() {
 	// -----------------
 	// $icon = WP_PLUGIN_URL.'/'.str_replace(basename( __FILE__),"",plugin_basename(__FILE__)) . 'images/show-menu-icon.png';
 	// $icon = plugins_url( 'images/show-menu-icon.png', RADIO_STATION_FILE );
+	// 2.5.18: change Overrides labels to Specials
 	$post_type = array(
 		'labels'            => array(
-			'name'               => __( 'Schedule Overrides', 'radio-station' ),
-			'singular_name'      => __( 'Schedule Override', 'radio-station' ),
-			'add_new'            => __( 'Add Schedule Override', 'radio-station' ),
-			'add_new_item'       => __( 'Add Schedule Override', 'radio-station' ),
-			'edit_item'          => __( 'Edit Schedule Override', 'radio-station' ),
-			'new_item'           => __( 'New Schedule Override', 'radio-station' ),
-			'view_item'          => __( 'View Schedule Override', 'radio-station' ),
+			'name'               => __( 'Specials', 'radio-station' ),
+			'singular_name'      => __( 'Special', 'radio-station' ),
+			'add_new'            => __( 'Add Special', 'radio-station' ),
+			'add_new_item'       => __( 'Add New Special', 'radio-station' ),
+			'edit_item'          => __( 'Edit Special', 'radio-station' ),
+			'new_item'           => __( 'New Special', 'radio-station' ),
+			'view_item'          => __( 'View Special', 'radio-station' ),
 			// 2.3.2: added missing post type labels
-			'search_items'       => __( 'Search Overrides', 'radio-station' ),
-			'not_found'          => __( 'No Overrides found', 'radio-station' ),
-			'not_found_in_trash' => __( 'No Overrides found in Trash', 'radio-station' ),
-			'all_items'          => __( 'All Overrides', 'radio-station' ),
-			'archive_title'      => __( 'Overrides', 'radio-station' ),
+			'search_items'       => __( 'Search Specials', 'radio-station' ),
+			'not_found'          => __( 'No Specials found', 'radio-station' ),
+			'not_found_in_trash' => __( 'No Specials found in Trash', 'radio-station' ),
+			'all_items'          => __( 'All Specials', 'radio-station' ),
+			'archive_title'      => __( 'Specials', 'radio-station' ),
 		),
 		'show_ui'           => true,
 		'show_in_menu'      => false, // now added to main menu
 		'show_in_admin_bar' => false, // this is done manually
 		'show_in_rest'      => true,
 		// 2.4.0.4: change to description (as displayed in some archive templates)
-		'description'       => __( 'Schedule Overrides Archive', 'radio-station' ),
+		'description'       => __( 'Specials Archive', 'radio-station' ),
 		'public'            => true,
 		// 2.3.0: added taxonomies to overrides
 		'taxonomies'        => array( RADIO_STATION_GENRES_SLUG, RADIO_STATION_LANGUAGES_SLUG ),
@@ -462,6 +463,7 @@ function radio_station_register_show_taxonomies() {
 	// --------------
 
 	// --- Genre taxonomy labels ---
+	// 2.5.18: add back to items label
 	$labels = array(
 		'name'              => _x( 'Genres', 'taxonomy general name', 'radio-station' ),
 		'singular_name'     => _x( 'Genre', 'taxonomy singular name', 'radio-station' ),
@@ -474,6 +476,7 @@ function radio_station_register_show_taxonomies() {
 		'add_new_item'      => __( 'Add New Genre', 'radio-station' ),
 		'new_item_name'     => __( 'New Genre Name', 'radio-station' ),
 		'menu_name'         => __( 'Genre', 'radio-station' ),
+		'back_to_items'     => __( '← Back to Genres', 'radio-station' ),
 	);
 
 	// --- register the genre taxonomy ---
@@ -508,6 +511,7 @@ function radio_station_register_show_taxonomies() {
 	// -----------------
 
 	// --- Language taxonomy labels ---
+	// 2.5.18: add back to items label
 	$labels = array(
 		'name'              => _x( 'Languages', 'taxonomy general name', 'radio-station' ),
 		'singular_name'     => _x( 'Language', 'taxonomy singular name', 'radio-station' ),
@@ -520,6 +524,7 @@ function radio_station_register_show_taxonomies() {
 		'add_new_item'      => __( 'Add New Language', 'radio-station' ),
 		'new_item_name'     => __( 'New Language Name', 'radio-station' ),
 		'menu_name'         => __( 'Language', 'radio-station' ),
+		'back_to_items'     => __( '← Back to Languages', 'radio-station' ),
 	);
 
 	// --- register the language taxonomy ---

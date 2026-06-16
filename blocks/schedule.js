@@ -70,6 +70,7 @@
 			// show_file: { type: 'boolean', default: false },
 			
 			/* --- Hidden Switches --- */
+			channel: { type: 'number', default: 0 },
 			block: { type: 'boolean', default: true },
 			pro: { type: 'boolean', default: false }
 		},

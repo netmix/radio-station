@@ -28,7 +28,15 @@
 			zone: { type: 'boolean', default: true },
 			seconds: { type: 'boolean', default: true },
 			
+			/* TODO: add extended clock shortcode attributes
+			code: { type: 'boolean', default: true },
+			region: { type: 'boolean', default: true },
+			location: { type: 'boolean', default: true },
+			offset: { type: 'boolean', default: true },
+			timezone: { type: 'string', default: '' }, */
+
 			/* --- Hidden Switches --- */
+			channel: { type: 'number', default: 0 },
 			block: { type: 'boolean', default: true },
 			pro: { type: 'boolean', default: false }
 		},

@@ -1,12 +1,12 @@
-=== Radio Station - Manage your Show Schedule, Playlists, and Live Streaming ===
+=== Radio Station by netmix® - Manage and play your Show Schedule in WordPress! ===
 Contributors: tonyzeoli, majick
 Donate link: https://netmix.org
-Tags: radio station, live streaming, show schedule, webcasting, internet radio
+Tags: radio station, radio shows, radio station schedule, radio broadcasting, streaming radio player
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires at least: 3.3
-Tested up to: 6.8.2
-Stable tag: 2.5.17
+Tested up to: 7.0
+Stable tag: 2.5.20
 
 Radio Station lets you build and manage a Show Schedule for a radio station or Internet broadcaster's WordPress website. 
 
@@ -16,7 +16,7 @@ Radio Station lets you build and manage a Show Schedule for a radio station or I
 
 This plugin can be downloaded for free without any paid subscription from the [official WordPress repository](https://wordpress.org/plugins/radio-station/).
 
-#### Radio Station & Live Streaming Plugin – Manage a Show Schedule, Playlists, and Live Stream your radio station.
+#### RADIO STATION by netmix®† - THE BEST WORDPRESS PLUGIN FOR BROADCASTERS!
 
 **Radio Station** *by netmix®* is the most comprehensive WordPress plugin for broadcasters of all types, to manage your Show schedule and play your audio stream on a WordPress website. Thousands of broadcasters worldwide use **Radio Station** *by netmix®* to manage their schedules, showcase their shows, attach playlists, and feature broadcast teams.
 
@@ -404,8 +404,37 @@ We recommend you test these on a Staging site (or a development copy of your liv
 
 == Changelog ==
 
+= 2.5.18 =
+* Updated: Freemius SDK (2.13.0)
+* Updated: Plugin Panel (1.3.7) for delayed translations
+* Updated: Radio Player (1.0.4)
+* Changed: split station content and settings Admin menus
+* Changed: display label of Overrides to Specials
+* Changed: handle of radio-player assets to stream-player
+* Improved: Related Show and Linked Show select Show ordering
+* Improved: handle Special/Override meta in Archive shortcode
+* Improved: edit Special/Override permissions for linked Shows
+* Improved: Timezone and Clock Timezone display formatting
+* Improved: Special override interface change highlighting
+* Added: Dashboard overview widget and Content Dashboard page
+* Added: Station Tagline, Callsign, Frequency, Location options
+* Added: Default Player display for Station Meta
+* Added: Special Overrides data routes/feed to Data API
+* Added: Solid and Solid with Transparent Outline Player Buttons
+* Added: Link main language term to filtered show archive
+* Added: Channel input support for Shifts and Overrides
+* Added: Genre and Description filters for admin Show list
+* Added: Station and Show text line number fields
+* Fixed: Player Amplitude script pause/unpause source bug
+* Fixed: Special/Override (non-linked) Host/Producer data
+* Fixed: Radio Player (other developer) plugin conflicts
+* Fixed: Override Drafts without dates not listing in Admin
+* Fixed: Block asset paths for script/style file versions
+* Fixed: Display user timezone for timezone shortcode
+* Removed: Freemius Pricing v2 filter (merged in Freemius)
+
 = 2.5.17 =
-* Updated: Bump version number to fix release bug
+* Fixed: Current Show widget reloading when Shift display is off
 
 = 2.5.16 =
 * Fixed: Player Block control color style preview / loading

@@ -131,9 +131,24 @@ As of April 1st, 2023, known languages include the following:
 * Spanish (es_ES)
 * Catalan (ca)
 
+Note that for ease of translation the Free version contains any extra text strings from the PRO version. The auto-generated `radio-station.pot` file is located in the `/languages` directory of the plugin. If you do add a translation for your preferred language, please send or notify us of the completed translation to `info@netmix.com`. We'd love to include it.
+
 #### Can Radio Station be translated into my language?
 
-You may translate the plugin into any other language supported by the WordPress translation engine. Please visit our [Translate project page](https://translate.wordpress.org/projects/wp-plugins/radio-station/) for all translations and for further instructions. Note that for ease of translation the Free version contains any extra text strings from the PRO version. The `radio-station.pot` file is located in the `/languages` directory of the plugin. If you do add a translation for your preferred language, please send or notify us of the completed translation to `info@netmix.com`. We'd love to include it.
+You may translate the plugin into any other language supported by the WordPress translation engine (GlotPress.) Here are some instructions on how to do that:
+
+- Go to https://translate.wordpress.org/ and sign in with a WordPress.org account (or create one).
+- In the search box, enter "Radio Station" plugin name or `radio-station` text domain, and click the project result to open its translation page. Here's the link: [Radio Station Translate Project Page](https://translate.wordpress.org/projects/wp-plugins/radio-station/)
+- On the project page, choose the language from the language list.
+- Choose the latest stable branch version number (note this may change as the plugin is updated so always select the latest version as older translations will automatically be transferred to it.)
+- Use the filter/search to find a string.
+- Click a string to open the editor.
+- In the "Translation" box enter the German text (keep placeholders like %s, %d, intact).
+- If unsure, add a comment in the discussion box for other translators/reviewers.
+- For contributors without commit rights: click "Suggest new translation".
+- If a translation is uncertain, mark it as "Needs work" or leave a note; do not publish incomplete translations.
+- Check the right‑hand panel for translation suggestions and previous translations to stay consistent.
+- Reviews are handled by language moderators. If the customer has reviewer role, they can approve suggestions from others.
 
 
 ### Troubleshooting

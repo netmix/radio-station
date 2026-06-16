@@ -74,9 +74,13 @@ if ( $atts['show_desc'] ) {
 $infokeys = array( 'avatar', 'title', 'hosts', 'times', 'encore', 'file', 'genres', 'excerpt', 'custom' );
 $infokeys = apply_filters( 'radio_station_schedule_list_info_order', $infokeys );
 
+// --- clear floats ---
+echo '<div class="schedule-clearfix" style="clear:both;"></div>' . "\n";
+
 // --- start list schedule output ---
 // 2.5.0: append instance to element ID
-$list = '<ul id="master-list-' . esc_attr( $instance ) . '" class="master-list">' . "\n";
+$id = ( 0 == $atts['instance'] ) ? '' : '-' . $atts['instance'];
+$list = '<ul id="master-list-' . esc_attr( $atts['instance'] ) . '" class="master-list">' . "\n";
 
 $tcount = 0;
 // 2.3.0: loop weekdays instead of legacy master list
@@ -189,7 +193,7 @@ foreach ( $weekdays as $weekday ) {
 
 				// 2.3.3.8: reset info array
 				$show = $shift['show'];
-				$show_id = $show['id'];
+				$show_id = isset( $show['id'] ) ? $show['id'] : '';
 				$info = array();
 				$split_id = false;
 
@@ -233,8 +237,9 @@ foreach ( $weekdays as $weekday ) {
 				}
 
 				// 2.3.0: filter show link by show and context
+				// 2.5.18: added check that show URL is not empty
 				$show_link = false;
-				if ( $atts['show_link'] ) {
+				if ( $atts['show_link'] && isset( $show['url'] ) && ( '' != $show['url'] ) ) {
 					$show_link = $show['url'];
 				}
 				$show_link = apply_filters( 'radio_station_schedule_show_link', $show_link, $show_id, 'list' );

@@ -51,7 +51,9 @@ const { Icon } = wp.components;
 					}
 				}					
 			}
-			if (clock && !jQuery('#radio-clock-js').length) {radio_station_load_block_script('clock');}
+			if (clock && !jQuery('#radio-clock-js').length) {
+				radio_station_load_block_script('clock');
+			}
 			if (schedule) {
 				/* --- schedule view scripts --- */
 				if (s_multi && !jQuery('#radio-schedule-multiview-js').length) {
@@ -90,10 +92,6 @@ const { Icon } = wp.components;
 			}
 			if (player) {
 				radio_station_load_block_script('player');
-				/* TODO: maybe initialize player ?
-				var radio_load_player = setInterval(function() { if (typeof ??? == 'function') {
-					radio_player_init = false; ???(); clearInterval(radio_load_player);
-				} }, 1000); */
 			}
 			if (archive) {
 				/* TODO: check for archive pagination type */
