@@ -6,7 +6,7 @@ Plugin Name: Radio Station
 Plugin URI: https://radiostation.pro/radio-station
 Description: Adds Show pages, DJ role, playlist and on-air programming functionality to your site.
 Author: Tony Zeoli, Tony Hayes
-Version: 2.7.0
+Version: 2.7.1
 Requires at least: 3.3.1
 Text Domain: radio-station
 Domain Path: /languages
@@ -811,10 +811,52 @@ function radio_station_enqueue_footer_styles() {
 // Print Missed Footer Resources
 // -----------------------------
 // 2.1.19: added for theme compatibility (shortcode loaded styles to footer)
-add_action( 'wp_footer', 'radio_station_print_missed_footer_resources', 11 );
+// 2.7.1: change priority to 19 to be before _wp_footer_scripts
+add_action( 'wp_footer', 'radio_station_print_missed_footer_resources', 19 );
 function radio_station_print_missed_footer_resources() {
-	wp_print_footer_scripts(); // probably unecessary
-	wp_print_styles(); // sometimes this is necessary
+	print_late_styles();
+	wp_print_styles();	
+	/* global $wp_styles;
+	foreach ( $wp_styles->registered as $handle => $style ) {
+		if ( wp_style_is( $handle, 'queue' ) && !wp_style_is( $handle, 'done' ) ) {
+			$wp_styles->do_item( $handle, false );
+		}
+	} */
+	// 2.7.1: do NOT call wp_print_footer_scripts as clearing style queue
+	// wp_print_footer_scripts();
+}
+
+
+// ----------------------
+// Debug Queued Resources
+// ----------------------
+// 2.7.1: added for debugging weird footer enqueue bugs
+add_action( 'wp_footer', 'radio_station_debug_queued_resources', 9 );
+add_action( 'wp_footer', 'radio_station_debug_queued_resources', 21 );
+function radio_station_debug_queued_resources() {
+
+	global $wp_styles, $wp_scripts;
+
+    if ( isset( $_REQUEST['rs-debug-styles'] ) && is_a( $wp_styles, 'WP_Styles' ) ) { 
+		echo '<span style="display:none;">Style Print Queue: ' . "\n";
+		foreach ( $wp_styles->registered as $handle => $style ) {
+			if ( wp_style_is( $handle, 'queue' ) && !wp_style_is( $handle, 'done' ) ) {
+				echo $handle . ': ' . print_r( $style, true ) . "\n";
+			}
+		}
+		echo '</span>' . "\n";;
+    }
+
+	if ( isset( $_REQUEST['rs-debug-scripts'] ) && is_a( $wp_scripts, 'WP_Scripts' ) ) {
+		echo '<span style="display:none;">Script Print Queue: ' . "\n";
+		foreach ( $wp_scripts->registered as $handle => $script ) {
+			if ( wp_script_is( $handle, 'queue' ) && !wp_script_is( $wp_script_is, 'done' ) ) {
+				echo $handle . ': ' . print_r( $script, true ) . "\n";
+			}
+		}
+		echo '</span>' . "\n";;
+	}
+	
 }
 
 // ------------------
