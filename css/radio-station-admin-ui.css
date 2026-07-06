@@ -1,0 +1,719 @@
+/*
+ * Radio Station Admin UI Styles
+ * Brand color: rgb(191, 0, 61) / #bf003d
+ * Targets existing loader.php HTML structure.
+ * No PHP changes required.
+ *
+ * WCAG AA compliant — all text meets 4.5:1 contrast ratio minimum.
+ */
+
+
+/* ========================
+   CSS Variables
+   ======================== */
+
+#pagewrap {
+	--rs-brand:          rgb(191, 0, 61);
+	--rs-brand-dark:     rgb(152, 0, 49);
+	--rs-brand-light:    rgb(253, 240, 244);
+	--rs-brand-border:   rgb(245, 194, 203);
+	--rs-brand-text:     rgb(122, 13, 30);
+	--rs-white:          #ffffff;
+	--rs-gray-100:       #f3f3f3;
+	--rs-gray-200:       #e8e8e8;
+	--rs-gray-300:       #d0d0d0;
+	--rs-text-primary:   #1d1d1d;
+	--rs-text-secondary: #555555;
+	--rs-text-muted:     #888888;
+	--rs-border:         #e0e0e0;
+	--rs-border-strong:  #cccccc;
+	--rs-radius:         6px;
+	--rs-radius-lg:      10px;
+	--rs-shadow-sm:      0 1px 3px rgba(0,0,0,0.07);
+}
+
+
+/* ========================
+   Page Wrapper
+   ======================== */
+
+#pagewrap {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+	font-size: 13px;
+	color: var(--rs-text-primary);
+	background: #f0f0f1;
+	padding: 12px 20px 20px;
+	box-sizing: border-box;
+}
+
+
+/* ========================
+   Settings Header
+   ======================== */
+
+/* Default loader.php header table is fully replaced by .rs-admin-header
+   (rendered on radio_station_admin_page_top) — see radio-station-admin.php */
+#pagewrap .plugin-settings-page-header {
+	display: none !important;
+}
+
+
+/* ========================
+   Tab Navigation
+   ======================== */
+
+#pagewrap #settings-tab-buttons {
+	list-style: none !important;
+	margin: 0 !important;
+	padding: 0 12px !important;
+	display: flex !important;
+	flex-wrap: wrap;
+	gap: 0;
+	background: var(--rs-white);
+	border: 1px solid var(--rs-border);
+	border-bottom: none;
+	border-radius: var(--rs-radius-lg) var(--rs-radius-lg) 0 0;
+	box-shadow: var(--rs-shadow-sm);
+}
+
+#pagewrap #settings-tab-buttons li.settings-tab-button {
+	display: inline-block !important;
+	padding: 11px 16px !important;
+	margin: 0 !important;
+	font-size: 13px !important;
+	font-weight: 400 !important;
+	color: var(--rs-text-secondary) !important;
+	cursor: pointer;
+	border: none !important;
+	border-bottom: 2px solid transparent !important;
+	border-radius: 0 !important;
+	background: transparent !important;
+	box-shadow: none !important;
+	transition: color 0.15s;
+	line-height: 1.4;
+}
+
+#pagewrap #settings-tab-buttons li.settings-tab-button:hover {
+	color: var(--rs-text-primary) !important;
+	background: transparent !important;
+}
+
+#pagewrap #settings-tab-buttons li.settings-tab-button.active {
+	color: var(--rs-brand) !important;
+	border-bottom-color: var(--rs-brand) !important;
+	font-weight: 500 !important;
+	background: transparent !important;
+}
+
+
+/* ========================
+   Wrapbox / Content Area
+   ======================== */
+
+#pagewrap #wrapbox {
+	background: var(--rs-white) !important;
+	border: 1px solid var(--rs-border) !important;
+	border-top: none !important;
+	border-radius: 0 0 var(--rs-radius-lg) var(--rs-radius-lg) !important;
+	box-shadow: var(--rs-shadow-sm) !important;
+	margin-top: 0 !important;
+	padding: 0 !important;
+	width: 100% !important;
+	box-sizing: border-box;
+}
+
+#pagewrap #settings-tab-buttons,
+#pagewrap #wrapbox {
+	max-width: 100%;
+}
+
+#pagewrap #wrapbox .inner {
+	padding: 4px 0 20px !important;
+}
+
+#pagewrap .settings-tab.inactive {
+	display: none !important;
+}
+
+#pagewrap .settings-tab.active {
+	display: block !important;
+}
+
+/* Full width table inside wrapbox */
+#pagewrap #wrapbox > .inner > form > div > .settings-tab > table {
+	width: 100%;
+}
+
+
+/* ========================
+   Section Headings
+   ======================== */
+
+#pagewrap tr.setting-section td,
+#pagewrap tr.setting-section th {
+	padding: 16px 20px 6px !important;
+	border-top: 1px solid var(--rs-gray-200);
+}
+
+#pagewrap tr.setting-section h3 {
+	font-size: 13px !important;
+	font-weight: 600 !important;
+	color: var(--rs-text-primary) !important;
+	margin: 0 !important;
+	padding: 0 0 0 10px !important;
+	border-left: 3px solid var(--rs-brand);
+	border-bottom: none !important;
+}
+
+
+/* ========================
+   Setting Rows
+   ======================== */
+
+#pagewrap #wrapbox td {
+	font-size: 13px;
+	color: var(--rs-text-primary);
+	vertical-align: middle;
+	padding: 7px 20px !important;
+}
+
+/* Label cells — first td in a setting row */
+#pagewrap #wrapbox .setting-row td:first-child,
+#pagewrap #wrapbox tr td[style*="font-weight"] {
+	font-weight: 500;
+	color: var(--rs-text-primary);
+}
+
+/* Description/helper text */
+#pagewrap #wrapbox td i,
+#pagewrap #wrapbox td .description,
+#pagewrap #wrapbox td font {
+	color: var(--rs-text-secondary) !important;
+	font-size: 12px !important;
+	font-style: normal !important;
+}
+
+/* Upgrade links */
+#pagewrap #wrapbox a[href*="pricing"],
+#pagewrap #wrapbox a[href*="upgrade"] {
+	color: var(--rs-brand) !important;
+	font-weight: 500;
+	text-decoration: none;
+}
+
+#pagewrap #wrapbox a[href*="pricing"]:hover,
+#pagewrap #wrapbox a[href*="upgrade"]:hover {
+	color: var(--rs-brand-dark) !important;
+	text-decoration: underline;
+}
+
+
+/* ========================
+   Form Controls
+   ======================== */
+
+#pagewrap #wrapbox input[type="text"],
+#pagewrap #wrapbox input[type="url"],
+#pagewrap #wrapbox input[type="email"],
+#pagewrap #wrapbox input[type="number"],
+#pagewrap #wrapbox input[type="password"],
+#pagewrap #wrapbox textarea {
+	border: 1px solid var(--rs-border-strong) !important;
+	border-radius: var(--rs-radius) !important;
+	padding: 6px 10px !important;
+	font-size: 13px !important;
+	color: var(--rs-text-primary) !important;
+	background: var(--rs-white) !important;
+	box-shadow: none !important;
+	transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+#pagewrap #wrapbox input[type="text"]:focus,
+#pagewrap #wrapbox input[type="url"]:focus,
+#pagewrap #wrapbox input[type="email"]:focus,
+#pagewrap #wrapbox input[type="number"]:focus,
+#pagewrap #wrapbox textarea:focus {
+	border-color: var(--rs-brand) !important;
+	box-shadow: 0 0 0 2px rgba(191, 0, 61, 0.12) !important;
+	outline: none !important;
+}
+
+#pagewrap #wrapbox select {
+	/* explicit color-scheme keeps the OS/browser from applying a dark native
+	   rendering to the closed select box, which otherwise drew the selected
+	   value's text in a color matching a dark scheme (invisible against our
+	   explicit white background) until the dropdown was opened and repainted */
+	color-scheme: light;
+	-webkit-appearance: menulist;
+	appearance: menulist;
+	border: 1px solid var(--rs-border-strong) !important;
+	border-radius: var(--rs-radius) !important;
+	padding: 6px 10px !important;
+	font-size: 13px !important;
+	color: var(--rs-text-primary) !important;
+	background: var(--rs-white) !important;
+	box-shadow: none !important;
+	cursor: pointer;
+}
+
+#pagewrap #wrapbox select:focus {
+	border-color: var(--rs-brand) !important;
+	box-shadow: 0 0 0 2px rgba(191, 0, 61, 0.12) !important;
+	outline: none !important;
+}
+
+#pagewrap #wrapbox select option {
+	color: var(--rs-text-primary) !important;
+	background: var(--rs-white) !important;
+}
+
+#pagewrap #wrapbox input[type="checkbox"] {
+	accent-color: var(--rs-brand);
+	width: 15px;
+	height: 15px;
+	cursor: pointer;
+}
+
+#pagewrap #wrapbox input[type="radio"] {
+	accent-color: var(--rs-brand);
+	cursor: pointer;
+}
+
+
+/* ========================
+   Buttons
+   ======================== */
+
+#pagewrap .button-primary.settings-button,
+#pagewrap input[type="submit"].button-primary,
+#pagewrap input.button-primary {
+	background: var(--rs-brand) !important;
+	border-color: var(--rs-brand-dark) !important;
+	color: var(--rs-white) !important;
+	border-radius: var(--rs-radius) !important;
+	padding: 7px 20px !important;
+	font-size: 13px !important;
+	font-weight: 500 !important;
+	height: auto !important;
+	line-height: 1.5 !important;
+	box-shadow: none !important;
+	text-shadow: none !important;
+	cursor: pointer;
+}
+
+#pagewrap .button-primary.settings-button:hover,
+#pagewrap input[type="submit"].button-primary:hover,
+#pagewrap input.button-primary:hover {
+	background: var(--rs-brand-dark) !important;
+	border-color: var(--rs-brand-dark) !important;
+	color: var(--rs-white) !important;
+}
+
+#pagewrap .button-secondary.settings-button,
+#pagewrap input[type="button"].button-secondary,
+#pagewrap input.button-secondary {
+	background: var(--rs-white) !important;
+	border: 1px solid var(--rs-border-strong) !important;
+	color: var(--rs-text-secondary) !important;
+	border-radius: var(--rs-radius) !important;
+	padding: 7px 16px !important;
+	font-size: 13px !important;
+	height: auto !important;
+	line-height: 1.5 !important;
+	box-shadow: none !important;
+	text-shadow: none !important;
+	cursor: pointer;
+}
+
+#pagewrap .button-secondary.settings-button:hover,
+#pagewrap input[type="button"].button-secondary:hover {
+	background: var(--rs-gray-100) !important;
+	color: var(--rs-text-primary) !important;
+}
+
+#pagewrap a.button-primary {
+	background: var(--rs-brand) !important;
+	border-color: var(--rs-brand-dark) !important;
+	color: var(--rs-white) !important;
+	border-radius: var(--rs-radius) !important;
+	box-shadow: none !important;
+	text-shadow: none !important;
+	text-decoration: none !important;
+}
+
+#pagewrap a.button-primary:hover {
+	background: var(--rs-brand-dark) !important;
+	color: var(--rs-white) !important;
+}
+
+
+/* ========================
+   Admin Notices Box
+   ======================== */
+
+#pagewrap #admin-notices-box {
+	border-radius: var(--rs-radius-lg) !important;
+	border-color: var(--rs-border) !important;
+	margin-bottom: 14px !important;
+	box-shadow: var(--rs-shadow-sm) !important;
+	background: var(--rs-white) !important;
+}
+
+#pagewrap .admin-notices-title {
+	color: var(--rs-text-primary) !important;
+	font-size: 13px !important;
+	font-weight: 500 !important;
+}
+
+/* WP Admin notices inside our page */
+#pagewrap .notice {
+	border-radius: var(--rs-radius) !important;
+	box-shadow: none !important;
+	margin-bottom: 14px !important;
+}
+
+
+/* ========================
+   Custom Admin Header (.rs-admin-header)
+   ======================== */
+
+#pagewrap .rs-admin-header {
+	background: var(--rs-white);
+	border: 1px solid var(--rs-border);
+	border-radius: var(--rs-radius-lg);
+	box-shadow: var(--rs-shadow-sm);
+	box-sizing: border-box;
+	margin-bottom: 14px;
+	padding: 20px 10px;
+	width: 100%;
+}
+
+/* --- 3-column row --- */
+#pagewrap .rs-admin-header-row {
+	display: flex;
+	align-items: flex-start;
+	gap: 32px;
+}
+
+#pagewrap .rs-admin-header-col {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 8px;
+}
+
+/* Column 1: logo, authors, version */
+#pagewrap .rs-admin-header-brand {
+	flex: 1 1 auto;
+	min-width: 200px;
+}
+
+#pagewrap .rs-admin-header-logo {
+	height: 40px;
+	width: auto;
+	display: block;
+}
+
+/* The logo PNG has ~18% transparent padding baked in before the "R" starts;
+   at the rendered 40px height that's ~39px, so offset these lines to line
+   up under the "R" instead of the image's actual left edge. */
+#pagewrap .rs-admin-header-authors {
+	margin: 0 0 0 39px;
+	font-size: 12.5px;
+	color: var(--rs-text-secondary);
+}
+
+#pagewrap .rs-admin-header-authors a {
+	color: var(--rs-text-secondary);
+	text-decoration: none;
+	font-weight: 500;
+}
+
+#pagewrap .rs-admin-header-authors a:hover {
+	color: var(--rs-brand);
+	text-decoration: underline;
+}
+
+#pagewrap .rs-admin-header-version {
+	display: inline-block;
+	align-self: flex-start;
+	margin-left: 39px;
+	font-size: 11px;
+	color: var(--rs-text-muted);
+	font-weight: 400;
+	background: var(--rs-gray-100);
+	border: 1px solid var(--rs-border);
+	border-radius: 4px;
+	padding: 2px 8px;
+}
+
+/* Columns 2 & 3: stacked link lists */
+#pagewrap .rs-admin-header-links,
+#pagewrap .rs-admin-header-actions {
+	flex: 0 0 auto;
+	gap: 6px;
+	padding-top: 2px;
+}
+
+#pagewrap .rs-header-link,
+#pagewrap .rs-header-action-link {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 12.5px;
+	color: var(--rs-text-secondary) !important;
+	text-decoration: none !important;
+	white-space: nowrap;
+	transition: color 0.1s;
+}
+
+#pagewrap .rs-header-link:hover,
+#pagewrap .rs-header-action-link:hover {
+	color: var(--rs-brand) !important;
+	text-decoration: none !important;
+}
+
+/* Dashicon sizes in header links */
+#pagewrap .rs-action-icon {
+	font-size: 16px !important;
+	width: 16px !important;
+	height: 16px !important;
+	vertical-align: middle;
+}
+
+#pagewrap .rs-icon-rate {
+	color: #e6a817 !important;
+}
+
+#pagewrap .rs-icon-share {
+	color: #9c27b0 !important;
+}
+
+/* --- Responsive: stack columns on narrow admin viewports --- */
+@media screen and (max-width: 782px) {
+	#pagewrap .rs-admin-header-row {
+		flex-direction: column;
+		gap: 16px;
+	}
+}
+
+
+/* ========================
+   Support / Upgrade / Newsletter Cards Row
+   ======================== */
+/* Three equal-width cards rendered on radio_station_admin_page_middle
+   (between the header and the tab navigation) — see
+   radio_station_settings_page_cards() in radio-station-admin.php */
+
+#pagewrap .rs-cards-row {
+	display: flex;
+	align-items: stretch;
+	gap: 16px;
+	margin-bottom: 14px;
+	width: 100%;
+}
+
+#pagewrap .rs-card {
+	display: flex;
+	flex: 1 1 0;
+	min-width: 0;
+	flex-direction: column;
+	background: var(--rs-white);
+	border: 1px solid var(--rs-border);
+	border-radius: var(--rs-radius-lg);
+	box-shadow: var(--rs-shadow-sm);
+	box-sizing: border-box;
+	padding: 18px 20px;
+}
+
+#pagewrap .rs-card-title {
+	font-size: 13px !important;
+	font-weight: 600 !important;
+	color: var(--rs-text-primary) !important;
+	margin: 0 0 8px !important;
+	padding: 0 0 0 10px !important;
+	border-left: 3px solid var(--rs-brand);
+	border-bottom: none !important;
+}
+
+#pagewrap .rs-card-text {
+	margin: 0 0 14px;
+	font-size: 12.5px;
+	line-height: 1.6;
+	color: var(--rs-text-secondary);
+	flex: 1 1 auto;
+}
+
+#pagewrap .rs-card-text a {
+	color: var(--rs-brand);
+	font-weight: 500;
+	text-decoration: none;
+}
+
+#pagewrap .rs-card-text a:hover {
+	color: var(--rs-brand-dark);
+	text-decoration: underline;
+}
+
+#pagewrap .rs-card-action {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-top: auto;
+}
+
+#pagewrap .rs-card-action img {
+	display: block;
+	height: 36px;
+	width: auto;
+}
+
+#pagewrap .rs-card-btn-primary {
+	display: inline-block;
+	background: var(--rs-brand) !important;
+	color: var(--rs-white) !important;
+	font-size: 13px;
+	font-weight: 500;
+	text-decoration: none !important;
+	border-radius: var(--rs-radius);
+	padding: 8px 22px;
+	text-align: center;
+}
+
+#pagewrap .rs-card-btn-primary:hover {
+	background: var(--rs-brand-dark) !important;
+}
+
+/* Card 3 (newsletter) embeds radio_station_mailchimp_form() — its default
+   markup includes a plugin icon and label that duplicate the card's own
+   title/body text, so those are hidden here and only the email input +
+   subscribe button are shown, per design. */
+#pagewrap .rs-card-newsletter .rs-card-action {
+	width: 100%;
+}
+
+#pagewrap .rs-card-newsletter #mc_embed_signup {
+	background: transparent;
+	width: 100%;
+	max-width: 100%;
+}
+
+#pagewrap .rs-card-newsletter #mc_embed_signup form {
+	padding: 0;
+	width: 100%;
+	text-align: center;
+}
+
+#pagewrap .rs-card-newsletter #mc_embed_signup #plugin-icon,
+#pagewrap .rs-card-newsletter #mc_embed_signup #signup-label {
+	display: none;
+}
+
+#pagewrap .rs-card-newsletter #mc_embed_signup input[type="email"] {
+	display: block;
+	width: 100%;
+	max-width: 100%;
+	box-sizing: border-box;
+	margin: 0 0 10px;
+}
+
+#pagewrap .rs-card-newsletter #mc_embed_signup input:focus {
+	border-color: var(--rs-brand);
+}
+
+#pagewrap .rs-card-newsletter #mc_embed_signup .subscribe {
+	display: block;
+	text-align: right;
+}
+
+/* Match .rs-card-btn-primary (Upgrade to PRO button) exactly: same padding,
+   font, and border-radius so both cards' buttons render at the same height */
+#pagewrap .rs-card-newsletter #mc_embed_signup input.button {
+	display: inline-block;
+	box-sizing: border-box;
+	width: auto;
+	min-width: 0;
+	height: auto;
+	line-height: 1.4;
+	background: var(--rs-brand);
+	color: var(--rs-white);
+	font-size: 13px;
+	font-weight: 500;
+	font-family: inherit;
+	border: none;
+	border-radius: var(--rs-radius);
+	padding: 8px 22px;
+	margin: 0;
+	cursor: pointer;
+}
+
+#pagewrap .rs-card-newsletter #mc_embed_signup input.button:hover {
+	background: var(--rs-brand-dark);
+}
+
+#pagewrap .rs-card-newsletter #mc_embed_signup .button:hover {
+	background-color: var(--rs-brand-dark);
+}
+
+/* --- Responsive: stack cards on narrow admin viewports --- */
+@media screen and (max-width: 900px) {
+	#pagewrap .rs-cards-row {
+		flex-direction: column;
+	}
+}
+
+
+/* ========================
+   Cross-Admin Notice Boxes
+   ======================== */
+/* These render via admin_notices on every wp-admin screen (Add Show, etc.),
+   not just our settings page — so, unlike the rest of this file, these
+   rules are intentionally NOT scoped under #pagewrap. Used by
+   radio_station_notice(), radio_station_update_notice() and
+   radio_station_announcement_content() in radio-station-admin.php. */
+
+.rs-notice-box {
+	display: flex;
+	align-items: flex-start;
+	flex-wrap: wrap;
+	gap: 24px;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.rs-notice-icon {
+	flex: 0 0 auto;
+}
+
+/* Wide Radio Station logo replaces the old square microphone icon */
+.rs-notice-logo {
+	display: block;
+	height: 30px;
+	width: auto;
+}
+
+.rs-notice-actions {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	gap: 10px;
+	margin-left: auto;
+	padding-left: 24px;
+	/* clears the absolutely-positioned dismiss "X" (top:20px; right:20px;)
+	   so it doesn't sit on top of, or under, the first action button/image */
+	padding-top: 34px;
+	padding-right: 34px;
+	text-align: right;
+}
+
+.rs-notice-actions .button {
+	white-space: nowrap;
+}
+
+.rs-notice-rate-link {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	white-space: nowrap;
+}

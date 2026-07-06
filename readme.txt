@@ -6,7 +6,7 @@ License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires at least: 3.3
 Tested up to: 7.0
-Stable tag: 2.7.1
+Stable tag: 2.8.0
 
 Radio Station lets you build and manage a Show Schedule for a radio station or Internet broadcaster's WordPress website. 
 
@@ -403,6 +403,15 @@ We recommend you test these on a Staging site (or a development copy of your liv
 8. Show Conflict Display
 
 == Changelog ==
+
+= 2.8.0 =
+* Added: Admin UI redesign with branded design system
+* Added: Radio Station logo in admin header
+* Added: Three-column support/upgrade/newsletter cards
+* Improved: Brand color rgb(191, 0, 61) applied throughout admin
+* Improved: Accessible, WCAG AA compliant admin styles
+* Improved: Admin notice styling
+* Added: New rs- CSS prefix design system in radio-station-admin-ui.css
 
 = 2.7.1 =
 * Fixed: Print Late Footer Stylesheets Priority

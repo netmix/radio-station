@@ -72,6 +72,14 @@ function radio_station_enqueue_admin_scripts() {
 	// --- enqueue admin styles ---
 	radio_station_enqueue_style( 'admin' );
 
+	// --- enqueue admin UI styles ---
+		$admin_ui_css = RADIO_STATION_DIR . '/css/radio-station-admin-ui.css';
+	if ( file_exists( $admin_ui_css ) ) {
+		$version = filemtime( $admin_ui_css );
+		wp_enqueue_style( 'rs-admin-ui', plugins_url( 'css/radio-station-admin-ui.css', RADIO_STATION_FILE ), array(), $version, 'all' );
+	}
+	
+
 	// 2.5.0: maybe enqueue pricing page styles
 	if ( isset( $_REQUEST['page'] ) && ( 'radio-station-pricing' == sanitize_text_field( $_REQUEST['page'] ) ) ) {
 		$style_url = plugins_url( 'freemius-pricing/freemius-pricing.css', RADIO_STATION_FILE );
@@ -82,6 +90,52 @@ function radio_station_enqueue_admin_scripts() {
 
 }
 
+// ---------------------------
+// Custom Admin Settings Header
+// ---------------------------
+// 2.7.1: the default settings-page-header table packs the "by author" line
+// and the Home/Docs/Support links into a single unlabeled <td> with no
+// filter wrapping it, so it can't be reshaped into a 3-column layout via
+// filters or CSS alone. Render our own header on admin_page_top (fires
+// before settings_header()) and hide the default table via CSS instead.
+add_action( 'radio_station_admin_page_top', 'radio_station_custom_admin_header' );
+function radio_station_custom_admin_header() {
+
+	$settings = $GLOBALS['radio_station'];
+
+	$logo_url = plugins_url( 'images/radio-station-original-logo-400x75.png', RADIO_STATION_FILE );
+	$rate_url = 'https://wordpress.org/support/plugin/' . $settings['wporgslug'] . '/reviews/#new-post';
+
+	echo '<div class="rs-admin-header">' . "\n";
+	echo '<div class="rs-admin-header-row">' . "\n";
+
+	// --- column 1: logo, authors, version ---
+	echo '<div class="rs-admin-header-col rs-admin-header-brand">' . "\n";
+	echo '<img class="rs-admin-header-logo" src="' . esc_url( $logo_url ) . '" alt="' . esc_attr__( 'Radio Station', 'radio-station' ) . '">' . "\n";
+	echo '<p class="rs-admin-header-authors">' . esc_html__( 'by', 'radio-station' ) . ' '
+		. '<a href="https://profiles.wordpress.org/tonyzeoli/" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Tony Zeoli', 'radio-station' ) . '</a>, '
+		. '<a href="https://profiles.wordpress.org/majick777/" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Tony Hayes', 'radio-station' ) . '</a>'
+		. '</p>' . "\n";
+	echo '<span class="rs-admin-header-version">' . esc_html( 'v' . $settings['version'] ) . '</span>' . "\n";
+	echo '</div>' . "\n";
+
+	// --- column 2: Home / Docs / Support ---
+	echo '<div class="rs-admin-header-col rs-admin-header-links">' . "\n";
+	echo '<a href="' . esc_url( $settings['home'] ) . '" class="rs-header-link" target="_blank"><span class="dashicons dashicons-admin-home rs-action-icon"></span>' . esc_html__( 'Home', 'radio-station' ) . '</a>' . "\n";
+	echo '<a href="' . esc_url( $settings['docs'] ) . '" class="rs-header-link" target="_blank"><span class="dashicons dashicons-media-document rs-action-icon"></span>' . esc_html__( 'Docs', 'radio-station' ) . '</a>' . "\n";
+	echo '<a href="' . esc_url( $settings['support'] ) . '" class="rs-header-link" target="_blank"><span class="dashicons dashicons-sos rs-action-icon"></span>' . esc_html__( 'Support', 'radio-station' ) . '</a>' . "\n";
+	echo '</div>' . "\n";
+
+	// --- column 3: Rate / Share ---
+	echo '<div class="rs-admin-header-col rs-admin-header-actions">' . "\n";
+	echo '<a href="' . esc_url( $rate_url ) . '" class="rs-header-action-link" target="_blank"><span class="dashicons dashicons-star-filled rs-action-icon rs-icon-rate"></span>' . esc_html__( 'Rate on WordPress.org', 'radio-station' ) . '</a>' . "\n";
+	echo '<a href="' . esc_url( $settings['share'] ) . '" class="rs-header-action-link" target="_blank"><span class="dashicons dashicons-share rs-action-icon rs-icon-share"></span>' . esc_html__( 'Share the Plugin Love', 'radio-station' ) . '</a>' . "\n";
+	echo '</div>' . "\n";
+
+	echo '</div>' . "\n"; // .rs-admin-header-row
+
+	echo '</div>' . "\n"; // .rs-admin-header
+}
 // -----------------
 // Admin Style Fixes
 // -----------------
@@ -1011,21 +1065,21 @@ function radio_station_update_notice() {
 	// --- output update available notice ---
 	echo '<div id="radio-station-update-' . esc_attr( $notice['update_id'] ) . '" class="notice update-nag" style="position:relative;">' . "\n";
 
-		echo '<ul style="list-style:none;">' . "\n";
+		echo '<ul class="rs-notice-box">' . "\n";
 
 			if ( isset( $notice['icon_url'] ) ) {
-				echo '<li style="display:inline-block; vertical-align:top; margin-right:40px;">' . "\n";
-					echo '<img src="' . esc_url( $notice['icon_url'] ) . '" style="width:75px; height: 75px;">' . "\n";
+				echo '<li class="rs-notice-icon">' . "\n";
+					echo '<img class="rs-notice-logo" src="' . esc_url( $notice['icon_url'] ) . '">' . "\n";
 				echo '</li>' . "\n";
 			}
 
-			echo '<li style="display:inline-block; text-align:center; vertical-align:top; margin-right:40px; line-height:1.8em;">' . "\n";
+			echo '<li style="text-align:center; line-height:1.8em;">' . "\n";
 				echo esc_html( __( 'A new version of', 'radio-station' ) ) . '<br>' . "\n";
 				echo '<b><span style="font-size:1.2em;">' . esc_html( __( 'Radio Station', 'radio-station' ) ) . '</span></b><br>' . "\n";
 				echo esc_html( __( 'is available.', 'radio-station' ) ) . "\n";
 			echo '</li>' . "\n";
 
-			echo '<li style="display:inline-block; vertical-align:top; margin-right:40px; max-width:600px;">' . "\n";
+			echo '<li style="max-width:600px;">' . "\n";
 			echo '<b>' . esc_html( __( 'Take a moment to Update for a better experience. In this update', 'radio-station' ) ) . ":</b><br>" . "\n";
 				echo '<ul style="padding:0; list-style:disc;">' . "\n";
 					foreach ( $notice['lines'] as $i => $line ) {
@@ -1038,12 +1092,11 @@ function radio_station_update_notice() {
 				echo '</ul>' . "\n";
 			echo '</li>' . "\n";
 
-			echo '<li style="display:inline-block; text-align:center; vertical-align:top;">' . "\n";
+			echo '<li class="rs-notice-actions">' . "\n";
 				echo '<a class="button button-primary" href="' . esc_url( $update_url ) . '">' . esc_html( __( 'Update Now', 'radio-station' ) ) . '</a>' . "\n";
-				if ( '' != $notice['url'] ) {
-					echo '<br><br>' . "\n";
-					echo '<a class="button" href="' . esc_url( $notice['url'] ) . '" target="_blank">' . esc_html( __( 'Full Update Details', 'radio-station' ) ) . ' &rarr;</a>' . "\n";
-				}
+				// 2.7.1: link to the WordPress.org changelog instead of $notice['url'], which
+				// points to a blog post that may not exist yet for a given release
+				echo '<a class="button" href="https://wordpress.org/plugins/radio-station/#developers" target="_blank">' . esc_html( __( 'Full Update Details', 'radio-station' ) ) . ' &rarr;</a>' . "\n";
 			echo '</li>' . "\n";
 
 		echo '</ul>' . "\n";
@@ -1102,22 +1155,22 @@ function radio_station_notice() {
 	echo '<div id="radio-station-notice-' . esc_attr( $notice['id'] ) . '" class="notice notice-info" style="position:relative;">' . "\n";
 
 		// --- output plugin notice text ---
-		echo '<ul style="list-style:none;">' . "\n";
+		// 2.7.1: logo is the sole item in its own left column, matching the
+		// layout of radio_station_announcement_content() — all other
+		// content (title, details, actions) sits in the column(s) to its right
+		echo '<ul class="rs-notice-box">' . "\n";
 
-			// --- plugin icon ---
-			$icon_url = plugins_url( 'images/radio-station.png', RADIO_STATION_FILE );
-			echo '<li style="display:inline-block; text-align:center; vertical-align:top; margin-right:40px; line-height:1.8em;">' . "\n";
-				echo '<img src="' . esc_url( $icon_url ) . '" style="width:75px; height:75px;">' . "\n";
+			// --- plugin logo ---
+			$icon_url = plugins_url( 'images/radio-station-original-logo-400x75.png', RADIO_STATION_FILE );
+			echo '<li class="rs-notice-icon">' . "\n";
+				echo '<img class="rs-notice-logo" src="' . esc_url( $icon_url ) . '" alt="' . esc_attr__( 'Radio Station', 'radio-station' ) . '">' . "\n";
 			echo '</li>' . "\n";
 
-			// --- notice title ---
-			echo '<li style="display:inline-block; text-align:center; vertical-align:top; margin-right:40px; line-height:1.8em;">' . "\n";
-				echo '<b><span style="font-size:1.2em;">' . esc_html( __( 'Radio Station', 'radio-station' ) ) . '</span></b><br>' . "\n";
-				echo '<b>' . esc_html( __( 'Update Notice', 'radio-station' ) ) . '</b>' . "\n";
-			echo '</li>' . "\n";
-
-			// --- notice details ---
-			echo '<li style="display:inline-block; vertical-align:top; margin-right:40px; font-size:16px; line-height:22px; max-width:600px;">' . "\n";
+			// --- notice title + details ---
+			echo '<li style="font-size:16px; line-height:22px; max-width:600px;">' . "\n";
+				echo '<div style="margin-bottom:10px;">' . "\n";
+					echo '<b style="font-size:1.2em;">' . esc_html( __( 'Update Notice', 'radio-station' ) ) . '</b>' . "\n";
+				echo '</div>' . "\n";
 				echo '<div style="margin-bottom:10px;">' . "\n";
 					echo '<b>' . esc_html( __( 'Thanks for Updating! You can enjoy these improvements now', 'radio-station' ) ) . '</b>:' . "\n";
 				echo '</div>' . "\n";
@@ -1129,15 +1182,17 @@ function radio_station_notice() {
 						echo '<li style="text-indent:20px;">' . wp_kses( $line, $allowed ) . '</li>' . "\n";
 					}
 				echo '</ul>' . "\n";
+
+				// --- link to changelog ---
+				// 2.7.1: moved below the updates list, out of the actions column
+				// 2.7.1: link to the WordPress.org changelog instead of $notice['url'], which
+				// points to a blog post that may not exist yet for a given release
+				echo '<div style="margin-top:10px;">' . "\n";
+					echo '<a class="button" href="https://wordpress.org/plugins/radio-station/#developers" target="_blank">' . esc_html( __( 'Full Update Details', 'radio-station' ) ) . ' &rarr;</a>' . "\n";
+				echo '</div>' . "\n";
 			echo '</li>' . "\n";
 
-			echo '<li style="display:inline-block; text-align:center; vertical-align:top;">' . "\n";
-
-				// --- link to update blog post ---
-				if ( isset( $notice['url'] ) && ( '' != $notice['url'] ) ) {
-					echo '<a class="button" href="' . esc_url( $notice['url'] ) . '">' . esc_html( __( 'Full Update Details', 'radio-station' ) ) . ' &rarr;</a>' . "\n";
-					echo '<br><br>' . "\n";
-				}
+			echo '<li class="rs-notice-actions">' . "\n";
 
 				// --- link to settings page ---
 				if ( !isset( $_REQUEST['page'] ) || ( 'radio-station' !== sanitize_text_field( $_REQUEST['page'] ) ) ) {
@@ -1339,14 +1394,58 @@ function radio_station_settings_page_top() {
 	echo '<br>' . "\n";
 }
 
-// ---------------------------
-// Plugin Settings Page Bottom
-// ---------------------------
-add_action( 'radio_station_admin_page_bottom', 'radio_station_settings_page_bottom' );
-function radio_station_settings_page_bottom() {
-	// 2.3.1: move mailchimp form for listing offer
-	radio_station_mailchimp_form();
-	radio_station_announcement_content( false );
+// ------------------------------
+// Plugin Settings Page Cards Row
+// ------------------------------
+// 2.7.1: three equal-width cards (Support/Patreon, Upgrade to PRO, Newsletter
+// signup) rendered on admin_page_middle, between the header and the tab
+// navigation. Replaces the old header Patreon row (previously in
+// radio_station_custom_admin_header()) and the standalone newsletter card.
+add_action( 'radio_station_admin_page_middle', 'radio_station_settings_page_cards' );
+function radio_station_settings_page_cards() {
+
+	$patreon_btn = plugins_url( 'images/patreon-button.jpg', RADIO_STATION_FILE );
+
+	echo '<div class="rs-cards-row">' . "\n";
+
+		// --- card 1: support / patreon ---
+		echo '<div class="rs-card rs-card-support">' . "\n";
+			echo '<h3 class="rs-card-title">' . esc_html__( 'Support Radio Station by netmix® Development', 'radio-station' ) . '</h3>' . "\n";
+			echo '<p class="rs-card-text">'
+				. esc_html__( 'Help support this project to make improvements, modifications and introduce new features!', 'radio-station' ) . ' '
+				. esc_html__( 'We invite you to', 'radio-station' )
+				. ' <a href="' . esc_url( RADIO_STATION_PATREON ) . '" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Become a Radio Station Patreon Supporter', 'radio-station' ) . '</a> '
+				. esc_html__( 'to make it better for everyone', 'radio-station' ) . '!'
+				. '</p>' . "\n";
+			echo '<div class="rs-card-action">' . "\n";
+				echo '<a href="' . esc_url( RADIO_STATION_PATREON ) . '" target="_blank" rel="noopener noreferrer">' . "\n";
+					echo '<img src="' . esc_url( $patreon_btn ) . '" alt="' . esc_attr__( 'Support on Patreon', 'radio-station' ) . '">' . "\n";
+				echo '</a>' . "\n";
+			echo '</div>' . "\n";
+		echo '</div>' . "\n";
+
+		// --- card 2: upgrade to pro ---
+		echo '<div class="rs-card rs-card-upgrade">' . "\n";
+			echo '<h3 class="rs-card-title">' . esc_html__( 'Upgrade to Radio Station PRO by netmix®', 'radio-station' ) . '</h3>' . "\n";
+			echo '<p class="rs-card-text">'
+				. esc_html__( 'Use Code:', 'radio-station' ) . ' <b>30OFF</b> '
+				. esc_html__( 'to take 30% OFF of Radio Station PRO by netmix®, which unlocks advanced features like Stream Player PRO, our persistent site-wide sticky footer player, and more!', 'radio-station' )
+				. '</p>' . "\n";
+			echo '<div class="rs-card-action">' . "\n";
+				echo '<a href="' . esc_url( radio_station_get_pricing_url() ) . '" target="_blank" rel="noopener noreferrer" class="rs-card-btn-primary">' . esc_html__( 'Upgrade to PRO', 'radio-station' ) . '</a>' . "\n";
+			echo '</div>' . "\n";
+		echo '</div>' . "\n";
+
+		// --- card 3: newsletter signup ---
+		echo '<div class="rs-card rs-card-newsletter">' . "\n";
+			echo '<h3 class="rs-card-title">' . esc_html__( 'Sign Up for Updates and Announcements', 'radio-station' ) . '</h3>' . "\n";
+			echo '<p class="rs-card-text">' . esc_html__( 'Subscribe to our newsletter and receive the latest news and updates about netmix® products and services.', 'radio-station' ) . '</p>' . "\n";
+			echo '<div class="rs-card-action">' . "\n";
+				radio_station_mailchimp_form();
+			echo '</div>' . "\n";
+		echo '</div>' . "\n";
+
+	echo '</div>' . "\n"; // .rs-cards-row
 }
 
 // ------------------------------
@@ -1712,16 +1811,17 @@ function radio_station_announcement_notice() {
 // 2.2.2: added simple patreon supporter blurb
 function radio_station_announcement_content( $dismissable = true ) {
 
-	echo '<ul style="list-style:none;">' . "\n";
+	echo '<ul class="rs-notice-box">' . "\n";
 
-		// --- plugin image ---
-		$plugin_image = plugins_url( 'images/radio-station.png', RADIO_STATION_FILE );
-		echo '<li style="display:inline-block; vertical-align:middle;">' . "\n";
-			echo '<img src="' . esc_url( $plugin_image ) . '" height="100" width="100">' . "\n";
+		// --- plugin logo ---
+		// 2.7.1: use wide Radio Station logo instead of the old square icon
+		$plugin_image = plugins_url( 'images/radio-station-original-logo-400x75.png', RADIO_STATION_FILE );
+		echo '<li class="rs-notice-icon">' . "\n";
+			echo '<img class="rs-notice-logo" src="' . esc_url( $plugin_image ) . '" alt="' . esc_attr__( 'Radio Station', 'radio-station' ) . '">' . "\n";
 		echo '</li>' . "\n";
 
 		// --- takeover announcement ---
-		echo '<li style="display:inline-block; vertical-align:middle; margin-left:40px; font-size:16px; line-height:24px;">' . "\n";
+		echo '<li style="font-size:16px; line-height:24px;">' . "\n";
 			echo '<b style="font-size:17px;">' . esc_html( __( 'Help support us to make improvements, modifications and introduce new features!', 'radio-station' ) ) . '</b><br>' . "\n";
 			echo esc_html( __( 'With over a thousand radio station users thanks to the original plugin author Nikki Blight', 'radio-station' ) ) . ', <br>' . "\n";
 			echo esc_html( __( 'since June 2019', 'radio-station' ) ) . ', ' . "\n";
@@ -1735,7 +1835,7 @@ function radio_station_announcement_content( $dismissable = true ) {
 				echo esc_html( __( 'Become a Radio Station Patreon Supporter', 'radio-station' ) ) . "\n";
 			echo '</a> ' . esc_html( __( 'to make it better for everyone', 'radio-station' ) ) . '!' . "\n";
 		echo '</li>' . "\n";
-		echo '<li style="display:inline-block; text-align:center; vertical-align:middle; margin-left:40px;">' . "\n";
+		echo '<li class="rs-notice-actions">' . "\n";
 
 			$button = radio_station_patreon_button( 'radiostation' );
 			// 2.5.0: added wp_kses to button output
@@ -1745,8 +1845,8 @@ function radio_station_announcement_content( $dismissable = true ) {
 			// 2.2.7: added WordPress.Org star rating link
 			// 2.3.0: only show for dismissable notice
 			if ( $dismissable ) {
-				echo '<br><br><span style="color:#FC5;" class="dashicons dashicons-star-filled"></span> ' . "\n";
-				echo '<a class="notice-link" href="https://wordpress.org/support/plugin/radio-station/reviews/#new-post" target="_blank">' . "\n";
+				echo '<a class="notice-link rs-notice-rate-link" href="https://wordpress.org/support/plugin/radio-station/reviews/#new-post" target="_blank">' . "\n";
+					echo '<span style="color:#FC5;" class="dashicons dashicons-star-filled"></span> ' . "\n";
 					echo esc_html( __( 'Rate on WordPress.Org', 'radio-station' ) ) . "\n";
 				echo '</a>' . "\n";
 			}
