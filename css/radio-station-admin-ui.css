@@ -679,6 +679,21 @@
 	}
 }
 
+/* --- PRO active: Support/Upgrade/Stream Player cards are removed from the
+   DOM entirely (see radio_station_settings_page_cards() in
+   radio-station-admin.php), leaving only the newsletter card. .rs-card's
+   own flex:1 1 0 would already stretch a lone card full width, but this
+   makes that explicit rather than relying on it being the only flex item. */
+#pagewrap .rs-cards-row-pro {
+	display: flex;
+	width: 100%;
+}
+
+#pagewrap .rs-cards-row-pro .rs-card {
+	width: 100%;
+	max-width: 100%;
+}
+
 
 /* ========================
    Cross-Admin Notice Boxes
