@@ -1410,7 +1410,7 @@ function radio_station_settings_page_cards() {
 
 		// --- card 1: support / patreon ---
 		echo '<div class="rs-card rs-card-support">' . "\n";
-			echo '<h3 class="rs-card-title">' . esc_html__( 'Support Radio Station by netmix® Development', 'radio-station' ) . '</h3>' . "\n";
+			echo '<h3 class="rs-card-title">' . esc_html__( 'Support Radio Station Development', 'radio-station' ) . '</h3>' . "\n";
 			echo '<p class="rs-card-text">'
 				. esc_html__( 'Help support this project to make improvements, modifications and introduce new features!', 'radio-station' ) . ' '
 				. esc_html__( 'We invite you to', 'radio-station' )
@@ -1426,19 +1426,30 @@ function radio_station_settings_page_cards() {
 
 		// --- card 2: upgrade to pro ---
 		echo '<div class="rs-card rs-card-upgrade">' . "\n";
-			echo '<h3 class="rs-card-title">' . esc_html__( 'Upgrade to Radio Station PRO by netmix®', 'radio-station' ) . '</h3>' . "\n";
+			echo '<h3 class="rs-card-title">' . esc_html__( 'Upgrade to Radio Station PRO', 'radio-station' ) . '</h3>' . "\n";
 			echo '<p class="rs-card-text">'
 				. esc_html__( 'Use Code:', 'radio-station' ) . ' <b>30OFF</b> '
-				. esc_html__( 'to take 30% OFF of Radio Station PRO by netmix®, which unlocks advanced features like Stream Player PRO, our persistent site-wide sticky footer player, and more!', 'radio-station' )
+				. esc_html__( 'to take 30% OFF of Radio Station PRO by netmix®, which unlocks advanced features, including a Visual Schedule Editor, Episodes, additional Schedule Views, Host and Producer pages, and more!', 'radio-station' )
 				. '</p>' . "\n";
 			echo '<div class="rs-card-action">' . "\n";
 				echo '<a href="' . esc_url( radio_station_get_pricing_url() ) . '" target="_blank" rel="noopener noreferrer" class="rs-card-btn-primary">' . esc_html__( 'Upgrade to PRO', 'radio-station' ) . '</a>' . "\n";
 			echo '</div>' . "\n";
 		echo '</div>' . "\n";
 
-		// --- card 3: newsletter signup ---
+		// --- card 3: stream player pro ---
+		echo '<div class="rs-card rs-card-streamplayer">' . "\n";
+			echo '<h3 class="rs-card-title">' . esc_html__( 'Get Stream Player PRO player bar', 'radio-station' ) . '</h3>' . "\n";
+			echo '<p class="rs-card-text">'
+				. esc_html__( "Let our advanced site-wide, multi-stream persistent audio player bar power your live audio stream. Your listeners will love the player bar experience and they'll never lose your broadcast when refreshing or navigating to another page. Just $5 a month!", 'radio-station' )
+				. '</p>' . "\n";
+			echo '<div class="rs-card-action">' . "\n";
+				echo '<a href="https://streamplayer.pro" target="_blank" rel="noopener noreferrer" class="rs-card-btn-primary">' . esc_html__( 'Install Stream Player PRO', 'radio-station' ) . '</a>' . "\n";
+			echo '</div>' . "\n";
+		echo '</div>' . "\n";
+
+		// --- card 4: newsletter signup ---
 		echo '<div class="rs-card rs-card-newsletter">' . "\n";
-			echo '<h3 class="rs-card-title">' . esc_html__( 'Sign Up for Updates and Announcements', 'radio-station' ) . '</h3>' . "\n";
+			echo '<h3 class="rs-card-title">' . esc_html__( 'Sign up for News & Updates', 'radio-station' ) . '</h3>' . "\n";
 			echo '<p class="rs-card-text">' . esc_html__( 'Subscribe to our newsletter and receive the latest news and updates about netmix® products and services.', 'radio-station' ) . '</p>' . "\n";
 			echo '<div class="rs-card-action">' . "\n";
 				radio_station_mailchimp_form();

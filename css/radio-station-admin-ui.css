@@ -384,7 +384,7 @@
 	box-shadow: var(--rs-shadow-sm);
 	box-sizing: border-box;
 	margin-bottom: 14px;
-	padding: 20px 10px;
+	padding: 20px 50px 20px 10px;
 	width: 100%;
 }
 
@@ -403,8 +403,11 @@
 }
 
 /* Column 1: logo, authors, version */
+/* flex: 0 1 auto (not 1 1 auto) — sized to its own content instead of
+   growing to fill the row, which was pushing columns 2 & 3 in tight
+   against it instead of out toward the header's right edge */
 #pagewrap .rs-admin-header-brand {
-	flex: 1 1 auto;
+	flex: 0 1 auto;
 	min-width: 200px;
 }
 
@@ -455,6 +458,13 @@
 	padding-top: 2px;
 }
 
+/* Pushes the links+actions pair to the header's right edge as a group,
+   so column 1 keeps its own natural spacing instead of stretching to
+   fill the row and crowding columns 2 & 3 against it */
+#pagewrap .rs-admin-header-links {
+	margin-left: auto;
+}
+
 #pagewrap .rs-header-link,
 #pagewrap .rs-header-action-link {
 	display: inline-flex;
@@ -495,13 +505,18 @@
 		flex-direction: column;
 		gap: 16px;
 	}
+
+	/* cancel the right-edge push from margin-left:auto once columns stack */
+	#pagewrap .rs-admin-header-links {
+		margin-left: 0;
+	}
 }
 
 
 /* ========================
-   Support / Upgrade / Newsletter Cards Row
+   Support / Upgrade / Stream Player / Newsletter Cards Row
    ======================== */
-/* Three equal-width cards rendered on radio_station_admin_page_middle
+/* Four equal-width cards rendered on radio_station_admin_page_middle
    (between the header and the tab navigation) — see
    radio_station_settings_page_cards() in radio-station-admin.php */
 
@@ -518,6 +533,7 @@
 	flex: 1 1 0;
 	min-width: 0;
 	flex-direction: column;
+	justify-content: space-between;
 	background: var(--rs-white);
 	border: 1px solid var(--rs-border);
 	border-radius: var(--rs-radius-lg);
@@ -656,7 +672,8 @@
 }
 
 /* --- Responsive: stack cards on narrow admin viewports --- */
-@media screen and (max-width: 900px) {
+/* Threshold raised from 900px to fit a 4th card before stacking */
+@media screen and (max-width: 1100px) {
 	#pagewrap .rs-cards-row {
 		flex-direction: column;
 	}
