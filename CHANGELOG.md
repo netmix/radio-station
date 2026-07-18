@@ -7,15 +7,6 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-= 2.8.0 =
-* Added: Admin UI redesign with branded design system
-* Added: Radio Station logo in admin header
-* Added: Three-column support/upgrade/newsletter cards
-* Improved: Brand color rgb(191, 0, 61) applied throughout admin
-* Improved: Accessible, WCAG AA compliant admin styles
-* Improved: Admin notice styling
-* Added: New rs- CSS prefix design system in radio-station-admin-ui.css
-
 = 2.7.1 =
 * Fixed: Print Late Footer Stylesheets Priority
 

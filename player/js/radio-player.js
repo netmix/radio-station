@@ -51,7 +51,10 @@ function radio_player_check_format(data) {
 
 	if (radio_player.debug) {console.log(data);}
 	script = false; scripts = radio_player.scripts;
-	url = data.url; fallback = data.fallback; format = fformat = '';
+	url = data.url; fallback = data.fallback;
+	url = url.replaceAll('&amp;','&'); fallback = fallback.replaceAll('&amp;','&');
+	
+	format = fformat = '';
 	if (typeof data.format != 'undefined') {format = data.format.toLowerCase();}
 	if (typeof data.fformat != 'undefined') {fformat = data.fformat.toLowerCase();}
 
