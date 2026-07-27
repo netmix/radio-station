@@ -197,7 +197,6 @@ function radio_station_get_station_data() {
 	
 		// --- station info ---
 		'name'            => $station_name,
-		'callsign'        => $station_callsign,
 		'tagline'         => $station_tagline,
 		'image_url'       => $image_url,
 	
@@ -212,6 +211,7 @@ function radio_station_get_station_data() {
 		'timezone'        => $timezone,
 		'frequency'       => $frequency,
 		'band'            => $band,
+		'callsign'        => $station_callsign,
 		'location'        => $location,
 
 		// --- station page URLs ---

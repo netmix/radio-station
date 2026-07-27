@@ -325,8 +325,11 @@ function radio_station_revoke_show_edit_cap( $allcaps, $caps, $args, $user ) {
 	global $wp_roles;
 
 	// 2.4.0.4.1: fix for early capability check plugin conflict
-	if ( !function_exists( 'radio_station_get_setting' ) ) {
-		return $allcaps;
+	// 2.7.2: get settings manually instead
+	if ( function_exists( 'radio_station_get_settings' ) ) {
+		$settings = radio_station_get_settings();
+	} else {
+		$settings = get_option( 'radio_station' );
 	}
 
 	// --- check if super admin ---
@@ -361,7 +364,7 @@ function radio_station_revoke_show_edit_cap( $allcaps, $caps, $args, $user ) {
 	// 2.3.3.6: check editor roles first separately
 	// 2.4.0.4: only add WordPress editor role if on in settings
 	$editor_roles = array( 'administrator', 'show-editor' );
-	$editor_role_caps = radio_station_get_setting( 'add_editor_capabilities' );
+	$editor_role_caps = isset( $settings['add_editor_capablities'] ) ? $settings['add_editor_capabilities'] : '';
 	if ( 'yes' == $editor_role_caps ) {
 		$editor_roles[] = 'editor';
 	}
@@ -373,7 +376,7 @@ function radio_station_revoke_show_edit_cap( $allcaps, $caps, $args, $user ) {
 
 	// --- check for author role ---
 	$author_roles = array( 'dj', 'producer' );
-	$author_role_caps = radio_station_get_setting( 'add_author_capabilities' );
+	$author_role_caps = isset( $settings['add_author_capabilities'] ) ? $settings['add_author_capabilities'] : '';
 	if ( 'yes' == $author_role_caps ) {
 		$author_roles[] = 'author';
 	}
@@ -603,6 +606,13 @@ function radio_station_map_meta_cap_for_nonauthor( $caps, $cap, $user_id, $args 
 	global $pagenow;
 	// echo "CAPS BEFORE: "; print_r( $caps );
 
+	// 2.7.2: added check for get_settings function
+	if ( function_exists( 'radio_station_get_settings' ) ) {
+		$settings = radio_station_get_settings();
+	} else {
+		$settings = get_option( 'radio_station' );
+	}
+
 	$edit = array( 'edit_post', 'edit_show', 'edit_override' );
 	$edit_others = array( 'edit_others_posts', 'edit_others_shows', 'edit_others_overrides' );
 	
@@ -623,7 +633,7 @@ function radio_station_map_meta_cap_for_nonauthor( $caps, $cap, $user_id, $args 
 				// --- check for editor role ---
 				$allowed = false;
 				$user = wp_get_current_user();
-				$editor_role_caps = radio_station_get_setting( 'add_editor_capabilities' );
+				$editor_role_caps = isset( $settings['add_editor_capabilities'] ) ? $settings['add_editor_capabilities'] : '';
 				if ( ( 'yes' == $editor_role_caps ) && in_array( 'editor', $user->roles ) ) {
 					$allowed = true;
 				} else {
