@@ -986,6 +986,44 @@ function radio_station_plugin_options( $admin = false ) {
 			'pro'     => true,
 		),
 
+		// --- [Pro/Player] Fetch Track Artwork ---
+		// 2.8.0: added album artwork lookup via iTunes/Spotify
+		'player_bar_artwork' => array(
+			'type'    => 'checkbox',
+			'label'   => $admin ? __( 'Fetch Album Artwork?', 'radio-station' ) : '',
+			'default' => 'yes',
+			'value'   => 'yes',
+			'tab'     => 'player',
+			'section' => 'bar',
+			'helper'  => $admin ? __( 'Look up and display album artwork for the current track via the iTunes Search API (and Spotify as a fallback, if configured below). Useful for streams like Live365 that do not include artwork in their metadata.', 'radio-station' ) : '',
+			'pro'     => true,
+		),
+
+		// --- [Pro/Player] Spotify Client ID ---
+		// 2.8.0: optional fallback artwork source when iTunes has no match
+		'player_bar_artwork_spotify_id' => array(
+			'type'    => 'text',
+			'options' => 'TEXT',
+			'label'   => $admin ? __( 'Spotify Client ID', 'radio-station' ) : '',
+			'default' => '',
+			'tab'     => 'player',
+			'section' => 'bar',
+			'helper'  => $admin ? __( 'Optional. Used as a fallback artwork source when iTunes has no match. Create an app at developer.spotify.com to get a Client ID and Secret.', 'radio-station' ) : '',
+			'pro'     => true,
+		),
+
+		// --- [Pro/Player] Spotify Client Secret ---
+		'player_bar_artwork_spotify_secret' => array(
+			'type'    => 'text',
+			'options' => 'TEXT',
+			'label'   => $admin ? __( 'Spotify Client Secret', 'radio-station' ) : '',
+			'default' => '',
+			'tab'     => 'player',
+			'section' => 'bar',
+			'helper'  => $admin ? __( 'Used together with the Spotify Client ID above.', 'radio-station' ) : '',
+			'pro'     => true,
+		),
+
 		// === Master Schedule Page ===
 
 		// --- Schedule Page ---
