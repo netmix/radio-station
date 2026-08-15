@@ -133,7 +133,8 @@ function radio_clock_date_time() {
 							else if (init && zone && (divs[k].className == 'radio-server-zone')) {
 								/* server timezone */
 								format = divs[k].getAttribute('data-format'); f = format.split('-');
-								serverzone = radio.timezone.location; szone = '';
+								/* radio.timezone.location is only set for named zones; UTC-offset stations have no location */
+								serverzone = radio.timezone.location || ''; szone = '';
 								serverzone = serverzone.replace('_',' '); parts = serverzone.split('/');
 								if (typeof radio.timezone.code != 'undefined') {code = radio.timezone.code} else {code = '';}
 								if ((f[0] == '1') && (code != '')) {szone += code+' ';}
