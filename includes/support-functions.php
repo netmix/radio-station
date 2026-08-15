@@ -348,7 +348,7 @@ function radio_station_get_show_data( $datatype, $show_id, $args = array(), $att
 		foreach ( $results as $result ) {
 			// TODO: recheck if raw result is serialized or array ?
 			$show_ids = maybe_unserialize( $result['meta_value'] );
-			if ( $show_id == $result['meta_value'] || in_array( $show_id, $show_ids ) ) {
+			if ( $show_id == $result['meta_value'] || ( is_array( $show_ids ) && in_array( $show_id, $show_ids ) ) ) {
 				$post_ids[] = $result['post_id'];
 			}
 		}
