@@ -362,6 +362,12 @@ We haven't built an interface between Google Calendar and Radio Station just yet
 
 We do not have a method of importing data directly from JOAN or Pro.Radio
 
+= [Pro] Does Radio Station PRO display album artwork for the currently playing track? =
+
+Yes. Some streaming providers, notably Live365, only send the track title and artist in their metadata feed, with no album artwork. When the "Fetch Album Artwork?" option is enabled (Settings > Player tab, on by default), Radio Station PRO looks up artwork for the current track via the free iTunes Search API. This requires no signup or account of any kind and works out of the box.
+
+If iTunes has no match for a track, you can optionally configure a Spotify fallback. This does require you to sign up for your own free Spotify Developer account (developer.spotify.com/dashboard) and create an app to obtain a Client ID and Client Secret, which you then enter into the Player tab settings. Radio Station PRO cannot supply these credentials for you, as Spotify issues them per developer account. If you don't configure Spotify credentials, the plugin will simply rely on iTunes alone and display no artwork for tracks iTunes can't find.
+
 = How do I install the latest Development version for testing? =
 
 If you are having issues with the plugin, we may recommend you install the development version for further bugfix testing, as it may contain fixes that are not yet released into the next stable WordPress version. It is recommended you do this on a staging site. Instructions:

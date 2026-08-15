@@ -142,8 +142,15 @@ And in addition to the existing Light and Dark button themes, you can also choos
 
 #### [Pro] Track Metadata
 
+When "Now Playing Display" is enabled, Radio Station PRO retrieves the currently playing track's title and artist directly from your stream's metadata (via the Stream URL, or an alternative Metadata URL if configured). Most streaming providers - Live365, Icecast, Shoutcast, ZenoFM, StreamGuys - support this out of the box.
 
+##### Album Artwork
 
+Track metadata from most streaming providers does not include album artwork - Live365 in particular sends only title and artist. To fill this gap, enable "Fetch Album Artwork?" under Settings > Player tab (on by default). When enabled, Radio Station PRO looks up artwork for the current track via the free [iTunes Search API](https://performance-partners.apple.com/search-api) - no signup or account required.
+
+If you'd like a fallback for tracks iTunes doesn't have artwork for, you can optionally configure Spotify as a second source. This requires signing up for your own free [Spotify Developer account](https://developer.spotify.com/dashboard), creating an app there, and entering the resulting Client ID and Client Secret into the Player tab settings. Radio Station PRO cannot provide these credentials for you - Spotify issues them per developer account, and you are responsible for creating your own. Without Spotify credentials configured, the plugin uses iTunes only and simply won't display artwork for tracks iTunes has no match for.
+
+Artwork lookups (including "no match found" results) are cached for an hour per track, so the same song won't trigger repeated API calls while it's playing. If your stream's own metadata already includes artwork, Radio Station PRO will use that directly and skip the iTunes/Spotify lookup entirely.
 
 
 
