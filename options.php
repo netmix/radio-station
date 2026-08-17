@@ -764,19 +764,54 @@ function radio_station_plugin_options( $admin = false ) {
 			'pro'     => true,
 		),
 
-		// --- [Pro/Player] Player Bar Height ---
+		// --- [Pro/Player] Player Bar Height (Desktop) ---
 		// 2.5.15: add px suffix
+		// 2.9.0: renamed to Desktop, tightened max from 400 to 160, split into
+		// separate Tablet/Mobile fields below - button, icon, thumbnail and
+		// text sizes now scale proportionally to whichever height is active
 		'player_bar_height' => array(
 			'type'    => 'number',
 			'min'     => 40,
-			'max'     => 400,
+			'max'     => 160,
 			'step'    => 1,
-			'label'   => $admin ? __( 'Player Bar Height', 'radio-station' ) : '',
+			'label'   => $admin ? __( 'Player Bar Height (Desktop)', 'radio-station' ) : '',
 			'default' => 80,
 			'suffix'  => 'px',
 			'tab'     => 'player',
 			'section' => 'bar',
-			'helper'  => $admin ? __( 'Set the height of the Sitewide Player Bar in pixels.', 'radio-station' ) : '',
+			'helper'  => $admin ? __( 'Set the height of the Sitewide Player Bar on desktop screens. Icons, thumbnail and text scale automatically to match.', 'radio-station' ) : '',
+			'pro'     => true,
+		),
+
+		// --- [Pro/Player] Player Bar Height (Tablet) ---
+		// 2.9.0: added independent tablet breakpoint height
+		'player_bar_height_tablet' => array(
+			'type'    => 'number',
+			'min'     => 40,
+			'max'     => 160,
+			'step'    => 1,
+			'label'   => $admin ? __( 'Player Bar Height (Tablet)', 'radio-station' ) : '',
+			'default' => 80,
+			'suffix'  => 'px',
+			'tab'     => 'player',
+			'section' => 'bar',
+			'helper'  => $admin ? __( 'Set the height of the Sitewide Player Bar at tablet widths (1024px and below). Icons, thumbnail and text scale automatically to match.', 'radio-station' ) : '',
+			'pro'     => true,
+		),
+
+		// --- [Pro/Player] Player Bar Height (Mobile) ---
+		// 2.9.0: added independent mobile breakpoint height
+		'player_bar_height_mobile' => array(
+			'type'    => 'number',
+			'min'     => 40,
+			'max'     => 160,
+			'step'    => 1,
+			'label'   => $admin ? __( 'Player Bar Height (Mobile)', 'radio-station' ) : '',
+			'default' => 80,
+			'suffix'  => 'px',
+			'tab'     => 'player',
+			'section' => 'bar',
+			'helper'  => $admin ? __( 'Set the height of the Sitewide Player Bar at mobile widths (767px and below). Icons, thumbnail and text scale automatically to match.', 'radio-station' ) : '',
 			'pro'     => true,
 		),
 
