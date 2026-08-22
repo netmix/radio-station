@@ -249,6 +249,9 @@ function radio_station_statistics_panel() {
 			
 			// --- show host count ---
 			$hosts = get_post_meta( $result['ID'], 'show_user_list', true );
+			// 2.7.2: added filter to double check users exist
+			$hosts = apply_filters( 'radio_station_show_hosts', $hosts, $result['ID'] );
+
 			if ( $hosts && is_array( $hosts ) && ( count( $hosts ) > 0 ) ) {
 				$shows_host_count++;
 			}

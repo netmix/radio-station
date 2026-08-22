@@ -6,7 +6,7 @@ Plugin Name: Radio Station
 Plugin URI: https://radiostation.pro/radio-station
 Description: Adds Show pages, DJ role, playlist and on-air programming functionality to your site.
 Author: Tony Zeoli, Tony Hayes
-Version: 2.7.1
+Version: 2.7.2
 Requires at least: 3.3.1
 Text Domain: radio-station
 Domain Path: /languages
@@ -831,13 +831,14 @@ function radio_station_print_missed_footer_resources() {
 // Debug Queued Resources
 // ----------------------
 // 2.7.1: added for debugging weird footer enqueue bugs
+// 2.7.2: added extra priorities for improved debugging
 add_action( 'wp_footer', 'radio_station_debug_queued_resources', 9 );
+add_action( 'wp_footer', 'radio_station_debug_queued_resources', 11 );
 add_action( 'wp_footer', 'radio_station_debug_queued_resources', 21 );
 function radio_station_debug_queued_resources() {
 
-	global $wp_styles, $wp_scripts;
-
-    if ( isset( $_REQUEST['rs-debug-styles'] ) && is_a( $wp_styles, 'WP_Styles' ) ) { 
+    if ( isset( $_REQUEST['rs-debug-styles'] ) && is_a( $wp_styles, 'WP_Styles' ) ) {
+    	global $wp_styles;
 		echo '<span style="display:none;">Style Print Queue: ' . "\n";
 		foreach ( $wp_styles->registered as $handle => $style ) {
 			if ( wp_style_is( $handle, 'queue' ) && !wp_style_is( $handle, 'done' ) ) {
@@ -848,6 +849,7 @@ function radio_station_debug_queued_resources() {
     }
 
 	if ( isset( $_REQUEST['rs-debug-scripts'] ) && is_a( $wp_scripts, 'WP_Scripts' ) ) {
+		global $wp_scripts;
 		echo '<span style="display:none;">Script Print Queue: ' . "\n";
 		foreach ( $wp_scripts->registered as $handle => $script ) {
 			if ( wp_script_is( $handle, 'queue' ) && !wp_script_is( $wp_script_is, 'done' ) ) {

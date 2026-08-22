@@ -696,6 +696,9 @@ function radio_station_get_show_user_ids( $post_id ) {
 	// --- get show hosts and producers ---
 	$hosts = get_post_meta( $post_id, 'show_user_list', true );
 	$producers = get_post_meta( $post_id, 'show_producer_list', true );
+	// 2.7.2: added filter to double check users exist
+	$hosts = apply_filters( 'radio_station_show_hosts', $hosts, $post_id );
+	$producers = apply_filters( 'radio_station_show_producers', $producers, $post_id );
 
 	// 2.3.0.4: convert possible (old) non-array values
 	if ( !$hosts || empty( $hosts ) ) {
@@ -727,12 +730,16 @@ function radio_station_get_override_user_ids( $post_id ) {
 	$hosts = array();
 	if ( $show_id ) {
 		$hosts_a = get_post_meta( $show_id, 'show_user_list', true );
+		// 2.7.2: added filter to double check users exist
+		$hosts_a = apply_filters( 'radio_station_show_hosts', $hosts_a, $show_id );
 		if ( $hosts_a ) {
 			$hosts_a = is_array( $hosts_a ) ? $hosts_a : array( $hosts_a );
 			$hosts = array_merge( $hosts, $hosts_a );
 		}
 	}
 	$hosts_b = get_post_meta( $post_id, 'show_user_list', true );
+	// 2.7.2: added filter to double check users exist
+	$hosts_b = apply_filters( 'radio_station_show_hosts', $hosts_b, $post_id );
 	if ( $hosts_b ) {
 		$hosts_b = is_array( $hosts_b ) ? $hosts_b : array( $hosts_b );
 		$hosts = array_merge( $hosts, $hosts_b );
@@ -743,12 +750,15 @@ function radio_station_get_override_user_ids( $post_id ) {
 	$producers = array();
 	if ( $show_id ) {
 		$producers_a = get_post_meta( $show_id, 'show_producer_list', true );
+		// 2.7.2: added filter to double check users exist
+		$producers_a = apply_filters( 'radio_station_show_producers', $producers_a, $show_id );
 		if ( $producers_a ) {
 			$producers_a = is_array( $producers_a ) ? $producers_a : array( $producers_a );
 			$producers = array_merge( $producers, $producers_a );
 		}
 	}
 	$producers_b = get_post_meta( $post_id, 'show_producer_list', true );
+	$producers_b = apply_filters( 'radio_station_show_producers', $producers_b, $post_id );
 	if ( $producers_b ) {
 		$producers_b = is_array( $producers_b ) ? $producers_b : array( $producers_b );
 		$producers = array_merge( $producers, $producers_b );

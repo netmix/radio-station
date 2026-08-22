@@ -668,8 +668,10 @@ function radio_station_show_hosts_metabox() {
 	$hosts = get_users( $args );
 
 	// --- get the Hosts currently assigned to the show ---
-	// 2.4.0.4: convert possible (old) non-array value
 	$current = get_post_meta( $post->ID, 'show_user_list', true );
+	// 2.7.2: added filter to double check users exist
+	$current = apply_filters( 'radio_station_show_hosts', $current, $post->ID );
+	// 2.4.0.4: convert possible (old) non-array value
 	if ( !$current ) {
 		$current = array();
 	} elseif ( !is_array( $current ) ) {
@@ -754,6 +756,9 @@ function radio_station_show_producers_metabox() {
 
 	// --- get Producers currently assigned to the show ---
 	$current = get_post_meta( $post->ID, 'show_producer_list', true );
+	// 2.7.2: added filter to double check users exist
+	$current = apply_filters( 'radio_station_show_producers', $current, $post->ID );
+
 	// 2.4.0.4: convert possible (old) non-array values
 	if ( !$current ) {
 		$current = array();
@@ -2933,6 +2938,9 @@ function radio_station_show_column_data( $column, $post_id ) {
 	} elseif ( 'hosts' == $column ) {
 
 		$hosts = get_post_meta( $post_id, 'show_user_list', true );
+		// 2.7.2: added filter to double check users exist
+		$hosts = apply_filters( 'radio_station_show_hosts', $hosts, $post_id );
+	
 		if ( $hosts ) {
 			// 2.4.0.4: convert possible (old) non-array value
 			if ( !is_array( $hosts ) ) {
@@ -2963,6 +2971,9 @@ function radio_station_show_column_data( $column, $post_id ) {
 
 		// 2.3.0: added column for Producers
 		$producers = get_post_meta( $post_id, 'show_producer_list', true );
+		// 2.7.2: added filter to double check users exist
+		$producers = apply_filters( 'radio_station_show_producers', $producers, $post_id );
+
 		if ( $producers ) {
 			// 2.4.0.4: convert possible (old) non-array value
 			if ( !is_array( $producers ) ) {
@@ -6042,20 +6053,22 @@ function radio_station_playlist_show_metabox() {
 		$show_user_lists = $wpdb->get_results( $query );
 
 		// ---- check each list for the current user ---
-		foreach ( $show_user_lists as $user_list ) {
+		
+		foreach ( $show_user_lists as $i => $user_list ) {
 
-			$user_list->meta_value = maybe_unserialize( $user_list->meta_value );
+			// 2.7.2: shorten variable to allow filtering
+			$hosts = maybe_unserialize( $user_list->meta_value );
 
-			// --- if a list has no users, unserialize() will return false instead of an empty array ---
-			// (fix that to prevent errors in the foreach loop)
-			if ( !is_array( $user_list->meta_value ) ) {
-				$user_list->meta_value = array();
-			}
+			// 2.7.2: added filter to double check users exist
+			$hosts = apply_filters( 'radio_station_show_hosts', $hosts, $user_list->post_id );
 
 			// --- only include shows the user is assigned to ---
-			foreach ( $user_list->meta_value as $user_id ) {
-				if ( $user->ID === $user_id ) {
-					$allowed_shows[] = $user_list->post_id;
+			// 2.7.2: flattened check to hosts array
+			if ( $hosts && is_array( $hosts ) && ( count( $hosts ) > 0 ) ) {
+				foreach ( $hosts as $user_id ) {
+					if ( $user->ID === $user_id ) {
+						$allowed_shows[] = $user_list->post_id;
+					}
 				}
 			}
 		}

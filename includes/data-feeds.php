@@ -153,9 +153,11 @@ function radio_station_get_station_data() {
 	// 2.5.10: add station image URL
 	// 2.5.18: get station name
 	// 2.5.18: added callsign and tagline fields
+	// 2.7.2: added station genre field
 	$station_name = radio_station_get_setting( 'station_title' );
 	$station_callsign = radio_station_get_setting( 'station_callsign' );
 	$station_tagline = radio_station_get_setting( 'station_tagline' );
+	$station_genre = radio_station_get_setting( 'station_genre' );
 	$image_url = radio_station_get_station_image_url();
 
 	// --- get stream data ---
@@ -193,11 +195,14 @@ function radio_station_get_station_data() {
 	// 2.3.3.9: enabled format and fallback data
 	// 2.5.10: add station image URL
 	// 2.5.18: added frequency, band and location fields
+	// 2.7.2: added station genre field
 	$station_data = array(
 	
 		// --- station info ---
 		'name'            => $station_name,
+		'callsign'        => $station_callsign,
 		'tagline'         => $station_tagline,
+		'genre'           => $station_genre,
 		'image_url'       => $image_url,
 	
 		// --- stream meta ---
@@ -211,7 +216,6 @@ function radio_station_get_station_data() {
 		'timezone'        => $timezone,
 		'frequency'       => $frequency,
 		'band'            => $band,
-		'callsign'        => $station_callsign,
 		'location'        => $location,
 
 		// --- station page URLs ---
@@ -642,7 +646,8 @@ function radio_station_shows_endpoint() {
 	$shows = radio_station_get_shows_data( $show );
 
 	// --- maybe set request error ---
-	if ( 0 === count( $shows ) ) {
+	// 2.7.2: added extra check for empty shows
+	if ( !$shows || !is_array( $shows ) || ( 0 === count( $shows ) ) ) {
 		if ( $singular ) {
 			$code = 'show_not_found';
 			$message = 'Requested Show was not found.';
@@ -676,13 +681,13 @@ function radio_station_specials_endpoint() {
 	}
 
 	// --- get show query parameter ---
-	$show = $singular = $multiple = false;
+	$show = $single = $multiple = false;
 	if ( isset( $_GET['show'] ) ) {
 		$show = sanitize_text_field( $_GET['show'] );
 		if ( strstr( $show, ',' ) ) {
 			$multiple = true;
 		} else {
-			$singular = true;
+			$single = true;
 		}
 	}
 
@@ -690,13 +695,14 @@ function radio_station_specials_endpoint() {
 	$overrides = radio_station_get_overrides_data( $show );
 
 	// --- maybe set request error ---
+	// 2.7.2: fix error messages from shows to specials
 	if ( 0 === count( $overrides ) ) {
-		if ( $singular ) {
-			$code = 'show_not_found';
-			$message = 'Requested Show was not found.';
+		if ( $single ) {
+			$code = 'special_not_found';
+			$message = 'Requested Special was not found.';
 		} elseif ( $multiple ) {
-			$code = 'shows_not_found';
-			$message = 'No Requested Shows were found.';
+			$code = 'specials_not_found';
+			$message = 'No Requested Specials were found.';
 		} else {
 			$code = 'no_specials';
 			$message = 'No Specials were found.';
@@ -1612,6 +1618,8 @@ function radio_station_feed_item_node_shows() {
 function radio_station_feed_item_node_hosts() {
 	global $post;
 	$host_ids = get_post_meta( $post->ID, 'show_user_list', true );
+	// 2.7.2: added filter to double check users exist
+	$host_ids = apply_filters( 'radio_station_show_hosts', $host_ids, $post->ID );
 	$hosts = '';
 	$count = 0;
 	if ( $host_ids && is_array( $host_ids ) && ( count( $host_ids ) > 0 ) ) {

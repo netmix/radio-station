@@ -283,6 +283,17 @@ function radio_station_plugin_options( $admin = false ) {
 			'section' => 'station',
 		),
 
+		// --- Station Genre ---
+		// 2.7.2: added station genre field
+		'station_genre' => array(
+			'type'    => 'text',
+			'label'   => $admin ? __( 'Station Genre', 'radio-station' ) : '',
+			'default' => '',
+			'helper'  => $admin ? __( 'ONLY for dedicated single genre stations where you are not adding genres to Shows. eg. News, Jazz, Classical', 'radio-station' ) : '',
+			'tab'     => 'general',
+			'section' => 'station',
+		),
+
 		// --- Station Callsign ---
 		// 2.5.18: added station callsign field
 		'station_callsign' => array(

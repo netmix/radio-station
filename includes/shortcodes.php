@@ -2073,7 +2073,7 @@ function radio_station_show_list_shortcode( $type, $atts ) {
 		} elseif ( RADIO_STATION_OVERRIDE_SLUG == $type ) {
 			// 2.5.18: added for linked overrides
 			$overrides  = radio_station_get_linked_override_times( $show_id );
-			echo '<span style="display:none;">OVERRIDES: ' . print_r( $overrides, true ) . '</span>' . "\n";
+			// echo '<span style="display:none;">OVERRIDES: ' . print_r( $overrides, true ) . '</span>' . "\n";
 			if ( !$overrides || !is_array( $overrides ) || count( $overrides ) == 0 ) {
 				return '';
 			}
@@ -3004,6 +3004,8 @@ function radio_station_current_show_shortcode( $atts ) {
 
 			$hosts = '';
 			$show_hosts = get_post_meta( $show_id, 'show_user_list', true );
+			// 2.7.2: added filter to double check users exist
+			$show_hosts = apply_filters( 'radio_station_show_hosts', $show_hosts, $show_id );
 			if ( $show_hosts ) {
 				// 2.4.0.4: convert possible (old) non-array value
 				if ( !is_array( $show_hosts ) ) {
@@ -3797,6 +3799,8 @@ function radio_station_upcoming_shows_shortcode( $atts ) {
 
 				$hosts = '';
 				$show_hosts = get_post_meta( $show_id, 'show_user_list', true );
+				// 2.7.2: added filter to double check users exist
+				$show_hosts = apply_filters( 'radio_station_show_hosts', $show_hosts, $show_id );
 				if ( $show_hosts ) {
 						// 2.4.0.4: convert possible (old) non-array value
 						if ( !is_array( $show_hosts ) ) {

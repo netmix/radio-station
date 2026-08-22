@@ -404,8 +404,14 @@ We recommend you test these on a Staging site (or a development copy of your liv
 
 == Changelog ==
 
-= 2.7.1 =
+= 2.7.2 =
+* Updated: Freemius SDK (2.13.1)
 * Fixed: Early capability settings check (external plugin compat)
+* Fixed: Apply filter to check host/producer users still exist
+* Fixed: Override Specials data linked show meta
+* Added: Override Specials content data for single/multiple
+* Added: Admin plugin Settings page styles
+* Added: Station Genre field (for single genre stations)
 
 = 2.7.1 =
 * Fixed: Print Late Footer Stylesheets Priority

@@ -134,6 +134,7 @@ function radio_clock_date_time() {
 								/* server timezone */
 								format = divs[k].getAttribute('data-format'); f = format.split('-');
 								serverzone = radio.timezone.location; szone = '';
+								serverzone = radio.timezone.location || ''; szone = '';
 								serverzone = serverzone.replace('_',' '); parts = serverzone.split('/');
 								if (typeof radio.timezone.code != 'undefined') {code = radio.timezone.code} else {code = '';}
 								if ((f[0] == '1') && (code != '')) {szone += code+' ';}
