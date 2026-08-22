@@ -950,9 +950,9 @@ function radio_station_shifts_list_styles() {
 	.show-shift select.changed, .show-shift input.changed {background-color: #FFFFCC;}
 	.show-shift select option.original {font-weight: bold;}
 	.show-shift li {display: inline-block; vertical-align: middle;
-		margin-left: 20px; margin-top: 10px; margin-bottom: 10px;}
-	.show-shift li.first-item {margin-left: 10px;}
-	.show-shift li.last-item {margin-right: 10px;}
+		margin-left: 15px; margin-top: 10px; margin-bottom: 10px;}
+	.show-shift li.first-item {margin-left: 0;}
+	.show-shift li.last-item {margin-right: 0;}
 	.show-shift.changed, .show-shift.changed.disabled {background-color: #FFEECC;}
 	.show-shift.disabled {border: 2px dashed orange; background-color: #FFDDDD;}
 	.show-shift.conflicts {outline: 2px solid red;}
@@ -2295,16 +2295,21 @@ function radio_station_show_save_data( $post_id ) {
 		$shifts = $new_shifts = array();
 		// 2.3.3.9: allow for posting of just new shift
 		if ( isset( $_POST['new_shift'] ) ) {
+			// $new_shift = $_POST['new_shift'];
 			// 2.5.0: use sanitize_text_field on posted value
-			$new_shift = sanitize_text_field( $_POST['new_shift'] );
-			// print_r( $new_shift );
+			// $new_shift = sanitize_text_field( $_POST['new_shift'] );
+			// 2.7.2: fix to use array_map on posted array
+			$new_shift = array_map( 'sanitize_text_field', $_POST['new_shift'] );
+			// echo 'New Shift: ' . esc_html( print_r( $new_shift, true ) ) . "\n";
+
 			$new_id = $shift_id = radio_station_unique_shift_id();
 			$shifts = $prev_shifts;
 			$shifts[$new_id] = $new_shift;
 			$_POST['show_sched'] = $shifts;
+			
 		} else {
 			// TODO: test arrap_map and sanitize_text_field ?
-			// $shifts = array_map( 'sanitize_text_field', $_POST['show_sched );
+			// $shifts = array_map( 'sanitize_text_field', $_POST['show_sched'] );
 			$shifts = $_POST['show_sched'];
 		}
 
@@ -2552,8 +2557,10 @@ function radio_station_show_save_data( $post_id ) {
 		// 2.3.3.9: removed check of AJAX action as done earlier
 
 		// --- debug information ---
-		echo "Posted Shifts: " . esc_html( print_r( $shifts, true ) ) . "\n";
-		echo "New Shifts: " . esc_html( print_r( $new_shifts, true ) ) . "\n";
+		if ( RADIO_STATION_DEBUG ) {
+			echo "Posted Shifts: " . esc_html( print_r( $shifts, true ) ) . "\n\n";
+			echo "New Shifts: " . esc_html( print_r( $new_shifts, true ) ) . "\n";
+		}
 
 		// --- display shifts saved message ---
 		// 2.3.3.9: fade out shifts saved message
@@ -2562,11 +2569,18 @@ function radio_station_show_save_data( $post_id ) {
 		parent.document.getElementById('shifts-saved-message').style.display = '';
 		if (typeof parent.jQuery == 'function') {parent.jQuery('#shifts-saved-message').fadeOut(3000);}
 		else {setTimeout(function() {parent.document.getElementById('shifts-saved-message').style.display = 'none';}, 3000);}
-		/* form = parent.document.getElementById('shift-save-form');
-		if (form) {form.parentNode.removeChild(form);} */
+		form = parent.document.getElementById('shift-save-form');
+		if (form) {form.parentNode.removeChild(form);}
 		parent.document.getElementById('show_shifts_nonce').value = '" . esc_js( $show_shifts_nonce ) . "';
 		</script>";
 
+		// --- return early when adding single shift ---
+		// 2.3.3.9: added for single shift action
+		// 2.7.2: move return early check up
+		if ( 'radio_station_add_show_shift' == sanitize_text_field( $_REQUEST['action'] ) ) {
+			return;
+		}
+		
 		// 2.3.3.9: added check if show shifts changed
 		if ( $show_shifts_changed ) {
 
@@ -2647,11 +2661,7 @@ function radio_station_show_save_data( $post_id ) {
 			}
 		}
 
-		// --- return early when adding single shift ---
-		// 2.3.3.9: added for single shift action
-		if ( 'radio_station_add_show_shift' == sanitize_text_field( $_REQUEST['action'] ) ) {
-			return;
-		}
+
 
 		exit;
 	}
@@ -3838,7 +3848,9 @@ function radio_station_overrides_list_styles() {
 	.override-shift select.changed, .override-shift input.changed {background-color: #FFFFCC;}
 	.override-shift select option.original {font-weight: bold;}
 	.override-shift li {display: inline-block; vertical-align: middle;
-		margin-left: 20px; margin-top: 10px; margin-bottom: 10px;}
+		margin-left: 15px; margin-top: 10px; margin-bottom: 10px;}
+	.override-shift li.first-item {margin-left: 0;}
+	.override-shift li.last-item {margin-right: 0;}
 	.override-shift.changed, .override-shift.changed.disabled {background-color: #FFEECC;}
 	.override-shift.disabled {border: 2px dashed orange; background-color: #FFDDDD;}
 	.override-shift select.incomplete, .override-shift .override-date.incomplete {border: 2px solid orange;}
@@ -5043,6 +5055,13 @@ function radio_station_override_save_data( $post_id ) {
 			echo "parent.document.getElementById('show_override_nonce').value = '" . esc_js( $show_override_nonce ) . "';" . "\n";
 		echo "</script>" . "\n";
 
+		// --- return early when adding single override ---
+		// 2.3.3.9: added for single override action
+		// 2.7.2: move return early sooner
+		if ( 'radio_station_add_override_time' == $action ) {
+			return;
+		}
+
 		// 2.3.3.9: added check if override schedule changed
 		if ( $sched_changed ) {
 
@@ -5107,12 +5126,6 @@ function radio_station_override_save_data( $post_id ) {
 			} elseif ( 'radio_station_add_override_time' == $action ) {
 				do_action( 'radio_station_override_add_time' );
 			}
-		}
-
-		// --- return early when adding single override ---
-		// 2.3.3.9: added for single override action
-		if ( 'radio_station_add_override_time' == $action ) {
-			return;
 		}
 
 		exit;

@@ -6,7 +6,7 @@ License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires at least: 3.3
 Tested up to: 7.0.2
-Stable tag: 2.7.2
+Stable tag: 2.7.2.1
 
 Radio Station lets you build and manage a Show Schedule for a radio station or Internet broadcaster's WordPress website. 
 
@@ -409,6 +409,8 @@ We recommend you test these on a Staging site (or a development copy of your liv
 * Fixed: Early capability settings check (external plugin compat)
 * Fixed: Apply filter to check host/producer users still exist
 * Fixed: Override Specials data linked show meta
+* Fixed: Schedule Engine override ID key bug
+* Fixed: Sanitization bug on add new show shift array (AJAX)
 * Added: Override Specials content data for single/multiple
 * Added: Admin plugin Settings page styles
 * Added: Station Genre field (for single genre stations)
