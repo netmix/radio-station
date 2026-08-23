@@ -25,6 +25,10 @@
 
 #show-content .show-sections {
     min-width: 250px;
+    /* 2.8.0: establish a new block formatting context so this doesn't wrap around
+       the floated .show-info sidebar when it's taller than the section content
+       (previously this only applied in #show-content.narrow) */
+    overflow: hidden;
 }
 
 #show-content .show-sections h3, #show-content .show-sections h4, #show-content .show-sections h5 {
