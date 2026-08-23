@@ -61,6 +61,8 @@
 .master-genre-list {
 	font-size: 1em;
 	float: left;
+	/* explicit color so theme text-color inheritance can't wash out the heading and " | " separators */
+	color: #333333;
 }
 
 .master-genre-list span.heading {
