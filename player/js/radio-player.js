@@ -1513,7 +1513,7 @@ jQuery(document).ready(function() {
 	}, false);
 
 	/* --- pause on media elements player play --- */
-	jQuery('audio.mejs__player').on('play', function(e) {
+	jQuery('audio.mejs__player, audio.wp-audio-shortcode').on('play', function(e) {
 		if (!radio_player.settings.singular) {return;}
 		jQuery('.radio-container').each(function() {
 			instance = jQuery(this).attr('data-instance');
@@ -1525,7 +1525,7 @@ jQuery(document).ready(function() {
 	/* --- pause media elements on player play --- */
 	document.addEventListener('rp-play', function(e) {
 		if (!radio_player.settings.singular) {return;}
-		jQuery('audio.mejs__player').each(function() {
+		jQuery('audio.mejs__player, audio.wp-audio-shortcode').each(function() {
 			el = jQuery(this)[0];
 			if (!el.paused) {
 				el.pause();
