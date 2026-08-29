@@ -165,6 +165,7 @@ foreach ( $master_list as $hour => $days ) {
 				$output .= '<span class="show-dj-names">';
 
 				$dj_names = get_post_meta( $show['id'], 'show_user_list', true );
+				$dj_names = apply_filters( 'radio_station_show_hosts', $dj_names, $show['id'] );
 				$count = 0;
 
 				if ( $dj_names ) {

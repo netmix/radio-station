@@ -672,139 +672,145 @@ class radio_station_schedule_engine {
 
 		// --- loop overrides and get data ---
 		$override_list = array();
-		foreach ( $overrides as $i => $override ) {
+		if ( count( $overrides ) > 0 ) {
+			// echo '***'; print_r( $overrides );
+			foreach ( $overrides as $i => $override ) {
 
-			// echo '<span style="display:none;">Override: ' . print_r( $override, true ) . '</span>';
+				// 2.7.3: fix for possible override ID key
+				$override_id = isset( $override['ID'] ) ? $override['ID'] : $override['id'];
 
-			$override_shifts = $override['shifts'];
-			$show = $override['show'];
+				// echo '<span style="display:none;">Override: ' . print_r( $override, true ) . '</span>';
 
-			if ( $override_shifts && is_array( $override_shifts ) && ( count( $override_shifts ) > 0 ) )  {
+				$override_shifts = $override['shifts'];
+				$show = $override['show'];
 
-				// --- loop override shifts ---
-				// 2.3.3.9: loop to allow for multiple overrides
-				foreach ( $override_shifts as $j => $data ) {
+				if ( $override_shifts && is_array( $override_shifts ) && ( count( $override_shifts ) > 0 ) )  {
 
-					if ( $this->debug ) {
-						$debug = 'Override Data: ' . print_r( $data, true ) . PHP_EOL;
-						$this->debug_log( $debug );
-					}
+					// --- loop override shifts ---
+					// 2.3.3.9: loop to allow for multiple overrides
+					foreach ( $override_shifts as $j => $data ) {
 
-					// 2.3.3.9: ignore disabled overrides
-					if ( !isset( $data['disabled'] ) || ( 'yes' != $data['disabled'] ) ) {
+						if ( $this->debug ) {
+							$debug = 'Override Data: ' . print_r( $data, true ) . PHP_EOL;
+							$this->debug_log( $debug );
+						}
 
-						$date = $data['date'];
-						if ( '' != $date ) {
+						// 2.3.3.9: ignore disabled overrides
+						if ( !isset( $data['disabled'] ) || ( 'yes' != $data['disabled'] ) ) {
 
-							// 2.3.2: replace strtotime with to_time for timezones
-							$date_time = $this->to_time( $date, $timezone );
-							$inrange = true;
-
-							// --- check if in specified date range ---
-							if ( ( isset( $range_start_time ) && ( $date_time < $range_start_time ) )
-							  || ( isset( $range_end_time ) && ( $date_time > $range_end_time ) ) ) {
-								$inrange = false;
-							}
-
-							// --- add the override data ---
-							if ( $inrange ) {
-
-								// 2.3.2: get day from date directly
-								// $thisday = date( 'l', $date_time );
-								// 2.5.6: use get_time method instead of date()
-								$day = $this->get_time( 'l', strtotime( $date ) );
+							$date = $data['date'];
+							if ( '' != $date ) {
 
 								// 2.3.2: replace strtotime with to_time for timezones
-								// 2.3.2: fix to conver to 24 hour format first
-								$start = $data['start_hour'] . ':' . $data['start_min'] . ' ' . $data['start_meridian'];
-								$end = $data['end_hour'] . ':' . $data['end_min'] . ' ' . $data['end_meridian'];
-								$start_time = $this->convert_shift_time( $start );
-								$end_time = $this->convert_shift_time( $end );
-								$override_start_time = $this->to_time( $date . ' ' . $start_time, $timezone );
-								$override_end_time = $this->to_time( $date . ' ' . $end_time, $timezone );
-								// 2.3.2: fix for overrides ending at midnight
-								// 2.3.3.9: fix to use standardized operator check
-								if ( $override_end_time <= $override_start_time ) {
-									$override_end_time = $override_end_time + ( 24 * 60 * 60 );
+								$date_time = $this->to_time( $date, $timezone );
+								$inrange = true;
+
+								// --- check if in specified date range ---
+								if ( ( isset( $range_start_time ) && ( $date_time < $range_start_time ) )
+								  || ( isset( $range_end_time ) && ( $date_time > $range_end_time ) ) ) {
+									$inrange = false;
 								}
-								// TODO: allow for multiday overrides ?
-								/* if ( isset( $data['multiday'] ) && ( 'yes' == $data['multiday'] ) ) {
-									if ( isset( $data['enddate'] ) && ( '' != $data['enddate'] ) ) {
 
+								// --- add the override data ---
+								if ( $inrange ) {
+
+									// 2.3.2: get day from date directly
+									// $thisday = date( 'l', $date_time );
+									// 2.5.6: use get_time method instead of date()
+									$day = $this->get_time( 'l', strtotime( $date ) );
+
+									// 2.3.2: replace strtotime with to_time for timezones
+									// 2.3.2: fix to conver to 24 hour format first
+									$start = $data['start_hour'] . ':' . $data['start_min'] . ' ' . $data['start_meridian'];
+									$end = $data['end_hour'] . ':' . $data['end_min'] . ' ' . $data['end_meridian'];
+									$start_time = $this->convert_shift_time( $start );
+									$end_time = $this->convert_shift_time( $end );
+									$override_start_time = $this->to_time( $date . ' ' . $start_time, $timezone );
+									$override_end_time = $this->to_time( $date . ' ' . $end_time, $timezone );
+									// 2.3.2: fix for overrides ending at midnight
+									// 2.3.3.9: fix to use standardized operator check
+									if ( $override_end_time <= $override_start_time ) {
+										$override_end_time = $override_end_time + ( 24 * 60 * 60 );
 									}
-								} */
-								$recurs = isset( $data['recurs'] ) ? $data['recurs'] : '';
+									// TODO: allow for multiday overrides ?
+									/* if ( isset( $data['multiday'] ) && ( 'yes' == $data['multiday'] ) ) {
+										if ( isset( $data['enddate'] ) && ( '' != $data['enddate'] ) ) {
 
-								if ( $override_start_time < $override_end_time ) {
+										}
+									} */
+									$recurs = isset( $data['recurs'] ) ? $data['recurs'] : '';
 
-									// --- add the override as is ---
-									$override_data = array(
-										'ID'       => $show['id'],
-										'show'     => $show,
-										'id'       => $data['id'],
-										'name'     => $show['title'],
-										'slug'     => $show['slug'],
-										'date'     => $date,
-										'day'      => $day,
-										'start'    => $start,
-										'end'      => $end,
-										'override' => $override['ID'],
-										'recurs'   => $recurs,
-										'url'      => get_permalink( $show['id'] ),
-										'split'    => false,
-									);
-									// 2.3.3.7: set array order by start time
-									$override_list[$date][$override_start_time] = $override_data;
+									if ( $override_start_time < $override_end_time ) {
 
-								} else {
+										// --- add the override as is ---
+										$override_data = array(
+											'ID'       => $show['id'],
+											'show'     => $show,
+											'id'       => $data['id'],
+											'name'     => $show['title'],
+											'slug'     => $show['slug'],
+											'date'     => $date,
+											'day'      => $day,
+											'start'    => $start,
+											'end'      => $end,
+											'override' => $override_id,
+											'recurs'   => $recurs,
+											'url'      => get_permalink( $show['id'] ),
+											'split'    => false,
+										);
+										// 2.3.3.7: set array order by start time
+										$override_list[$date][$override_start_time] = $override_data;
 
-									// --- split the override overnight ---
-									$override_data = array(
-										'ID'       => $show['id'],
-										'show'     => $show,
-										'id'       => $data['id'],
-										'name'     => $show['title'],
-										'slug'     => $show['slug'],
-										'date'     => $date,
-										'day'      => $day,
-										'start'    => $start,
-										'end'      => '11:59:59 pm',
-										'real_end' => $end,
-										'override' => $override['ID'],
-										'recurs'   => $recurs,
-										'url'      => get_permalink( $show['id'] ),
-										'split'    => true,
-									);
-									// 2.3.3.7: set array order by start time
-									$override_list[$date][$override_start_time] = $override_data;
+									} else {
 
-									// --- set the next day split shift ---
-									// note: these should not wrap around to start of week
-									// 2.3.2: use get next date/day functions
-									// $nextday = date( 'l', $next_date_time );
-									// $nextdate = date( 'Y-m-d', $next_date_time );
-									// 2.5.6: fixed to use internal class methods
-									$nextdate = $this->get_next_date( $date );
-									$nextday = $this->get_next_day( $day );
+										// --- split the override overnight ---
+										$override_data = array(
+											'ID'       => $show['id'],
+											'show'     => $show,
+											'id'       => $data['id'],
+											'name'     => $show['title'],
+											'slug'     => $show['slug'],
+											'date'     => $date,
+											'day'      => $day,
+											'start'    => $start,
+											'end'      => '11:59:59 pm',
+											'real_end' => $end,
+											'override' => $override_id,
+											'recurs'   => $recurs,
+											'url'      => get_permalink( $show['id'] ),
+											'split'    => true,
+										);
+										// 2.3.3.7: set array order by start time
+										$override_list[$date][$override_start_time] = $override_data;
 
-									$override_data = array(
-										'ID'         => $show['id'],
-										'show'       => $show,
-										'id'         => $data['id'],
-										'name'       => $show['title'],
-										'slug'       => $show['slug'],
-										'date'       => $nextdate,
-										'day'        => $nextday,
-										'real_start' => $start,
-										'start'      => '00:00 am',
-										'end'        => $end,
-										'override'   => $override['ID'],
-										'recurs'     => $recurs,
-										'url'        => get_permalink( $show['id'] ),
-										'split'      => true,
-									);
-									// 2.3.3.7: set array order by start time
-									$override_list[$nextdate][$override_start_time] = $override_data;
+										// --- set the next day split shift ---
+										// note: these should not wrap around to start of week
+										// 2.3.2: use get next date/day functions
+										// $nextday = date( 'l', $next_date_time );
+										// $nextdate = date( 'Y-m-d', $next_date_time );
+										// 2.5.6: fixed to use internal class methods
+										$nextdate = $this->get_next_date( $date );
+										$nextday = $this->get_next_day( $day );
+
+										$override_data = array(
+											'ID'         => $show['id'],
+											'show'       => $show,
+											'id'         => $data['id'],
+											'name'       => $show['title'],
+											'slug'       => $show['slug'],
+											'date'       => $nextdate,
+											'day'        => $nextday,
+											'real_start' => $start,
+											'start'      => '00:00 am',
+											'end'        => $end,
+											'override'   => $override_id,
+											'recurs'     => $recurs,
+											'url'        => get_permalink( $show['id'] ),
+											'split'      => true,
+										);
+										// 2.3.3.7: set array order by start time
+										$override_list[$nextdate][$override_start_time] = $override_data;
+									}
 								}
 							}
 						}

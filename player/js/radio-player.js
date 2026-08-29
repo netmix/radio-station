@@ -51,7 +51,10 @@ function radio_player_check_format(data) {
 
 	if (radio_player.debug) {console.log(data);}
 	script = false; scripts = radio_player.scripts;
-	url = data.url; fallback = data.fallback; format = fformat = '';
+	url = data.url; fallback = data.fallback;
+	url = url.replaceAll('&amp;','&'); fallback = fallback.replaceAll('&amp;','&');
+	
+	format = fformat = '';
 	if (typeof data.format != 'undefined') {format = data.format.toLowerCase();}
 	if (typeof data.fformat != 'undefined') {fformat = data.fformat.toLowerCase();}
 
@@ -1510,7 +1513,7 @@ jQuery(document).ready(function() {
 	}, false);
 
 	/* --- pause on media elements player play --- */
-	jQuery('audio.mejs__player').on('play', function(e) {
+	jQuery('audio.mejs__player, audio.wp-audio-shortcode').on('play', function(e) {
 		if (!radio_player.settings.singular) {return;}
 		jQuery('.radio-container').each(function() {
 			instance = jQuery(this).attr('data-instance');
@@ -1522,7 +1525,7 @@ jQuery(document).ready(function() {
 	/* --- pause media elements on player play --- */
 	document.addEventListener('rp-play', function(e) {
 		if (!radio_player.settings.singular) {return;}
-		jQuery('audio.mejs__player').each(function() {
+		jQuery('audio.mejs__player, audio.wp-audio-shortcode').each(function() {
 			el = jQuery(this)[0];
 			if (!el.paused) {
 				el.pause();

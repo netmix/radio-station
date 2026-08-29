@@ -117,7 +117,8 @@ foreach ( $master_list as $hour => $days ) {
 					$output .= '<span class="show-dj-names show-host-names">';
 
 					$show_names = get_post_meta( $show['id'], 'show_user_list', true );
-					$count      = 0;
+					$show_names = apply_filters( 'radio_station_show_hosts', $show_names, $show['id'] );
+					$count = 0;
 
 					if ( $show_names ) {
 

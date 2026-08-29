@@ -668,8 +668,10 @@ function radio_station_show_hosts_metabox() {
 	$hosts = get_users( $args );
 
 	// --- get the Hosts currently assigned to the show ---
-	// 2.4.0.4: convert possible (old) non-array value
 	$current = get_post_meta( $post->ID, 'show_user_list', true );
+	// 2.7.2: added filter to double check users exist
+	$current = apply_filters( 'radio_station_show_hosts', $current, $post->ID );
+	// 2.4.0.4: convert possible (old) non-array value
 	if ( !$current ) {
 		$current = array();
 	} elseif ( !is_array( $current ) ) {
@@ -754,6 +756,9 @@ function radio_station_show_producers_metabox() {
 
 	// --- get Producers currently assigned to the show ---
 	$current = get_post_meta( $post->ID, 'show_producer_list', true );
+	// 2.7.2: added filter to double check users exist
+	$current = apply_filters( 'radio_station_show_producers', $current, $post->ID );
+
 	// 2.4.0.4: convert possible (old) non-array values
 	if ( !$current ) {
 		$current = array();
@@ -945,9 +950,9 @@ function radio_station_shifts_list_styles() {
 	.show-shift select.changed, .show-shift input.changed {background-color: #FFFFCC;}
 	.show-shift select option.original {font-weight: bold;}
 	.show-shift li {display: inline-block; vertical-align: middle;
-		margin-left: 20px; margin-top: 10px; margin-bottom: 10px;}
-	.show-shift li.first-item {margin-left: 10px;}
-	.show-shift li.last-item {margin-right: 10px;}
+		margin-left: 15px; margin-top: 10px; margin-bottom: 10px;}
+	.show-shift li.first-item {margin-left: 0;}
+	.show-shift li.last-item {margin-right: 0;}
 	.show-shift.changed, .show-shift.changed.disabled {background-color: #FFEECC;}
 	.show-shift.disabled {border: 2px dashed orange; background-color: #FFDDDD;}
 	.show-shift.conflicts {outline: 2px solid red;}
@@ -2290,16 +2295,21 @@ function radio_station_show_save_data( $post_id ) {
 		$shifts = $new_shifts = array();
 		// 2.3.3.9: allow for posting of just new shift
 		if ( isset( $_POST['new_shift'] ) ) {
+			// $new_shift = $_POST['new_shift'];
 			// 2.5.0: use sanitize_text_field on posted value
-			$new_shift = sanitize_text_field( $_POST['new_shift'] );
-			// print_r( $new_shift );
+			// $new_shift = sanitize_text_field( $_POST['new_shift'] );
+			// 2.7.2: fix to use array_map on posted array
+			$new_shift = array_map( 'sanitize_text_field', $_POST['new_shift'] );
+			// echo 'New Shift: ' . esc_html( print_r( $new_shift, true ) ) . "\n";
+
 			$new_id = $shift_id = radio_station_unique_shift_id();
 			$shifts = $prev_shifts;
 			$shifts[$new_id] = $new_shift;
 			$_POST['show_sched'] = $shifts;
+			
 		} else {
 			// TODO: test arrap_map and sanitize_text_field ?
-			// $shifts = array_map( 'sanitize_text_field', $_POST['show_sched );
+			// $shifts = array_map( 'sanitize_text_field', $_POST['show_sched'] );
 			$shifts = $_POST['show_sched'];
 		}
 
@@ -2547,8 +2557,10 @@ function radio_station_show_save_data( $post_id ) {
 		// 2.3.3.9: removed check of AJAX action as done earlier
 
 		// --- debug information ---
-		echo "Posted Shifts: " . esc_html( print_r( $shifts, true ) ) . "\n";
-		echo "New Shifts: " . esc_html( print_r( $new_shifts, true ) ) . "\n";
+		if ( RADIO_STATION_DEBUG ) {
+			echo "Posted Shifts: " . esc_html( print_r( $shifts, true ) ) . "\n\n";
+			echo "New Shifts: " . esc_html( print_r( $new_shifts, true ) ) . "\n";
+		}
 
 		// --- display shifts saved message ---
 		// 2.3.3.9: fade out shifts saved message
@@ -2557,11 +2569,18 @@ function radio_station_show_save_data( $post_id ) {
 		parent.document.getElementById('shifts-saved-message').style.display = '';
 		if (typeof parent.jQuery == 'function') {parent.jQuery('#shifts-saved-message').fadeOut(3000);}
 		else {setTimeout(function() {parent.document.getElementById('shifts-saved-message').style.display = 'none';}, 3000);}
-		/* form = parent.document.getElementById('shift-save-form');
-		if (form) {form.parentNode.removeChild(form);} */
+		form = parent.document.getElementById('shift-save-form');
+		if (form) {form.parentNode.removeChild(form);}
 		parent.document.getElementById('show_shifts_nonce').value = '" . esc_js( $show_shifts_nonce ) . "';
 		</script>";
 
+		// --- return early when adding single shift ---
+		// 2.3.3.9: added for single shift action
+		// 2.7.2: move return early check up
+		if ( 'radio_station_add_show_shift' == sanitize_text_field( $_REQUEST['action'] ) ) {
+			return;
+		}
+		
 		// 2.3.3.9: added check if show shifts changed
 		if ( $show_shifts_changed ) {
 
@@ -2642,11 +2661,7 @@ function radio_station_show_save_data( $post_id ) {
 			}
 		}
 
-		// --- return early when adding single shift ---
-		// 2.3.3.9: added for single shift action
-		if ( 'radio_station_add_show_shift' == sanitize_text_field( $_REQUEST['action'] ) ) {
-			return;
-		}
+
 
 		exit;
 	}
@@ -2933,6 +2948,9 @@ function radio_station_show_column_data( $column, $post_id ) {
 	} elseif ( 'hosts' == $column ) {
 
 		$hosts = get_post_meta( $post_id, 'show_user_list', true );
+		// 2.7.2: added filter to double check users exist
+		$hosts = apply_filters( 'radio_station_show_hosts', $hosts, $post_id );
+	
 		if ( $hosts ) {
 			// 2.4.0.4: convert possible (old) non-array value
 			if ( !is_array( $hosts ) ) {
@@ -2963,6 +2981,9 @@ function radio_station_show_column_data( $column, $post_id ) {
 
 		// 2.3.0: added column for Producers
 		$producers = get_post_meta( $post_id, 'show_producer_list', true );
+		// 2.7.2: added filter to double check users exist
+		$producers = apply_filters( 'radio_station_show_producers', $producers, $post_id );
+
 		if ( $producers ) {
 			// 2.4.0.4: convert possible (old) non-array value
 			if ( !is_array( $producers ) ) {
@@ -3827,7 +3848,9 @@ function radio_station_overrides_list_styles() {
 	.override-shift select.changed, .override-shift input.changed {background-color: #FFFFCC;}
 	.override-shift select option.original {font-weight: bold;}
 	.override-shift li {display: inline-block; vertical-align: middle;
-		margin-left: 20px; margin-top: 10px; margin-bottom: 10px;}
+		margin-left: 15px; margin-top: 10px; margin-bottom: 10px;}
+	.override-shift li.first-item {margin-left: 0;}
+	.override-shift li.last-item {margin-right: 0;}
 	.override-shift.changed, .override-shift.changed.disabled {background-color: #FFEECC;}
 	.override-shift.disabled {border: 2px dashed orange; background-color: #FFDDDD;}
 	.override-shift select.incomplete, .override-shift .override-date.incomplete {border: 2px solid orange;}
@@ -5032,6 +5055,13 @@ function radio_station_override_save_data( $post_id ) {
 			echo "parent.document.getElementById('show_override_nonce').value = '" . esc_js( $show_override_nonce ) . "';" . "\n";
 		echo "</script>" . "\n";
 
+		// --- return early when adding single override ---
+		// 2.3.3.9: added for single override action
+		// 2.7.2: move return early sooner
+		if ( 'radio_station_add_override_time' == $action ) {
+			return;
+		}
+
 		// 2.3.3.9: added check if override schedule changed
 		if ( $sched_changed ) {
 
@@ -5096,12 +5126,6 @@ function radio_station_override_save_data( $post_id ) {
 			} elseif ( 'radio_station_add_override_time' == $action ) {
 				do_action( 'radio_station_override_add_time' );
 			}
-		}
-
-		// --- return early when adding single override ---
-		// 2.3.3.9: added for single override action
-		if ( 'radio_station_add_override_time' == $action ) {
-			return;
 		}
 
 		exit;
@@ -6042,20 +6066,22 @@ function radio_station_playlist_show_metabox() {
 		$show_user_lists = $wpdb->get_results( $query );
 
 		// ---- check each list for the current user ---
-		foreach ( $show_user_lists as $user_list ) {
+		
+		foreach ( $show_user_lists as $i => $user_list ) {
 
-			$user_list->meta_value = maybe_unserialize( $user_list->meta_value );
+			// 2.7.2: shorten variable to allow filtering
+			$hosts = maybe_unserialize( $user_list->meta_value );
 
-			// --- if a list has no users, unserialize() will return false instead of an empty array ---
-			// (fix that to prevent errors in the foreach loop)
-			if ( !is_array( $user_list->meta_value ) ) {
-				$user_list->meta_value = array();
-			}
+			// 2.7.2: added filter to double check users exist
+			$hosts = apply_filters( 'radio_station_show_hosts', $hosts, $user_list->post_id );
 
 			// --- only include shows the user is assigned to ---
-			foreach ( $user_list->meta_value as $user_id ) {
-				if ( $user->ID === $user_id ) {
-					$allowed_shows[] = $user_list->post_id;
+			// 2.7.2: flattened check to hosts array
+			if ( $hosts && is_array( $hosts ) && ( count( $hosts ) > 0 ) ) {
+				foreach ( $hosts as $user_id ) {
+					if ( $user->ID === $user_id ) {
+						$allowed_shows[] = $user_list->post_id;
+					}
 				}
 			}
 		}

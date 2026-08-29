@@ -225,34 +225,6 @@ function radio_station_plugin_options( $admin = false ) {
 			'section' => 'broadcast',
 		),
 
-		// --- Station Frequency ---
-		// 2.5.18: added station frequency option
-		'station_frequency' => array(
-			'type'    => 'text',
-			'label'   => $admin ? __( 'Station Frequency', 'radio-station' ) : '',
-			'default' => '',
-			'helper'  => $admin ? __( 'Your station frequency as a number.', 'radio-station' ) : '',
-			'tab'     => 'general',
-			'section' => 'broadcast',
-		),
-		
-		// --- Station Band ---
-		// 2.5.18: added station band option
-		'station_band' => array(
-			'type'    => 'select',
-			'label'   => $admin ? __( 'Frequency Band', 'radio-station' ) : '',
-			'options' => array(
-				''    => $admin ? __( 'n/a', 'radio-station' ) : '',
-				'fm'  => $admin ? __( 'FM', 'radio-station' ) : '',
-				'am'  => $admin ? __( 'AM', 'radio-station' ) : '',
-				'dab' => $admin ? __( 'DAB', 'radio-station' ) : '',
-			),
-			'default' => '',
-			'helper'  => $admin ? __( 'Your station frequency band identifier.', 'radio-station' ) : '',
-			'tab'     => 'general',
-			'section' => 'broadcast',
-		),
-
 		// --- Service Identifier ---
 		// TODO: service identifier for RadioDNS
 		/* 'service_identifier' => array(
@@ -278,6 +250,17 @@ function radio_station_plugin_options( $admin = false ) {
 			
 		// === Station ===
 
+		// --- Station Image ---
+		// 2.3.3.8: added station logo image field
+		'station_image' => array(
+			'type'    => 'image',
+			'label'   => $admin ? __( 'Station Logo Image', 'radio-station' ) : '',
+			'default' => '',
+			'helper'  => $admin ? __( 'Add a logo image for your Radio Station. Please ensure image is square before uploading. Recommended size 256 x 256', 'radio-station' ) : '',
+			'tab'     => 'general',
+			'section' => 'station',
+		),
+
 		// --- Station Title ---
 		// 2.3.3.8: added station title field
 		'station_title' => array(
@@ -300,6 +283,17 @@ function radio_station_plugin_options( $admin = false ) {
 			'section' => 'station',
 		),
 
+		// --- Station Genre ---
+		// 2.7.2: added station genre field
+		'station_genre' => array(
+			'type'    => 'text',
+			'label'   => $admin ? __( 'Station Genre', 'radio-station' ) : '',
+			'default' => '',
+			'helper'  => $admin ? __( 'ONLY for dedicated single genre stations where you are not adding genres to Shows. eg. News, Jazz, Classical', 'radio-station' ) : '',
+			'tab'     => 'general',
+			'section' => 'station',
+		),
+
 		// --- Station Callsign ---
 		// 2.5.18: added station callsign field
 		'station_callsign' => array(
@@ -311,17 +305,34 @@ function radio_station_plugin_options( $admin = false ) {
 			'section' => 'station',
 		),
 
-		// --- Station Image ---
-		// 2.3.3.8: added station logo image field
-		'station_image' => array(
-			'type'    => 'image',
-			'label'   => $admin ? __( 'Station Logo Image', 'radio-station' ) : '',
+		// --- Station Frequency ---
+		// 2.5.18: added station frequency option
+		'station_frequency' => array(
+			'type'    => 'text',
+			'label'   => $admin ? __( 'Station Frequency', 'radio-station' ) : '',
 			'default' => '',
-			'helper'  => $admin ? __( 'Add a logo image for your Radio Station. Please ensure image is square before uploading. Recommended size 256 x 256', 'radio-station' ) : '',
+			'helper'  => $admin ? __( 'Your station frequency as a number.', 'radio-station' ) : '',
 			'tab'     => 'general',
 			'section' => 'station',
 		),
-
+		
+		// --- Station Band ---
+		// 2.5.18: added station band option
+		'station_band' => array(
+			'type'    => 'select',
+			'label'   => $admin ? __( 'Frequency Band', 'radio-station' ) : '',
+			'options' => array(
+				''    => $admin ? __( 'n/a', 'radio-station' ) : '',
+				'fm'  => $admin ? __( 'FM', 'radio-station' ) : '',
+				'am'  => $admin ? __( 'AM', 'radio-station' ) : '',
+				'dab' => $admin ? __( 'DAB', 'radio-station' ) : '',
+			),
+			'default' => '',
+			'helper'  => $admin ? __( 'Your station frequency band identifier.', 'radio-station' ) : '',
+			'tab'     => 'general',
+			'section' => 'station',
+		),
+		
 		// --- Station Location ---
 		// 2.5.18: added station location option
 		'station_location' => array(

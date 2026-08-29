@@ -249,6 +249,9 @@ function radio_station_statistics_panel() {
 			
 			// --- show host count ---
 			$hosts = get_post_meta( $result['ID'], 'show_user_list', true );
+			// 2.7.2: added filter to double check users exist
+			$hosts = apply_filters( 'radio_station_show_hosts', $hosts, $result['ID'] );
+
 			if ( $hosts && is_array( $hosts ) && ( count( $hosts ) > 0 ) ) {
 				$shows_host_count++;
 			}
@@ -473,7 +476,7 @@ function radio_station_statistics_panel() {
 		$content_items++;
 		// $active_percent = round( ( $active_count / $show_count ), 2, PHP_ROUND_HALF_DOWN ) * 100;
 		// $publish_percent = round( ( $publish_count / $show_count ), 2, PHP_ROUND_HALF_DOWN ) * 100;
-		$active_publish_percent = round( ( $active_count / $publish_count ), 2, PHP_ROUND_HALF_DOWN ) * 100;
+		$active_publish_percent = ( 0 == $publish_count ) ? 0 : round( ( $active_count / $publish_count ), 2, PHP_ROUND_HALF_DOWN ) * 100;
 		echo '<tr class="progress-line">' . "\n";
 
 			// --- progress icon ---
@@ -616,7 +619,7 @@ function radio_station_statistics_panel() {
 		
 		// --- Hosts ---
 		$content_items++;
-		$host_percent = round( ( $shows_host_count / $show_count ), 2, PHP_ROUND_HALF_DOWN ) * 100;
+		$host_percent = ( 0 == $show_count ) ? 0 : round( ( $shows_host_count / $show_count ), 2, PHP_ROUND_HALF_DOWN ) * 100;
 		echo '<tr class="progress-line">' . "\n";
 
 			// --- progress icon ---
@@ -676,7 +679,7 @@ function radio_station_statistics_panel() {
 
 		// --- Genres ---
 		$content_items++;
-		$genre_percent = round( ( $genre_show_count / $show_count ), 2, PHP_ROUND_HALF_DOWN ) * 100;
+		$genre_percent = ( 0 == $show_count ) ? 0 : round( ( $genre_show_count / $show_count ), 2, PHP_ROUND_HALF_DOWN ) * 100;
 		echo '<tr class="progress-line">' . "\n";
 
 			// --- progress icon ---

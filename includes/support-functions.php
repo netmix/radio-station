@@ -348,7 +348,8 @@ function radio_station_get_show_data( $datatype, $show_id, $args = array(), $att
 		foreach ( $results as $result ) {
 			// TODO: recheck if raw result is serialized or array ?
 			$show_ids = maybe_unserialize( $result['meta_value'] );
-			if ( $show_id == $result['meta_value'] || in_array( $show_id, $show_ids ) ) {
+			// 2.7.2: added is_array check to catch potential fatal error
+			if ( ( $show_id == $result['meta_value'] ) || ( is_array( $show_ids ) && in_array( $show_id, $show_ids ) ) ) {
 				$post_ids[] = $result['post_id'];
 			}
 		}
@@ -357,9 +358,16 @@ function radio_station_get_show_data( $datatype, $show_id, $args = array(), $att
 
 		// 2.3.3.9; added get host/producer profile posts
 		$user_ids = get_post_meta( $show_id, $metakey, true );
+		// 2.7.2: added filter to double check users exist
+		if ( 'hosts' == $datatype ) {
+			$user_ids = apply_filters( 'radio_station_show_hosts', $user_ids, $show_id );
+		} elseif ( 'producers' == $datatype ) {
+			$user_ids = apply_filters( 'radio_station_show_producers', $user_ids, $show_id );
+		}
 		if ( !$user_ids ) {
 			return false;
 		}
+
 		$post_ids = $no_profile_ids = array();
 		foreach ( $user_ids as $user_id ) {
 			$query = "SELECT post_id FROM " . $wpdb->prefix . "postmeta WHERE meta_key = %s AND meta_value = %d";
@@ -527,6 +535,10 @@ function radio_station_get_show_data_meta( $show, $single = false ) {
 	// --- get show user data ---
 	$show_hosts = get_post_meta( $show->ID, 'show_user_list', true );
 	$show_producers = get_post_meta( $show->ID, 'show_producer_list', true );
+	// 2.7.2: added filter to double check users exist
+	$show_hosts = apply_filters( 'radio_station_show_hosts', $show_hosts, $show->ID );
+	$show_producers = apply_filters( 'radio_station_show_producers', $show_producers, $show->ID );
+
 	$hosts = $producers = array();
 	if ( $show_hosts ) {
 		// 2.4.0.4: convert possible (old) non-array value
@@ -618,12 +630,16 @@ function radio_station_get_show_data_meta( $show, $single = false ) {
 
 	// --- data route / feed for show ---
 	if ( 'yes' == radio_station_get_setting( 'enable_data_routes' ) ) {
-		$route_link = radio_station_get_route_url( 'shows' );
+		// 2.7.2: set route slug for show or special
+		$route_slug = ( RADIO_STATION_OVERRIDE_SLUG == $show->post_type ) ? 'specials' : 'shows';
+		$route_link = radio_station_get_route_url( $route_slug );
 		$show_route = add_query_arg( 'show', $show->post_name, $route_link );
 		$show_data['route'] = $show_route;
 	}
 	if ( 'yes' == radio_station_get_setting( 'enable_data_feeds' ) ) {
-		$feed_link = radio_station_get_feed_url( 'shows' );
+		// 2.7.2: set feed slug for show or special
+		$feed_slug = ( RADIO_STATION_OVERRIDE_SLUG == $show->post_type ) ? 'specials' : 'shows';
+		$feed_link = radio_station_get_feed_url( $feed_slug );
 		$show_feed = add_query_arg( 'show', $show->post_name, $feed_link );
 		$show_data['feed'] = $show_feed;
 	}
@@ -702,7 +718,7 @@ function radio_station_get_show_description( $show_data ) {
 // Get Overrides Data
 // ------------------
 // 2.5.18: added for special overrides data endpoint
-function radio_station_get_overrides_data( $show ) {
+function radio_station_get_overrides_data( $show = false ) {
 	
 	$now = radio_station_get_now();
 	$timezone = radio_station_get_timezone();
@@ -710,11 +726,15 @@ function radio_station_get_overrides_data( $show ) {
 	$end_date = radio_station_get_time( 'date', ( $now + ( 60 * 86400 ) ), $timezone );
 	$overrides = radio_station_get_all_overrides( $start_date, $end_date, $timezone );
 	
+	// 2.7.2: add single / multiple switches
+	$single = $multiple = false;
 	if ( $show ) {
 		if ( strstr( $show, ',' ) ) {
 			$shows = explode( ',', $show );
+			$multiple = true;
 		} else {
 			$shows = array( $show );
+			$single = true;
 		}
 
 		// --- check shows requested ---
@@ -726,19 +746,20 @@ function radio_station_get_overrides_data( $show ) {
 		}
 
 		// --- remove overrides not matching shows specified )
-		foreach ( $overrides as $date => $times ) {
+		/* foreach ( $overrides as $date => $times ) {
 			foreach ( $times as $timestamp => $override ) {
 				if ( !isset( $override['show']['id'] ) || !in_array( $override['show']['id'], $shows ) ) {
 					unset( $override[$date][$timestamp] );
 				}
 			}
-		}
+		} */
+
 		$overrides = array_values( $overrides );		
 	}
 
 	// --- add override metadata ---
+	$overrides_data = array();
 	if ( count( $overrides ) > 0 ) {
-		$overrides_data = array();
 		foreach ( $overrides as $date => $times ) {
 			foreach ( $times as $timestamp => $override ) {
 				$metadata = radio_station_get_override_data_meta( $override['override'] );
@@ -748,9 +769,14 @@ function radio_station_get_overrides_data( $show ) {
 				$override['producers'] = $metadata['producers'];
 				$override['avatar_url'] = $metadata['avatar_url'];
 				$override['image_url'] = $metadata['image_url'];
-				
-				// TODO: get more override metadata ?
-				
+				// 2.7.2: add excerpt to override data
+				$override['excerpt'] = $metadata['excerpt'];
+
+				// 2.7.2: maybe add description and excerpt to override data
+				if ( $single || $multiple ) {
+					$override['description'] = $metadata['description'];
+				}
+
 				$overrides_data[] = $override;
 			}
 		}
@@ -794,6 +820,10 @@ function radio_station_get_override_data_meta( $override ) {
 	// 2.5.18: fix to incorrect host and producer metakey prefix
 	$override_hosts = get_post_meta( $override_id, 'show_user_list', true );
 	$override_producers = get_post_meta( $override_id, 'show_producer_list', true );
+	// 2.7.2: added filter to double check users exist
+	$override_hosts = apply_filters( 'radio_station_show_hosts', $override_hosts, $override_id );
+	$override_producers = apply_filters( 'radio_station_show_producers', $override_producers, $override_id );
+
 	$hosts = $producers = array();
 	if ( is_array( $override_hosts ) && ( count( $override_hosts ) > 0 ) ) {
 		foreach ( $override_hosts as $host ) {
@@ -861,27 +891,36 @@ function radio_station_get_override_data_meta( $override ) {
 		'image_id'   => $thumbnail_id,
 	);
 
+	// --- get override description and excerpt ---
+    // 2.7.2: added description/excerpt to override data for specials route
+    $override_data = radio_station_get_show_description( $override_data );
+
 	// --- linked Show ID ---
 	// 2.3.3.9: maybe use linked show data
 	$linked_id = get_post_meta( $override_id, 'linked_show_id', true );
-	if ( $linked_id ) {
+	$show_fields = get_post_meta( $override_id, 'linked_show_fields', true );
+	if ( $linked_id && is_array( $show_fields ) ) {
 
 		// --- use linked show data ---
 		$show_data = radio_station_get_show_data_meta( $linked_id );
-		$show_fields = get_post_meta( $override_id, 'linked_show_fields', true );
-
+		$show_data = radio_station_get_show_description( $show_data );
+		
 		// --- map info keys to meta keys ---
 		$fields = array(
-			'name'       => 'show_title',
-			'hosts'      => 'show_user_list',
-			'producers'  => 'show_producer_list',
-			'avatar_url' => 'show_avatar',
+			'name'        => 'show_title',
+			'hosts'       => 'show_user_list',
+			'producers'   => 'show_producer_list',
+			'avatar_url'  => 'show_avatar',
 			// 'image_url' => 'show_thumbnail',
+			// 2.7.2: add description and excerpt keys
+			'description' => 'show_content',
+			'excerpt'     => 'show_excerpt',
 		);
 
 		// --- apply selected show data to override ---
 		foreach ( $fields as $key => $meta_key ) {
-			if ( isset( $show_fields[$meta_key] ) && $show_fields[$meta_key] ) {
+			// 2.7.2: fix to use show data field if *unchecked*
+			if ( isset( $show_fields[$meta_key] ) && !$show_fields[$meta_key] ) {
 				$override_data[$key] = $show_data[$key];
 			}
 		}
@@ -1826,6 +1865,26 @@ function radio_station_check_directory_ping() {
 // ------------------------
 // === Helper Functions ===
 // ------------------------
+
+// -------------------------------------
+// Show Hosts/Producers Deleted User Fix
+// -------------------------------------
+// 2.7.2: added to check users in host/producer list still exist
+// note: priority 11 to run after existing overrides host/producer filter
+add_filter( 'radio_station_show_hosts', 'radio_station_show_users_check', 11, 2 );
+add_filter( 'radio_station_show_producers', 'radio_station_show_users_check', 11, 2 );
+function radio_station_show_users_check( $user_ids, $post_id ) {
+	if ( $user_ids && is_array( $user_ids ) && ( count( $user_ids ) > 0 ) ) {
+		foreach ( $user_ids as $i => $user_id ) {
+			$user = get_user( $user_id );
+			// --- remove users who no longer exist ---
+			if ( !$user ) {
+				unset( $user_ids[$i] );
+			}
+		}
+	}
+	return $user_ids;
+}
 
 // ---------------
 // Get Icon Colors

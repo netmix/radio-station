@@ -175,7 +175,7 @@ function radio_convert_times() {
 				dayformat = jQuery(this).find('.rs-day').attr('data-format');
 				userday = radio_user_time(starttime, dayformat);
 			}
-			if ((starthtml != startdisplay) || (endhtml != enddisplay)) {
+			if (jQuery(this).hasClass('show-shift-time') || (starthtml != startdisplay) || (endhtml != enddisplay)) {
 				if (radio.debug) {console.log('Start: '+starthtml+' => '+startdisplay+' - End: '+endhtml+' => '+enddisplay);}
 				showusertime = jQuery(this).parent().find('.show-user-time').show();
 				showusertime.find('.rs-start-time').html(startdisplay);
@@ -207,8 +207,12 @@ function radio_user_time(time, format) {
 		if (override) {return override;}
 	}
 	datetime = new Date(time * 1000);
-	zonetime = moment(datetime.toISOString());
+	zonetime = moment(datetime);
 	formatted = radio_convert_time(zonetime, format);
+	if (radio.debug) {
+		if (format == 'D') {console.log('day: '+zonetime.day());}
+		console.log('Time: '+time+' - Zonetime: '+zonetime.toString()+' - Format: '+format+' - Result: '+formatted);
+	}
 	return formatted;
 }
 
@@ -231,8 +235,9 @@ function radio_format_key(zonetime, key) {
 			k = radio.moment_map[i];
 			v = zonetime.format(k);
 			if (((i == 'd') || (i == 'm') || (i == 'h') || (i == 'H') || (i == 'i') || (i == 's')) && (v < 10)) {v = '0'+v;}
-			else if (i == 'D') {v = radio.labels.sdays[v];}
-			else if (i == 'l') {v = radio.labels.days[v];}
+			else if (i == 'D') {
+				v = zonetime.day(); v = radio.labels.sdays[v];
+			} else if (i == 'l') {v = radio.labels.days[v];}
 			else if (i == 'N') {v++;}
 			else if (i == 'S') {d = zonetime.format('D'); v.replace(d, '');}
 			else if (i == 'F') {v = radio.labels.months[v];}

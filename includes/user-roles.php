@@ -325,8 +325,11 @@ function radio_station_revoke_show_edit_cap( $allcaps, $caps, $args, $user ) {
 	global $wp_roles;
 
 	// 2.4.0.4.1: fix for early capability check plugin conflict
-	if ( !function_exists( 'radio_station_get_setting' ) ) {
-		return $allcaps;
+	// 2.7.2: get settings manually instead
+	if ( function_exists( 'radio_station_get_settings' ) ) {
+		$settings = radio_station_get_settings();
+	} else {
+		$settings = get_option( 'radio_station' );
 	}
 
 	// --- check if super admin ---
@@ -361,7 +364,7 @@ function radio_station_revoke_show_edit_cap( $allcaps, $caps, $args, $user ) {
 	// 2.3.3.6: check editor roles first separately
 	// 2.4.0.4: only add WordPress editor role if on in settings
 	$editor_roles = array( 'administrator', 'show-editor' );
-	$editor_role_caps = radio_station_get_setting( 'add_editor_capabilities' );
+	$editor_role_caps = isset( $settings['add_editor_capablities'] ) ? $settings['add_editor_capabilities'] : '';
 	if ( 'yes' == $editor_role_caps ) {
 		$editor_roles[] = 'editor';
 	}
@@ -373,7 +376,7 @@ function radio_station_revoke_show_edit_cap( $allcaps, $caps, $args, $user ) {
 
 	// --- check for author role ---
 	$author_roles = array( 'dj', 'producer' );
-	$author_role_caps = radio_station_get_setting( 'add_author_capabilities' );
+	$author_role_caps = isset( $settings['add_author_capabilities'] ) ? $settings['add_author_capabilities'] : '';
 	if ( 'yes' == $author_role_caps ) {
 		$author_roles[] = 'author';
 	}
@@ -603,6 +606,13 @@ function radio_station_map_meta_cap_for_nonauthor( $caps, $cap, $user_id, $args 
 	global $pagenow;
 	// echo "CAPS BEFORE: "; print_r( $caps );
 
+	// 2.7.2: added check for get_settings function
+	if ( function_exists( 'radio_station_get_settings' ) ) {
+		$settings = radio_station_get_settings();
+	} else {
+		$settings = get_option( 'radio_station' );
+	}
+
 	$edit = array( 'edit_post', 'edit_show', 'edit_override' );
 	$edit_others = array( 'edit_others_posts', 'edit_others_shows', 'edit_others_overrides' );
 	
@@ -623,7 +633,7 @@ function radio_station_map_meta_cap_for_nonauthor( $caps, $cap, $user_id, $args 
 				// --- check for editor role ---
 				$allowed = false;
 				$user = wp_get_current_user();
-				$editor_role_caps = radio_station_get_setting( 'add_editor_capabilities' );
+				$editor_role_caps = isset( $settings['add_editor_capabilities'] ) ? $settings['add_editor_capabilities'] : '';
 				if ( ( 'yes' == $editor_role_caps ) && in_array( 'editor', $user->roles ) ) {
 					$allowed = true;
 				} else {
@@ -686,6 +696,9 @@ function radio_station_get_show_user_ids( $post_id ) {
 	// --- get show hosts and producers ---
 	$hosts = get_post_meta( $post_id, 'show_user_list', true );
 	$producers = get_post_meta( $post_id, 'show_producer_list', true );
+	// 2.7.2: added filter to double check users exist
+	$hosts = apply_filters( 'radio_station_show_hosts', $hosts, $post_id );
+	$producers = apply_filters( 'radio_station_show_producers', $producers, $post_id );
 
 	// 2.3.0.4: convert possible (old) non-array values
 	if ( !$hosts || empty( $hosts ) ) {
@@ -717,12 +730,16 @@ function radio_station_get_override_user_ids( $post_id ) {
 	$hosts = array();
 	if ( $show_id ) {
 		$hosts_a = get_post_meta( $show_id, 'show_user_list', true );
+		// 2.7.2: added filter to double check users exist
+		$hosts_a = apply_filters( 'radio_station_show_hosts', $hosts_a, $show_id );
 		if ( $hosts_a ) {
 			$hosts_a = is_array( $hosts_a ) ? $hosts_a : array( $hosts_a );
 			$hosts = array_merge( $hosts, $hosts_a );
 		}
 	}
 	$hosts_b = get_post_meta( $post_id, 'show_user_list', true );
+	// 2.7.2: added filter to double check users exist
+	$hosts_b = apply_filters( 'radio_station_show_hosts', $hosts_b, $post_id );
 	if ( $hosts_b ) {
 		$hosts_b = is_array( $hosts_b ) ? $hosts_b : array( $hosts_b );
 		$hosts = array_merge( $hosts, $hosts_b );
@@ -733,12 +750,15 @@ function radio_station_get_override_user_ids( $post_id ) {
 	$producers = array();
 	if ( $show_id ) {
 		$producers_a = get_post_meta( $show_id, 'show_producer_list', true );
+		// 2.7.2: added filter to double check users exist
+		$producers_a = apply_filters( 'radio_station_show_producers', $producers_a, $show_id );
 		if ( $producers_a ) {
 			$producers_a = is_array( $producers_a ) ? $producers_a : array( $producers_a );
 			$producers = array_merge( $producers, $producers_a );
 		}
 	}
 	$producers_b = get_post_meta( $post_id, 'show_producer_list', true );
+	$producers_b = apply_filters( 'radio_station_show_producers', $producers_b, $post_id );
 	if ( $producers_b ) {
 		$producers_b = is_array( $producers_b ) ? $producers_b : array( $producers_b );
 		$producers = array_merge( $producers, $producers_b );

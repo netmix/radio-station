@@ -7,6 +7,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+= 2.7.3 =
+* Updated: Freemius SDK (2.13.1)
+* Fixed: Early capability settings check (external plugin compat)
+* Fixed: Apply filter to check host/producer users still exist
+* Fixed: Override Specials data linked show meta
+* Fixed: Schedule Engine override ID key bug
+* Fixed: Sanitization bug on add new show shift array (AJAX)
+* Fixed: MediaElement shortcode embed single play targeting
+* Added: Override Specials content data for single/multiple
+* Added: Admin plugin Settings page styles
+* Added: Station Genre field (for single genre stations)
+
 = 2.7.1 =
 * Fixed: Print Late Footer Stylesheets Priority
 
