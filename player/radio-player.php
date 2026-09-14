@@ -630,6 +630,8 @@ function radio_player_output( $args = array(), $echo = false ) {
 
 	// --- Current Track ---
 	$html['track'] = '<div class="rp-now-playing">' . "\n";
+		// 2.8.0: added track artwork image (populated via JS when available - eg. PRO's iTunes/Spotify lookup)
+		$html['track'] .= '<img class="rp-now-playing-item rp-now-playing-artwork" src="" alt="" style="display:none;">' . "\n";
 		$html['track'] .= '<div class="rp-now-playing-item rp-now-playing-title"></div>' . "\n";
 		$html['track'] .= '<div class="rp-now-playing-item rp-now-playing-artist"></div>' . "\n";
 		$html['track'] .= '<div class="rp-now-playing-item rp-now-playing-album"></div>' . "\n";

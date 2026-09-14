@@ -212,6 +212,18 @@ How to animate the currently playing track display.
 Default: none (use Stream URL.) Key: player_bar_metadata
 Alternative metadata source URL for Now Playing Track metadata.
 
+#### [Pro] Fetch Album Artwork?
+Default: on. Key: player_bar_artwork
+Look up and display album artwork for the current track via the iTunes Search API (and Spotify as a fallback, if configured below.) Useful for streams like Live365 that do not include artwork in their metadata. See [Track Metadata](./Player.md#pro-track-metadata) for more info.
+
+#### [Pro] Spotify Client ID
+Default: none. Key: player_bar_artwork_spotify_id
+Optional fallback artwork source used when iTunes has no match for a track. Requires a free Spotify Developer account - see [Track Metadata](./Player.md#pro-track-metadata) for setup instructions.
+
+#### [Pro] Spotify Client Secret
+Default: none. Key: player_bar_artwork_spotify_secret
+Used together with the Spotify Client ID above.
+
 
 ## Pages
 
