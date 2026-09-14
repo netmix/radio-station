@@ -1,6 +1,6 @@
 # Radio Station
 
-Radio Station lets you build and manage a Show Schedule for a radio station or Internet broadcaster's WordPress website. 
+Radio Station turns WordPress into a full station website — live audio streaming, a public Show Schedule, and management for Shows, Hosts, Producers, Episodes, and Playlists.
 
 ## Plugin Details
 
