@@ -204,6 +204,34 @@ function radio_station_admin_settings_scripts() {
 
 }
 
+// -----------------------------------
+// Bar Player Font Teaser Tooltip
+// -----------------------------------
+// 2.8.3: adds an info tooltip to the "Bar Player Font" row's Premium
+// Feature teaser (shown when PRO isn't active/licensed), specifically
+// calling out custom font upload as a reason to upgrade. Scoped to just
+// this one row by matching its visible label text — the teaser markup in
+// loader.php's setting_row() has no data-key or other identifying
+// attribute to target more directly, and this stays self-contained rather
+// than modifying that shared renderer. No-op once PRO is active, since the
+// teaser cell (td.setting-pro) is replaced by the real control and this
+// selector simply finds nothing to attach to.
+add_action( 'radio_station_settings_scripts', 'radio_station_bar_player_font_teaser_tooltip' );
+function radio_station_bar_player_font_teaser_tooltip() {
+
+	$tooltip = __( 'PRO also lets you upload your own custom font file, in addition to a curated set of Google Fonts.', 'radio-station' );
+
+	echo "jQuery(function(\$) {
+		\$('td.settings-label').each(function() {
+			if (\$(this).text().trim() !== '" . esc_js( __( 'Bar Player Font', 'radio-station' ) ) . "') {return;}
+			var \$teaser = \$(this).closest('tr').find('td.setting-pro');
+			if (!\$teaser.length) {return;}
+			\$teaser.prepend('<span class=\"dashicons dashicons-info-outline\" style=\"cursor:help; margin-right:4px; vertical-align:middle;\" title=\"" . esc_js( $tooltip ) . "\"></span>');
+		});
+	});" . "\n";
+
+}
+
 // --------------------------
 // Filter Plugin Action Links
 // --------------------------
