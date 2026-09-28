@@ -104,6 +104,8 @@ Please note that the following features are *not* available in Radio Station Plu
 
 [Extra Bar Color Options](./Player.md#pro-extra-bar-color-options)
 
+[Custom Font & Size](./Player.md#pro-custom-font--size)
+
 [Playback AutoResume](./Player.md#pro-playback-autoresume)
 
 [Popup Player](./Player.md#pro-popup-player)

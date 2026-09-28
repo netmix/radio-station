@@ -896,6 +896,64 @@ function radio_station_plugin_options( $admin = false ) {
 			'pro'     => true,
 		),
 
+		// --- [Pro/Player] Bar Player Font Family ---
+		// 2.8.3: added Google Font selector for Sitewide Bar Player text
+		'player_bar_font_family' => array(
+			'type'    => 'select',
+			'label'   => $admin ? __( 'Bar Player Font', 'radio-station' ) : '',
+			'options' => array(
+				''                 => $admin ? __( 'Default (Theme Font)', 'radio-station' ) : '',
+				'roboto'           => $admin ? __( 'Roboto', 'radio-station' ) : '',
+				'open-sans'        => $admin ? __( 'Open Sans', 'radio-station' ) : '',
+				'lato'             => $admin ? __( 'Lato', 'radio-station' ) : '',
+				'montserrat'       => $admin ? __( 'Montserrat', 'radio-station' ) : '',
+				'poppins'          => $admin ? __( 'Poppins', 'radio-station' ) : '',
+				'inter'            => $admin ? __( 'Inter', 'radio-station' ) : '',
+				'nunito'           => $admin ? __( 'Nunito', 'radio-station' ) : '',
+				'merriweather'     => $admin ? __( 'Merriweather', 'radio-station' ) : '',
+				'playfair-display' => $admin ? __( 'Playfair Display', 'radio-station' ) : '',
+				'oswald'           => $admin ? __( 'Oswald', 'radio-station' ) : '',
+				'custom'           => $admin ? __( 'Custom (Upload Your Own)', 'radio-station' ) : '',
+			),
+			'default' => '',
+			'helper'  => $admin ? __( 'Font face for text in the fixed position Sitewide Bar Player.', 'radio-station' ) : '',
+			'tab'     => 'player',
+			'section' => 'bar',
+			'pro'     => true,
+		),
+
+		// --- [Pro/Player] Bar Player Custom Font ---
+		// 2.8.3: added custom font upload for Sitewide Bar Player text
+		// note: stores the uploaded font file's URL directly (not an
+		// attachment ID) — the PRO admin script that drives the upload UI
+		// already has the URL on hand from the media picker, so there's no
+		// need for a second attachment-ID-to-URL resolution step elsewhere.
+		'player_bar_font_custom' => array(
+			'type'    => 'text',
+			'label'   => $admin ? __( 'Bar Player Custom Font', 'radio-station' ) : '',
+			'default' => '',
+			'helper'  => $admin ? __( 'Upload your own font file to use when "Custom" is selected above. Accepts .woff2, .woff, .ttf, or .otf — a single weight only.', 'radio-station' ) : '',
+			'tab'     => 'player',
+			'section' => 'bar',
+			'pro'     => true,
+		),
+
+		// --- [Pro/Player] Bar Player Font Size ---
+		// 2.8.3: added font size control for Sitewide Bar Player text
+		'player_bar_font_size' => array(
+			'type'    => 'number',
+			'min'     => 10,
+			'max'     => 24,
+			'step'    => 1,
+			'label'   => $admin ? __( 'Bar Player Font Size', 'radio-station' ) : '',
+			'default' => 13,
+			'suffix'  => 'px',
+			'helper'  => $admin ? __( 'Font size for the station and show info text in the fixed position Sitewide Bar Player.', 'radio-station' ) : '',
+			'tab'     => 'player',
+			'section' => 'bar',
+			'pro'     => true,
+		),
+
 		// --- [Pro/Player] Bar Player Background Color ---
 		// 2.5.18: fix default alpha value from 255 to 1
 		'player_bar_background' => array(

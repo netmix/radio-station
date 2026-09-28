@@ -91,6 +91,7 @@ The Radio Player Block supports extra theming and color options matching to the 
 * *Continous Playback*: Enables uninterrupt playback while navigating between pages.
 * *Player Page Fade*: How long to take to fade between pages when continous playback is enabled.
 * *Text Color and Background Color*: Bar Player Default text and background colors.
+* *Font and Font Size*: choose a font face and text size for the Player Bar.
 * *Autoresume Playback*: attempts to autoresume playback for returning visitors.
 * *Popup Player Button*: adds a button to open the player in a separate window.
 * *Current Show Display*: whether to display the Current Show in the Player Bar.
@@ -133,6 +134,16 @@ The Player Bar also includes some extra color options to match the look and feel
 * *Volume Track and Knob Colors*: To style the volume slider track and it's thumb knob.
 		
 And in addition to the existing Light and Dark button themes, you can also choose from colored button themes of: Red, Orange, Yellow, Light Green, Green, Cyan, Light Blue, Blue, Purple or Magenta. Matching Play/Pause and Volume/Track control images will be used when you activate these theme options.
+
+#### [Pro] Custom Font & Size
+
+The *Bar Player Font* option lets you choose a font face for the station and show info text in the Player Bar, from a curated set of Google Fonts (Roboto, Open Sans, Lato, Montserrat, Poppins, Inter, Nunito, Merriweather, Playfair Display, and Oswald) — these are bundled with the plugin and served from your own site, not loaded from Google's servers.
+
+If none of those fit your station's branding, choose **Custom (Upload Your Own)** to upload your own font file directly from the Settings page. Click the Upload button next to the Custom Font field, select or upload a font from your Media Library, and it will be used sitewide in the Player Bar. A few things to know about custom fonts:
+
+* Accepted file types are `.woff2`, `.woff`, `.ttf`, and `.otf` — `.woff2` is recommended for the smallest file size.
+* Only a single font weight is used (there's no separate upload for a bold cut); if any Player Bar text is styled bold, the browser will synthesize it from your uploaded weight, which can look slightly heavier or narrower than a true bold font file.
+* The *Bar Player Font Size* option sets the text size (in pixels) for station and show info text and now-playing track details. It does not resize the play/pause icon, volume controls, or the responsive layout's expander arrows — those keep their own fixed sizing regardless of your chosen font size.
 
 #### [Pro] Playback Autoresume
 
