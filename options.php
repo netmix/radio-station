@@ -908,6 +908,94 @@ function radio_station_plugin_options( $admin = false ) {
 			'pro'     => true,
 		),
 
+		// --- [Pro/Player] Spectrum Analyzer ---
+		// 2.7.3: added real-time spectrum analyzer for the Sitewide Bar Player
+		'player_bar_analyzer' => array(
+			'type'    => 'checkbox',
+			'label'   => $admin ? __( 'Spectrum Analyzer', 'radio-station' ) : '',
+			'value'   => 'yes',
+			'default' => '',
+			'helper'  => $admin ? __( 'Show a real-time audio spectrum visualization in the Player Bar. Requires the streaming server to send CORS headers — if the analyzer stays flat once enabled, check with your streaming host.', 'radio-station' ) : '',
+			'tab'     => 'player',
+			'section' => 'bar',
+			'pro'     => true,
+		),
+
+		// --- [Pro/Player] Analyzer Placement ---
+		'player_bar_analyzer_placement' => array(
+			'type'    => 'select',
+			'label'   => $admin ? __( 'Analyzer Placement', 'radio-station' ) : '',
+			'options' => array(
+				'attached'   => $admin ? __( 'Attached Above Bar', 'radio-station' ) : '',
+				'background' => $admin ? __( 'Background (Behind Bar Content)', 'radio-station' ) : '',
+			),
+			'default' => 'attached',
+			'helper'  => $admin ? __( 'Whether the analyzer sits as a strip above the Player Bar, or fills the bar as a background behind the text and controls.', 'radio-station' ) : '',
+			'tab'     => 'player',
+			'section' => 'bar',
+			'pro'     => true,
+		),
+
+		// --- [Pro/Player] Analyzer Gradient ---
+		'player_bar_analyzer_gradient' => array(
+			'type'    => 'select',
+			'label'   => $admin ? __( 'Analyzer Color Theme', 'radio-station' ) : '',
+			'options' => array(
+				'classic'   => $admin ? __( 'Classic', 'radio-station' ) : '',
+				'orangered' => $admin ? __( 'Orange Red', 'radio-station' ) : '',
+				'prism'     => $admin ? __( 'Prism', 'radio-station' ) : '',
+				'rainbow'   => $admin ? __( 'Rainbow', 'radio-station' ) : '',
+				'steelblue' => $admin ? __( 'Steel Blue', 'radio-station' ) : '',
+			),
+			'default' => 'classic',
+			'tab'     => 'player',
+			'section' => 'bar',
+			'pro'     => true,
+		),
+
+		// --- [Pro/Player] Analyzer Style ---
+		'player_bar_analyzer_style' => array(
+			'type'    => 'select',
+			'label'   => $admin ? __( 'Analyzer Style', 'radio-station' ) : '',
+			'options' => array(
+				'bars'      => $admin ? __( 'Bars', 'radio-station' ) : '',
+				'finebars'  => $admin ? __( 'Fine Bars', 'radio-station' ) : '',
+				'graph'     => $admin ? __( 'Line Graph', 'radio-station' ) : '',
+			),
+			'default' => 'bars',
+			'tab'     => 'player',
+			'section' => 'bar',
+			'pro'     => true,
+		),
+
+		// --- [Pro/Player] Analyzer Sensitivity ---
+		'player_bar_analyzer_sensitivity' => array(
+			'type'    => 'select',
+			'label'   => $admin ? __( 'Analyzer Sensitivity', 'radio-station' ) : '',
+			'options' => array(
+				'low'    => $admin ? __( 'Low', 'radio-station' ) : '',
+				'medium' => $admin ? __( 'Medium', 'radio-station' ) : '',
+				'high'   => $admin ? __( 'High', 'radio-station' ) : '',
+			),
+			'default' => 'medium',
+			'helper'  => $admin ? __( 'Higher sensitivity reacts more to quieter passages, but can look noisier on a loud/compressed stream.', 'radio-station' ) : '',
+			'tab'     => 'player',
+			'section' => 'bar',
+			'pro'     => true,
+		),
+
+		// --- [Pro/Player] Analyzer on Mobile ---
+		'player_bar_analyzer_mobile' => array(
+			'type'    => 'checkbox',
+			'label'   => $admin ? __( 'Enable Analyzer on Mobile', 'radio-station' ) : '',
+			'value'   => 'yes',
+			'default' => '',
+			'helper'  => $admin ? __( 'Off by default — canvas rendering has a real battery/performance cost on phones. Enable once you\'ve confirmed it performs acceptably on your target devices.', 'radio-station' ) : '',
+			'tab'     => 'player',
+			'section' => 'bar',
+			'pro'     => true,
+		),
+
 		// --- [Pro/Player] Display Current Show ---
 		// 2.4.0.3: added for current show display
 		'player_bar_currentshow' => array(
