@@ -3098,7 +3098,10 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 							$row .= ' ' . $option['prefix'];
 						}
 						$row .= '<input id="range-input-' . esc_attr( $name ) . '" data-key="' . esc_attr( $option['key'] ) . '" class="setting setting-range" type="range" name="' . esc_attr( $name ) . '" min="' . esc_attr( $min ) . '" max="' . esc_attr( $max ) . '" step="' . esc_attr( $step ) . '" value="' . esc_attr( $setting ) . '"' . $preview_data . '>' . "\n";
-						$row .= '<output class="setting-range-output" for="range-input-' . esc_attr( $name ) . '">' . esc_html( $setting . $suffix ) . '</output>' . "\n";
+						// 2.8.4: use <span>, not <output> -- <output> isn't in WP's
+						// default allowed-HTML tag list and gets silently stripped
+						// by wp_kses on render, which breaks the live JS readout below
+						$row .= '<span class="setting-range-output">' . esc_html( $setting . $suffix ) . '</span>' . "\n";
 
 					} elseif ( 'image' == $type ) {
 
