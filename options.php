@@ -996,6 +996,37 @@ function radio_station_plugin_options( $admin = false ) {
 			'pro'     => true,
 		),
 
+		// --- [Pro/Player] Analyzer Opacity ---
+		// 2.8.4: added opacity + height controls
+		'player_bar_analyzer_opacity' => array(
+			'type'    => 'range',
+			'label'   => $admin ? __( 'Analyzer Opacity', 'radio-station' ) : '',
+			'min'     => 10,
+			'max'     => 100,
+			'step'    => 5,
+			'default' => 100,
+			'suffix'  => '%',
+			'helper'  => $admin ? __( 'How visible the analyzer is. Lower values blend it more subtly behind the bar\'s text and controls.', 'radio-station' ) : '',
+			'tab'     => 'player',
+			'section' => 'bar',
+			'pro'     => true,
+		),
+
+		// --- [Pro/Player] Analyzer Height ---
+		'player_bar_analyzer_height' => array(
+			'type'    => 'range',
+			'label'   => $admin ? __( 'Analyzer Height', 'radio-station' ) : '',
+			'min'     => 20,
+			'max'     => 100,
+			'step'    => 5,
+			'default' => 100,
+			'suffix'  => '%',
+			'helper'  => $admin ? __( 'Scales the analyzer relative to its full size (100% = current behavior) -- for Background placement it shrinks up from the bottom of the bar, for the Attached strip it shrinks down toward the bar.', 'radio-station' ) : '',
+			'tab'     => 'player',
+			'section' => 'bar',
+			'pro'     => true,
+		),
+
 		// --- [Pro/Player] Display Current Show ---
 		// 2.4.0.3: added for current show display
 		'player_bar_currentshow' => array(
