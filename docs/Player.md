@@ -67,6 +67,14 @@ All additional options available in Pro are also available for individual Player
 * *currentshow* : Display current Show information in player section. 0 or 1. Defaults to Plugin Setting.
 * *nowplaying* : Display currently playing track via stream metadata/playlist. 0 or 1. Defaults to Plugin Setting.
 * *animation* : Track animation to use. none, lefttoright, righttoleft, backandforth. Default: backandforth
+* *analyzer* : Spectrum Analyzer. on, off, or default (Plugin Setting). See [Widget Spectrum Analyzer](#pro-widget-spectrum-analyzer) below.
+* *analyzer_placement* : top, background, or default (Plugin Setting).
+* *analyzer_gradient* : classic, orangered, prism, rainbow, steelblue, or default (Plugin Setting).
+* *analyzer_style* : bars, finebars, graph, or default (Plugin Setting).
+* *analyzer_sensitivity* : low, medium, high, or default (Plugin Setting).
+* *analyzer_mobile* : on, off, or default (Plugin Setting).
+* *analyzer_opacity* : 10-100. Empty/blank defaults to Plugin Setting.
+* *analyzer_height* : 20-100. Empty/blank defaults to Plugin Setting.
 
 ### Stream Player Widget
 
@@ -79,6 +87,18 @@ A Player block can be added via the Block Editor by clicking the blue + icon. Th
 #### [Pro] Extra Block Options
 
 The Radio Player Block supports extra theming and color options matching to the extra shortcode/widget options above.
+
+#### [Pro] Widget Spectrum Analyzer
+
+The Stream Player Widget and Block can show their own real-time audio spectrum visualization, independent of the Sitewide Bar Player's (see [Spectrum Analyzer](#pro-spectrum-analyzer) under the Bar Player below) -- it has its own settings section, **Widget Player Settings**, on the Plugin Settings page's Player tab.
+
+* *Spectrum Analyzer*: the master on/off switch for the Stream Player Widget and Block -- off by default.
+* *Analyzer Placement*: **Top (Above Widget)** shows it as a slim strip above the widget, pushing the rest of the page content down -- it never overlaps anything, since widgets (unlike the Sitewide Bar) aren't pinned to the viewport. **Background** fills the widget with the visualization, with the existing content layered on top.
+* *Analyzer Color Theme*, *Analyzer Style*, *Analyzer Sensitivity*, *Enable Analyzer on Mobile*, *Analyzer Opacity*, *Analyzer Height*: same options as the Bar Player's own Spectrum Analyzer settings.
+
+These are the **Plugin Settings** -- the defaults every Stream Player Widget and Block instance uses. Each individual Widget instance or Block also has its own copy of every one of these controls (in the Widget's own settings form, and in the Block's "Spectrum Analyzer" panel), each defaulting to "Plugin Setting" (inherit the value above). Setting a control on a specific Widget or Block instance overrides the Plugin Setting for that instance only -- every other instance, and the Plugin Setting itself, is unaffected.
+
+The same CORS requirement as the Bar Player's analyzer applies here too -- see the note in [Spectrum Analyzer](#pro-spectrum-analyzer) below.
 
 
 ### [Pro] Sitewide Bar Player

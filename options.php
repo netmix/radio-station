@@ -1027,6 +1027,126 @@ function radio_station_plugin_options( $admin = false ) {
 			'pro'     => true,
 		),
 
+		// --- [Pro/Widget] Spectrum Analyzer ---
+		// 2.8.4: widget gets its own independent analyzer settings, separate
+		// from the bar's -- each Widget/Block instance can also override these
+		// per-instance, defaulting to "Plugin Setting" (these values here)
+		'player_widget_analyzer' => array(
+			'type'    => 'checkbox',
+			'label'   => $admin ? __( 'Spectrum Analyzer', 'radio-station' ) : '',
+			'value'   => 'yes',
+			'default' => '',
+			'helper'  => $admin ? __( 'Show a real-time audio spectrum visualization in the Stream Player Widget. Requires the streaming server to send CORS headers -- if the analyzer stays flat once enabled, check with your streaming host.', 'radio-station' ) : '',
+			'tab'     => 'player',
+			'section' => 'widget_player',
+			'pro'     => true,
+		),
+
+		// --- [Pro/Widget] Analyzer Placement ---
+		'player_widget_analyzer_placement' => array(
+			'type'    => 'select',
+			'label'   => $admin ? __( 'Analyzer Placement', 'radio-station' ) : '',
+			'options' => array(
+				'top'        => $admin ? __( 'Top (Above Widget)', 'radio-station' ) : '',
+				'background' => $admin ? __( 'Background (Behind Widget Content)', 'radio-station' ) : '',
+			),
+			'default' => 'top',
+			'helper'  => $admin ? __( 'Whether the analyzer sits as a strip above the widget (pushing the rest of the page down, never overlapping) or fills the widget as a background behind its controls.', 'radio-station' ) : '',
+			'tab'     => 'player',
+			'section' => 'widget_player',
+			'pro'     => true,
+		),
+
+		// --- [Pro/Widget] Analyzer Gradient ---
+		'player_widget_analyzer_gradient' => array(
+			'type'    => 'select',
+			'label'   => $admin ? __( 'Analyzer Color Theme', 'radio-station' ) : '',
+			'options' => array(
+				'classic'   => $admin ? __( 'Classic', 'radio-station' ) : '',
+				'orangered' => $admin ? __( 'Orange Red', 'radio-station' ) : '',
+				'prism'     => $admin ? __( 'Prism', 'radio-station' ) : '',
+				'rainbow'   => $admin ? __( 'Rainbow', 'radio-station' ) : '',
+				'steelblue' => $admin ? __( 'Steel Blue', 'radio-station' ) : '',
+			),
+			'default' => 'classic',
+			'tab'     => 'player',
+			'section' => 'widget_player',
+			'pro'     => true,
+		),
+
+		// --- [Pro/Widget] Analyzer Style ---
+		'player_widget_analyzer_style' => array(
+			'type'    => 'select',
+			'label'   => $admin ? __( 'Analyzer Style', 'radio-station' ) : '',
+			'options' => array(
+				'bars'      => $admin ? __( 'Bars', 'radio-station' ) : '',
+				'finebars'  => $admin ? __( 'Fine Bars', 'radio-station' ) : '',
+				'graph'     => $admin ? __( 'Line Graph', 'radio-station' ) : '',
+			),
+			'default' => 'bars',
+			'tab'     => 'player',
+			'section' => 'widget_player',
+			'pro'     => true,
+		),
+
+		// --- [Pro/Widget] Analyzer Sensitivity ---
+		'player_widget_analyzer_sensitivity' => array(
+			'type'    => 'select',
+			'label'   => $admin ? __( 'Analyzer Sensitivity', 'radio-station' ) : '',
+			'options' => array(
+				'low'    => $admin ? __( 'Low', 'radio-station' ) : '',
+				'medium' => $admin ? __( 'Medium', 'radio-station' ) : '',
+				'high'   => $admin ? __( 'High', 'radio-station' ) : '',
+			),
+			'default' => 'medium',
+			'helper'  => $admin ? __( 'Higher sensitivity reacts more to quieter passages, but can look noisier on a loud/compressed stream.', 'radio-station' ) : '',
+			'tab'     => 'player',
+			'section' => 'widget_player',
+			'pro'     => true,
+		),
+
+		// --- [Pro/Widget] Analyzer on Mobile ---
+		'player_widget_analyzer_mobile' => array(
+			'type'    => 'checkbox',
+			'label'   => $admin ? __( 'Enable Analyzer on Mobile', 'radio-station' ) : '',
+			'value'   => 'yes',
+			'default' => '',
+			'helper'  => $admin ? __( 'Off by default -- canvas rendering has a real battery/performance cost on phones. Enable once you\'ve confirmed it performs acceptably on your target devices.', 'radio-station' ) : '',
+			'tab'     => 'player',
+			'section' => 'widget_player',
+			'pro'     => true,
+		),
+
+		// --- [Pro/Widget] Analyzer Opacity ---
+		'player_widget_analyzer_opacity' => array(
+			'type'    => 'range',
+			'label'   => $admin ? __( 'Analyzer Opacity', 'radio-station' ) : '',
+			'min'     => 10,
+			'max'     => 100,
+			'step'    => 5,
+			'default' => 100,
+			'suffix'  => '%',
+			'helper'  => $admin ? __( 'How visible the analyzer is. Lower values blend it more subtly behind the widget\'s content.', 'radio-station' ) : '',
+			'tab'     => 'player',
+			'section' => 'widget_player',
+			'pro'     => true,
+		),
+
+		// --- [Pro/Widget] Analyzer Height ---
+		'player_widget_analyzer_height' => array(
+			'type'    => 'range',
+			'label'   => $admin ? __( 'Analyzer Height', 'radio-station' ) : '',
+			'min'     => 20,
+			'max'     => 100,
+			'step'    => 5,
+			'default' => 100,
+			'suffix'  => '%',
+			'helper'  => $admin ? __( 'Scales the analyzer relative to its full size (100% = current behavior) -- for Background placement it shrinks up from the bottom of the widget, for the Top strip it shrinks down toward the widget.', 'radio-station' ) : '',
+			'tab'     => 'player',
+			'section' => 'widget_player',
+			'pro'     => true,
+		),
+
 		// --- [Pro/Player] Display Current Show ---
 		// 2.4.0.3: added for current show display
 		'player_bar_currentshow' => array(
@@ -2027,6 +2147,8 @@ function radio_station_plugin_options( $admin = false ) {
 			'advanced'    => $admin ? __( 'Advanced Defaults', 'radio-station' ) : '',
 			'colors'      => $admin ? __( 'Player Colors', 'radio-station' ) : '',
 			'bar'         => $admin ? __( 'Sitewide Bar Player', 'radio-station' ) : '',
+			// 2.8.4: added for widget-specific spectrum analyzer settings
+			'widget_player' => $admin ? __( 'Widget Player Settings', 'radio-station' ) : '',
 			// --- pages ---
 			'schedule'    => $admin ? __( 'Schedule Page', 'radio-station' ) : '',
 			'single'      => $admin ? __( 'Single Templates', 'radio-station' ) : '',

@@ -94,6 +94,8 @@ Please note that the following features are *not* available in Radio Station Plu
 
 [Extra Block Options](./Player.md#pro-extra-block-options)
 
+[Widget Spectrum Analyzer](./Player.md#pro-widget-spectrum-analyzer)
+
 [Sitewide Bar Player](./Player.md#pro-sitewide-bar-player)
 
 [Responsive Bar Display](./Player.md#pro-responsive-bar-display)

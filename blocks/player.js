@@ -624,6 +624,135 @@
 										})
 									),
 								)
+							),
+
+							/* === Spectrum Analyzer === */
+							/* 2.8.4: per-instance override of the Widget Player Settings
+							   section; 'default'/'' means inherit the global setting */
+							( ( atts.pro ) &&
+								rs_el( PanelBody, { title: rs__( 'Spectrum Analyzer', 'radio-station' ), className: 'radio-block-controls', initialOpen: false },
+									rs_el( PanelRow, {},
+										rs_el( SelectControl, {
+											label: rs__( 'Spectrum Analyzer', 'radio-station' ),
+											options : [
+												{ label: rs__( 'Plugin Setting', 'radio-station' ), value: 'default' },
+												{ label: rs__( 'On', 'radio-station' ), value: 'on' },
+												{ label: rs__( 'Off', 'radio-station' ), value: 'off' },
+											],
+											onChange: ( value ) => {
+												props.setAttributes( { analyzer: value } );
+											},
+											value: atts.analyzer
+										})
+									),
+									rs_el( PanelRow, {},
+										rs_el( SelectControl, {
+											label: rs__( 'Analyzer Placement', 'radio-station' ),
+											options : [
+												{ label: rs__( 'Plugin Setting', 'radio-station' ), value: 'default' },
+												{ label: rs__( 'Top (Above Widget)', 'radio-station' ), value: 'top' },
+												{ label: rs__( 'Background (Behind Widget Content)', 'radio-station' ), value: 'background' },
+											],
+											onChange: ( value ) => {
+												props.setAttributes( { analyzer_placement: value } );
+											},
+											value: atts.analyzer_placement
+										})
+									),
+									rs_el( PanelRow, {},
+										rs_el( SelectControl, {
+											label: rs__( 'Analyzer Color Theme', 'radio-station' ),
+											options : [
+												{ label: rs__( 'Plugin Setting', 'radio-station' ), value: 'default' },
+												{ label: rs__( 'Classic', 'radio-station' ), value: 'classic' },
+												{ label: rs__( 'Orange Red', 'radio-station' ), value: 'orangered' },
+												{ label: rs__( 'Prism', 'radio-station' ), value: 'prism' },
+												{ label: rs__( 'Rainbow', 'radio-station' ), value: 'rainbow' },
+												{ label: rs__( 'Steel Blue', 'radio-station' ), value: 'steelblue' },
+											],
+											onChange: ( value ) => {
+												props.setAttributes( { analyzer_gradient: value } );
+											},
+											value: atts.analyzer_gradient
+										})
+									),
+									rs_el( PanelRow, {},
+										rs_el( SelectControl, {
+											label: rs__( 'Analyzer Style', 'radio-station' ),
+											options : [
+												{ label: rs__( 'Plugin Setting', 'radio-station' ), value: 'default' },
+												{ label: rs__( 'Bars', 'radio-station' ), value: 'bars' },
+												{ label: rs__( 'Fine Bars', 'radio-station' ), value: 'finebars' },
+												{ label: rs__( 'Line Graph', 'radio-station' ), value: 'graph' },
+											],
+											onChange: ( value ) => {
+												props.setAttributes( { analyzer_style: value } );
+											},
+											value: atts.analyzer_style
+										})
+									),
+									rs_el( PanelRow, {},
+										rs_el( SelectControl, {
+											label: rs__( 'Analyzer Sensitivity', 'radio-station' ),
+											options : [
+												{ label: rs__( 'Plugin Setting', 'radio-station' ), value: 'default' },
+												{ label: rs__( 'Low', 'radio-station' ), value: 'low' },
+												{ label: rs__( 'Medium', 'radio-station' ), value: 'medium' },
+												{ label: rs__( 'High', 'radio-station' ), value: 'high' },
+											],
+											onChange: ( value ) => {
+												props.setAttributes( { analyzer_sensitivity: value } );
+											},
+											value: atts.analyzer_sensitivity
+										})
+									),
+									rs_el( PanelRow, {},
+										rs_el( SelectControl, {
+											label: rs__( 'Enable Analyzer on Mobile', 'radio-station' ),
+											options : [
+												{ label: rs__( 'Plugin Setting', 'radio-station' ), value: 'default' },
+												{ label: rs__( 'On', 'radio-station' ), value: 'on' },
+												{ label: rs__( 'Off', 'radio-station' ), value: 'off' },
+											],
+											onChange: ( value ) => {
+												props.setAttributes( { analyzer_mobile: value } );
+											},
+											value: atts.analyzer_mobile
+										})
+									),
+									/* --- Opacity: 0 means "not set" -- RangeControl has no native
+									   empty state, so 0 is used as the inherit sentinel and mapped
+									   to/from '' on the attribute (opacity's own valid range starts
+									   at 10, so 0 is otherwise unused) --- */
+									rs_el( PanelRow, {},
+										rs_el( RangeControl, {
+											label: rs__( 'Analyzer Opacity (%)', 'radio-station' ),
+											help: rs__( '0 = Plugin Setting.', 'radio-station' ),
+											min: 0,
+											max: 100,
+											step: 5,
+											allowReset: true,
+											onChange: ( value ) => {
+												props.setAttributes( { analyzer_opacity: ( value ? String( value ) : '' ) } );
+											},
+											value: atts.analyzer_opacity ? parseInt( atts.analyzer_opacity, 10 ) : 0
+										})
+									),
+									rs_el( PanelRow, {},
+										rs_el( RangeControl, {
+											label: rs__( 'Analyzer Height (%)', 'radio-station' ),
+											help: rs__( '0 = Plugin Setting.', 'radio-station' ),
+											min: 0,
+											max: 100,
+											step: 5,
+											allowReset: true,
+											onChange: ( value ) => {
+												props.setAttributes( { analyzer_height: ( value ? String( value ) : '' ) } );
+											},
+											value: atts.analyzer_height ? parseInt( atts.analyzer_height, 10 ) : 0
+										})
+									),
+								)
 							)
 							/* end panels */
 						)
