@@ -314,6 +314,23 @@
 	color: var(--rs-text-primary) !important;
 }
 
+/* 2.8.4: range field type */
+.toplevel_page_radio-station #pagewrap input.setting-range {
+	width: 200px;
+	max-width: 100%;
+	vertical-align: middle;
+	accent-color: var(--rs-brand);
+}
+
+.toplevel_page_radio-station #pagewrap .setting-range-output {
+	display: inline-block;
+	min-width: 3em;
+	margin-left: 10px;
+	vertical-align: middle;
+	color: var(--rs-text-secondary);
+	font-size: 13px;
+}
+
 .toplevel_page_radio-station #pagewrap a.button-primary {
 	background: var(--rs-brand) !important;
 	border-color: var(--rs-brand-dark) !important;

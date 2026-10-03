@@ -756,10 +756,11 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 							}
 							$newsettings = $posted;
 
-						} elseif ( ( 'number' == $type ) || ( 'numeric' == $type ) ) {
+						} elseif ( ( 'number' == $type ) || ( 'numeric' == $type ) || ( 'range' == $type ) ) {
 
-							// --- number field value ---
+							// --- number/range field value ---
 							// 1.0.9: added support for number step, minimum and maximum
+							// 2.8.4: range reuses number's validation -- it's the same numeric value, just a different control
 							$posted = isset( $_POST[$postkey] ) ? sanitize_text_field( wp_unslash( $_POST[$postkey] ) ) : null;
 							$newsettings = $posted;
 							$valid = 'NUMERIC';
@@ -2646,6 +2647,10 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 			// 1.1.8: fix to check for no mix or max value
 			$this->scripts[] = 'number_step';
 
+			// --- range slider live readout script ---
+			// 2.8.4: added for range field type
+			$this->scripts[] = 'range_slider';
+
 			// --- image selection script ---
 			// 1.1.7: added for image field type
 			if ( $media ) {
@@ -3080,6 +3085,24 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 							$row .= ' ' . $option['suffix'];
 						}
 
+					} elseif ( 'range' == $type ) {
+
+						// --- range slider with live value readout ---
+						// 2.8.4: added range field type
+						$min = isset( $option['min'] ) ? $option['min'] : 0;
+						$max = isset( $option['max'] ) ? $option['max'] : 100;
+						$step = isset( $option['step'] ) ? $option['step'] : 1;
+						$suffix = isset( $option['suffix'] ) ? $option['suffix'] : '';
+
+						if ( isset( $option['prefix'] ) ) {
+							$row .= ' ' . $option['prefix'];
+						}
+						$row .= '<input id="range-input-' . esc_attr( $name ) . '" data-key="' . esc_attr( $option['key'] ) . '" class="setting setting-range" type="range" name="' . esc_attr( $name ) . '" min="' . esc_attr( $min ) . '" max="' . esc_attr( $max ) . '" step="' . esc_attr( $step ) . '" value="' . esc_attr( $setting ) . '"' . $preview_data . '>' . "\n";
+						// 2.8.4: use <span>, not <output> -- <output> isn't in WP's
+						// default allowed-HTML tag list and gets silently stripped
+						// by wp_kses on render, which breaks the live JS readout below
+						$row .= '<span class="setting-range-output">' . esc_html( $setting . $suffix ) . '</span>' . "\n";
+
 					} elseif ( 'image' == $type ) {
 
 						// 1.1.7: added image attachment selection from media library
@@ -3413,6 +3436,17 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 							if ((min !== false) && (newvalue < parseInt(min))) {newvalue = min;}
 							if ((max !== false) && (newvalue > parseInt(max))) {newvalue = max;}
 							jQuery('#'+idref).val(newvalue);
+						});" . "\n";
+
+					} elseif ( 'range_slider' == $script ) {
+
+						// --- range slider live value readout ---
+						// 2.8.4: added for range field type; keeps whatever
+						// non-numeric suffix (eg. '%') is already in the output
+						echo "jQuery('.setting-range').on('input', function() {
+							output = jQuery(this).next('.setting-range-output');
+							suffix = output.text().replace(/[0-9.\\-]/g, '');
+							output.text(jQuery(this).val() + suffix);
 						});" . "\n";
 
 					} elseif ( 'media_functions' == $script ) {

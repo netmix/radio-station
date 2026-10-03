@@ -134,6 +134,19 @@ The Player Bar also includes some extra color options to match the look and feel
 		
 And in addition to the existing Light and Dark button themes, you can also choose from colored button themes of: Red, Orange, Yellow, Light Green, Green, Cyan, Light Blue, Blue, Purple or Magenta. Matching Play/Pause and Volume/Track control images will be used when you activate these theme options.
 
+#### [Pro] Spectrum Analyzer
+
+The Player Bar can show a real-time audio spectrum visualization, powered by the open-source [audioMotion-analyzer](https://audiomotion.dev) library, bundled directly with the plugin (nothing is loaded from an external service).
+
+* *Spectrum Analyzer*: the master on/off switch — off by default.
+* *Analyzer Placement*: **Attached Above Bar** shows it as a slim strip above the Player Bar, entirely separate from the bar's text and controls. **Background** fills the whole bar with the visualization, with the existing text and controls layered on top.
+* *Analyzer Color Theme*: Classic, Orange Red, Prism, Rainbow, or Steel Blue.
+* *Analyzer Style*: Bars, Fine Bars (higher resolution), or Line Graph.
+* *Analyzer Sensitivity*: Low, Medium, or High — higher sensitivity reacts more to quiet passages, but can look noisier on a loud/compressed stream.
+* *Enable Analyzer on Mobile*: off by default. Canvas-based visualizations have a real CPU/battery cost on phones — test on your own target devices before turning this on.
+
+**Important — this depends on your streaming host, not just this setting.** The analyzer reads the actual audio samples from your stream using the browser's Web Audio API, which requires your streaming server to send [CORS headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) (`Access-Control-Allow-Origin`) on the stream itself. If your streaming host doesn't send these headers, the analyzer will show a flat, unmoving line — this isn't a bug in the plugin, and there's no setting here that can work around it. If this happens, check with your streaming provider about enabling CORS on your stream URL.
+
 #### [Pro] Playback Autoresume
 
 
