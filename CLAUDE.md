@@ -3,7 +3,7 @@
 ## Overview
 
 **Plugin Name:** Radio Station by netmix®  
-**Version:** 2.7.1  
+**Version:** 2.8.0  
 **Authors:** Tony Zeoli, Tony Hayes (majick)  
 **License:** GPLv2  
 **WordPress.org:** https://wordpress.org/plugins/radio-station/  
@@ -26,6 +26,7 @@ radio-station/
 ├── includes/
 │   ├── support-functions.php  # Core utility/helper functions
 │   ├── post-types.php         # Custom post types: Show, Playlist, Override
+│   ├── post-types-admin.php   # Admin metaboxes for CPTs
 │   ├── templates.php          # Template loading and overrides
 │   ├── user-roles.php         # Host and Producer user roles
 │   ├── data-feeds.php         # REST API and data feeds
@@ -34,6 +35,7 @@ radio-station/
 │   ├── master-schedule.php    # Master schedule display shortcode
 │   ├── shortcodes.php         # All shortcode definitions
 │   ├── blocks.php             # Gutenberg block registration
+│   ├── onboarding.php         # Dashboard widget and onboarding stats
 │   ├── legacy.php             # Backwards compatibility functions
 │   └── import-export.php      # Import/export feature (if present)
 ├── player/
@@ -48,9 +50,13 @@ radio-station/
 │   ├── class-radio-clock-widget.php
 │   └── class-radio-player-widget.php
 ├── blocks/                    # Gutenberg block assets
-├── css/                       # Frontend and admin stylesheets
+├── css/
+│   ├── rs-admin.css           # Existing admin stylesheet (enqueued by loader)
+│   ├── radio-station-admin-ui.css  # NEW: 2.8.0 branded admin UI design system
+│   └── [other frontend CSS]
 ├── js/                        # Frontend and admin JavaScript
 ├── images/                    # Plugin images
+│   └── radio-station-original-logo-400x75.png  # Admin header logo
 ├── templates/                 # Frontend template files
 ├── assets/                    # WordPress.org SVN assets (banners, icons)
 ├── languages/                 # Translation .pot/.po/.mo files
@@ -145,7 +151,7 @@ All shortcodes are also available as Widgets and Gutenberg Blocks.
 - **Sanitization:** Always sanitize input with `sanitize_text_field`, `absint`, etc.
 - **Nonces:** Use WordPress nonces for all form submissions and AJAX calls
 - **Hooks:** Use WordPress actions and filters; avoid direct function calls where hooks exist
-- **Inline comments:** Use version-tagged inline comments (e.g. `// 2.7.1: description of change`)
+- **Inline comments:** Use version-tagged inline comments (e.g. `// 2.8.0: description of change`)
 - **Debug output:** Wrap all debug output in `if ( RADIO_STATION_DEBUG )` checks
 - **No closing PHP tag** at end of files
 
@@ -156,6 +162,70 @@ All shortcodes are also available as Widgets and Gutenberg Blocks.
 Admin menus and pages are registered in `radio-station-admin.php`. The plugin adds:
 - A top-level **Radio Station** menu in wp-admin
 - Submenus for: Settings, Schedule, Shows, Playlists, Overrides, Genres, Languages, Docs, Pricing
+
+---
+
+## ⚠️ CSS Rules — Read Before Writing Any Admin CSS
+
+These rules were established by lead developer Tony Hayes after reviewing the 2.8.0 admin UI work. Follow them exactly.
+
+### 1. Always scope to `.toplevel_page_radio-station`
+Every admin CSS selector MUST be prefixed with `.toplevel_page_radio-station` so styles only apply on Radio Station admin pages and cannot leak to or break other WordPress admin pages or other plugins.
+
+```css
+/* CORRECT */
+.toplevel_page_radio-station #pagewrap .rs-card { ... }
+
+/* WRONG — unscoped, will affect all WP admin pages */
+#pagewrap .rs-card { ... }
+```
+
+### 2. Use the existing admin stylesheet — do not create new ones
+Before adding any CSS, check what stylesheets already exist and are already enqueued. There is an existing `css/rs-admin.css` file enqueued by the loader. Add new admin styles to the existing file rather than creating a new file and a new enqueue call. The `css/radio-station-admin-ui.css` file was added in 2.8.0 as a second deliberate stylesheet — do not add further stylesheet files without Tony's approval.
+
+### 3. Avoid `!important`
+Use `!important` only as a last resort and only within properly scoped selectors. Overuse of `!important` in unscoped CSS can break other plugins' admin styles.
+
+### 4. Font sizes must be consistent
+- Tab labels: **18px**
+- Section headings: **16px**
+- Body/field text: follow WordPress admin defaults (~13px)
+- Never set font sizes smaller than surrounding WordPress admin text
+
+### 5. Whitespace
+Ensure adequate whitespace around tabs and section headings. Do not compress spacing below WordPress admin defaults. Tony increased whitespace in several areas during 2.8.0 review.
+
+### 6. Check existing files before creating new ones
+Always read the full file structure before creating any new file. Duplicate files and redundant enqueues create maintenance problems and potential style conflicts.
+
+---
+
+## Admin UI Design System (v2.8.0)
+
+The 2.8.0 release introduced a branded admin UI design system:
+
+- **Brand color:** `rgb(191, 0, 61)` / `#bf003d`
+- **CSS prefix:** `rs-`
+- **Logo:** `images/radio-station-original-logo-400x75.png`
+- **Main stylesheet:** `css/radio-station-admin-ui.css`
+- **Scope:** All selectors prefixed with `.toplevel_page_radio-station`
+- **Accessibility:** WCAG AA compliant contrast ratios throughout
+
+CSS custom properties defined on `.toplevel_page_radio-station #pagewrap`:
+```css
+--rs-brand:          rgb(191, 0, 61);
+--rs-brand-dark:     rgb(152, 0, 49);
+--rs-brand-light:    rgb(253, 240, 244);
+--rs-brand-border:   rgb(245, 194, 203);
+--rs-text-primary:   #1d1d1d;
+--rs-text-secondary: #555555;
+--rs-text-muted:     #888888;
+--rs-border:         #e0e0e0;
+--rs-border-strong:  #cccccc;
+--rs-radius:         6px;
+--rs-radius-lg:      10px;
+--rs-shadow-sm:      0 1px 3px rgba(0,0,0,0.07);
+```
 
 ---
 
@@ -185,23 +255,72 @@ Admin menus and pages are registered in `radio-station-admin.php`. The plugin ad
 
 ---
 
-## Branch Workflow
+## Branch Workflow — IMPORTANT
 
-- **`master`** — Stable, production-ready code
-- **`develop`** — Active development branch; all Claude changes go here
-- Tony Hayes (majick) reviews and merges develop → master
-- WordPress.org SVN deployment is handled separately from the Git repo
+**Tony Zeoli (product owner) must never push directly to `develop` or `master`.**
+
+The correct workflow is:
+
+```
+master        ← Tony Hayes controls, production releases only
+  ↑
+develop       ← Tony Hayes controls, reviewed and tested code only
+  ↑
+feature/xxx   ← Tony Zeoli creates, works in, pushes, and PRs from here
+```
+
+### Starting new work:
+```bash
+git checkout develop
+git pull origin develop
+git checkout -b feature/description-of-work
+```
+
+### Finishing work:
+```bash
+git add .
+git commit -m "2.8.0: description of changes"
+git push origin feature/description-of-work
+```
+
+Then create a Pull Request on GitHub from `feature/description-of-work` → `develop` and assign Tony Hayes as reviewer.
+
+### Branch naming convention:
+- `feature/admin-ui-redesign`
+- `feature/alexa-skill-wizard`
+- `fix/yaml-import-export`
+- `fix/onboarding-division-by-zero`
+
+### Claude Code branch rule:
+Always confirm the current branch before making any edits:
+```bash
+git branch --show-current
+```
+If not on a feature branch, stop and create one before proceeding.
 
 ---
 
-## Development Workflow with Claude
+## Development Workflow with Claude Code
 
-1. Always work on the `develop` branch in GitHub Desktop
+1. Create a feature branch off `develop` (see Branch Workflow above)
 2. Claude edits files in `/Users/tonyzeoli/Documents/GitHub/radio-station/`
 3. Run `syncrs` in Terminal to push changes to LocalWP for testing
 4. Test changes at your LocalWP site in the browser
 5. Commit via GitHub Desktop with a clear commit message
-6. Push to `develop` on GitHub for Tony Hayes to review
+6. Push the feature branch to GitHub
+7. Create a Pull Request: feature branch → `develop`
+8. Assign Tony Hayes as reviewer — he merges when approved
+
+---
+
+## Sync Alias
+
+```bash
+syncrs
+```
+
+Syncs `/Users/tonyzeoli/Documents/GitHub/radio-station/` → LocalWP plugins folder:
+`/Users/tonyzeoli/Local Sites/radio-station-os-local/app/public/wp-content/plugins/radio-station/`
 
 ---
 
@@ -212,6 +331,7 @@ Admin menus and pages are registered in `radio-station-admin.php`. The plugin ad
 - `/assets/` — WordPress.org SVN assets (banners/icons), not plugin code
 - `/languages/` — Translation files, generated separately
 - Version numbers in `radio-station.php` and `readme.txt` — only update on release
+- Do not create new stylesheet files or new enqueue calls without confirming no existing file covers the need
 
 ---
 
@@ -221,9 +341,10 @@ Admin menus and pages are registered in `radio-station-admin.php`. The plugin ad
 - Maintain backwards compatibility with existing shortcode attributes and widget settings
 - Admin UI should follow WordPress admin design conventions
 - Frontend output should be theme-agnostic and not impose opinionated styles
-- CSS classes use `radio-station-` prefix throughout
+- CSS classes use `rs-` prefix throughout
 - All UI changes should be mobile-responsive
 - Accessibility: maintain proper ARIA labels, semantic HTML, keyboard navigation
+- All admin CSS must be scoped to `.toplevel_page_radio-station` (see CSS Rules above)
 
 ---
 
@@ -242,4 +363,4 @@ radio_station_check_plan_options()        // Check free vs PRO feature gates
 ## Contact
 
 - **Tony Zeoli** — Product owner, deployment, AI-assisted development
-- **Tony Hayes (majick)** — Lead developer, GitHub merges, core architecture
+- **Tony Hayes (majick777)** — Lead developer, GitHub merges, core architecture
