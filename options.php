@@ -1870,6 +1870,56 @@ function radio_station_plugin_options( $admin = false ) {
 		// 	'pro'     => true,
 		// ),
 
+		// === Music Reporting (Pro) ===
+		// 2.7.3: added Pro teaser options for royalty play logging and reporting
+
+		// --- [Pro/Reporting] Enable Music Reporting ---
+		'reporting_enable' => array(
+			'type'    => 'checkbox',
+			'label'   => $admin ? __( 'Enable Music Reporting', 'radio-station' ) : '',
+			'default' => '',
+			'value'   => 'yes',
+			'helper'  => $admin ? __( 'Automatically log every track played on your Shoutcast or Icecast stream (artist, title, ISRC, listeners) for royalty reporting.', 'radio-station' ) : '',
+			'tab'     => 'reporting',
+			'section' => 'reporting_capture',
+			'pro'     => true,
+		),
+
+		// --- [Pro/Reporting] Report Formats ---
+		'reporting_formats' => array(
+			'type'    => 'note',
+			'label'   => $admin ? __( 'Report Formats', 'radio-station' ) : '',
+			'helper'  => $admin ? __( 'Ready-made reports for SoundExchange (ATP and ATH), ASCAP, BMI, SESAC, GMR, PRS for Music, PPL, APRA AMCOS, and per-play logs for PPCA, Recorded Music NZ, GEMA, GVL, SACEM, ECAD, SADAIC, SACM, SOCAN and more.', 'radio-station' ) : '',
+			'tab'     => 'reporting',
+			'section' => 'reporting_capture',
+		),
+
+		// --- [Pro/Reporting] Email Reports ---
+		'reporting_email_enable' => array(
+			'type'    => 'checkbox',
+			'label'   => $admin ? __( 'Email Reports Automatically', 'radio-station' ) : '',
+			'default' => '',
+			'value'   => 'yes',
+			'helper'  => $admin ? __( 'Email weekly, monthly or quarterly reports as spreadsheet attachments to the addresses you choose.', 'radio-station' ) : '',
+			'tab'     => 'reporting',
+			'section' => 'reporting_email',
+			'pro'     => true,
+		),
+
+		// --- [Pro/Reporting] Keep Play Logs ---
+		'reporting_retention' => array(
+			'type'    => 'select',
+			'label'   => $admin ? __( 'Keep Play Logs For', 'radio-station' ) : '',
+			'default' => '4',
+			'options' => array(
+				'4' => $admin ? __( '4 Years (Recommended)', 'radio-station' ) : '',
+			),
+			'helper'  => $admin ? __( 'Keep searchable play history to cross-check against society statements and audits.', 'radio-station' ) : '',
+			'tab'     => 'reporting',
+			'section' => 'reporting_capture',
+			'pro'     => true,
+		),
+
 		// === Tabs and Sections ===
 
 		// --- Tab Labels ---
@@ -1888,6 +1938,8 @@ function radio_station_plugin_options( $admin = false ) {
 			'widgets'   => $admin ? __( 'Widgets', 'radio-station' ) : '',
 			'roles'     => $admin ? __( 'Roles', 'radio-station' ) : '',
 			'app'	    => $admin ? __( 'App', 'radio-station' ) : '',
+			// 2.7.3: added music reporting tab (Pro)
+			'reporting' => $admin ? __( 'Music Reporting', 'radio-station' ) : '',
 		),
 
 		// --- Section Labels ---
@@ -1923,6 +1975,10 @@ function radio_station_plugin_options( $admin = false ) {
 			'loading'     => $admin ? __( 'Widget Loading', 'radio-station' ) : '',
 			// --- roles ---
 			'permissions' => $admin ? __( 'Permissions', 'radio-station' ) : '',
+			// --- reporting ---
+			// 2.7.3: added music reporting sections (Pro)
+			'reporting_capture' => $admin ? __( 'Play Logging', 'radio-station' ) : '',
+			'reporting_email'   => $admin ? __( 'Scheduled Email Reports', 'radio-station' ) : '',
 		),
 	);
 

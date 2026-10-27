@@ -16,6 +16,10 @@ if ( !defined( 'ABSPATH' ) ) exit;
 // - Add Admin Menu and Submenu Items
 // - Fix to Expand Main Menu for Submenu Items
 // - Taxonomy Submenu Item Fix
+// - Check for Music Reporting
+// - Add Music Reporting Teaser Submenu
+// - Music Reporting Teaser Page
+// - Music Reporting Tab Upgrade Notice
 // - Fix to Redirect Plugin Settings Menu Link
 // - Display Import/Export Show Page
 // - Display Plugin Docs Page
@@ -469,6 +473,78 @@ function radio_station_taxonomy_submenu_fix() {
 			radio_station_add_inline_script( 'radio-station-admin', $js );
 		}
 	}
+}
+
+// --------------------------
+// Check for Music Reporting
+// --------------------------
+// 2.7.3: checks the Pro plugin's reporting file, as Radio Station Plus also defines the Pro constants
+function radio_station_has_music_reporting() {
+	$active = defined( 'RADIO_STATION_PRO_DIR' ) && file_exists( RADIO_STATION_PRO_DIR . '/includes/rsp-reporting.php' );
+	return apply_filters( 'radio_station_has_music_reporting', $active );
+}
+
+// ----------------------------------
+// Add Music Reporting Teaser Submenu
+// ----------------------------------
+// 2.7.3: added Pro feature teaser (Music Reporting is available in Radio Station PRO)
+add_action( 'radio_station_admin_submenu_settings_middle', 'radio_station_add_reporting_teaser_submenu', 14 );
+function radio_station_add_reporting_teaser_submenu() {
+	if ( radio_station_has_music_reporting() ) {
+		return;
+	}
+	$settings_cap = apply_filters( 'radio_station_manage_options_capability', 'manage_options' );
+	add_submenu_page( 'radio-station', __( 'Music Reporting', 'radio-station' ), __( 'Music Reporting', 'radio-station' ), $settings_cap, 'radio-station-music-reporting', 'radio_station_reporting_teaser_page' );
+}
+
+// --------------------------
+// Music Reporting Teaser Page
+// --------------------------
+// 2.7.3: describes the Pro royalty reporting feature with upgrade links
+function radio_station_reporting_teaser_page() {
+
+	$pricing_url = add_query_arg( 'page', 'radio-station-pricing', admin_url( 'admin.php' ) );
+	$features = array(
+		__( 'Automatically logs every track played on your Shoutcast or Icecast stream: artist, title, ISRC, play time, duration and listener counts.', 'radio-station' ),
+		__( 'Ready-made reports for SoundExchange (ATP and ATH), ASCAP, BMI, SESAC and GMR, PRS for Music, PPL and APRA AMCOS, plus per-play logs for PPCA, Recorded Music NZ, GEMA, GVL, SACEM, ECAD, SADAIC, SACM, SOCAN and other societies.', 'radio-station' ),
+		__( 'Download reports as spreadsheets or have them emailed weekly, monthly or quarterly.', 'radio-station' ),
+		__( 'Track catalog to add ISRCs, labels, composers and publishers, with CSV import from your music library and optional ISRC lookup.', 'radio-station' ),
+		__( 'Searchable play history kept for years, so you can cross-check society statements and lists against what you actually played.', 'radio-station' ),
+		__( 'Webhook for automation software (AzuraCast, LibreTime, RadioDJ, SAM Broadcaster, mAirList) to send full track details.', 'radio-station' ),
+	);
+
+	echo '<div class="wrap">' . PHP_EOL;
+	echo '<h1>' . esc_html__( 'Music Reporting', 'radio-station' ) . ' <span class="title-count">' . esc_html__( 'PRO', 'radio-station' ) . '</span></h1>' . PHP_EOL;
+	echo '<p style="font-size:15px;max-width:760px;">' . esc_html__( 'Stations and webcasters must report the music they play to collecting societies such as SoundExchange, ASCAP, BMI, SESAC, PRS and PPL. Radio Station PRO logs your plays and builds the reports for you.', 'radio-station' ) . '</p>' . PHP_EOL;
+	echo '<ul style="list-style:disc;padding-left:20px;max-width:760px;">' . PHP_EOL;
+	foreach ( $features as $feature ) {
+		echo '<li style="margin-bottom:8px;">' . esc_html( $feature ) . '</li>' . PHP_EOL;
+	}
+	echo '</ul>' . PHP_EOL;
+	echo '<p>';
+	echo '<a class="button button-primary button-hero" href="' . esc_url( $pricing_url ) . '">' . esc_html__( 'Upgrade to PRO', 'radio-station' ) . '</a> ';
+	echo '<a class="button button-hero" href="' . esc_url( RADIO_STATION_PRO_URL ) . '" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Learn More', 'radio-station' ) . '</a>';
+	echo '</p>' . PHP_EOL;
+	echo '</div>' . PHP_EOL;
+}
+
+// -----------------------------------
+// Music Reporting Tab Upgrade Notice
+// -----------------------------------
+// 2.7.3: upgrade box at the top of the Music Reporting settings tab (free and Plus versions)
+add_action( 'radio_station_admin_page_tab_reporting_top', 'radio_station_reporting_upgrade_notice' );
+function radio_station_reporting_upgrade_notice() {
+
+	if ( radio_station_has_music_reporting() ) {
+		return;
+	}
+
+	$upgrade_url = add_query_arg( 'page', 'radio-station-pricing', admin_url( 'admin.php' ) );
+	$details_url = add_query_arg( 'page', 'radio-station-music-reporting', admin_url( 'admin.php' ) );
+	echo '<div class="notice notice-info inline rs-reporting-upgrade"><p><strong>' . esc_html__( 'Music Reporting is a Radio Station PRO feature.', 'radio-station' ) . '</strong> ';
+	echo esc_html__( 'Log every song you play and build royalty reports for SoundExchange, ASCAP, BMI, SESAC, GMR, PRS, PPL, APRA AMCOS and more. The settings below are a preview.', 'radio-station' ) . '</p>' . PHP_EOL;
+	echo '<p><a class="button button-primary" href="' . esc_url( $upgrade_url ) . '">' . esc_html__( 'Upgrade to PRO', 'radio-station' ) . '</a> ';
+	echo '<a class="button" href="' . esc_url( $details_url ) . '">' . esc_html__( "See What's Included", 'radio-station' ) . '</a></p></div>' . PHP_EOL;
 }
 
 // -----------------------------------------
