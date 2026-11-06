@@ -497,6 +497,24 @@ function radio_station_add_reporting_teaser_submenu() {
 	add_submenu_page( 'radio-station', __( 'Music Reporting', 'radio-station' ), __( 'Music Reporting', 'radio-station' ), $settings_cap, 'radio-station-music-reporting', 'radio_station_reporting_teaser_page' );
 }
 
+// -------------------------
+// Check Show Support Prompts
+// -------------------------
+// 2.7.3: Patreon support prompts are only shown in the free version
+function radio_station_show_support_prompts() {
+	$show = !defined( 'RADIO_STATION_PRO_FILE' );
+	return apply_filters( 'radio_station_show_support_prompts', $show );
+}
+
+// -----------------------------
+// Hide Settings Page Donate Link
+// -----------------------------
+// 2.7.3: remove the Patreon link from the settings page when PRO or Plus is active
+add_filter( 'radio_station_donate_link', 'radio_station_hide_donate_link' );
+function radio_station_hide_donate_link( $link ) {
+	return radio_station_show_support_prompts() ? $link : '';
+}
+
 // --------------------------
 // Music Reporting Teaser Page
 // --------------------------
@@ -694,7 +712,10 @@ function radio_station_plugin_docs_page() {
 	</style>' . "\n";
 
 	// --- output announcement content ---
-	radio_station_announcement_content( false );
+	// 2.7.3: only show the Patreon banner in the free version
+	if ( radio_station_show_support_prompts() ) {
+		radio_station_announcement_content( false );
+	}
 
 }
 
@@ -1422,7 +1443,10 @@ add_action( 'radio_station_admin_page_bottom', 'radio_station_settings_page_bott
 function radio_station_settings_page_bottom() {
 	// 2.3.1: move mailchimp form for listing offer
 	radio_station_mailchimp_form();
-	radio_station_announcement_content( false );
+	// 2.7.3: only show the Patreon banner in the free version
+	if ( radio_station_show_support_prompts() ) {
+		radio_station_announcement_content( false );
+	}
 }
 
 // ------------------------------
@@ -1755,6 +1779,11 @@ function radio_station_launch_offer_dismiss() {
 // 2.2.2: added plugin announcement notice
 add_action( 'admin_notices', 'radio_station_announcement_notice' );
 function radio_station_announcement_notice() {
+
+	// 2.7.3: only show the Patreon banner in the free version
+	if ( !radio_station_show_support_prompts() ) {
+		return;
+	}
 
 	if ( !current_user_can( 'manage_options' ) && !current_user_can( 'update_plugins' ) ) {
 		return;
