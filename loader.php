@@ -41,6 +41,9 @@ if ( !defined( 'ABSPATH' ) ) exit;
 // - Add Settings Menu
 // - Plugin Page Links
 // - Message Box
+// - Changed Settings
+// - Changed Settings Notice
+// - Changed Setting Mark
 // - Notice Boxer
 // - Plugin Page Header
 // - Settings Page
@@ -200,6 +203,9 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 		// 1.1.2: added debug switch
 		public $menu_added = false;
 		public $debug = false;
+
+		// 2.7.3: added list of options changed by the last save
+		public $changed = null;
 
 		// -----------------
 		// Initialize Loader
@@ -1057,6 +1063,10 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 						}
 					}
 				}
+
+				// --- note which options changed ---
+				// 2.7.3: shown in the saved banner and as Saved marks
+				$this->changed = $this->changed_settings( get_option( $args['option'] ), $settings, $options, $defaults );
 
 				// --- update the plugin settings ---
 				$settings['savetime'] = time();
@@ -2022,6 +2032,69 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 			}
 		}
 
+		// ----------------
+		// Changed Settings
+		// ----------------
+		// 2.7.3: get the labels of options whose saved value changed
+		public function changed_settings( $saved, $settings, $options, $defaults ) {
+			$changed = array();
+			foreach ( $options as $key => $option ) {
+				// --- skip text-only rows, which have no value to change ---
+				$type = isset( $option['type'] ) ? $option['type'] : '';
+				if ( !isset( $settings[$key] ) || in_array( $type, array( 'note', 'info', 'helper' ) ) ) {
+					continue;
+				}
+				if ( is_array( $saved ) && array_key_exists( $key, $saved ) ) {
+					$before = $saved[$key];
+				} elseif ( isset( $defaults[$key] ) ) {
+					$before = $defaults[$key];
+				} else {
+					$before = '';
+				}
+				$after = $settings[$key];
+				// --- compare scalars as strings, so 1 and '1' match ---
+				if ( is_scalar( $before ) && is_scalar( $after ) ) {
+					$same = ( (string) $before === (string) $after );
+				} else {
+					$same = ( maybe_serialize( $before ) === maybe_serialize( $after ) );
+				}
+				if ( !$same ) {
+					$label = isset( $option['label'] ) ? trim( wp_strip_all_tags( $option['label'] ) ) : '';
+					$changed[$key] = ( '' != $label ) ? $label : ucwords( str_replace( array( '_', '-' ), ' ', $key ) );
+				}
+			}
+			return $changed;
+		}
+
+		// -----------------------
+		// Changed Settings Notice
+		// -----------------------
+		// 2.7.3: one green Saved banner with the number of changed options
+		public function changed_notice( $changed ) {
+			$count = count( $changed );
+			if ( 0 == $count ) {
+				$message = __( 'Settings saved. No changes.', 'radio-station' );
+			} else {
+				/* translators: %d: number of changed settings */
+				$message = sprintf( _n( 'Settings saved. %d change, marked Saved below.', 'Settings saved. %d changes, marked Saved below.', $count, 'radio-station' ), $count );
+			}
+			echo '<div class="notice notice-success inline settings-saved-notice" style="margin:10px 0 15px;"><p><strong>' . esc_html( $message ) . '</strong></p></div>' . "\n";
+		}
+
+		// --------------------
+		// Changed Setting Mark
+		// --------------------
+		// 2.7.3: green check and Saved beside a setting changed by the last save
+		public function changed_mark( $key ) {
+			if ( !is_array( $this->changed ) || !isset( $this->changed[$key] ) ) {
+				return '';
+			}
+			$mark = '<div class="settings-saved-mark" style="margin-top:4px; color:#00a32a; font-weight:600; font-size:12px; white-space:nowrap;">';
+			$mark .= '<span class="dashicons dashicons-yes" aria-hidden="true" style="font-size:18px; width:18px; height:18px; vertical-align:-4px;"></span> ';
+			$mark .= esc_html( __( 'Saved', 'radio-station' ) ) . '</div>' . "\n";
+			return $mark;
+		}
+
 		// ------------
 		// Notice Boxer
 		// ------------
@@ -2261,7 +2334,9 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 			if ( isset( $_GET['updated'] ) ) {
 				// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 				$updated = sanitize_text_field( wp_unslash( $_GET['updated'] ) );
-				if ( 'yes' == $updated ) {
+				if ( ( 'yes' == $updated ) && is_array( $this->changed ) ) {
+					// 2.7.3: the saved banner is shown below the header instead
+				} elseif ( 'yes' == $updated ) {
 					$message = $settings['title'] . ' ' . __( 'Settings Updated.', 'radio-station' );
 				} elseif ( 'no' == $updated ) {
 					$message = __( 'Error! Settings NOT Updated.', 'radio-station' );
@@ -2306,6 +2381,13 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 
 			// --- output settings header ---
 			$this->settings_header();
+
+			// --- output saved settings banner ---
+			// 2.7.3: shown below the header, so it shows with any header layout
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			if ( isset( $_GET['updated'] ) && ( 'yes' == sanitize_text_field( wp_unslash( $_GET['updated'] ) ) ) && is_array( $this->changed ) ) {
+				$this->changed_notice( $this->changed );
+			}
 
 			do_action( $namespace . '_admin_page_middle' );
 
@@ -2748,6 +2830,8 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 			$row = '<tr class="settings-row">' . "\n";
 
 			$row .= '<td class="settings-label">' . $option['label'] . "\n";
+			// 2.7.3: mark settings changed by the last save
+			$row .= $this->changed_mark( $option['key'] );
 			if ( 'multiselect' == $type ) {
 				$row .= '<br><span>' . esc_html( __( 'Use Ctrl and Click to Select', 'radio-station' ) ) . '</span>' . "\n";
 			}
