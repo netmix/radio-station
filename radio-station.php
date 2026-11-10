@@ -256,15 +256,16 @@ function radio_station_free_player_bar_body_class( $classes ) {
 // 2.7.3: added basic free player bar styles
 function radio_station_free_player_bar_styles() {
 	// 2.7.3: match Pro bar default height (80px) and single row layout
+	// note: station info sits at the left so the controls stay centered in the bar
 	$css = '#radio-station-free-player-bar {position: fixed; bottom: 0; left: 0; right: 0; width: 100%; height: 80px; z-index: 9999;
 	text-align: center; overflow: hidden; box-sizing: border-box; background-color: #000000; color: #FFFFFF;}
 #radio-station-free-player-bar .radio-player-shortcode, #radio-station-free-player-bar .radio-container,
 #radio-station-free-player-bar .rp-type-single {width: 100%; height: 80px; margin: 0; padding: 0; background-color: transparent; color: #FFFFFF;}
-#radio-station-free-player-bar .rp-type-single {display: flex; flex-wrap: nowrap; align-items: center; justify-content: center;}
-#radio-station-free-player-bar .rp-station-info {min-width: 240px; max-width: 320px;}
-#radio-station-free-player-bar .rp-interface {min-width: 320px; max-width: 400px; height: auto; padding: 0;}
+#radio-station-free-player-bar .rp-type-single {position: relative; display: flex; flex-wrap: nowrap; align-items: center; justify-content: center;}
+#radio-station-free-player-bar .rp-station-info {position: absolute; left: 16px; top: 50%; transform: translateY(-50%); max-width: 320px; text-align: left;}
+#radio-station-free-player-bar .rp-interface {width: auto; min-width: 0; max-width: none; height: auto; padding: 0; text-align: center;}
+@media screen and (max-width: 900px) {#radio-station-free-player-bar .rp-station-info {display: none;} }
 #radio-station-free-player-bar .rp-show-info {display: none;}
-@media screen and (max-width: 640px) {#radio-station-free-player-bar .rp-station-info {display: none;} }
 body.radio-station-free-player-bar {padding-bottom: 80px;}';
 	$css = apply_filters( 'radio_station_free_player_bar_styles', $css );
 	echo '<style id="radio-station-free-player-bar-css">' . wp_strip_all_tags( $css ) . '</style>' . "\n";
