@@ -10,6 +10,24 @@ Note that additional Pro Documentation will be added in the relevant section as 
 
 If you are interested in testing cutting edge features in development for this next release, read about [Installing the Development Version](./FAQ.md#how-do-i-install-the-latest-development-version-for-testing) and [Pro Beta Version Testing](./#pro-beta-version-testing).
 
+Settings that are grayed out in the free version's Plugin Settings screen are Pro features. They are shown so you can see what is available, and they work once Radio Station Pro is installed and active. [**Upgrade to Radio Station Pro →**](https://radiostation.pro/pricing/)
+
+
+### Player Bar: Free vs Pro
+
+The free version includes a [Basic Player Bar](./Player.md#basic-player-bar). Radio Station Pro replaces it with the full [Sitewide Bar Player](./Player.md#pro-sitewide-bar-player):
+
+| Feature | Free | Pro |
+|---|---|---|
+| Fixed Player Bar playing the Station Stream URL | ✓ | ✓ |
+| Top or bottom position | Bottom only | ✓ |
+| Bar height, fade in, text and background colors | | ✓ |
+| Responsive mobile modes (arrows or expander) | | ✓ |
+| Continuous playback between pages (Teleporter) | | ✓ |
+| Current Show and show meta display | | ✓ |
+| Now Playing track display and animation | | ✓ |
+| Popup Player and Autoresume | | ✓ |
+
 
 ### Radio Station Plus
 

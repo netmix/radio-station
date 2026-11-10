@@ -81,7 +81,15 @@ A Player block can be added via the Block Editor by clicking the blue + icon. Th
 The Radio Player Block supports extra theming and color options matching to the extra shortcode/widget options above.
 
 
+### Basic Player Bar
+
+The free version includes a basic Player Bar. Turn it on via Plugin Settings → Player tab → Sitewide Bar Player → *Enable Player Bar*. It adds a fixed bar at the bottom of every page that plays your Station Stream URL in the horizontal player layout, using the Player defaults set on the same tab.
+
+The basic bar does not keep playing when a visitor clicks to another page: the new page loads and playback stops. It also has no current show or now playing display, and no position, height, color or responsive options. These are all Pro features (see below.) When Radio Station Pro is active, the Pro Sitewide Bar Player replaces the basic bar.
+
 ### [Pro] Sitewide Bar Player
+
+> **🔒 This feature requires Radio Station Pro.** The Sitewide Bar Player settings show in the Plugin Settings → Player tab in the free version, but they are grayed out and can't be changed until you upgrade. [Upgrade to Radio Station Pro →](https://radiostation.pro/pricing/)
 
 [Radio Station Pro](https://radiostation.pro) includes a Sitewide Bar Streaming Player, including continuous uninterruptable playback via the integrated Teleporter page transition plugin. The Player Bar isn't added via the Widgets page, but is instead configured via the Plugin Settings page under the Player tab. It has the following main options:
 

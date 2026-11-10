@@ -207,6 +207,74 @@ function radio_station_back_compat_player() {
 	}
 }
 
+// -----------------------
+// Free Sitewide Player Bar
+// -----------------------
+// 2.7.3: added basic fixed footer player bar for the free version
+// note: this is a basic bar only. Navigating to another page reloads the page and
+// stops playback. Continuous playback (Teleporter), bar position, height, colors,
+// responsive modes, current show and now playing display are Radio Station Pro features.
+// When Radio Station Pro is active, its Sitewide Player Bar replaces this free bar.
+add_action( 'wp', 'radio_station_maybe_add_free_player_bar' );
+function radio_station_maybe_add_free_player_bar() {
+
+	// --- bail if Pro player bar is available ---
+	if ( defined( 'RADIO_STATION_PRO_FILE' ) || function_exists( 'radio_station_pro_player_bar' ) ) {
+		return;
+	}
+	if ( is_admin() || is_feed() || is_embed() || wp_doing_ajax() ) {
+		return;
+	}
+
+	// --- check free player bar setting and stream URL ---
+	if ( 'yes' != radio_station_get_setting( 'player_bar_active' ) ) {
+		return;
+	}
+	$stream_url = radio_station_get_stream_url();
+	if ( !$stream_url || ( '' == $stream_url ) ) {
+		return;
+	}
+
+	add_filter( 'body_class', 'radio_station_free_player_bar_body_class' );
+	add_action( 'wp_head', 'radio_station_free_player_bar_styles' );
+	// note: early footer priority so player scripts are enqueued before footer scripts print
+	add_action( 'wp_footer', 'radio_station_free_player_bar', 4 );
+}
+
+// ------------------------------
+// Free Player Bar Body Class
+// ------------------------------
+// 2.7.3: added for free player bar page offset
+function radio_station_free_player_bar_body_class( $classes ) {
+	$classes[] = 'radio-station-free-player-bar';
+	return $classes;
+}
+
+// ----------------------
+// Free Player Bar Styles
+// ----------------------
+// 2.7.3: added basic free player bar styles
+function radio_station_free_player_bar_styles() {
+	$css = '#radio-station-free-player-bar {position: fixed; bottom: 0; left: 0; right: 0; z-index: 9999;
+	background-color: #000000; color: #FFFFFF; padding: 6px 16px; box-shadow: 0 -2px 8px rgba(0,0,0,0.4); box-sizing: border-box;}
+#radio-station-free-player-bar .radio-player-shortcode {max-width: 960px; margin: 0 auto;}
+#radio-station-free-player-bar .radio-container {background-color: transparent; color: #FFFFFF;}
+body.radio-station-free-player-bar {padding-bottom: 80px;}';
+	$css = apply_filters( 'radio_station_free_player_bar_styles', $css );
+	echo '<style id="radio-station-free-player-bar-css">' . wp_strip_all_tags( $css ) . '</style>' . "\n";
+}
+
+// ----------------------
+// Output Free Player Bar
+// ----------------------
+// 2.7.3: output basic horizontal player in fixed footer bar
+function radio_station_free_player_bar() {
+	echo '<div id="radio-station-free-player-bar" class="radio-station-free-player-bar" role="region" aria-label="' . esc_attr( __( 'Audio Player', 'radio-station' ) ) . '">' . "\n";
+		// note: player shortcode output is escaped within the player
+		echo radio_player_shortcode( array( 'layout' => 'horizontal' ) );
+	echo '</div>' . "\n";
+}
+
 
 // ---------------------------
 // Plugin Options and Defaults

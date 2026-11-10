@@ -759,6 +759,20 @@ function radio_station_plugin_options( $admin = false ) {
 			'section' => 'bar',
 		),
 
+		// --- [Player] Free Player Bar ---
+		// 2.7.3: added basic free footer player bar switch (removed when Pro is active)
+		'player_bar_active' => array(
+			'type'    => 'checkbox',
+			'label'   => $admin ? __( 'Enable Player Bar', 'radio-station' ) : '',
+			'default' => '',
+			'value'   => 'yes',
+			'helper'  => $admin ? __( 'Show a basic fixed Player Bar at the bottom of every page that plays your Station Stream URL.', 'radio-station' )
+						. ' ' . __( 'Upgrade to Pro for top or bottom position, bar height and colors, continuous playback between pages, current show and now playing display.', 'radio-station' ) : '',
+			'tab'     => 'player',
+			'section' => 'bar',
+			'pro'     => false,
+		),
+
 		// --- [Pro/Player] Sitewide Player Bar ---
 		'player_bar' => array(
 			'type'    => 'select',
@@ -1925,6 +1939,12 @@ function radio_station_plugin_options( $admin = false ) {
 			'permissions' => $admin ? __( 'Permissions', 'radio-station' ) : '',
 		),
 	);
+
+	// --- remove free player bar switch when Pro is active ---
+	// 2.7.3: Pro Sitewide Player Bar setting replaces the free bar switch
+	if ( defined( 'RADIO_STATION_PRO_FILE' ) ) {
+		unset( $options['player_bar_active'] );
+	}
 
 	return $options;
 }

@@ -172,6 +172,13 @@ Add button to open Popup Player in separate window.
 
 ### Player Bar
 
+#### Enable Player Bar
+Default: off. Key: player_bar_active
+Show a basic fixed Player Bar at the bottom of every page that plays your Station Stream URL. This switch is only shown when Radio Station Pro is not active (with Pro, use the Sitewide Player Bar setting below instead.)
+
+> **🔒 The other Player Bar settings are Pro Features**
+> The settings below are visible in the free version but grayed out. [Upgrade to Radio Station Pro](https://radiostation.pro/pricing/) to choose a top or bottom position, set the bar height and colors, keep playback going between pages, and display the current show and now playing track.
+
 #### [Pro] Sitewide Player Bar
 Default: off. Key: player_bar
 Add a fixed position Player Bar which displays Sitewide. Fixed top or bottom position.
