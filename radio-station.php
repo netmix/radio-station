@@ -262,7 +262,7 @@ function radio_station_free_player_bar_styles() {
 #radio-station-free-player-bar .rp-type-single {width: 100%; height: 80px; margin: 0; padding: 0; background-color: transparent; color: #FFFFFF;}
 #radio-station-free-player-bar .rp-type-single {display: flex; flex-wrap: nowrap; align-items: center; justify-content: center;}
 #radio-station-free-player-bar .rp-station-info {min-width: 240px; max-width: 320px;}
-#radio-station-free-player-bar .rp-interface {min-width: 320px; max-width: 400px;}
+#radio-station-free-player-bar .rp-interface {min-width: 320px; max-width: 400px; height: auto; padding: 0;}
 #radio-station-free-player-bar .rp-show-info {display: none;}
 @media screen and (max-width: 640px) {#radio-station-free-player-bar .rp-station-info {display: none;} }
 body.radio-station-free-player-bar {padding-bottom: 80px;}';
