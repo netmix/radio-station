@@ -169,21 +169,13 @@ class Radio_Player_Widget extends WP_Widget {
 		// === Player Styles ===
 		$fields['player_styles'] = '<h4>' . esc_html( __( 'Player Styles', 'radio-station' ) ) . '</h4>' . "\n";
 
-		// --- Player Layout ---
-		$field = '<p>
-			<label for="' . esc_attr( $this->get_field_id( 'layout' ) ) . '">
-			' . esc_html( __( 'Player Widget Layout', 'radio-station' ) ) . '</label><br>
-			<select id="' . esc_attr( $this->get_field_id( 'layout' ) ) . '" name="' . esc_attr( $this->get_field_name( 'layout' ) ) . '">';
-			$options = array(
-				'vertical' => __( 'Vertical (Stacked)', 'radio-station' ),
-				'horizontal' => __( 'Horizontal (Inline)', 'radio-station' ),
-			);
-			foreach ( $options as $option => $label ) {
-				$field .= '<option value="' . esc_attr( $option ) . '" ' . selected( $layout, $option, false ) . '>' . esc_html( $label ) . '</option>';
-			}
-			$field .= '</select>
+		// --- [Pro] Player Layout ---
+		// 2.8.1: free widget player is stacked (vertical); layout choice is a Pro option
+		$fields['layout'] = '<p>
+			<label for="dynamic">' . esc_html( __( 'Horizontal (Inline) layout available in Pro.', 'radio-station' ) ) . '</label><br>
+			<a href="' . esc_url( $pricing_url ) . '">' . esc_html( __( 'Upgrade to Pro', 'radio-station' ) ) . '</a> |
+			<a href="' . esc_url( $upgrade_url ) . '" target="_blank">' . esc_html( __( 'More Details', 'radio-station' ) ) . '</a>
 		</p>';
-		$fields['layout'] = $field;
 
 		// --- Player Theme ---
 		$field = '<p>
@@ -266,7 +258,8 @@ class Radio_Player_Widget extends WP_Widget {
 		$instance['station'] = isset( $new_instance['station'] ) ? $new_instance['station'] : '';
 		$instance['image'] = isset( $new_instance['image'] ) ? $new_instance['image'] : $old_instance['image'];
 		$instance['script'] = isset( $new_instance['script'] ) ? $new_instance['script'] : $old_instance['script'];
-		$instance['layout'] = isset( $new_instance['layout'] ) ? $new_instance['layout'] : $old_instance['layout'];
+		// 2.8.1: fallback to vertical (layout field is only present in Pro)
+		$instance['layout'] = isset( $new_instance['layout'] ) ? $new_instance['layout'] : ( isset( $old_instance['layout'] ) ? $old_instance['layout'] : 'vertical' );
 		$instance['theme'] = isset( $new_instance['theme'] ) ? $new_instance['theme'] : $old_instance['theme'];
 		$instance['buttons'] = isset( $new_instance['buttons'] ) ? $new_instance['buttons'] : $old_instance['buttons'];
 		$instance['volume'] = isset( $new_instance['volume'] ) ? $new_instance['volume'] : $old_instance['volume'];

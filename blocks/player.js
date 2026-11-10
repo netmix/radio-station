@@ -30,10 +30,10 @@
 			/* --- Player Options --- */
 			script: { type: 'string', default: 'default' },
 			volume: { type: 'number', default: 77 },
-			volumes: { type: 'array', default: ['slider'] },
+			volumes: { type: 'array', default: ['slider', 'updown', 'mute'] },
 			default: { type: 'boolean', default: false },
 			/* --- Player Styles --- */
-			layout: { type: 'string', default: 'horizontal' },
+			layout: { type: 'string', default: 'vertical' },
 			theme: { type: 'string', default: 'default' },
 			buttons: { type: 'string', default: 'default' },
 			/* --- Hidden Switches --- */
@@ -68,6 +68,8 @@
 									rs_el( TextControl, {
 										label: rs__( 'Stream URL', 'radio-station' ),
 										help: rs__( 'Leave blank to use default stream.', 'radio-station' ),
+										/* 2.8.1: show the default stream URL from the settings page */
+										placeholder: ( ( typeof radio_station_block_defaults !== 'undefined' ) && radio_station_block_defaults.url ) ? radio_station_block_defaults.url : '',
 										onChange: ( value ) => {
 											props.setAttributes( { url: value } );
 										},
@@ -190,7 +192,9 @@
 							/* === Player Styles === */
 							rs_el( PanelBody, { title: rs__( 'Player Design', 'radio-station' ), className: 'radio-block-controls', initialOpen: true },
 								/* --- Player Layout --- */
+								/* 2.8.1: layout choice is a Pro option (free is stacked) */
 								rs_el( PanelRow, {},
+									( ( atts.pro ) &&
 									rs_el( RadioControl, {
 										label: rs__( 'Player Layout', 'radio-station' ),
 										options : [
@@ -202,6 +206,12 @@
 										},
 										checked: atts.layout
 									})
+									), ( ( !atts.pro ) &&
+										rs_el( BaseControl, {
+											label: rs__( 'Player Layout', 'radio-station' ),
+											help: rs__( 'Horizontal (Inline) layout available in Pro.', 'radio-station' ),
+										})
+									)
 								),
 								/* --- Player Theme --- */
 								( ( !atts.pro ) &&
