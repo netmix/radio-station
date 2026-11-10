@@ -255,10 +255,16 @@ function radio_station_free_player_bar_body_class( $classes ) {
 // ----------------------
 // 2.7.3: added basic free player bar styles
 function radio_station_free_player_bar_styles() {
-	$css = '#radio-station-free-player-bar {position: fixed; bottom: 0; left: 0; right: 0; z-index: 9999;
-	background-color: #000000; color: #FFFFFF; padding: 6px 16px; box-shadow: 0 -2px 8px rgba(0,0,0,0.4); box-sizing: border-box;}
-#radio-station-free-player-bar .radio-player-shortcode {max-width: 960px; margin: 0 auto;}
-#radio-station-free-player-bar .radio-container {background-color: transparent; color: #FFFFFF;}
+	// 2.7.3: match Pro bar default height (80px) and single row layout
+	$css = '#radio-station-free-player-bar {position: fixed; bottom: 0; left: 0; right: 0; width: 100%; height: 80px; z-index: 9999;
+	text-align: center; overflow: hidden; box-sizing: border-box; background-color: #000000; color: #FFFFFF;}
+#radio-station-free-player-bar .radio-player-shortcode, #radio-station-free-player-bar .radio-container,
+#radio-station-free-player-bar .rp-type-single {width: 100%; height: 80px; margin: 0; padding: 0; background-color: transparent; color: #FFFFFF;}
+#radio-station-free-player-bar .rp-type-single {display: flex; flex-wrap: nowrap; align-items: center; justify-content: center;}
+#radio-station-free-player-bar .rp-station-info {min-width: 240px; max-width: 320px;}
+#radio-station-free-player-bar .rp-interface {min-width: 320px; max-width: 400px;}
+#radio-station-free-player-bar .rp-show-info {display: none;}
+@media screen and (max-width: 640px) {#radio-station-free-player-bar .rp-station-info {display: none;} }
 body.radio-station-free-player-bar {padding-bottom: 80px;}';
 	$css = apply_filters( 'radio_station_free_player_bar_styles', $css );
 	echo '<style id="radio-station-free-player-bar-css">' . wp_strip_all_tags( $css ) . '</style>' . "\n";
