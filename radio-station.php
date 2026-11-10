@@ -266,6 +266,9 @@ function radio_station_free_player_bar_styles() {
 #radio-station-free-player-bar .rp-interface {width: auto; min-width: 0; max-width: none; height: auto; padding: 0; text-align: center;}
 @media screen and (max-width: 900px) {#radio-station-free-player-bar .rp-station-info {display: none;} }
 #radio-station-free-player-bar .rp-show-info {display: none;}
+#radio-station-free-player-bar .radio-container .rp-mute, #radio-station-free-player-bar .radio-container .rp-volume-up,
+#radio-station-free-player-bar .radio-container .rp-volume-down {display: inline-block;}
+#radio-station-free-player-bar .radio-container .rp-volume-max {display: none;}
 body.radio-station-free-player-bar {padding-bottom: 80px;}';
 	$css = apply_filters( 'radio_station_free_player_bar_styles', $css );
 	echo '<style id="radio-station-free-player-bar-css">' . wp_strip_all_tags( $css ) . '</style>' . "\n";
