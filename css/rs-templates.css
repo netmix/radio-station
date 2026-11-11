@@ -309,6 +309,40 @@
 	margin-bottom: 0;
 }
 
+/* Constrained Content Widths */
+/* -------------------------- */
+/* 2.7.3: when the show content column is too narrow for a sidebar beside it
+   (eg. block themes with a constrained content width), move the info blocks
+   above the sections like the top blocks layout, so the tabs stay on one row */
+#show-content {
+	container-type: inline-size;
+	container-name: rs-show-content;
+}
+
+@container rs-show-content (max-width: 699px) {
+	#show-content.left-blocks .show-info, #show-content.right-blocks .show-info {
+		float: none;
+		margin-left: 0;
+		margin-right: 0;
+		margin-bottom: 20px;
+	}
+	#show-content .show-info .show-block {
+		display: inline-block;
+		border-left: 1px solid #AAAAAA;
+		padding-left: 20px;
+		margin-left: 20px;
+		margin-top: 0;
+	}
+	#show-content .show-info .show-block.first-block {
+		border-left: none;
+		padding-left: 0;
+		margin-left: 0;
+	}
+	#show-content .show-info .show-block.last-block {
+		margin-bottom: 0;
+	}
+}
+
 /* Mobile Screens */
 /* -------------- */
 #show-content.narrow .show-sections {
