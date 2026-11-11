@@ -188,8 +188,8 @@
    (otherwise the now playing text runs into the current show section) */
 .radio-container.vertical .rp-interface {height: auto; min-height: 80px; padding-bottom: 8px;}
 /* 2.8.1: stacked layout puts the current show image above the show text too */
-.radio-container.vertical .rp-show-info {text-align: center;}
-.radio-container.vertical .rp-show-info .rp-show-image-link {display: block;}
+.radio-container.vertical .rp-show-info {text-align: center; display: flex; flex-direction: column; align-items: center;}
+.radio-container.vertical .rp-show-info .rp-show-image-link {display: block; order: -1;}
 .radio-container.vertical .rp-show-info .rp-show-image:not(.no-image) {display: block; margin: 0 auto 8px auto;}
 .radio-container.vertical .rp-show-info .rp-show-text {display: block;}
 /* @end */
