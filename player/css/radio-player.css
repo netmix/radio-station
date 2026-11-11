@@ -170,6 +170,28 @@
 .rp-show-info .rp-show-image.no-image {width: 0; height: 0; margin-left: 0; display: none;}
 .rp-show-info .rp-show-image-link {text-decoration: none;}
 .rp-show-info .rp-station-text {max-width: calc(100% - 90px);}
+/* 2.8.1: keep the stacked player a centered column so wide placements
+   (blocks, full width widget areas) don't stretch its track text or analyzer */
+.radio-container.vertical {max-width: 300px; margin-left: auto; margin-right: auto;}
+/* 2.8.1: stacked layout puts the station image above the station text */
+.radio-container.vertical .rp-station-info .rp-station-image:not(.no-image),
+.radio-container.vertical .rp-station-info .rp-station-image.no-image.new-image {
+	display: block; margin: 0 auto 8px auto;
+}
+.radio-container.vertical .rp-station-info .rp-station-text {display: block;}
+/* 2.8.1: keep the now playing track text centered and only as wide as its text */
+.radio-container.vertical .rp-now-playing {
+	width: fit-content; max-width: 100%; margin-left: auto; margin-right: auto; justify-content: center;
+}
+/* 2.8.1: the fixed 80px interface height is for the horizontal bar; stacked, it
+   holds the artwork, controls and now playing, so let it grow to fit them
+   (otherwise the now playing text runs into the current show section) */
+.radio-container.vertical .rp-interface {height: auto; min-height: 80px; padding-bottom: 8px;}
+/* 2.8.1: stacked layout puts the current show image above the show text too */
+.radio-container.vertical .rp-show-info {text-align: center; display: flex; flex-direction: column; align-items: center;}
+.radio-container.vertical .rp-show-info .rp-show-image-link {display: block; order: -1;}
+.radio-container.vertical .rp-show-info .rp-show-image:not(.no-image) {display: block; margin: 0 auto 8px auto;}
+.radio-container.vertical .rp-show-info .rp-show-text {display: block;}
 /* @end */
 
 /* @group No Solution error */

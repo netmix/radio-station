@@ -127,10 +127,11 @@ function radio_station_get_block_attributes() {
 			// ---- Player Options ---
 			'script' => array( 'type' => 'string', 'default' => 'default' ),
 			'volume' => array( 'type' => 'number', 'default' => 77 ),
-			'volumes' => array( 'type' => 'array', 'default' => array( 'slider' ) ),
+			'volumes' => array( 'type' => 'array', 'default' => array( 'slider', 'updown', 'mute' ) ),
 			'default' => array( 'type' => 'boolean', 'default' => false ),
 			// --- Player Styles ---
-			'layout' => array( 'type' => 'string', 'default' => 'horizontal' ),
+			// 2.8.1: default to stacked layout (horizontal layout is a Pro option)
+			'layout' => array( 'type' => 'string', 'default' => 'vertical' ),
 			'theme' => array( 'type' => 'string', 'default' => 'default' ),
 			'buttons' => array( 'type' => 'string', 'default' => 'default' ),
 		),
@@ -354,6 +355,9 @@ function radio_station_block_editor_assets() {
 
 	// --- 2.5.12: init radio player settings in editor
 	$js = radio_player_get_player_settings();
+	// 2.8.1: pass the default stream URL so the block can show it as a placeholder
+	$stream_url = function_exists( 'radio_station_get_stream_url' ) ? radio_station_get_stream_url() : '';
+	$js .= 'var radio_station_block_defaults = ' . wp_json_encode( array( 'url' => $stream_url ) ) . ';';
 	wp_add_inline_script( 'radio-blockedit-js', $js, 'before' );
 
 	// --- enqueue shortcode styles for blocks ---
@@ -401,6 +405,31 @@ function radio_station_block_editor_assets() {
 		// 2.5.0: use radio_station_add_inline_style
 		// 2.5.18: change radio-player style handle to stream-player
 		radio_station_add_inline_style( 'stream-player', $control_styles );
+	}
+}
+
+// ----------------------------------
+// Enqueue Block Editor Canvas Styles
+// ----------------------------------
+// 2.8.1: the block editor canvas is an iframe (WP 6.3+), which only receives
+// styles enqueued on enqueue_block_assets, so load player styles there too
+add_action( 'enqueue_block_assets', 'radio_station_block_canvas_styles' );
+function radio_station_block_canvas_styles() {
+
+	if ( !is_admin() ) {
+		return;
+	}
+
+	global $radio_player;
+	$style_path = RADIO_STATION_DIR . '/player/css/radio-player.css';
+	$style_url = plugins_url( '/player/css/radio-player.css', RADIO_STATION_FILE );
+	$version = file_exists( $style_path ) ? filemtime( $style_path ) : false;
+	wp_enqueue_style( 'stream-player', $style_url, array(), $version, 'all' );
+
+	// --- generic control styles (bypass the once-only check for the canvas) ---
+	if ( function_exists( 'radio_player_control_styles' ) ) {
+		unset( $radio_player['control-styles'] );
+		wp_add_inline_style( 'stream-player', radio_player_control_styles( false ) );
 	}
 }
 
