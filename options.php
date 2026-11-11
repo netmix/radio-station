@@ -946,8 +946,43 @@ function radio_station_plugin_options( $admin = false ) {
 				'prism'     => $admin ? __( 'Prism', 'radio-station' ) : '',
 				'rainbow'   => $admin ? __( 'Rainbow', 'radio-station' ) : '',
 				'steelblue' => $admin ? __( 'Steel Blue', 'radio-station' ) : '',
+				// 2.8.4: custom colors option
+				'custom'    => $admin ? __( 'Custom Colors', 'radio-station' ) : '',
 			),
 			'default' => 'classic',
+			'tab'     => 'player',
+			'section' => 'bar',
+			'pro'     => true,
+		),
+
+		// --- [Pro/Player] Analyzer Custom Top Color ---
+		'player_bar_analyzer_color_top' => array(
+			'type'    => 'color',
+			'label'   => $admin ? __( 'Analyzer Top Color', 'radio-station' ) : '',
+			'default' => '#ff0000',
+			'helper'  => $admin ? __( 'Used when the Analyzer Color Theme is set to Custom Colors.', 'radio-station' ) : '',
+			'tab'     => 'player',
+			'section' => 'bar',
+			'pro'     => true,
+		),
+
+		// --- [Pro/Player] Analyzer Custom Middle Color ---
+		'player_bar_analyzer_color_middle' => array(
+			'type'    => 'color',
+			'label'   => $admin ? __( 'Analyzer Middle Color', 'radio-station' ) : '',
+			'default' => '#ffff00',
+			'helper'  => $admin ? __( 'Used when the Analyzer Color Theme is set to Custom Colors.', 'radio-station' ) : '',
+			'tab'     => 'player',
+			'section' => 'bar',
+			'pro'     => true,
+		),
+
+		// --- [Pro/Player] Analyzer Custom Bottom Color ---
+		'player_bar_analyzer_color_bottom' => array(
+			'type'    => 'color',
+			'label'   => $admin ? __( 'Analyzer Bottom Color', 'radio-station' ) : '',
+			'default' => '#00ff00',
+			'helper'  => $admin ? __( 'Used when the Analyzer Color Theme is set to Custom Colors.', 'radio-station' ) : '',
 			'tab'     => 'player',
 			'section' => 'bar',
 			'pro'     => true,
@@ -1067,8 +1102,43 @@ function radio_station_plugin_options( $admin = false ) {
 				'prism'     => $admin ? __( 'Prism', 'radio-station' ) : '',
 				'rainbow'   => $admin ? __( 'Rainbow', 'radio-station' ) : '',
 				'steelblue' => $admin ? __( 'Steel Blue', 'radio-station' ) : '',
+				// 2.8.4: custom colors option
+				'custom'    => $admin ? __( 'Custom Colors', 'radio-station' ) : '',
 			),
 			'default' => 'classic',
+			'tab'     => 'player',
+			'section' => 'widget_player',
+			'pro'     => true,
+		),
+
+		// --- [Pro/Widget] Analyzer Custom Top Color ---
+		'player_widget_analyzer_color_top' => array(
+			'type'    => 'color',
+			'label'   => $admin ? __( 'Analyzer Top Color', 'radio-station' ) : '',
+			'default' => '#ff0000',
+			'helper'  => $admin ? __( 'Used when the Analyzer Color Theme is set to Custom Colors.', 'radio-station' ) : '',
+			'tab'     => 'player',
+			'section' => 'widget_player',
+			'pro'     => true,
+		),
+
+		// --- [Pro/Widget] Analyzer Custom Middle Color ---
+		'player_widget_analyzer_color_middle' => array(
+			'type'    => 'color',
+			'label'   => $admin ? __( 'Analyzer Middle Color', 'radio-station' ) : '',
+			'default' => '#ffff00',
+			'helper'  => $admin ? __( 'Used when the Analyzer Color Theme is set to Custom Colors.', 'radio-station' ) : '',
+			'tab'     => 'player',
+			'section' => 'widget_player',
+			'pro'     => true,
+		),
+
+		// --- [Pro/Widget] Analyzer Custom Bottom Color ---
+		'player_widget_analyzer_color_bottom' => array(
+			'type'    => 'color',
+			'label'   => $admin ? __( 'Analyzer Bottom Color', 'radio-station' ) : '',
+			'default' => '#00ff00',
+			'helper'  => $admin ? __( 'Used when the Analyzer Color Theme is set to Custom Colors.', 'radio-station' ) : '',
 			'tab'     => 'player',
 			'section' => 'widget_player',
 			'pro'     => true,

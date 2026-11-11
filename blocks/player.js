@@ -669,12 +669,54 @@
 												{ label: rs__( 'Prism', 'radio-station' ), value: 'prism' },
 												{ label: rs__( 'Rainbow', 'radio-station' ), value: 'rainbow' },
 												{ label: rs__( 'Steel Blue', 'radio-station' ), value: 'steelblue' },
+												/* 2.8.4: custom colors */
+												{ label: rs__( 'Custom Colors', 'radio-station' ), value: 'custom' },
 											],
 											onChange: ( value ) => {
 												props.setAttributes( { analyzer_gradient: value } );
 											},
 											value: atts.analyzer_gradient
 										})
+									),
+									/* 2.8.4: custom analyzer colors, empty = inherit plugin setting */
+									( ( 'custom' === atts.analyzer_gradient ) &&
+										rs_el( PanelRow, {},
+											rs_el( TextControl, {
+												type: 'color',
+												label: rs__( 'Analyzer Top Color', 'radio-station' ),
+												help: ( '' == atts.analyzer_color_top ) ? rs__( 'Plugin Setting', 'radio-station' ) : atts.analyzer_color_top,
+												onChange: ( value ) => {
+													props.setAttributes( { analyzer_color_top: value } );
+												},
+												value: atts.analyzer_color_top ? atts.analyzer_color_top : '#000000'
+											})
+										)
+									),
+									( ( 'custom' === atts.analyzer_gradient ) &&
+										rs_el( PanelRow, {},
+											rs_el( TextControl, {
+												type: 'color',
+												label: rs__( 'Analyzer Middle Color', 'radio-station' ),
+												help: ( '' == atts.analyzer_color_middle ) ? rs__( 'Plugin Setting', 'radio-station' ) : atts.analyzer_color_middle,
+												onChange: ( value ) => {
+													props.setAttributes( { analyzer_color_middle: value } );
+												},
+												value: atts.analyzer_color_middle ? atts.analyzer_color_middle : '#000000'
+											})
+										)
+									),
+									( ( 'custom' === atts.analyzer_gradient ) &&
+										rs_el( PanelRow, {},
+											rs_el( TextControl, {
+												type: 'color',
+												label: rs__( 'Analyzer Bottom Color', 'radio-station' ),
+												help: ( '' == atts.analyzer_color_bottom ) ? rs__( 'Plugin Setting', 'radio-station' ) : atts.analyzer_color_bottom,
+												onChange: ( value ) => {
+													props.setAttributes( { analyzer_color_bottom: value } );
+												},
+												value: atts.analyzer_color_bottom ? atts.analyzer_color_bottom : '#000000'
+											})
+										)
 									),
 									rs_el( PanelRow, {},
 										rs_el( SelectControl, {
