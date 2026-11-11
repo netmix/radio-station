@@ -359,13 +359,6 @@
 
 /* 2.7.3: keep the show tabs on one row on phones -- compact the tabs and
    spacers, and scroll sideways if a show has more tabs than fit (#107) */
-#show-content.narrow .show-tabs {
-	white-space: nowrap;
-	overflow-x: auto;
-	overflow-y: hidden;
-	-webkit-overflow-scrolling: touch;
-}
-
 #show-content.narrow .show-tabs .show-tab {
 	min-width: 0;
 	font-size: 15px;
@@ -387,16 +380,28 @@
 	position: relative;
 }
 
+/* 2.7.3: once the script wraps the row, keep the tabs on one row at every
+   width (theme content columns can be narrow even on desktop) -- the spacers
+   tighten first, then the row scrolls sideways with the arrows */
 #show-content .show-tabs-wrap .show-tabs {
 	position: relative;
-}
-
-#show-content.narrow .show-tabs {
+	white-space: nowrap;
+	overflow-x: auto;
+	overflow-y: hidden;
+	-webkit-overflow-scrolling: touch;
 	scrollbar-width: none;
 }
 
-#show-content.narrow .show-tabs::-webkit-scrollbar {
+#show-content .show-tabs-wrap .show-tabs::-webkit-scrollbar {
 	display: none;
+}
+
+#show-content .show-tabs-wrap.tight .show-tabs .show-tab-spacer {
+	width: 6px;
+}
+
+#show-content .show-tabs-wrap.tight .show-tabs .show-tab-spacer.last {
+	width: 20px;
 }
 
 #show-content .show-tabs-wrap button.show-tabs-arrow {

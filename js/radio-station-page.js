@@ -166,7 +166,7 @@ function radio_tab_arrows_init() {
 			wrap.appendChild(arrow);
 		}
 		row.addEventListener('scroll', radio_tab_arrows_listener(row), {passive: true});
-		radio_tab_arrows_update(row);
+		radio_tab_arrows_fit(row);
 	}
 }
 function radio_tab_arrows_click(row, dir) {
@@ -182,9 +182,16 @@ function radio_tab_arrows_update(row) {
 	wrap.classList.toggle('has-prev', overflow && (row.scrollLeft > 1));
 	wrap.classList.toggle('has-next', overflow && ((row.scrollLeft + row.clientWidth) < (row.scrollWidth - 1)));
 }
+function radio_tab_arrows_fit(row) {
+	/* tighten the spacers only when the tabs would not fit at full spacing */
+	var wrap = row.parentNode;
+	wrap.classList.remove('tight');
+	if (row.scrollWidth > (row.clientWidth + 1)) {wrap.classList.add('tight');}
+	radio_tab_arrows_update(row);
+}
 function radio_tab_arrows_update_all() {
 	var rows = document.querySelectorAll('.show-tabs-wrap > .show-tabs');
-	for (var i = 0; i < rows.length; i++) {radio_tab_arrows_update(rows[i]);}
+	for (var i = 0; i < rows.length; i++) {radio_tab_arrows_fit(rows[i]);}
 }
 function radio_tab_arrows_scroll(row, left) {
 	left = Math.max(0, Math.min(left, row.scrollWidth - row.clientWidth));
@@ -230,3 +237,5 @@ function radio_tab_arrows_reveal(prefix, tab) {
 }
 if (document.readyState != 'loading') {radio_tab_arrows_init();}
 else {document.addEventListener('DOMContentLoaded', radio_tab_arrows_init);}
+/* re-measure once fonts and images have loaded */
+window.addEventListener('load', radio_tab_arrows_update_all);
