@@ -357,6 +357,31 @@
 	width: 20px;
 }
 
+/* 2.7.3: keep the show tabs on one row on phones -- compact the tabs and
+   spacers, and scroll sideways if a show has more tabs than fit (#107) */
+#show-content.narrow .show-tabs {
+	white-space: nowrap;
+	overflow-x: auto;
+	overflow-y: hidden;
+	-webkit-overflow-scrolling: touch;
+}
+
+#show-content.narrow .show-tabs .show-tab {
+	min-width: 0;
+	font-size: 15px;
+	padding: 4px 10px;
+}
+
+#show-content.narrow .show-tabs .show-tab-spacer {
+	width: 6px;
+	font-size: 15px;
+	padding: 4px 0;
+}
+
+#show-content.narrow .show-tabs .show-tab-spacer.last {
+	width: 20px;
+}
+
 #show-content.right-blocks.narrow .show-info {
 	margin-left: 0;
 }
