@@ -382,6 +382,64 @@
 	width: 20px;
 }
 
+/* 2.7.3: tab row overflow arrows, only shown while the row has hidden tabs */
+#show-content .show-tabs-wrap {
+	position: relative;
+}
+
+#show-content .show-tabs-wrap .show-tabs {
+	position: relative;
+}
+
+#show-content.narrow .show-tabs {
+	scrollbar-width: none;
+}
+
+#show-content.narrow .show-tabs::-webkit-scrollbar {
+	display: none;
+}
+
+#show-content .show-tabs-wrap button.show-tabs-arrow {
+	display: none;
+	position: absolute;
+	top: 0;
+	bottom: 1px;
+	z-index: 2;
+	width: 28px;
+	margin: 0;
+	padding: 0 0 3px 0;
+	font-size: 26px;
+	font-weight: normal;
+	line-height: 1;
+	text-transform: none;
+	color: #000000;
+	background-color: #eeeeee;
+	border: 1px solid #000000;
+	border-radius: 7px 7px 0 0;
+	box-shadow: none;
+	cursor: pointer;
+}
+
+#show-content .show-tabs-wrap button.show-tabs-arrow.prev {
+	left: 0;
+	box-shadow: 6px 0 6px -2px #ffffff;
+}
+
+#show-content .show-tabs-wrap button.show-tabs-arrow.next {
+	right: 0;
+	box-shadow: -6px 0 6px -2px #ffffff;
+}
+
+#show-content .show-tabs-wrap button.show-tabs-arrow:hover,
+#show-content .show-tabs-wrap button.show-tabs-arrow:focus {
+	background-color: #f5f5f5;
+}
+
+#show-content .show-tabs-wrap.has-prev button.show-tabs-arrow.prev,
+#show-content .show-tabs-wrap.has-next button.show-tabs-arrow.next {
+	display: block;
+}
+
 #show-content.right-blocks.narrow .show-info {
 	margin-left: 0;
 }

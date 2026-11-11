@@ -37,6 +37,8 @@ function radio_show_tab(prefix,tab) {
 		content = document.getElementById(prefix+'-'+tab);
 		content.className = content.className.replace('-tab-inactive', '-tab-active');
 	}
+	/* 2.7.3: bring the selected tab fully into view if the tab row scrolls */
+	radio_tab_arrows_reveal(prefix, tab);
 }
 
 /* Responsive Page */
@@ -84,6 +86,9 @@ function radio_page_responsive() {
             desc.style.paddingBottom = '30px';
         }
     }
+
+    /* 2.7.3: refresh tab row arrows after the narrow class may have changed */
+    radio_tab_arrows_update_all();
 }
 
 /* Description Show More/Less */
@@ -136,3 +141,92 @@ if (typeof jQuery == 'function') {
         document.body[attachEvent]('onresize', radio_page_responsive, false);
     }
 }
+
+/* --- Tab Row Overflow Arrows --- */
+/* 2.7.3: when the show tabs do not fit on one row (phones), the row scrolls
+   sideways; these arrows show that more tabs exist and step to them, and each
+   one hides once the first or last tab is reached (#107) */
+function radio_tab_arrows_init() {
+	var rows = document.querySelectorAll('.show-tabs');
+	for (var i = 0; i < rows.length; i++) {
+		var row = rows[i];
+		if (row.parentNode.classList.contains('show-tabs-wrap')) {continue;}
+		var wrap = document.createElement('div');
+		wrap.className = 'show-tabs-wrap';
+		row.parentNode.insertBefore(wrap, row);
+		wrap.appendChild(row);
+		var arrows = {'prev': '\u2039', 'next': '\u203A'};
+		for (var dir in arrows) {
+			var arrow = document.createElement('button');
+			arrow.type = 'button';
+			arrow.className = 'show-tabs-arrow ' + dir;
+			arrow.setAttribute('aria-label', ('prev' == dir) ? 'Previous tabs' : 'More tabs');
+			arrow.textContent = arrows[dir];
+			arrow.addEventListener('click', radio_tab_arrows_click(row, ('prev' == dir) ? -1 : 1));
+			wrap.appendChild(arrow);
+		}
+		row.addEventListener('scroll', radio_tab_arrows_listener(row), {passive: true});
+		radio_tab_arrows_update(row);
+	}
+}
+function radio_tab_arrows_click(row, dir) {
+	return function() {radio_tab_arrows_step(row, dir);};
+}
+function radio_tab_arrows_listener(row) {
+	return function() {radio_tab_arrows_update(row);};
+}
+function radio_tab_arrows_update(row) {
+	var wrap = row.parentNode;
+	if (!wrap || !wrap.classList.contains('show-tabs-wrap')) {return;}
+	var overflow = (row.scrollWidth > (row.clientWidth + 1));
+	wrap.classList.toggle('has-prev', overflow && (row.scrollLeft > 1));
+	wrap.classList.toggle('has-next', overflow && ((row.scrollLeft + row.clientWidth) < (row.scrollWidth - 1)));
+}
+function radio_tab_arrows_update_all() {
+	var rows = document.querySelectorAll('.show-tabs-wrap > .show-tabs');
+	for (var i = 0; i < rows.length; i++) {radio_tab_arrows_update(rows[i]);}
+}
+function radio_tab_arrows_scroll(row, left) {
+	left = Math.max(0, Math.min(left, row.scrollWidth - row.clientWidth));
+	if (row.scrollTo) {row.scrollTo({left: left, behavior: 'smooth'});} else {row.scrollLeft = left;}
+}
+function radio_tab_arrows_step(row, dir) {
+	/* room taken by an arrow, so a revealed tab is not hidden underneath it */
+	var room = 32;
+	var tabs = row.querySelectorAll('.show-tab');
+	var left = row.scrollLeft, right = left + row.clientWidth;
+	var i, tab;
+	if (dir > 0) {
+		for (i = 0; i < tabs.length; i++) {
+			tab = tabs[i];
+			if ((tab.offsetLeft + tab.offsetWidth) > (right - room + 1)) {
+				radio_tab_arrows_scroll(row, tab.offsetLeft + tab.offsetWidth - row.clientWidth + room);
+				return;
+			}
+		}
+		radio_tab_arrows_scroll(row, row.scrollWidth);
+	} else {
+		for (i = tabs.length - 1; i >= 0; i--) {
+			tab = tabs[i];
+			if (tab.offsetLeft < (left + room - 1)) {
+				radio_tab_arrows_scroll(row, tab.offsetLeft - room);
+				return;
+			}
+		}
+		radio_tab_arrows_scroll(row, 0);
+	}
+}
+function radio_tab_arrows_reveal(prefix, tab) {
+	var button = document.getElementById(prefix + '-' + tab + '-tab');
+	if (!button) {return;}
+	var row = button.parentNode;
+	if (!row || (row.scrollWidth <= row.clientWidth)) {return;}
+	var room = 32;
+	if (button.offsetLeft < (row.scrollLeft + room)) {
+		radio_tab_arrows_scroll(row, button.offsetLeft - room);
+	} else if ((button.offsetLeft + button.offsetWidth) > (row.scrollLeft + row.clientWidth - room)) {
+		radio_tab_arrows_scroll(row, button.offsetLeft + button.offsetWidth - row.clientWidth + room);
+	}
+}
+if (document.readyState != 'loading') {radio_tab_arrows_init();}
+else {document.addEventListener('DOMContentLoaded', radio_tab_arrows_init);}
