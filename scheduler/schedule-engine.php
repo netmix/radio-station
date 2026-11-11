@@ -2241,6 +2241,10 @@ class radio_station_schedule_engine {
 		}
 
 		// --- check for conflicts with other show shifts ---
+		// 2.7.3: clear the variable left over from the filter loop above, so the
+		// last shift recheck below is skipped when there are no other shifts to
+		// check (eg. a single show), instead of using undefined shift times
+		unset( $day_shift );
 		$conflicts = array();
 		foreach ( $check_shifts as $day => $day_shifts ) {
 			// 2.3.2: removed day match check

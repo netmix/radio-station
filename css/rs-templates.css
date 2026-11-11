@@ -309,6 +309,40 @@
 	margin-bottom: 0;
 }
 
+/* Constrained Content Widths */
+/* -------------------------- */
+/* 2.7.3: when the show content column is too narrow for a sidebar beside it
+   (eg. block themes with a constrained content width), move the info blocks
+   above the sections like the top blocks layout, so the tabs stay on one row */
+#show-content {
+	container-type: inline-size;
+	container-name: rs-show-content;
+}
+
+@container rs-show-content (max-width: 699px) {
+	#show-content.left-blocks .show-info, #show-content.right-blocks .show-info {
+		float: none;
+		margin-left: 0;
+		margin-right: 0;
+		margin-bottom: 20px;
+	}
+	#show-content .show-info .show-block {
+		display: inline-block;
+		border-left: 1px solid #AAAAAA;
+		padding-left: 20px;
+		margin-left: 20px;
+		margin-top: 0;
+	}
+	#show-content .show-info .show-block.first-block {
+		border-left: none;
+		padding-left: 0;
+		margin-left: 0;
+	}
+	#show-content .show-info .show-block.last-block {
+		margin-bottom: 0;
+	}
+}
+
 /* Mobile Screens */
 /* -------------- */
 #show-content.narrow .show-sections {
@@ -321,6 +355,94 @@
 
 #show-content.narrow .show-tabs .show-tab-spacer {
 	width: 20px;
+}
+
+/* 2.7.3: keep the show tabs on one row on phones -- compact the tabs and
+   spacers, and scroll sideways if a show has more tabs than fit (#107) */
+#show-content.narrow .show-tabs .show-tab {
+	min-width: 0;
+	font-size: 15px;
+	padding: 4px 10px;
+}
+
+#show-content.narrow .show-tabs .show-tab-spacer {
+	width: 6px;
+	font-size: 15px;
+	padding: 4px 0;
+}
+
+#show-content.narrow .show-tabs .show-tab-spacer.last {
+	width: 20px;
+}
+
+/* 2.7.3: tab row overflow arrows, only shown while the row has hidden tabs */
+#show-content .show-tabs-wrap {
+	position: relative;
+}
+
+/* 2.7.3: once the script wraps the row, keep the tabs on one row at every
+   width (theme content columns can be narrow even on desktop) -- the spacers
+   tighten first, then the row scrolls sideways with the arrows */
+#show-content .show-tabs-wrap .show-tabs {
+	position: relative;
+	white-space: nowrap;
+	overflow-x: auto;
+	overflow-y: hidden;
+	-webkit-overflow-scrolling: touch;
+	scrollbar-width: none;
+}
+
+#show-content .show-tabs-wrap .show-tabs::-webkit-scrollbar {
+	display: none;
+}
+
+#show-content .show-tabs-wrap.tight .show-tabs .show-tab-spacer {
+	width: 6px;
+}
+
+#show-content .show-tabs-wrap.tight .show-tabs .show-tab-spacer.last {
+	width: 20px;
+}
+
+#show-content .show-tabs-wrap button.show-tabs-arrow {
+	display: none;
+	position: absolute;
+	top: 0;
+	bottom: 1px;
+	z-index: 2;
+	width: 28px;
+	margin: 0;
+	padding: 0 0 3px 0;
+	font-size: 26px;
+	font-weight: normal;
+	line-height: 1;
+	text-transform: none;
+	color: #000000;
+	background-color: #eeeeee;
+	border: 1px solid #000000;
+	border-radius: 7px 7px 0 0;
+	box-shadow: none;
+	cursor: pointer;
+}
+
+#show-content .show-tabs-wrap button.show-tabs-arrow.prev {
+	left: 0;
+	box-shadow: 6px 0 6px -2px #ffffff;
+}
+
+#show-content .show-tabs-wrap button.show-tabs-arrow.next {
+	right: 0;
+	box-shadow: -6px 0 6px -2px #ffffff;
+}
+
+#show-content .show-tabs-wrap button.show-tabs-arrow:hover,
+#show-content .show-tabs-wrap button.show-tabs-arrow:focus {
+	background-color: #f5f5f5;
+}
+
+#show-content .show-tabs-wrap.has-prev button.show-tabs-arrow.prev,
+#show-content .show-tabs-wrap.has-next button.show-tabs-arrow.next {
+	display: block;
 }
 
 #show-content.right-blocks.narrow .show-info {
