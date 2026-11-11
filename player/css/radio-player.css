@@ -183,6 +183,15 @@
 .radio-container.vertical .rp-now-playing {
 	width: fit-content; max-width: 100%; margin-left: auto; margin-right: auto; justify-content: center;
 }
+/* 2.8.1: the fixed 80px interface height is for the horizontal bar; stacked, it
+   holds the artwork, controls and now playing, so let it grow to fit them
+   (otherwise the now playing text runs into the current show section) */
+.radio-container.vertical .rp-interface {height: auto; min-height: 80px; padding-bottom: 8px;}
+/* 2.8.1: stacked layout puts the current show image above the show text too */
+.radio-container.vertical .rp-show-info {text-align: center;}
+.radio-container.vertical .rp-show-info .rp-show-image-link {display: block;}
+.radio-container.vertical .rp-show-info .rp-show-image:not(.no-image) {display: block; margin: 0 auto 8px auto;}
+.radio-container.vertical .rp-show-info .rp-show-text {display: block;}
 /* @end */
 
 /* @group No Solution error */
