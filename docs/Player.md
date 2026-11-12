@@ -11,18 +11,52 @@ The Stream Player is available as a Shortcode, Widget or Block. In Pro it is als
 
 Default settings for the Player can be set on the Plugin Settings page on the Player tab. These will be used in widgets wherever the widget options are set to "Default". This saves you from setting them twice, but also means that you can override these defaults in individual widgets as needed. (see [Options](./Options.md#player) for a list of these options.)
 
-* *Player Title*: Display your Radio Station Title in Player by default.
-* *Player Image*: Display your Radio Station Image in Player by default.
-* *Script*: Default audio script to use for Radio Streaming Player. Ampliture, Howler or Jplayer.
+* *[Pro] Display Station Title*: Display your Radio Station Title in the Player.
+* *[Pro] Display Station Image*: Display your Radio Station logo image in the Player.
+* *[Pro] Display Station Meta*: Display your Station Tagline, Frequency, Location and/or Timezone in the Player.
+* *Script*: Default audio script to use for Radio Streaming Player. Amplitude, Howler or jPlayer.
 * *Fallback Scripts*: Fallback audio scripts to try if/when the default Player script fails.
-* *Theme*: Default Player Controls theme style. Light or dark to match your theme.
-* *Buttons*: Default Player Buttons shape style. Circular, rounded or square.
-* *Volume Controls*: Which volume controls to display in the Player by default.
+* *Theme*: Default Player Controls theme style. Light or dark to match your theme. (Colored button themes are a Pro feature.)
+* *Buttons*: Default Player Buttons shape style. The free version uses Solid Buttons; the outlined and hollow circular, rounded and square shapes are Pro features.
+* *Volume Controls*: Which volume controls to display in the Player by default: slider, volume plus/minus, mute and maximize.
 * *Player Debug Mode*: Output player debug information in browser javascript console.
 * *Start Volume*: Initial volume for when the Player starts playback.
-* *Single Player*: Stop other Player instances when a Player is started.
+* *[Pro] Single Player at Once*: Stop any Player playing on the page or in other windows or tabs when a Player is started. This stays on in the free version; Pro lets you turn it off.
+
+**Station display is a Pro feature.** In the free version every Player (shortcode, widget, block and the basic Player Bar) shows only its controls: no station title, logo, tagline, frequency, location or timezone. With Radio Station Pro active, these display settings work as described above.
 
 Please note you will not see volume controls when using an iOS device as they are not supported.
+
+### Free and Pro at a Glance
+
+| Player feature | Free | Pro |
+|---|---|---|
+| Player as Shortcode, Widget and Block | ✓ | ✓ |
+| Play/pause and volume controls (slider, mute, plus/minus, maximize) | ✓ | ✓ |
+| Light and dark control themes | ✓ | ✓ |
+| Button shapes | Solid only | Solid, outlined and hollow circular, rounded or square |
+| Colored button themes and custom player colors | | ✓ |
+| Station title, logo and meta (tagline, frequency, location, timezone) | | ✓ |
+| One-click switching between players on the same page | ✓ | ✓ |
+| Starting a player pauses players in other tabs and windows | Always on | ✓ (can be turned off) |
+| Basic Player Bar (bottom of page, play and volume only) | ✓ | Replaced by the Sitewide Bar Player |
+| Sitewide Bar Player (top or bottom, height, colors, fade in, responsive modes) | | ✓ |
+| Continuous playback while browsing between pages | | ✓ |
+| Popup Player window | | ✓ |
+| Current Show and Now Playing track display | | ✓ |
+| Autoresume prompt for returning listeners | | ✓ |
+| Spectrum Analyzer | | ✓ |
+| Elementor Widget and Beaver Builder Module | | ✓ |
+
+### How Players Work Together
+
+All the players on a page share a single audio stream, so only one of them plays at a time.
+
+* **On the same page (Free and Pro):** Click play on any player (the Player Bar, a widget, a block or a shortcode) and it starts with that one click. If another player on the page was playing, it switches to paused. Click pause on the playing player to stop it.
+* **Across tabs and windows:** Starting a player pauses any player that is playing in your site's other open tabs or windows (the *Single Player at Once* setting). This is always on in the free version; in Pro you can turn it off.
+* **[Pro] Popup Player:** The Popup Player window is treated like another window: starting it pauses the players on your pages, and starting a player on a page pauses the popup. You can switch back and forth between the Player Bar, widgets and the popup as often as you like, one click each time.
+* **Changing pages:** In the free version, clicking to another page loads a new page and the stream stops. With Pro's [Continuous Playback](#pro-continous-player-integration), the Player Bar keeps playing while visitors browse your site.
+* **[Pro] Spectrum Analyzer:** When analyzers are on for both the Player Bar and a widget or block, only the analyzer of the player that is playing is shown.
 
 ### Stream Player Shortcode
 
@@ -81,7 +115,20 @@ A Player block can be added via the Block Editor by clicking the blue + icon. Th
 The Radio Player Block supports extra theming and color options matching to the extra shortcode/widget options above.
 
 
+### Basic Player Bar
+
+The free version includes a basic Player Bar. Turn it on via Plugin Settings → Player tab → Sitewide Bar Player → *Enable Player Bar*. It adds a fixed 80px bar at the bottom of every page that plays your Station Stream URL, using the Player defaults set on the same tab.
+
+* **What it shows:** a play/pause button and volume controls (mute, volume minus/plus and the volume slider). It does not show the station name or logo, the current show or the now playing track.
+* **Working with other players:** Click play on the bar or on a Player widget or block on the same page and that player takes over with one click (see [How Players Work Together](#how-players-work-together)).
+* **Changing pages:** The basic bar does not keep playing when a visitor clicks to another page: the new page loads and playback stops.
+* **Not included:** top position, bar height, colors, fade in, responsive modes, continuous playback, popup player, autoresume, current show and now playing display. These are all Pro features (see below.)
+
+When Radio Station Pro is active, the *Enable Player Bar* switch is hidden and the Pro Sitewide Bar Player replaces the basic bar, so a page never shows two bars.
+
 ### [Pro] Sitewide Bar Player
+
+> **🔒 This feature requires Radio Station Pro.** The Sitewide Bar Player settings show in the Plugin Settings → Player tab in the free version, but they are grayed out and can't be changed until you upgrade. [Upgrade to Radio Station Pro →](https://radiostation.pro/pricing/)
 
 [Radio Station Pro](https://radiostation.pro) includes a Sitewide Bar Streaming Player, including continuous uninterruptable playback via the integrated Teleporter page transition plugin. The Player Bar isn't added via the Widgets page, but is instead configured via the Plugin Settings page under the Player tab. It has the following main options:
 
@@ -98,6 +145,11 @@ The Radio Player Block supports extra theming and color options matching to the 
 * *Metadata URL*: alternative URL for metadata retrieval (normally via stream URL.)
 
 #### [Pro] Responsive Bar Display
+
+On narrow screens the Player Bar's sections (station, controls, current show and now playing) don't all fit across the screen. The *Bar Responsive Mode* setting chooses how visitors reach them:
+
+* *Horizontal Arrows*: left and right arrows move between the bar sections.
+* *Vertical Expander*: a button expands the bar upward to show all sections, with a close button to collapse it again.
 
 
 
@@ -136,11 +188,26 @@ And in addition to the existing Light and Dark button themes, you can also choos
 
 #### [Pro] Playback Autoresume
 
+Turn on *Autoresume Playback* (Plugin Settings → Player tab) to help returning listeners pick up where they left off. If a visitor was playing the stream and then reloads the page or comes back to your site later, a small dialog asks whether they want to resume playback. Browsers don't allow audio to start without a click, which is why a prompt is shown instead of starting the stream automatically.
+
 
 #### [Pro] Popup Player Window
 
+Turn on *Popup Player Button* (Plugin Settings → Player tab) to add a popup button to the player controls. Clicking it opens the player in its own small browser window, sized to fit the player, so listeners can keep listening while they browse other sites or close your site's tab. Each widget, block and shortcode can turn its own button on or off with the `popup` option.
+
+* The popup plays the same stream, with the same player settings, as the player it was opened from.
+* Starting the popup pauses the players on your pages, and starting a player on a page pauses the popup (see [How Players Work Together](#how-players-work-together)).
+* On small screens the popup button is hidden.
+
 
 #### [Pro] Track Metadata
+
+With *Display Now Playing* on, the Player Bar shows the song that is currently playing, read from your stream's metadata (Icy Meta, Icecast, Shoutcast 1/2, or the Current Playlist). Widgets, blocks and shortcodes can show it too with the `nowplaying` option.
+
+* *Track Animation*: how the now playing text moves: no animation, a left to right or right to left ticker, or back and forth.
+* *Metadata URL*: now playing metadata is normally read from the Stream URL. Use this if your metadata is served from a different URL.
+* *Store Track Metadata?*: saves the tracks played in a separate database table for later use.
+* *Display Current Show* and *Show Meta Display*: show the current Show in the bar, with its hosts, producers, shift time, remaining time and/or description.
 
 
 
