@@ -462,8 +462,31 @@ function radio_player_station_data(station) {
 	return false;
 }
 
+/* --- hand the shared audio to a clicked player instance --- */
+/* 2.7.3: one-click switching: if another instance owns the shared amplitude audio */
+/* and is playing, pause it (marking it paused now, as its pause event would */
+/* resolve to the new instance) then hand the audio element to this instance */
+function radio_player_switch_instance(instance) {
+	var keys = Object.keys(radio_player_data.players);
+	for (var k = 0; k < keys.length; k++) {
+		if ((keys[k] == instance) || (radio_player_data.scripts[keys[k]] != 'amplitude')) {continue;}
+		var switch_player = radio_player_data.players[keys[k]];
+		var switch_audio = switch_player.getAudio();
+		var switch_owner = switch_audio.getAttribute('instance-id');
+		if ((switch_owner !== null) && (switch_owner != instance) && (switch_player.getPlayerState() == 'playing')) {
+			radio_player_pause_instance(switch_owner);
+			radio_player_event_handler('paused', {player:switch_player, script:'amplitude', instance:switch_owner});
+		}
+		break;
+	}
+	if (radio_player_data.scripts[instance] == 'amplitude') {
+		radio_player_data.players[instance].getAudio().setAttribute('instance-id', instance);
+	}
+}
+
 /* --- play source --- */
 function radio_player_play_source(instance) {
+	radio_player_switch_instance(instance);
 	container = jQuery('#radio_container_'+instance);
 	script = radio_player.settings.script;
 	if (typeof container.attr('data-script') != 'undefined') {script = container.attr('data-script');}
@@ -536,19 +559,7 @@ var radio_player_retry = {}
 function radio_player_play_instance(instance) {
 	if (typeof radio_player_autoresume == 'object') {radio_player_autoresume.cancelled = true;}
 	if (radio_player_is_playing(instance)) {return;}
-	/* 2.7.3: one-click switching: if another instance owns the shared amplitude audio */
-	/* and is playing, pause it (marking it paused now, as its pause event will */
-	/* resolve to this instance) then hand the audio element to this instance */
-	if (radio_player_data.scripts[instance] == 'amplitude') {
-		var switch_player = radio_player_data.players[instance];
-		var switch_audio = switch_player.getAudio();
-		var switch_owner = switch_audio.getAttribute('instance-id');
-		if ((switch_owner !== null) && (switch_owner != instance) && (switch_player.getPlayerState() == 'playing')) {
-			radio_player_pause_instance(switch_owner);
-			radio_player_event_handler('paused', {player:switch_player, script:'amplitude', instance:switch_owner});
-		}
-		switch_audio.setAttribute('instance-id', instance);
-	}
+	radio_player_switch_instance(instance);
 	radio_player.loading = true;
 	container = jQuery('#radio_container_'+instance);
 	if (container.hasClass('rewound') || container.hasClass('timeshift')) {
