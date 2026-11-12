@@ -1290,7 +1290,10 @@ function radio_station_progress_bar( $progress_percent, $undone_percent ) {
 // -------------------------
 // Enqueue Onboarding Styles
 // -------------------------
-add_action( 'admin_init', 'radio_station_enqueue_onboarding_styles' );
+// 2.7.2: hooked on admin_enqueue_scripts instead of admin_init — $current_screen
+// is not set yet at admin_init, so the 'dashboard' screen check below never
+// matched and the widget's styles (including the progress bars) never printed
+add_action( 'admin_enqueue_scripts', 'radio_station_enqueue_onboarding_styles' );
 function radio_station_enqueue_onboarding_styles() {
 	
 	global $current_screen;
