@@ -1040,6 +1040,14 @@ function radio_player_shortcode( $atts, $echo = false ) {
 		}
 	}
 
+	// --- station title, meta and image display is a Pro feature ---
+	// 2.7.3: free players show no station text (title, tagline, frequency, location, timezone) or image
+	if ( !defined( 'RADIO_STATION_PRO_FILE' ) && function_exists( 'radio_station_get_setting' ) ) {
+		$atts['title'] = 0;
+		$atts['meta'] = array();
+		$atts['image'] = 0;
+	}
+
 	// --- maybe debug shortcode attributes --
 	if ( RADIO_PLAYER_DEBUG ) {
 		echo '<span style="display:none;">Combined Radio Player Shortcode Attributes: ' . esc_html( print_r( $atts, true ) ) . '</span>' . "\n";
