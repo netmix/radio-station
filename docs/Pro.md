@@ -13,20 +13,25 @@ If you are interested in testing cutting edge features in development for this n
 Settings that are grayed out in the free version's Plugin Settings screen are Pro features. They are shown so you can see what is available, and they work once Radio Station Pro is installed and active. [**Upgrade to Radio Station Pro →**](https://radiostation.pro/pricing/)
 
 
-### Player Bar: Free vs Pro
+### Players: Free vs Pro
 
-The free version includes a [Basic Player Bar](./Player.md#basic-player-bar). Radio Station Pro replaces it with the full [Sitewide Bar Player](./Player.md#pro-sitewide-bar-player):
+The free version includes the Stream Player as a shortcode, widget and block, plus a [Basic Player Bar](./Player.md#basic-player-bar). Radio Station Pro unlocks the rest. For the full comparison and how the players behave together (switching, other tabs, the popup), see [Free and Pro at a Glance](./Player.md#free-and-pro-at-a-glance) and [How Players Work Together](./Player.md#how-players-work-together).
 
 | Feature | Free | Pro |
 |---|---|---|
-| Fixed Player Bar playing the Station Stream URL | ✓ | ✓ |
-| Top or bottom position | Bottom only | ✓ |
-| Bar height, fade in, text and background colors | | ✓ |
+| Player as Shortcode, Widget and Block | ✓ | ✓ |
+| One-click switching between players on the same page | ✓ | ✓ |
+| Station title, logo and meta in the player | | ✓ |
+| Outlined and hollow button shapes, colored themes, custom colors | | ✓ |
+| Turn off pausing players in other tabs (Single Player at Once) | | ✓ |
+| Fixed Player Bar playing the Station Stream URL | ✓ (bottom, play and volume only) | ✓ |
+| Top or bottom bar position, height, fade in, text and background colors | | ✓ |
 | Responsive mobile modes (arrows or expander) | | ✓ |
 | Continuous playback between pages (Teleporter) | | ✓ |
 | Current Show and show meta display | | ✓ |
 | Now Playing track display and animation | | ✓ |
-| Popup Player and Autoresume | | ✓ |
+| Popup Player window and Autoresume | | ✓ |
+| Spectrum Analyzer | | ✓ |
 
 
 ### Radio Station Plus
@@ -124,7 +129,7 @@ Please note that the following features are *not* available in Radio Station Plu
 
 [Playback AutoResume](./Player.md#pro-playback-autoresume)
 
-[Popup Player](./Player.md#pro-popup-player)
+[Popup Player Window](./Player.md#pro-popup-player-window)
 
 [Track Metadata](./Player.md#pro-track-metadata)
 

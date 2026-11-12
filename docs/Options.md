@@ -106,25 +106,29 @@ Use Transient Caching to improve Schedule calculation performance.
 
 ### Basic Defaults
 
-#### Player Title
+#### [Pro] Display Station Title
 Default: on. Key: player_title
-Display your Radio Station Title in Player by default.
+Display your Radio Station Title in Player by default. In the free version players show no station title.
 
-#### Player Image
+#### [Pro] Display Station Image
 Default: on. Key: player_image
-Display your Radio Station Image in Player by default.
+Display your Radio Station Image in Player by default. In the free version players show no station image.
+
+#### [Pro] Display Station Meta
+Default: frequency. Key: player_meta
+Display your Station Tagline, Frequency, Location and/or Timezone in Player by default. In the free version players show no station meta.
 
 #### Player Script
 Default: amplitude. Key: player_script
-Default audio script to use for Radio Streaming Player. Ampliture, Howler and Jplayer.
+Default audio script to use for Radio Streaming Player. Amplitude, Howler and jPlayer.
 
 #### Player Theme
 Default: light. Key: player_theme
 Default Player Controls theme style. Light or dark to match your theme.
 
 #### Player Buttons
-Default: rounded. Key: player_buttons
-Default Player Buttons shape style. Circular, rounded or square.
+Default: solid. Key: player_buttons
+Default Player Buttons shape style. The free version uses Solid Buttons (No Outline). [Pro] adds Solid Buttons (Transparent Outline) and Hollow Circular, Rounded and Square Buttons.
 
 #### Player Volume Controls
 Default: all. Key: player_volumes
@@ -158,17 +162,17 @@ Default Track Color for Player Volume Slider.
 Default: 77. Key: player_volume
 Initial volume for when the Player starts playback. 0-100
 
-#### Single Player
+#### [Pro] Single Player at Once
 Default: on. Key: player_single
-Stop any existing Player instances on the page or in other windows or tabs when a Player is started.
+Stop any existing Player instances on the page or in other windows or tabs when a Player is started. This stays on in the free version; Pro lets you turn it off. Players on the same page always switch with one click (see [How Players Work Together](./Player.md#how-players-work-together).)
 
 #### [Pro] Player Autoresume
-Default: on. Key: player_autoresume
-Attempt to resume playback if visitor was playing. Only triggered when the user first interacts with the page.
+Default: off. Key: player_autoresume
+On return to the site or page reload, ask the visitor in a small dialog whether to resume stream playback if they were playing the stream before.
 
 #### [Pro] Player Popup
 Default: off. Key: player_popup
-Add button to open Popup Player in separate window.
+Add button to open Popup Player in separate window. (See [Popup Player Window](./Player.md#pro-popup-player-window).)
 
 ### Player Bar
 
