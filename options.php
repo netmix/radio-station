@@ -481,6 +481,7 @@ function radio_station_plugin_options( $admin = false ) {
 
 		// --- [Player] Player Title ---
 		// TODO: option to display callsign instead ?
+		// 2.7.3: station information display is a Pro feature
 		'player_title' => array(
 			'type'    => 'checkbox',
 			'label'   => $admin ? __( 'Display Station Title', 'radio-station' ) : '',
@@ -489,9 +490,11 @@ function radio_station_plugin_options( $admin = false ) {
 			'helper'  => $admin ? __( 'Display your Radio Station Title in Player by default.', 'radio-station' ) : '',
 			'tab'     => 'player',
 			'section' => 'basic',
+			'pro'     => true,
 		),
 
 		// --- [Player] Player Image ---
+		// 2.7.3: station information display is a Pro feature
 		'player_image' => array(
 			'type'    => 'checkbox',
 			'label'   => $admin ? __( 'Display Station Image', 'radio-station' ) : '',
@@ -500,10 +503,12 @@ function radio_station_plugin_options( $admin = false ) {
 			'helper'  => $admin ? __( 'Display your Radio Station Image in Player by default.', 'radio-station' ) : '',
 			'tab'     => 'player',
 			'section' => 'basic',
+			'pro'     => true,
 		),
 
 		// --- [Player] Player Meta ---
 		// 2.5.18: added station meta display options
+		// 2.7.3: station information display is a Pro feature
 		'player_meta' => array(
 			'type'    => 'multicheck',
 			'label'   => $admin ? __( 'Display Station Meta', 'radio-station' ) : '',
@@ -517,6 +522,7 @@ function radio_station_plugin_options( $admin = false ) {
 			'helper'  => $admin ? __( 'Display your Radio Station Meta in Player by default.', 'radio-station' ) : '',
 			'tab'     => 'player',
 			'section' => 'basic',
+			'pro'     => true,
 		),
 
 		// --- [Player] Player Script ---
@@ -592,15 +598,12 @@ function radio_station_plugin_options( $admin = false ) {
 		'player_buttons' => array(
 			'type'    => 'select',
 			'label'   => $admin ? __( 'Default Player Buttons', 'radio-station' ) : '',
-			'default' => 'circular',
+			'default' => 'solid',
+			// 2.7.3: free version only has solid buttons (other shapes are added in Pro)
 			'options' => array(
 				'solid'     => $admin ? __( 'Solid Buttons (No Outline)', 'radio-station' ) : '',
-				'semisolid' => $admin ? __( 'Solid Buttons (Transparent Outline)', 'radio-station' ) : '',
-				'circular'  => $admin ? __( 'Hollow Circular Buttons', 'radio-station' ) : '',
-				'rounded'   => $admin ? __( 'Hollow Rounded Buttons', 'radio-station' ) : '',
-				'square'    => $admin ? __( 'Hollow Square Buttons', 'radio-station' ) : '',
 			),
-			'helper'  => $admin ? __( 'Default Player Buttons shape style.', 'radio-station' ) : '',
+			'helper'  => $admin ? __( 'Default Player Buttons shape style. (Outlined and hollow button shapes available in Pro.)', 'radio-station' ) : '',
 			'preview' => array(
 				'linked' => 'player_theme',
 			),
@@ -709,6 +712,7 @@ function radio_station_plugin_options( $admin = false ) {
 		),
 
 		// --- [Player] Single Player ---
+		// 2.7.3: single player at once is a Pro feature
 		'player_single' => array(
 			'type'    => 'checkbox',
 			'label'   => $admin ? __( 'Single Player at Once', 'radio-station' ) : '',
@@ -717,7 +721,7 @@ function radio_station_plugin_options( $admin = false ) {
 			'helper'  => $admin ? __( 'Stop any existing Player instances on the page or in other windows or tabs when a Player is started.', 'radio-station' ) : '',
 			'tab'     => 'player',
 			'section' => 'advanced',
-			'pro'     => false,
+			'pro'     => true,
 		),
 
 		// --- [Pro/Player] Player Autoresume ---
