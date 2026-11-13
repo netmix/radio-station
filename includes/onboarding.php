@@ -144,16 +144,14 @@ function radio_station_quicklinks_panel() {
 
 			if ( !defined( 'RADIO_STATION_PRO_FILE' ) ) {
 
-				// --- pro feature message ---
-				echo '<li class="progress-list-item">' . "\n";
-					echo esc_html( __( 'Schedule Editor, Episodes, Host and Producer Profiles available in Pro.', 'radio-station' ) );
-				echo '</li>' . "\n";
-
-				// --- upgrade link ---
+				// --- upgrade link, with a note on what Pro adds ---
+				// 2.7.2: one item (icon + link, note indented under the link) instead of a
+				// bare text line followed by a separate link
 				$upgrade_url = radio_station_get_upgrade_url();
-				echo '<li class="progress-list-item">' . "\n";
+				echo '<li class="progress-list-item rs-quicklinks-upsell">' . "\n";
 					echo '<span class="progress-icon progress-upgrade dashicons dashicons-unlock"></span>' . "\n";
 					echo '<a class="progress-quicklink" href="' . esc_url( $upgrade_url ) . '" title="' . esc_attr( __( 'Upgrade to Radio Station PRO', 'radio-station' ) ) . '">' . esc_html( __( 'Go PRO', 'radio-station' ) ) . '</a>' . "\n";
+					echo '<span class="rs-quicklinks-upsell-note">' . esc_html( __( 'Schedule Editor, Episodes, Hosts and Producers are available in Pro.', 'radio-station' ) ) . '</span>' . "\n";
 				echo '</li>' . "\n";
 			}
 

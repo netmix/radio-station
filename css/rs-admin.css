@@ -860,3 +860,23 @@
 	}
 
 }
+
+
+/* --- free version: "Go PRO" quick link with its note indented under the link --- */
+.toplevel_page_radio-station #pagewrap .rs-quicklinks-col .rs-quicklinks-upsell,
+.toplevel_page_radio-content #pagewrap .rs-quicklinks-col .rs-quicklinks-upsell,
+#radio-station-stats .rs-quicklinks-col .rs-quicklinks-upsell {
+	flex-wrap: wrap;
+	margin-top: 10px !important;
+}
+
+.toplevel_page_radio-station #pagewrap .rs-quicklinks-upsell-note,
+.toplevel_page_radio-content #pagewrap .rs-quicklinks-upsell-note,
+#radio-station-stats .rs-quicklinks-upsell-note {
+	flex: 0 0 auto;
+	width: calc(100% - 30px);
+	margin: 2px 0 0 30px;
+	font-size: 12px;
+	line-height: 1.4;
+	color: #555;
+}
