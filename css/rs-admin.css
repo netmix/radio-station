@@ -695,6 +695,17 @@
 }
 
 
+/* --- fixed gutter between the description text and the action link column ---
+   Without it a long description runs right up to the link (and the gap
+   changes row by row, which makes the links look ragged). Lower specificity
+   than the narrow-screen rules below, which reset padding when the link
+   moves under the text. */
+.toplevel_page_radio-station #pagewrap .progress-text,
+.toplevel_page_radio-content #pagewrap .progress-text,
+#radio-station-stats .progress-text {
+	padding-right: 20px !important;
+}
+
 /* ==============================================================
    Narrow screens: the action link (Add / Fix / Edit / Go Pro) moves
    below its row's description instead of sitting to the right of it.
