@@ -518,20 +518,14 @@ function radio_station_role_editor() {
 
 	// TODO: maybe add picture of role editing interface ?
 
-	// --- Pro upgrade link ---
+	// --- Pro upgrade button ---
 	// 2.5.0: add direct upgrade link
+	// 2.7.2: now a button; the second "Find out more about Radio Station Pro" link went to
+	// the same pricing page, so it was removed as redundant
 	$pricing_url = add_query_arg( 'page', 'radio-station-pricing', admin_url( 'admin.php' ) );
-	echo '<a href="' . esc_url( $pricing_url ) . '" target="_blank">';
-		echo esc_html( __( 'Upgrade Now', 'radio-station' ) );
+	echo '<a class="rs-upgrade-button" href="' . esc_url( $pricing_url ) . '" target="_blank">';
+		echo esc_html( __( 'Upgrade', 'radio-station' ) );
 	echo '</a>';
-	echo '&nbsp; | &nbsp;';
-
-	// --- Pro details/pricing link ---
-	$upgrade_url = radio_station_get_upgrade_url();
-	echo '<a href="' . esc_url( $upgrade_url ) . '" target="_blank">';
-		// echo esc_html( __( 'Upgrade to Radio Station Pro', 'radio-station' ) );
-		echo esc_html( __( 'Find out more about Radio Station Pro', 'radio-station' ) );
-	echo ' &rarr;</a>.';
 	echo '<br><br>';
 }
 

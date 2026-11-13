@@ -2790,16 +2790,10 @@ if ( !class_exists( 'radio_station_loader' ) ) {
 						// 1.2.2: change text from Available in Pro
 						$row .= __( 'Premium Feature.', 'radio-station' ) . '<br>';
 						if ( $upgrade_link ) {
-							$row .= '<a href="' . esc_url( $upgrade_link ) . '"' . $upgrade_target . '>' . esc_html( __( 'Upgrade Now', 'radio-station' ) ) . '</a>';
-						}
-						if ( $upgrade_link && isset( $pro_link ) ) {
-							$row .= ' | ';
-						}
-						if ( isset( $pro_link ) ) {
-							// 1.2.2: change text from Pro details
-							// 1.3.0: add hash link anchor for Pro feature options
-							$option_anchor = str_replace( '_', '-', $option['key'] );
-							$row .= '<a href="' . esc_url( $pro_link ) . '#' . esc_attr( $option_anchor ) . '"' . $pro_target . '>' . esc_html( __( 'Details', 'radio-station' ) ) . '</a>' . "\n";
+							// 2.7.2: Upgrade button instead of a text link. The separate "Details" link
+							// to the Pro pricing page was removed as redundant until feature detail
+							// pages exist to link to.
+							$row .= '<a class="rs-upgrade-button" href="' . esc_url( $upgrade_link ) . '"' . $upgrade_target . '>' . esc_html( __( 'Upgrade', 'radio-station' ) ) . '</a>';
 						}
 					} else {
 						$row .= esc_html( __( 'Coming soon in Pro version!', 'radio-station' ) );

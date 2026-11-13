@@ -330,3 +330,26 @@
 }
 
 
+
+
+/* --- "Upgrade" buttons on Pro teaser settings and the Role Assignments message --- */
+.toplevel_page_radio-station #pagewrap a.rs-upgrade-button,
+.toplevel_page_radio-station #pagewrap #wrapbox a.rs-upgrade-button {
+	display: inline-block;
+	margin-top: 4px;
+	padding: 3px 14px;
+	background: var(--rs-brand);
+	border-radius: 999px;
+	color: #fff !important;
+	font-size: 12px;
+	font-weight: 600;
+	line-height: 1.5;
+	text-decoration: none !important;
+}
+
+.toplevel_page_radio-station #pagewrap a.rs-upgrade-button:hover,
+.toplevel_page_radio-station #pagewrap #wrapbox a.rs-upgrade-button:hover {
+	background: var(--rs-brand-dark);
+	color: #fff !important;
+	text-decoration: none !important;
+}
