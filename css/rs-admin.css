@@ -466,9 +466,30 @@
 .toplevel_page_radio-station #pagewrap .rs-progress-bar-undone,
 .toplevel_page_radio-content #pagewrap .rs-progress-bar-undone,
 #radio-station-stats .rs-progress-bar-undone {
-	background-color: #ee0000 !important;
-	border-color: #b80000 !important;
+	/* not set: hatched dark grey, so it can't be mistaken for progress */
+	background: repeating-linear-gradient(45deg, #7a7a7a 0, #7a7a7a 4px, #a5a5a5 4px, #a5a5a5 8px) !important;
+	border-color: #666 !important;
 	border-left: 0 !important;
+}
+
+/* complete (100%): the bar turns green; a check mark follows the percentage */
+.toplevel_page_radio-station #pagewrap .rs-progress-bar-complete .rs-progress-bar-done,
+.toplevel_page_radio-content #pagewrap .rs-progress-bar-complete .rs-progress-bar-done,
+#radio-station-stats .rs-progress-bar-complete .rs-progress-bar-done {
+	background-color: #2e8540 !important;
+	border-color: #1f5f2d !important;
+	border-right: 1px solid #1f5f2d !important;
+}
+
+.toplevel_page_radio-station #pagewrap .rs-progress-bar-check,
+.toplevel_page_radio-content #pagewrap .rs-progress-bar-check,
+#radio-station-stats .rs-progress-bar-check {
+	flex: 0 0 auto;
+	margin-left: -4px;
+	color: #2e8540;
+	font-size: 15px;
+	font-weight: bold;
+	line-height: 1;
 }
 
 .toplevel_page_radio-station #pagewrap .rs-progress-bar-label,

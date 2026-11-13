@@ -1277,7 +1277,10 @@ function radio_station_progress_bar( $progress_percent, $undone_percent, $descri
 	$undone_width = max( 0, min( 100 - $progress_width, $undone_percent ) );
 	$remainder_width = 100 - $progress_width - $undone_width;
 
-	echo '<div class="rs-progress-bar-row">' . "\n";
+	// 100% = complete: the bar turns green and a check mark is added after the percentage
+	$complete = ( $progress_percent >= 100 );
+
+	echo '<div class="rs-progress-bar-row' . ( $complete ? ' rs-progress-bar-complete' : '' ) . '">' . "\n";
 		echo '<table class="progress-bar rs-progress-bar" cellpadding="0" cellspacing="0">' . "\n";
 			echo '<tr>' . "\n";
 				// zero-width segments are skipped so no stray border sliver shows (e.g. at 0%)
@@ -1293,6 +1296,11 @@ function radio_station_progress_bar( $progress_percent, $undone_percent, $descri
 			echo '</tr>' . "\n";
 		echo '</table>' . "\n";
 		echo '<span class="progress-bar-label rs-progress-bar-label">' . esc_html( $progress_percent ) . '%</span>' . "\n";
+		if ( $complete ) {
+			// check mark so completion is not shown by colour alone
+			echo '<span class="rs-progress-bar-check" aria-hidden="true">&#10003;</span>' . "\n";
+			echo '<span class="screen-reader-text">' . esc_html( __( 'Complete', 'radio-station' ) ) . '</span>' . "\n";
+		}
 	echo '</div>' . "\n";
 
 	// --- what this bar measures ---
