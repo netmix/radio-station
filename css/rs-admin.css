@@ -627,3 +627,69 @@
 #radio-station-stats .rs-progress-card .progress-table tr:not(:first-child) .progress-heading {
 	margin-top: 18px !important;
 }
+
+
+/* --- legend under each bar (hidden at 100%) --- */
+.toplevel_page_radio-station #pagewrap .rs-progress-bar-description,
+.toplevel_page_radio-content #pagewrap .rs-progress-bar-description,
+#radio-station-stats .rs-progress-bar-description {
+	margin-bottom: 6px;
+}
+
+.toplevel_page_radio-station #pagewrap .rs-progress-bar-description:last-child,
+.toplevel_page_radio-content #pagewrap .rs-progress-bar-description:last-child,
+#radio-station-stats .rs-progress-bar-description:last-child {
+	margin-bottom: 14px;
+}
+
+.toplevel_page_radio-station #pagewrap .rs-progress-bar-legend,
+.toplevel_page_radio-content #pagewrap .rs-progress-bar-legend,
+#radio-station-stats .rs-progress-bar-legend {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px 16px;
+	margin: 0 0 14px;
+	font-size: 12px;
+	color: #555;
+	text-align: left;
+}
+
+.toplevel_page_radio-station #pagewrap .rs-legend-item,
+.toplevel_page_radio-content #pagewrap .rs-legend-item,
+#radio-station-stats .rs-legend-item {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.toplevel_page_radio-station #pagewrap .rs-legend-swatch,
+.toplevel_page_radio-content #pagewrap .rs-legend-swatch,
+#radio-station-stats .rs-legend-swatch {
+	display: inline-block;
+	width: 22px;
+	height: 8px;
+	border: 1px solid #555;
+	border-radius: 2px;
+	box-sizing: border-box;
+}
+
+.toplevel_page_radio-station #pagewrap .rs-legend-done,
+.toplevel_page_radio-content #pagewrap .rs-legend-done,
+#radio-station-stats .rs-legend-done {
+	background: rgb(191, 0, 61);
+	border-color: rgb(152, 0, 49);
+}
+
+.toplevel_page_radio-station #pagewrap .rs-legend-partial,
+.toplevel_page_radio-content #pagewrap .rs-legend-partial,
+#radio-station-stats .rs-legend-partial {
+	background: #e8e8e8;
+	border-color: #ccc;
+}
+
+.toplevel_page_radio-station #pagewrap .rs-legend-notset,
+.toplevel_page_radio-content #pagewrap .rs-legend-notset,
+#radio-station-stats .rs-legend-notset {
+	background: repeating-linear-gradient(45deg, #7a7a7a 0, #7a7a7a 4px, #a5a5a5 4px, #a5a5a5 8px);
+	border-color: #666;
+}

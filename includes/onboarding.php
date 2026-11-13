@@ -1307,6 +1307,15 @@ function radio_station_progress_bar( $progress_percent, $undone_percent, $descri
 	if ( '' != $description ) {
 		echo '<div class="rs-progress-bar-description">' . esc_html( $description ) . '</div>' . "\n";
 	}
+
+	// --- legend (hidden once the bar is complete) ---
+	if ( !$complete ) {
+		echo '<div class="rs-progress-bar-legend">' . "\n";
+			echo '<span class="rs-legend-item"><span class="rs-legend-swatch rs-legend-done"></span>' . esc_html( __( 'Done', 'radio-station' ) ) . '</span>' . "\n";
+			echo '<span class="rs-legend-item"><span class="rs-legend-swatch rs-legend-partial"></span>' . esc_html( __( 'Partly done', 'radio-station' ) ) . '</span>' . "\n";
+			echo '<span class="rs-legend-item"><span class="rs-legend-swatch rs-legend-notset"></span>' . esc_html( __( 'Not set', 'radio-station' ) ) . '</span>' . "\n";
+		echo '</div>' . "\n";
+	}
 }
 
 // -------------------------
