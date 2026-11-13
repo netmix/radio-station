@@ -383,7 +383,9 @@ function radio_station_statistics_panel() {
 				foreach ( $shifts as $time => $shift ) {
 					$start_time = strtotime( $shift['date'] . ' ' . $shift['start'] );
 					$end_time = strtotime( $shift['date'] . ' ' . $shift['end'] );
-					if ( $start_time > $end_time ) {
+					// 2.7.2: >= (not >) so a 12:00am to 12:00am shift counts as 24 hours;
+					// start == end previously gave a length of 0, so an all-day schedule read 0% coverage
+					if ( $start_time >= $end_time ) {
 						$end_time = $end_time + 86400;
 					}
 					$shift_length = $end_time - $start_time;
