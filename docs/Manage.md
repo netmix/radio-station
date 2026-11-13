@@ -40,6 +40,8 @@ Each section has a progress bar, with a percentage to the right of it and a shor
 - **Light grey** is the share that is partly done. A check that needs attention but is not missing entirely (an orange warning) counts as half done, so the other half stays light grey.
 - **Hatched dark grey** is the share that is not set up at all (a red cross).
 
+A small legend under each bar (Done, Partly done, Not set) shows which colour is which. It is hidden once the bar is complete.
+
 When a bar reaches **100%** it turns **green** and a **check mark** appears after the percentage, so you can see at a glance that the section is complete. (The check mark is there as well as the colour so it does not rely on colour alone.)
 
 For example, a Settings bar that reads 50% with no light grey means half your checks are complete and the other half are not set up yet. The percentage is the "done" share only.
