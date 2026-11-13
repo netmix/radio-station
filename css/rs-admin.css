@@ -962,3 +962,46 @@
 	padding-right: 4px;
 }
 
+
+
+/* --- Go PRO upsell pill: shaded, with an Upgrade button on the right --- */
+.toplevel_page_radio-station #pagewrap .rs-quicklinks-col .rs-quicklinks-pill.rs-quicklinks-pill-upsell,
+.toplevel_page_radio-content #pagewrap .rs-quicklinks-col .rs-quicklinks-pill.rs-quicklinks-pill-upsell,
+#radio-station-stats .rs-quicklinks-col .rs-quicklinks-pill.rs-quicklinks-pill-upsell {
+	padding: 3px 4px 3px 12px;
+	background: rgb(253, 240, 244);
+	border-color: rgb(245, 194, 203);
+}
+
+.toplevel_page_radio-station #pagewrap .rs-quicklinks-col .rs-quicklinks-pill-label,
+.toplevel_page_radio-content #pagewrap .rs-quicklinks-col .rs-quicklinks-pill-label,
+#radio-station-stats .rs-quicklinks-col .rs-quicklinks-pill-label {
+	flex: 1 1 auto;
+	min-width: 0;
+	font-weight: 500;
+	color: #1d1d1d;
+	white-space: nowrap;
+}
+
+.toplevel_page_radio-station #pagewrap .rs-quicklinks-col .rs-quicklinks-pill a.rs-quicklinks-upgrade-btn,
+.toplevel_page_radio-content #pagewrap .rs-quicklinks-col .rs-quicklinks-pill a.rs-quicklinks-upgrade-btn,
+#radio-station-stats .rs-quicklinks-col .rs-quicklinks-pill a.rs-quicklinks-upgrade-btn {
+	flex: 0 0 auto;
+	padding: 3px 14px;
+	background: rgb(191, 0, 61);
+	border-radius: 999px;
+	color: #fff !important;
+	font-size: 12px;
+	font-weight: 600;
+	line-height: 1.5;
+	text-decoration: none;
+	overflow: visible;
+}
+
+.toplevel_page_radio-station #pagewrap .rs-quicklinks-col .rs-quicklinks-pill a.rs-quicklinks-upgrade-btn:hover,
+.toplevel_page_radio-content #pagewrap .rs-quicklinks-col .rs-quicklinks-pill a.rs-quicklinks-upgrade-btn:hover,
+#radio-station-stats .rs-quicklinks-col .rs-quicklinks-pill a.rs-quicklinks-upgrade-btn:hover {
+	background: rgb(152, 0, 49);
+	color: #fff !important;
+}
+

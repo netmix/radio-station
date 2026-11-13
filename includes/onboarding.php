@@ -149,9 +149,11 @@ function radio_station_quicklinks_panel() {
 				// bare text line followed by a separate link
 				$upgrade_url = radio_station_get_upgrade_url();
 				echo '<li class="progress-list-item rs-quicklinks-upsell">' . "\n";
-					echo '<span class="rs-quicklinks-pill">' . "\n";
+					// shaded pill: icon, "Go PRO" label, and an Upgrade button on the right
+					echo '<span class="rs-quicklinks-pill rs-quicklinks-pill-upsell">' . "\n";
 						echo '<span class="progress-icon progress-upgrade dashicons dashicons-unlock"></span>' . "\n";
-						echo '<a class="progress-quicklink" href="' . esc_url( $upgrade_url ) . '" title="' . esc_attr( __( 'Upgrade to Radio Station PRO', 'radio-station' ) ) . '">' . esc_html( __( 'Go PRO', 'radio-station' ) ) . '</a>' . "\n";
+						echo '<span class="rs-quicklinks-pill-label">' . esc_html( __( 'Go PRO', 'radio-station' ) ) . '</span>' . "\n";
+						echo '<a class="rs-quicklinks-upgrade-btn" href="' . esc_url( $upgrade_url ) . '" title="' . esc_attr( __( 'Upgrade to Radio Station PRO', 'radio-station' ) ) . '">' . esc_html( __( 'Upgrade', 'radio-station' ) ) . '</a>' . "\n";
 					echo '</span>' . "\n";
 					echo '<span class="rs-quicklinks-upsell-note">' . esc_html( __( 'Schedule Editor, Episodes, Hosts and Producers are available in Pro.', 'radio-station' ) ) . '</span>' . "\n";
 				echo '</li>' . "\n";
