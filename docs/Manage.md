@@ -71,7 +71,7 @@ The Station Schedule line reads, for example, "7 Shifts and 0 Specials with 0% S
 
 - **Shifts** is the number of Show shifts that are not disabled.
 - **Specials** is the number of Schedule Override dates that are not disabled, including recurring ones.
-- **Schedule coverage** (and the progress bar) is the share of the current week that has a Show scheduled. It adds up the length of every scheduled block in this week's schedule and divides by the 168 hours in a week. Overlapping blocks are each counted, so heavily overlapping shifts can push this figure past 100%.
+- **Schedule coverage** (and the progress bar) is the share of the current week that has a Show scheduled. It adds up the length of every scheduled block in this week's schedule and divides by the 168 hours in a week. A shift entered as 12:00am to 12:00am counts as a full 24 hours. Overlapping blocks are each counted, so heavily overlapping shifts can push this figure past 100%.
 
 The icon is a red cross if there are no shifts or no coverage, a green tick at 100% coverage, and an orange exclamation in between.
 
