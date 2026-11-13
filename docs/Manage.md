@@ -93,7 +93,7 @@ The Station Content bar is the average completion of five checks. Each check is 
 
 For the first four checks the credit is the percentage shown, so 50% coverage gives half a point.
 
-The **Episodes** line shows how many Episodes are published and for how many Shows. It is for information and is not counted in the bar. `[Pro]` On the free version this line shows **Go Pro** instead of an **Add** link.
+The **Episodes** line shows how many Episodes are published and for how many Shows. It is for information and is not counted in the bar. `[Pro]` On the free version this line shows an **Upgrade** button instead of an **Add** link.
 
 ### Station Settings
 
