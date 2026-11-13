@@ -330,3 +330,706 @@
 }
 
 
+
+
+/* ==============================================================
+   Content Overview Dashboard — Onboarding Panels (2.7.2)
+   ============================================================== */
+/* Styles the .progress-* markup from includes/onboarding.php
+   (quicklinks / statistics / settings panels and the progress bars).
+
+   Three render contexts:
+   - .toplevel_page_radio-content  the standalone Content Overview page (its own
+     top-level menu, so NOT .toplevel_page_radio-station) — full card layout
+   - .toplevel_page_radio-station  the Settings page body class, kept so the same
+     rules apply if these panels are ever shown there
+   - #radio-station-stats          the WP Dashboard widget (metabox ID) — lighter,
+     no card chrome, narrower type
+   Custom properties (--rs-brand, ...) are only defined under
+   .toplevel_page_radio-station #pagewrap, so literal brand values are used here.
+
+   !important is used because the legacy inline CSS from
+   radio_station_onboarding_styles() (unprefixed .progress-*) prints right after
+   this file at equal specificity. */
+
+/* --- cards --- */
+.toplevel_page_radio-station #pagewrap .rs-progress-card,
+.toplevel_page_radio-content #pagewrap .rs-progress-card {
+	background: #fff;
+	border: 1px solid #e0e0e0;
+	border-radius: 10px;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.07);
+	box-sizing: border-box;
+	padding: 18px 24px;
+	margin-bottom: 16px;
+}
+
+#radio-station-stats .rs-progress-card {
+	margin-bottom: 14px;
+}
+
+/* --- section headings: red left-border accent --- */
+.toplevel_page_radio-station #pagewrap .rs-progress-card .progress-heading,
+.toplevel_page_radio-content #pagewrap .rs-progress-card .progress-heading,
+#radio-station-stats .rs-progress-card .progress-heading {
+	text-align: left !important;
+	font-variant: normal !important;
+	letter-spacing: normal !important;
+	font-size: 16px !important;
+	font-weight: 600 !important;
+	color: #1d1d1d !important;
+	border-left: 3px solid rgb(191, 0, 61);
+	padding: 0 0 0 10px !important;
+	margin: 0 0 12px !important;
+	max-width: none !important;
+}
+
+#radio-station-stats .rs-progress-card .progress-heading {
+	font-size: 13px !important;
+	padding-left: 8px !important;
+	margin: 4px 0 8px !important;
+}
+
+/* --- status icons: green good, brand red issue, orange warning --- */
+.toplevel_page_radio-station #pagewrap .progress-icon.progress-tick,
+.toplevel_page_radio-content #pagewrap .progress-icon.progress-tick,
+#radio-station-stats .progress-icon.progress-tick {
+	color: #2e8540 !important;
+}
+
+.toplevel_page_radio-station #pagewrap .progress-icon.progress-cross,
+.toplevel_page_radio-content #pagewrap .progress-icon.progress-cross,
+#radio-station-stats .progress-icon.progress-cross {
+	color: rgb(191, 0, 61) !important;
+}
+
+.toplevel_page_radio-station #pagewrap .progress-icon.progress-alert,
+.toplevel_page_radio-content #pagewrap .progress-icon.progress-alert,
+#radio-station-stats .progress-icon.progress-alert {
+	color: #b8630a !important;
+}
+
+/* --- progress bars: fixed-width bar + % label in a flex row, description below --- */
+.toplevel_page_radio-station #pagewrap .rs-progress-bar-row,
+.toplevel_page_radio-content #pagewrap .rs-progress-bar-row,
+#radio-station-stats .rs-progress-bar-row {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin: 4px 0 4px;
+}
+
+.toplevel_page_radio-station #pagewrap .rs-progress-bar,
+.toplevel_page_radio-content #pagewrap .rs-progress-bar,
+#radio-station-stats .rs-progress-bar {
+	/* scales with its container (percentage segments), capped at 395px, so it
+	   never overflows a narrow Dashboard widget */
+	width: 100% !important;
+	max-width: 395px !important;
+	flex: 1 1 auto;
+	min-width: 0;
+	table-layout: fixed;
+	margin: 0 !important;
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.toplevel_page_radio-station #pagewrap .rs-progress-bar-done,
+.toplevel_page_radio-content #pagewrap .rs-progress-bar-done,
+#radio-station-stats .rs-progress-bar-done,
+.toplevel_page_radio-station #pagewrap .rs-progress-bar-remainder,
+.toplevel_page_radio-content #pagewrap .rs-progress-bar-remainder,
+#radio-station-stats .rs-progress-bar-remainder,
+.toplevel_page_radio-station #pagewrap .rs-progress-bar-undone,
+.toplevel_page_radio-content #pagewrap .rs-progress-bar-undone,
+#radio-station-stats .rs-progress-bar-undone {
+	height: 7px !important;
+	padding: 0 !important;
+	border: 1px solid #555 !important;
+}
+
+.toplevel_page_radio-station #pagewrap .rs-progress-bar-done,
+.toplevel_page_radio-content #pagewrap .rs-progress-bar-done,
+#radio-station-stats .rs-progress-bar-done {
+	background-color: rgb(191, 0, 61) !important;
+	border-color: rgb(152, 0, 49) !important;
+	border-right: 0 !important;
+}
+
+.toplevel_page_radio-station #pagewrap .rs-progress-bar-remainder,
+.toplevel_page_radio-content #pagewrap .rs-progress-bar-remainder,
+#radio-station-stats .rs-progress-bar-remainder {
+	background-color: #e8e8e8 !important;
+	border-color: #ccc !important;
+}
+
+.toplevel_page_radio-station #pagewrap .rs-progress-bar-undone,
+.toplevel_page_radio-content #pagewrap .rs-progress-bar-undone,
+#radio-station-stats .rs-progress-bar-undone {
+	/* not set: hatched dark grey, so it can't be mistaken for progress */
+	background: repeating-linear-gradient(45deg, #7a7a7a 0, #7a7a7a 4px, #a5a5a5 4px, #a5a5a5 8px) !important;
+	border-color: #666 !important;
+	border-left: 0 !important;
+}
+
+/* complete (100%): the bar turns green; a check mark follows the percentage */
+.toplevel_page_radio-station #pagewrap .rs-progress-bar-complete .rs-progress-bar-done,
+.toplevel_page_radio-content #pagewrap .rs-progress-bar-complete .rs-progress-bar-done,
+#radio-station-stats .rs-progress-bar-complete .rs-progress-bar-done {
+	background-color: #2e8540 !important;
+	border-color: #1f5f2d !important;
+	border-right: 1px solid #1f5f2d !important;
+}
+
+.toplevel_page_radio-station #pagewrap .rs-progress-bar-check,
+.toplevel_page_radio-content #pagewrap .rs-progress-bar-check,
+#radio-station-stats .rs-progress-bar-check {
+	flex: 0 0 auto;
+	margin-left: -4px;
+	color: #2e8540;
+	font-size: 15px;
+	font-weight: bold;
+	line-height: 1;
+}
+
+.toplevel_page_radio-station #pagewrap .rs-progress-bar-label,
+.toplevel_page_radio-content #pagewrap .rs-progress-bar-label,
+#radio-station-stats .rs-progress-bar-label {
+	flex: 0 0 auto;
+	color: #1d1d1d;
+	font-size: 13px;
+	font-weight: bold;
+	white-space: nowrap;
+	margin: 0 !important;
+	padding: 0 !important;
+	text-indent: 0 !important;
+	line-height: normal !important;
+}
+
+.toplevel_page_radio-station #pagewrap .rs-progress-bar-description,
+.toplevel_page_radio-content #pagewrap .rs-progress-bar-description,
+#radio-station-stats .rs-progress-bar-description {
+	margin: 0 0 14px;
+	font-size: 12px;
+	line-height: 1.5;
+	color: #555;
+	text-align: left !important;
+}
+
+/* --- Quick Links: two columns, labels start at the same offset --- */
+.toplevel_page_radio-station #pagewrap .rs-quicklinks-columns,
+.toplevel_page_radio-content #pagewrap .rs-quicklinks-columns,
+#radio-station-stats .rs-quicklinks-columns {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px 48px;
+	margin-bottom: 7px;
+}
+
+.toplevel_page_radio-station #pagewrap .rs-quicklinks-col,
+.toplevel_page_radio-content #pagewrap .rs-quicklinks-col,
+#radio-station-stats .rs-quicklinks-col {
+	display: block !important;
+	flex: 1 1 180px;
+	min-width: 160px;
+	margin-bottom: 0 !important;
+}
+
+.toplevel_page_radio-station #pagewrap .rs-quicklinks-col .progress-list-item,
+.toplevel_page_radio-content #pagewrap .rs-quicklinks-col .progress-list-item,
+#radio-station-stats .rs-quicklinks-col .progress-list-item {
+	display: flex !important;
+	align-items: center;
+	margin: 0 0 6px !important;
+}
+
+.toplevel_page_radio-station #pagewrap .rs-quicklinks-col .progress-list-item .progress-icon,
+.toplevel_page_radio-content #pagewrap .rs-quicklinks-col .progress-list-item .progress-icon,
+#radio-station-stats .rs-quicklinks-col .progress-list-item .progress-icon {
+	flex: 0 0 22px !important;
+	width: 22px !important;
+	margin-right: 8px;
+	text-align: center;
+}
+
+.toplevel_page_radio-station #pagewrap .rs-quicklinks-col .progress-list-item a,
+.toplevel_page_radio-content #pagewrap .rs-quicklinks-col .progress-list-item a,
+#radio-station-stats .rs-quicklinks-col .progress-list-item a {
+	flex: 1 1 auto;
+	color: #1d1d1d;
+}
+
+.toplevel_page_radio-station #pagewrap .rs-quicklinks-col .progress-list-item a:hover,
+.toplevel_page_radio-content #pagewrap .rs-quicklinks-col .progress-list-item a:hover,
+#radio-station-stats .rs-quicklinks-col .progress-list-item a:hover {
+	color: rgb(191, 0, 61);
+}
+
+/* --- row action column (Edit Schedule / Add / Fix / Edit): label only --- */
+/* Explicit widths on the icon and action cells keep both tables' action
+   columns at the same x position (table-layout:fixed was tried and does not
+   work here: it reads widths from the first row, which is a colspan heading). */
+.toplevel_page_radio-station #pagewrap .progress-table,
+.toplevel_page_radio-content #pagewrap .progress-table,
+#radio-station-stats .progress-table {
+	width: 100% !important;
+}
+
+.toplevel_page_radio-station #pagewrap .progress-table tr.progress-line > td:first-child,
+.toplevel_page_radio-content #pagewrap .progress-table tr.progress-line > td:first-child {
+	width: 40px !important;
+}
+
+#radio-station-stats .progress-table tr.progress-line > td:first-child {
+	width: 34px !important;
+}
+
+.toplevel_page_radio-station #pagewrap .progress-table tr.progress-line > td:last-child,
+.toplevel_page_radio-content #pagewrap .progress-table tr.progress-line > td:last-child {
+	width: 100px !important;
+	text-align: left !important;
+	white-space: nowrap;
+}
+
+#radio-station-stats .progress-table tr.progress-line > td:last-child {
+	width: 80px !important;
+	text-align: left !important;
+	white-space: nowrap;
+}
+
+.toplevel_page_radio-station #pagewrap .progress-label-link,
+.toplevel_page_radio-content #pagewrap .progress-label-link,
+#radio-station-stats .progress-label-link {
+	display: inline-block !important;
+	width: auto !important;
+	margin: 0 !important;
+	text-align: left !important;
+	white-space: nowrap;
+	font-size: 13px;
+}
+
+.toplevel_page_radio-station #pagewrap .progress-label,
+.toplevel_page_radio-content #pagewrap .progress-label,
+#radio-station-stats .progress-label {
+	margin-top: 0 !important;
+	white-space: nowrap;
+	font-size: 13px !important;
+}
+
+/* --- space above a section heading that follows another section in the same table
+   (Station Content under Station Schedule). The bar used to sit between them
+   and supplied this gap before it moved up under its own heading. --- */
+.toplevel_page_radio-station #pagewrap .rs-progress-card .progress-table tr:not(:first-child) .progress-heading,
+.toplevel_page_radio-content #pagewrap .rs-progress-card .progress-table tr:not(:first-child) .progress-heading {
+	margin-top: 24px !important;
+}
+
+#radio-station-stats .rs-progress-card .progress-table tr:not(:first-child) .progress-heading {
+	margin-top: 18px !important;
+}
+
+
+/* --- legend under each bar (hidden at 100%) --- */
+.toplevel_page_radio-station #pagewrap .rs-progress-bar-description,
+.toplevel_page_radio-content #pagewrap .rs-progress-bar-description,
+#radio-station-stats .rs-progress-bar-description {
+	margin-bottom: 6px;
+}
+
+.toplevel_page_radio-station #pagewrap .rs-progress-bar-description:last-child,
+.toplevel_page_radio-content #pagewrap .rs-progress-bar-description:last-child,
+#radio-station-stats .rs-progress-bar-description:last-child {
+	margin-bottom: 14px;
+}
+
+.toplevel_page_radio-station #pagewrap .rs-progress-bar-legend,
+.toplevel_page_radio-content #pagewrap .rs-progress-bar-legend,
+#radio-station-stats .rs-progress-bar-legend {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px 16px;
+	margin: 0 0 14px;
+	font-size: 12px;
+	color: #555;
+	text-align: left;
+}
+
+.toplevel_page_radio-station #pagewrap .rs-legend-item,
+.toplevel_page_radio-content #pagewrap .rs-legend-item,
+#radio-station-stats .rs-legend-item {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.toplevel_page_radio-station #pagewrap .rs-legend-swatch,
+.toplevel_page_radio-content #pagewrap .rs-legend-swatch,
+#radio-station-stats .rs-legend-swatch {
+	display: inline-block;
+	width: 22px;
+	height: 8px;
+	border: 1px solid #555;
+	border-radius: 2px;
+	box-sizing: border-box;
+}
+
+.toplevel_page_radio-station #pagewrap .rs-legend-done,
+.toplevel_page_radio-content #pagewrap .rs-legend-done,
+#radio-station-stats .rs-legend-done {
+	background: rgb(191, 0, 61);
+	border-color: rgb(152, 0, 49);
+}
+
+.toplevel_page_radio-station #pagewrap .rs-legend-partial,
+.toplevel_page_radio-content #pagewrap .rs-legend-partial,
+#radio-station-stats .rs-legend-partial {
+	background: #e8e8e8;
+	border-color: #ccc;
+}
+
+.toplevel_page_radio-station #pagewrap .rs-legend-notset,
+.toplevel_page_radio-content #pagewrap .rs-legend-notset,
+#radio-station-stats .rs-legend-notset {
+	background: repeating-linear-gradient(45deg, #7a7a7a 0, #7a7a7a 4px, #a5a5a5 4px, #a5a5a5 8px);
+	border-color: #666;
+}
+
+
+/* --- fixed gutter between the description text and the action link column ---
+   Without it a long description runs right up to the link (and the gap
+   changes row by row, which makes the links look ragged). Lower specificity
+   than the narrow-screen rules below, which reset padding when the link
+   moves under the text. */
+.toplevel_page_radio-station #pagewrap .progress-text,
+.toplevel_page_radio-content #pagewrap .progress-text,
+#radio-station-stats .progress-text {
+	padding-right: 20px !important;
+}
+
+/* ==============================================================
+   Narrow screens: the action link (Add / Fix / Edit / Go Pro) moves
+   below its row's description instead of sitting to the right of it.
+   - @media: phones / small tablets (WP admin's 782px breakpoint)
+   - @container: a narrow card, e.g. the Dashboard widget in a 3-4
+     column Dashboard layout, 380px or narrower (browsers without container queries just
+     ignore that block and keep the side-by-side layout)
+   ============================================================== */
+.rs-progress-card {
+	container-type: inline-size;
+	container-name: rs-card;
+}
+
+@media screen and (max-width: 782px) {
+	.toplevel_page_radio-station #pagewrap .progress-table,
+	.toplevel_page_radio-content #pagewrap .progress-table,
+	#radio-station-stats .progress-table {
+		display: block !important;
+		width: 100% !important;
+	}
+
+	.toplevel_page_radio-station #pagewrap .progress-table > tbody,
+	.toplevel_page_radio-content #pagewrap .progress-table > tbody,
+	#radio-station-stats .progress-table > tbody {
+		display: block !important;
+		width: 100% !important;
+	}
+
+	.toplevel_page_radio-station #pagewrap .progress-table > tbody > tr:not(.progress-line),
+	.toplevel_page_radio-content #pagewrap .progress-table > tbody > tr:not(.progress-line),
+	#radio-station-stats .progress-table > tbody > tr:not(.progress-line) {
+		display: block !important;
+	}
+
+	.toplevel_page_radio-station #pagewrap .progress-table > tbody > tr:not(.progress-line) > td,
+	.toplevel_page_radio-content #pagewrap .progress-table > tbody > tr:not(.progress-line) > td,
+	#radio-station-stats .progress-table > tbody > tr:not(.progress-line) > td {
+		display: block !important;
+		width: auto !important;
+		padding: 0 !important;
+	}
+
+	.toplevel_page_radio-station #pagewrap .progress-table > tbody > tr.progress-line,
+	.toplevel_page_radio-content #pagewrap .progress-table > tbody > tr.progress-line,
+	#radio-station-stats .progress-table > tbody > tr.progress-line {
+		display: grid !important;
+		grid-template-columns: 34px minmax(0, 1fr);
+		column-gap: 8px;
+		align-items: start;
+		margin-bottom: 10px;
+	}
+
+	.toplevel_page_radio-station #pagewrap .progress-table > tbody > tr.progress-line > td,
+	.toplevel_page_radio-content #pagewrap .progress-table > tbody > tr.progress-line > td,
+	#radio-station-stats .progress-table > tbody > tr.progress-line > td {
+		display: block !important;
+		width: auto !important;
+		padding: 0 !important;
+	}
+
+	.toplevel_page_radio-station #pagewrap .progress-table > tbody > tr.progress-line > td:first-child,
+	.toplevel_page_radio-content #pagewrap .progress-table > tbody > tr.progress-line > td:first-child,
+	#radio-station-stats .progress-table > tbody > tr.progress-line > td:first-child {
+		grid-column: 1;
+		grid-row: 1 / span 2;
+	}
+
+	.toplevel_page_radio-station #pagewrap .progress-table > tbody > tr.progress-line > td.progress-text,
+	.toplevel_page_radio-content #pagewrap .progress-table > tbody > tr.progress-line > td.progress-text,
+	#radio-station-stats .progress-table > tbody > tr.progress-line > td.progress-text {
+		grid-column: 2;
+		grid-row: 1;
+	}
+
+	.toplevel_page_radio-station #pagewrap .progress-table > tbody > tr.progress-line > td:last-child,
+	.toplevel_page_radio-content #pagewrap .progress-table > tbody > tr.progress-line > td:last-child,
+	#radio-station-stats .progress-table > tbody > tr.progress-line > td:last-child {
+		grid-column: 2;
+		grid-row: 2;
+		margin-top: 2px;
+	}
+
+}
+
+@container rs-card (max-width: 380px) {
+	.toplevel_page_radio-station #pagewrap .progress-table,
+	.toplevel_page_radio-content #pagewrap .progress-table,
+	#radio-station-stats .progress-table {
+		display: block !important;
+		width: 100% !important;
+	}
+
+	.toplevel_page_radio-station #pagewrap .progress-table > tbody,
+	.toplevel_page_radio-content #pagewrap .progress-table > tbody,
+	#radio-station-stats .progress-table > tbody {
+		display: block !important;
+		width: 100% !important;
+	}
+
+	.toplevel_page_radio-station #pagewrap .progress-table > tbody > tr:not(.progress-line),
+	.toplevel_page_radio-content #pagewrap .progress-table > tbody > tr:not(.progress-line),
+	#radio-station-stats .progress-table > tbody > tr:not(.progress-line) {
+		display: block !important;
+	}
+
+	.toplevel_page_radio-station #pagewrap .progress-table > tbody > tr:not(.progress-line) > td,
+	.toplevel_page_radio-content #pagewrap .progress-table > tbody > tr:not(.progress-line) > td,
+	#radio-station-stats .progress-table > tbody > tr:not(.progress-line) > td {
+		display: block !important;
+		width: auto !important;
+		padding: 0 !important;
+	}
+
+	.toplevel_page_radio-station #pagewrap .progress-table > tbody > tr.progress-line,
+	.toplevel_page_radio-content #pagewrap .progress-table > tbody > tr.progress-line,
+	#radio-station-stats .progress-table > tbody > tr.progress-line {
+		display: grid !important;
+		grid-template-columns: 34px minmax(0, 1fr);
+		column-gap: 8px;
+		align-items: start;
+		margin-bottom: 10px;
+	}
+
+	.toplevel_page_radio-station #pagewrap .progress-table > tbody > tr.progress-line > td,
+	.toplevel_page_radio-content #pagewrap .progress-table > tbody > tr.progress-line > td,
+	#radio-station-stats .progress-table > tbody > tr.progress-line > td {
+		display: block !important;
+		width: auto !important;
+		padding: 0 !important;
+	}
+
+	.toplevel_page_radio-station #pagewrap .progress-table > tbody > tr.progress-line > td:first-child,
+	.toplevel_page_radio-content #pagewrap .progress-table > tbody > tr.progress-line > td:first-child,
+	#radio-station-stats .progress-table > tbody > tr.progress-line > td:first-child {
+		grid-column: 1;
+		grid-row: 1 / span 2;
+	}
+
+	.toplevel_page_radio-station #pagewrap .progress-table > tbody > tr.progress-line > td.progress-text,
+	.toplevel_page_radio-content #pagewrap .progress-table > tbody > tr.progress-line > td.progress-text,
+	#radio-station-stats .progress-table > tbody > tr.progress-line > td.progress-text {
+		grid-column: 2;
+		grid-row: 1;
+	}
+
+	.toplevel_page_radio-station #pagewrap .progress-table > tbody > tr.progress-line > td:last-child,
+	.toplevel_page_radio-content #pagewrap .progress-table > tbody > tr.progress-line > td:last-child,
+	#radio-station-stats .progress-table > tbody > tr.progress-line > td:last-child {
+		grid-column: 2;
+		grid-row: 2;
+		margin-top: 2px;
+	}
+
+}
+
+
+/* --- free version: "Go PRO" quick link with its note indented under the link --- */
+.toplevel_page_radio-station #pagewrap .rs-quicklinks-col .rs-quicklinks-upsell,
+.toplevel_page_radio-content #pagewrap .rs-quicklinks-col .rs-quicklinks-upsell,
+#radio-station-stats .rs-quicklinks-col .rs-quicklinks-upsell {
+	flex-wrap: wrap;
+	margin-top: 10px !important;
+}
+
+.toplevel_page_radio-station #pagewrap .rs-quicklinks-upsell-note,
+.toplevel_page_radio-content #pagewrap .rs-quicklinks-upsell-note,
+#radio-station-stats .rs-quicklinks-upsell-note {
+	flex: 0 0 auto;
+	width: calc(100% - 30px);
+	margin: 2px 0 0 30px;
+	font-size: 12px;
+	line-height: 1.4;
+	color: #555;
+}
+
+
+/* ==============================================================
+   Quick Links as pills (matches the Radio Station PRO dashboard
+   styling): white pill, thin border, brand-colour 16px icon, soft
+   brand hover. The Go PRO upsell keeps its note outside the pill.
+   ============================================================== */
+.toplevel_page_radio-station #pagewrap .rs-quicklinks-col .progress-list-item:not(.rs-quicklinks-upsell),
+.toplevel_page_radio-content #pagewrap .rs-quicklinks-col .progress-list-item:not(.rs-quicklinks-upsell),
+#radio-station-stats .rs-quicklinks-col .progress-list-item:not(.rs-quicklinks-upsell),
+.toplevel_page_radio-station #pagewrap .rs-quicklinks-col .rs-quicklinks-pill,
+.toplevel_page_radio-content #pagewrap .rs-quicklinks-col .rs-quicklinks-pill,
+#radio-station-stats .rs-quicklinks-col .rs-quicklinks-pill {
+	display: flex !important;
+	align-items: center;
+	gap: 6px;
+	margin: 0 0 6px !important;
+	padding: 4px 12px;
+	background: #fff;
+	border: 1px solid #e0e0e0;
+	border-radius: 999px;
+	box-sizing: border-box;
+}
+
+.toplevel_page_radio-station #pagewrap .rs-quicklinks-col .progress-list-item:not(.rs-quicklinks-upsell):hover,
+.toplevel_page_radio-content #pagewrap .rs-quicklinks-col .progress-list-item:not(.rs-quicklinks-upsell):hover,
+#radio-station-stats .rs-quicklinks-col .progress-list-item:not(.rs-quicklinks-upsell):hover,
+.toplevel_page_radio-station #pagewrap .rs-quicklinks-col .rs-quicklinks-pill:hover,
+.toplevel_page_radio-content #pagewrap .rs-quicklinks-col .rs-quicklinks-pill:hover,
+#radio-station-stats .rs-quicklinks-col .rs-quicklinks-pill:hover {
+	background: rgb(253, 240, 244);
+	border-color: rgb(245, 194, 203);
+}
+
+.toplevel_page_radio-station #pagewrap .rs-quicklinks-col .progress-icon,
+.toplevel_page_radio-content #pagewrap .rs-quicklinks-col .progress-icon,
+#radio-station-stats .rs-quicklinks-col .progress-icon {
+	flex: 0 0 16px !important;
+	width: 16px !important;
+	height: 16px !important;
+	margin: 0 !important;
+	font-size: 16px !important;
+	line-height: 1 !important;
+	text-align: center;
+	color: rgb(191, 0, 61) !important;
+}
+
+.toplevel_page_radio-station #pagewrap .rs-quicklinks-col .progress-list-item a,
+.toplevel_page_radio-content #pagewrap .rs-quicklinks-col .progress-list-item a,
+#radio-station-stats .rs-quicklinks-col .progress-list-item a {
+	flex: 1 1 auto;
+	min-width: 0;
+	font-weight: 500;
+	color: #1d1d1d;
+	text-decoration: none;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.toplevel_page_radio-station #pagewrap .rs-quicklinks-col .progress-list-item a:hover,
+.toplevel_page_radio-content #pagewrap .rs-quicklinks-col .progress-list-item a:hover,
+#radio-station-stats .rs-quicklinks-col .progress-list-item a:hover {
+	color: rgb(152, 0, 49);
+}
+
+.toplevel_page_radio-station #pagewrap .rs-quicklinks-col .rs-quicklinks-upsell,
+.toplevel_page_radio-content #pagewrap .rs-quicklinks-col .rs-quicklinks-upsell,
+#radio-station-stats .rs-quicklinks-col .rs-quicklinks-upsell {
+	display: block !important;
+	margin-top: 10px !important;
+}
+
+.toplevel_page_radio-station #pagewrap .rs-quicklinks-upsell-note,
+.toplevel_page_radio-content #pagewrap .rs-quicklinks-upsell-note,
+#radio-station-stats .rs-quicklinks-upsell-note {
+	display: block;
+	width: auto;
+	margin: 6px 0 0 12px;
+	padding-right: 4px;
+}
+
+
+
+/* --- Go PRO upsell pill: shaded, with an Upgrade button on the right --- */
+.toplevel_page_radio-station #pagewrap .rs-quicklinks-col .rs-quicklinks-pill.rs-quicklinks-pill-upsell,
+.toplevel_page_radio-content #pagewrap .rs-quicklinks-col .rs-quicklinks-pill.rs-quicklinks-pill-upsell,
+#radio-station-stats .rs-quicklinks-col .rs-quicklinks-pill.rs-quicklinks-pill-upsell {
+	padding: 3px 4px 3px 12px;
+	background: rgb(253, 240, 244);
+	border-color: rgb(245, 194, 203);
+}
+
+.toplevel_page_radio-station #pagewrap .rs-quicklinks-col .rs-quicklinks-pill-label,
+.toplevel_page_radio-content #pagewrap .rs-quicklinks-col .rs-quicklinks-pill-label,
+#radio-station-stats .rs-quicklinks-col .rs-quicklinks-pill-label {
+	flex: 1 1 auto;
+	min-width: 0;
+	font-weight: 500;
+	color: #1d1d1d;
+	white-space: nowrap;
+}
+
+.toplevel_page_radio-station #pagewrap .rs-quicklinks-col .rs-quicklinks-pill a.rs-quicklinks-upgrade-btn,
+.toplevel_page_radio-content #pagewrap .rs-quicklinks-col .rs-quicklinks-pill a.rs-quicklinks-upgrade-btn,
+#radio-station-stats .rs-quicklinks-col .rs-quicklinks-pill a.rs-quicklinks-upgrade-btn {
+	flex: 0 0 auto;
+	padding: 3px 14px;
+	background: rgb(191, 0, 61);
+	border-radius: 999px;
+	color: #fff !important;
+	font-size: 12px;
+	font-weight: 600;
+	line-height: 1.5;
+	text-decoration: none;
+	overflow: visible;
+}
+
+.toplevel_page_radio-station #pagewrap .rs-quicklinks-col .rs-quicklinks-pill a.rs-quicklinks-upgrade-btn:hover,
+.toplevel_page_radio-content #pagewrap .rs-quicklinks-col .rs-quicklinks-pill a.rs-quicklinks-upgrade-btn:hover,
+#radio-station-stats .rs-quicklinks-col .rs-quicklinks-pill a.rs-quicklinks-upgrade-btn:hover {
+	background: rgb(152, 0, 49);
+	color: #fff !important;
+}
+
+
+
+/* --- row upgrade links ("Upgrade") as buttons, matching the Quick Links pill button --- */
+.toplevel_page_radio-station #pagewrap .progress-label-link.rs-upgrade-btn,
+.toplevel_page_radio-content #pagewrap .progress-label-link.rs-upgrade-btn,
+#radio-station-stats .progress-label-link.rs-upgrade-btn {
+	padding: 3px 12px;
+	background: rgb(191, 0, 61);
+	border-radius: 999px;
+	line-height: 1.5;
+	text-decoration: none !important;
+}
+
+.toplevel_page_radio-station #pagewrap .progress-label-link.rs-upgrade-btn .progress-label,
+.toplevel_page_radio-content #pagewrap .progress-label-link.rs-upgrade-btn .progress-label,
+#radio-station-stats .progress-label-link.rs-upgrade-btn .progress-label {
+	color: #fff !important;
+	font-size: 12px !important;
+	font-weight: 600;
+	text-decoration: none;
+}
+
+.toplevel_page_radio-station #pagewrap .progress-label-link.rs-upgrade-btn:hover,
+.toplevel_page_radio-content #pagewrap .progress-label-link.rs-upgrade-btn:hover,
+#radio-station-stats .progress-label-link.rs-upgrade-btn:hover {
+	background: rgb(152, 0, 49);
+}
+
