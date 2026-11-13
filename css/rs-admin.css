@@ -700,7 +700,7 @@
    below its row's description instead of sitting to the right of it.
    - @media: phones / small tablets (WP admin's 782px breakpoint)
    - @container: a narrow card, e.g. the Dashboard widget in a 3-4
-     column Dashboard layout (browsers without container queries just
+     column Dashboard layout, 380px or narrower (browsers without container queries just
      ignore that block and keep the side-by-side layout)
    ============================================================== */
 .rs-progress-card {
@@ -779,7 +779,7 @@
 
 }
 
-@container rs-card (max-width: 480px) {
+@container rs-card (max-width: 380px) {
 	.toplevel_page_radio-station #pagewrap .progress-table,
 	.toplevel_page_radio-content #pagewrap .progress-table,
 	#radio-station-stats .progress-table {
