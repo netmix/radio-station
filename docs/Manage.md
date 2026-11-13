@@ -66,7 +66,7 @@ The link at the end of each row takes you straight to where you can act on it, s
 
 - **Add** opens the screen to add a new item of the kind in that row (a Show, Special, Host, Genre or Playlist).
 - **Fix** opens the relevant plugin Settings tab and section for a check that is not complete. Once the check is complete it reads **Edit** instead.
-- **Edit Schedule** `[Pro]` opens the Visual Schedule Editor. On the free version this link reads **Shows** and opens your Shows list.
+- **Edit Schedule** `[Pro]` opens the Visual Schedule Editor. On the free version this link reads **Edit Shows** and opens your Shows list.
 - **Go Pro** appears next to features that are only available in the Pro version.
 
 On phones and in narrow Dashboard columns, the link moves down to sit under the row's description instead of beside it, so the text has room.
