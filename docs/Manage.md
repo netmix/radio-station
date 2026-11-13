@@ -30,7 +30,7 @@ Quick Links are shortcuts to the screens you will use most, in two columns.
 | Specials (Schedule Overrides) | |
 | Genres | |
 
-On the free version the Pro-only links are replaced by a note and a **Go PRO** link.
+On the free version the Pro-only links are replaced by a shaded **Go PRO** item with an **Upgrade** button, and a note underneath listing what Pro adds.
 
 ### Progress Bars
 
@@ -67,7 +67,7 @@ The link at the end of each row takes you straight to where you can act on it, s
 - **Add** opens the screen to add a new item of the kind in that row (a Show, Special, Host, Genre or Playlist).
 - **Fix** opens the relevant plugin Settings tab and section for a check that is not complete. Once the check is complete it reads **Edit** instead.
 - **Edit Schedule** `[Pro]` opens the Visual Schedule Editor. On the free version this link reads **Edit Shows** and opens your Shows list.
-- **Go Pro** appears next to features that are only available in the Pro version.
+- **Upgrade** (a red button) appears next to features that are only available in the Pro version, and opens the upgrade page.
 
 On phones and in narrow Dashboard columns, the link moves down to sit under the row's description instead of beside it, so the text has room.
 
@@ -109,7 +109,7 @@ The Station Settings bar measures whether the key plugin settings are in place. 
 
 The Dashboard reflects whichever version is active, and updates the next time you load the page. There is nothing to configure.
 
-- **Free version active:** only free features are counted in the bars. Pro-only items, such as the Player Bar settings and the Episode and Team archive pages, are shown as upgrade rows with a **Go Pro** link but are **not** counted, so the free version can reach 100%. The Settings bar description lists only what is counted.
+- **Free version active:** only free features are counted in the bars. Pro-only items, such as the Player Bar settings and the Episode and Team archive pages, are shown as upgrade rows with an **Upgrade** button but are **not** counted, so the free version can reach 100%. The Settings bar description lists only what is counted.
 - **Pro version active:** the Pro items replace the upgrade rows, and the free and Pro items are counted together.
 - **Pro deactivated:** the Dashboard goes back to the free view.
 
