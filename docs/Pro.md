@@ -51,6 +51,8 @@ Please note that the following features are *not* available in Radio Station Plu
 
 [Visual Shift Editor](./Manage.md#pro-visual-shift-editor)
 
+[Pro items on the Content Overview Dashboard](./Manage.md#free-and-pro-versions)
+
 #### Options
 
 [Pro Options](./Options.md) (marked throughout options list)

@@ -9,7 +9,7 @@
 | [Options](./Options.md) | Plugin Option Details and Value Filters |
 | [Display](./Display.md) | Automatic Pages, Templates, Images and Translations |
 | [Player](./Player.md) | Radio Stream Player |
-| [Manage](./Manage.md) | Admin Lists, Shift Editing, Conflict Checker |
+| [Manage](./Manage.md) | Admin Lists, Content Overview Dashboard, Shift Editing, Conflict Checker |
 | [Roles](./Roles.md) | Plugin Roles and related Capabilities |
 | [Widgets](./Widgets.md) | Current Show, Upcoming Shows, Playlist, Clock, Player |
 | [Shortcodes](./Shortcodes.md) | Data List Archives and Master Schedule Views |
@@ -29,7 +29,7 @@ Firstly, you can visit the Plugin Settings screen to adjust the default [Plugin 
 
 To do this, click on Shows in the admin submenu, then on "Add a New Show" at the top. Give it a Shift timeslot and a description and then click Publish. Then view the Show page by clicking the Show Permalink under the show title. (Depending on your Theme, you may wish to adjust the [Templates](./Display.md#page-templates) used.) You can also assign different [Images](./Display.md#images) to Shows. 
 
-Next, have a look at your Program Schedule page to see the Show displayed there also. Keep adding Shows until you have your Schedule filled in! You can also add schedule Overrides for specific date and time blocks only. For ease of use they can be fully or partially linked to an existing Show. You can further [Manage](./Manage.md) your Shows and other Station data via the WordPress Admin area.
+Next, have a look at your Program Schedule page to see the Show displayed there also. Keep adding Shows until you have your Schedule filled in! You can also add schedule Overrides for specific date and time blocks only. For ease of use they can be fully or partially linked to an existing Show. You can further [Manage](./Manage.md) your Shows and other Station data via the WordPress Admin area. The [Content Overview Dashboard](./Manage.md#content-overview-dashboard) shows at a glance how complete your Schedule, Content and Settings are, with shortcuts to fix anything that is missing.
 
 Now you may want to give some users on your site some plugin [Roles](./Roles.md). (Note that while the default interface in WordPress allows you to assign a single role to a user, it also supports multiple roles, but you need to add a plugin to get an interface for this.) Giving a user role of Host/DJ or Producer to a user will allow them to be assigned to a Show on the Show Edit Page and allow them to edit that Show. You can also assign the Show Editor role if you have someone who needs to edit all plugin post types without being a site Administator.
 
