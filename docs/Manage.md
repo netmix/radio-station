@@ -69,6 +69,8 @@ The link at the end of each row takes you straight to where you can act on it, s
 - **Edit Schedule** `[Pro]` opens the Visual Schedule Editor. On the free version this link reads **Shows** and opens your Shows list.
 - **Go Pro** appears next to features that are only available in the Pro version.
 
+On phones and in narrow Dashboard columns, the link moves down to sit under the row's description instead of beside it, so the text has room.
+
 ### Station Schedule
 
 The Station Schedule line reads, for example, "7 Shifts and 0 Specials with 0% Schedule coverage."
