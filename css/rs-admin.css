@@ -693,3 +693,159 @@
 	background: repeating-linear-gradient(45deg, #7a7a7a 0, #7a7a7a 4px, #a5a5a5 4px, #a5a5a5 8px);
 	border-color: #666;
 }
+
+
+/* ==============================================================
+   Narrow screens: the action link (Add / Fix / Edit / Go Pro) moves
+   below its row's description instead of sitting to the right of it.
+   - @media: phones / small tablets (WP admin's 782px breakpoint)
+   - @container: a narrow card, e.g. the Dashboard widget in a 3-4
+     column Dashboard layout (browsers without container queries just
+     ignore that block and keep the side-by-side layout)
+   ============================================================== */
+.rs-progress-card {
+	container-type: inline-size;
+	container-name: rs-card;
+}
+
+@media screen and (max-width: 782px) {
+	.toplevel_page_radio-station #pagewrap .progress-table,
+	.toplevel_page_radio-content #pagewrap .progress-table,
+	#radio-station-stats .progress-table {
+		display: block !important;
+		width: 100% !important;
+	}
+
+	.toplevel_page_radio-station #pagewrap .progress-table tbody,
+	.toplevel_page_radio-content #pagewrap .progress-table tbody,
+	#radio-station-stats .progress-table tbody {
+		display: block !important;
+		width: 100% !important;
+	}
+
+	.toplevel_page_radio-station #pagewrap .progress-table tr:not(.progress-line),
+	.toplevel_page_radio-content #pagewrap .progress-table tr:not(.progress-line),
+	#radio-station-stats .progress-table tr:not(.progress-line) {
+		display: block !important;
+	}
+
+	.toplevel_page_radio-station #pagewrap .progress-table tr:not(.progress-line) > td,
+	.toplevel_page_radio-content #pagewrap .progress-table tr:not(.progress-line) > td,
+	#radio-station-stats .progress-table tr:not(.progress-line) > td {
+		display: block !important;
+		width: auto !important;
+		padding: 0 !important;
+	}
+
+	.toplevel_page_radio-station #pagewrap .progress-table tr.progress-line,
+	.toplevel_page_radio-content #pagewrap .progress-table tr.progress-line,
+	#radio-station-stats .progress-table tr.progress-line {
+		display: grid !important;
+		grid-template-columns: 34px minmax(0, 1fr);
+		column-gap: 8px;
+		align-items: start;
+		margin-bottom: 10px;
+	}
+
+	.toplevel_page_radio-station #pagewrap .progress-table tr.progress-line > td,
+	.toplevel_page_radio-content #pagewrap .progress-table tr.progress-line > td,
+	#radio-station-stats .progress-table tr.progress-line > td {
+		display: block !important;
+		width: auto !important;
+		padding: 0 !important;
+	}
+
+	.toplevel_page_radio-station #pagewrap .progress-table tr.progress-line > td:first-child,
+	.toplevel_page_radio-content #pagewrap .progress-table tr.progress-line > td:first-child,
+	#radio-station-stats .progress-table tr.progress-line > td:first-child {
+		grid-column: 1;
+		grid-row: 1 / span 2;
+	}
+
+	.toplevel_page_radio-station #pagewrap .progress-table tr.progress-line > td.progress-text,
+	.toplevel_page_radio-content #pagewrap .progress-table tr.progress-line > td.progress-text,
+	#radio-station-stats .progress-table tr.progress-line > td.progress-text {
+		grid-column: 2;
+		grid-row: 1;
+	}
+
+	.toplevel_page_radio-station #pagewrap .progress-table tr.progress-line > td:last-child,
+	.toplevel_page_radio-content #pagewrap .progress-table tr.progress-line > td:last-child,
+	#radio-station-stats .progress-table tr.progress-line > td:last-child {
+		grid-column: 2;
+		grid-row: 2;
+		margin-top: 2px;
+	}
+
+}
+
+@container rs-card (max-width: 480px) {
+	.toplevel_page_radio-station #pagewrap .progress-table,
+	.toplevel_page_radio-content #pagewrap .progress-table,
+	#radio-station-stats .progress-table {
+		display: block !important;
+		width: 100% !important;
+	}
+
+	.toplevel_page_radio-station #pagewrap .progress-table tbody,
+	.toplevel_page_radio-content #pagewrap .progress-table tbody,
+	#radio-station-stats .progress-table tbody {
+		display: block !important;
+		width: 100% !important;
+	}
+
+	.toplevel_page_radio-station #pagewrap .progress-table tr:not(.progress-line),
+	.toplevel_page_radio-content #pagewrap .progress-table tr:not(.progress-line),
+	#radio-station-stats .progress-table tr:not(.progress-line) {
+		display: block !important;
+	}
+
+	.toplevel_page_radio-station #pagewrap .progress-table tr:not(.progress-line) > td,
+	.toplevel_page_radio-content #pagewrap .progress-table tr:not(.progress-line) > td,
+	#radio-station-stats .progress-table tr:not(.progress-line) > td {
+		display: block !important;
+		width: auto !important;
+		padding: 0 !important;
+	}
+
+	.toplevel_page_radio-station #pagewrap .progress-table tr.progress-line,
+	.toplevel_page_radio-content #pagewrap .progress-table tr.progress-line,
+	#radio-station-stats .progress-table tr.progress-line {
+		display: grid !important;
+		grid-template-columns: 34px minmax(0, 1fr);
+		column-gap: 8px;
+		align-items: start;
+		margin-bottom: 10px;
+	}
+
+	.toplevel_page_radio-station #pagewrap .progress-table tr.progress-line > td,
+	.toplevel_page_radio-content #pagewrap .progress-table tr.progress-line > td,
+	#radio-station-stats .progress-table tr.progress-line > td {
+		display: block !important;
+		width: auto !important;
+		padding: 0 !important;
+	}
+
+	.toplevel_page_radio-station #pagewrap .progress-table tr.progress-line > td:first-child,
+	.toplevel_page_radio-content #pagewrap .progress-table tr.progress-line > td:first-child,
+	#radio-station-stats .progress-table tr.progress-line > td:first-child {
+		grid-column: 1;
+		grid-row: 1 / span 2;
+	}
+
+	.toplevel_page_radio-station #pagewrap .progress-table tr.progress-line > td.progress-text,
+	.toplevel_page_radio-content #pagewrap .progress-table tr.progress-line > td.progress-text,
+	#radio-station-stats .progress-table tr.progress-line > td.progress-text {
+		grid-column: 2;
+		grid-row: 1;
+	}
+
+	.toplevel_page_radio-station #pagewrap .progress-table tr.progress-line > td:last-child,
+	.toplevel_page_radio-content #pagewrap .progress-table tr.progress-line > td:last-child,
+	#radio-station-stats .progress-table tr.progress-line > td:last-child {
+		grid-column: 2;
+		grid-row: 2;
+		margin-top: 2px;
+	}
+
+}
