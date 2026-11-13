@@ -34,13 +34,15 @@ On the free version the Pro-only links are replaced by a note and a **Go PRO** l
 
 ### Progress Bars
 
-Each section has a progress bar. It always shows three colours, and a percentage to the right of it:
+Each section has a progress bar, with a percentage to the right of it and a short description underneath saying what it measures. The bar can show up to three parts:
 
-- **Solid brand red** is the share that is done.
-- **Grey** is the share that is partly done. A check that needs attention but is not missing entirely (an orange warning) counts as half done, so the other half stays grey.
-- **Bright red** is the share that is missing or not set (a red cross).
+- **Brand red** is the share that is done. It grows as you complete items.
+- **Light grey** is the share that is partly done. A check that needs attention but is not missing entirely (an orange warning) counts as half done, so the other half stays light grey.
+- **Hatched dark grey** is the share that is not set up at all (a red cross).
 
-For example, a Settings bar that reads 50% with no grey means half your checks are complete and the other half are not set up yet. The percentage is the "done" share only.
+When a bar reaches **100%** it turns **green** and a **check mark** appears after the percentage, so you can see at a glance that the section is complete. (The check mark is there as well as the colour so it does not rely on colour alone.)
+
+For example, a Settings bar that reads 50% with no light grey means half your checks are complete and the other half are not set up yet. The percentage is the "done" share only.
 
 ### Status Icons
 
