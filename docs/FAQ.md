@@ -50,6 +50,14 @@ Navigate to the plugin Settings page via the Radio Station menu in your WordPres
 
 If you have a one-off event that you need to show up in the Schedule and Widgets, you can create a Schedule Override by navigating to WordPress Dashboard > Radio Station > Schedule Overrides > Add New. This will allow you to set aside a block of time on a specific date, and when the Schedule or Widget is displaying that date, the override will be used instead of the normally scheduled Show. You can also link an Override to an existing Show, and partially update any Show information to be overridden. (Note that Schedule Overrides will not display in the old Legacy Table/Div Views of the Master Schedule.) In the Free version, if an Override needs to apply to multiple dates, you must schedule each time slot individually. In the PRO version, you can repeat the Override via day periods or monthly recurrences. To enable recurring overrides, [Upgrade to Pro here](https://radiostation.pro/pricing/)
 
+#### Where can I see how complete my station setup is?
+
+Go to Station Content -> Dashboard in your WordPress Admin menu, or look at the Radio Station box on the main WordPress Dashboard. Each of the Station Schedule, Station Content and Station Settings sections has a progress bar, and a description under it explains exactly what the bar measures. Links at the end of each row (Add, Fix, Edit) take you straight to the place to complete it. See the [Content Overview Dashboard documentation](./Manage.md#content-overview-dashboard) for what each bar and icon means.
+
+#### Why can't my Settings progress bar reach 100% on the free version, or why does it include Pro items?
+
+The Dashboard follows whichever version is active. On the free version the Pro-only items (such as the Player Bar and the Episode and Team archive pages) are shown as upgrade rows but are not counted, so you can reach 100% using free features only. When Radio Station Pro is active, those Pro items are counted together with the free ones. If you deactivate Pro, the Dashboard goes back to the free view. See [Free and Pro Versions](./Manage.md#free-and-pro-versions).
+
 #### How do I change the Show Image displayed in the widgets and schedule? 
 
 The schedule, widgets and show page will display whichever avatar is assigned to the show on the Show Edit screen. Navigate in the WordPress Dashboard to Radio Station -> Shows and locate the Show you want to add/edit the Avatar for in the Shows list. Edit the Show then simply set a new image for the Show.
