@@ -594,3 +594,15 @@
 	white-space: nowrap;
 	font-size: 13px !important;
 }
+
+/* --- space above a section heading that follows another section in the same table
+   (Station Content under Station Schedule). The bar used to sit between them
+   and supplied this gap before it moved up under its own heading. --- */
+.toplevel_page_radio-station #pagewrap .rs-progress-card .progress-table tr:not(:first-child) .progress-heading,
+.toplevel_page_radio-content #pagewrap .rs-progress-card .progress-table tr:not(:first-child) .progress-heading {
+	margin-top: 24px !important;
+}
+
+#radio-station-stats .rs-progress-card .progress-table tr:not(:first-child) .progress-heading {
+	margin-top: 18px !important;
+}
