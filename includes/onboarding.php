@@ -456,7 +456,7 @@ function radio_station_statistics_panel() {
 				} else {
 					$schedule_url = add_query_arg( 'post_type', RADIO_STATION_SHOW_SLUG, admin_url( 'edit.php' ) );
 					$schedule_title = __( 'Edit Shows', 'radio-station' );
-					$schedule_text = __( 'Shows', 'radio-station' );
+					$schedule_text = __( 'Edit Shows', 'radio-station' );
 				}
 				echo '<a class="progress-label-link" href="' . esc_url( $schedule_url ) . '">' . "\n";
 					echo '<div class="progress-label" title="' . esc_attr( $schedule_title ) . '">' . esc_html( $schedule_text ) . '</div>' . "\n";
