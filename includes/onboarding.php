@@ -933,14 +933,16 @@ function radio_station_settings_panel() {
 		echo '</tr>' . "\n";
 
 		// --- Player Bar ---
-		$settings_items++;
+		// 2.7.2: Pro-only, so it only counts toward the progress bar when Pro is active
+		if ( defined( 'RADIO_STATION_PRO_FILE' ) ) {
+			$settings_items++;
+		}
 		echo '<tr class="progress-line">' . "\n";
 
 			// --- progress icon ---
 			echo '<td><div class="progress-icon dashicons ';
 			if ( !defined( 'RADIO_STATION_PRO_FILE' ) ) {	
 				echo 'progress-alert dashicons-warning';
-				$settings_progress = $settings_progress + 0.5;
 			} elseif ( 'off' == $settings['player_bar'] ) {
 				echo 'progress-cross dashicons-dismiss';
 				$settings_notdone++;
@@ -1216,7 +1218,7 @@ function radio_station_settings_panel() {
 		// --- Pro Archives Pages ---
 		if ( !defined( 'RADIO_STATION_PRO_FILE' ) ) {
 			
-			$settings_items++;
+			// 2.7.2: upsell row only (Pro feature) — shown, but not counted in the progress bar
 			echo '<tr class="progress-line">' . "\n";
 
 				// --- progress icon ---
@@ -1242,7 +1244,12 @@ function radio_station_settings_panel() {
 		// --- settings progress bar (printed under the section title) ---
 		$settings_rows = ob_get_clean();
 		echo '<tr><td colspan="3">' . "\n";
-			$bar_description = __( 'Overall completion of key settings: Stream URLs, Player Bar, Master Schedule Page, Station information and Archive pages.', 'radio-station' );
+			if ( defined( 'RADIO_STATION_PRO_FILE' ) ) {
+				$bar_description = __( 'Overall completion of key settings: Stream URLs, Player Bar, Master Schedule Page, Station information and Archive pages.', 'radio-station' );
+			} else {
+				// free: Pro-only rows are shown but not counted
+				$bar_description = __( 'Overall completion of key settings: Stream URLs, Master Schedule Page, Station information and Archive pages.', 'radio-station' );
+			}
 			$progress_percent = round( ( $settings_progress / $settings_items ), 2, PHP_ROUND_HALF_DOWN ) * 100;
 			$undone_percent = round( ( $settings_notdone / $settings_items ), 2, PHP_ROUND_HALF_DOWN ) * 100;
 			radio_station_progress_bar( $progress_percent, $undone_percent, $bar_description );
