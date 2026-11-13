@@ -1005,3 +1005,31 @@
 	color: #fff !important;
 }
 
+
+
+/* --- row upgrade links ("Upgrade") as buttons, matching the Quick Links pill button --- */
+.toplevel_page_radio-station #pagewrap .progress-label-link.rs-upgrade-btn,
+.toplevel_page_radio-content #pagewrap .progress-label-link.rs-upgrade-btn,
+#radio-station-stats .progress-label-link.rs-upgrade-btn {
+	padding: 3px 12px;
+	background: rgb(191, 0, 61);
+	border-radius: 999px;
+	line-height: 1.5;
+	text-decoration: none !important;
+}
+
+.toplevel_page_radio-station #pagewrap .progress-label-link.rs-upgrade-btn .progress-label,
+.toplevel_page_radio-content #pagewrap .progress-label-link.rs-upgrade-btn .progress-label,
+#radio-station-stats .progress-label-link.rs-upgrade-btn .progress-label {
+	color: #fff !important;
+	font-size: 12px !important;
+	font-weight: 600;
+	text-decoration: none;
+}
+
+.toplevel_page_radio-station #pagewrap .progress-label-link.rs-upgrade-btn:hover,
+.toplevel_page_radio-content #pagewrap .progress-label-link.rs-upgrade-btn:hover,
+#radio-station-stats .progress-label-link.rs-upgrade-btn:hover {
+	background: rgb(152, 0, 49);
+}
+

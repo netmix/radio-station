@@ -821,8 +821,8 @@ function radio_station_statistics_panel() {
 			} else {
 				// --- upgrade to Pro / feature link ---
 				$upgrade_url = radio_station_get_upgrade_url();
-				echo '<a class="progress-label-link" href="' . esc_url( $upgrade_url ) . '">' . "\n";
-					echo '<div class="progress-label" title="' . esc_attr( __( 'Upgrade to Radio Station PRO', 'radio-station' ) ) . '">' . esc_html( __( 'Go Pro', 'radio-station' ) ) . '</div>' . "\n";
+				echo '<a class="progress-label-link rs-upgrade-btn" href="' . esc_url( $upgrade_url ) . '">' . "\n";
+					echo '<div class="progress-label" title="' . esc_attr( __( 'Upgrade to Radio Station PRO', 'radio-station' ) ) . '">' . esc_html( __( 'Upgrade', 'radio-station' ) ) . '</div>' . "\n";
 				echo '</a>' . "\n";
 			}
 			echo '</td>' . "\n";
@@ -994,8 +994,8 @@ function radio_station_settings_panel() {
 			if ( !defined( 'RADIO_STATION_PRO_FILE' ) ) {
 
 				$upgrade_url = radio_station_get_upgrade_url();
-				echo '<a class="progress-label-link" href="' . esc_url( $upgrade_url ) . '">' . "\n";
-					echo '<div class="progress-label" title="' . esc_attr( __( 'Upgrade to Radio Station PRO', 'radio-station' ) ) . '">' . esc_html( __( 'Go Pro', 'radio-station' ) ) . '</div>' . "\n";
+				echo '<a class="progress-label-link rs-upgrade-btn" href="' . esc_url( $upgrade_url ) . '">' . "\n";
+					echo '<div class="progress-label" title="' . esc_attr( __( 'Upgrade to Radio Station PRO', 'radio-station' ) ) . '">' . esc_html( __( 'Upgrade', 'radio-station' ) ) . '</div>' . "\n";
 				echo '</a>' . "\n";
 
 			} else {
@@ -1233,8 +1233,8 @@ function radio_station_settings_panel() {
 				// --- upgrade to Pro / feature link ---
 				echo '<td>' . "\n";
 					$upgrade_url = radio_station_get_upgrade_url();
-					echo '<a class="progress-label-link" href="' . esc_url( $upgrade_url ) . '">' . "\n";
-						echo '<div class="progress-label" title="' . esc_attr( __( 'Upgrade to Radio Station PRO', 'radio-station' ) ) . '">' . esc_html( __( 'Go Pro', 'radio-station' ) ) . '</div>' . "\n";
+					echo '<a class="progress-label-link rs-upgrade-btn" href="' . esc_url( $upgrade_url ) . '">' . "\n";
+						echo '<div class="progress-label" title="' . esc_attr( __( 'Upgrade to Radio Station PRO', 'radio-station' ) ) . '">' . esc_html( __( 'Upgrade', 'radio-station' ) ) . '</div>' . "\n";
 					echo '</a>' . "\n";
 				echo '</td>' . "\n";
 				
