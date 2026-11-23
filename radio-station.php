@@ -156,6 +156,8 @@ require RADIO_STATION_DIR . '/includes/templates.php';
 require RADIO_STATION_DIR . '/includes/user-roles.php';
 require RADIO_STATION_DIR . '/includes/data-feeds.php';
 require RADIO_STATION_DIR . '/includes/legacy.php';
+// 2.7.3: added schema markup include
+require RADIO_STATION_DIR . '/includes/schema.php';
 
 // --- Player ---
 // 2.4.0.4: include player as standard

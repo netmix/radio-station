@@ -1870,6 +1870,118 @@ function radio_station_plugin_options( $admin = false ) {
 		// 	'pro'     => true,
 		// ),
 
+		// === Schema Markup ===
+
+		// --- Enable Schema Markup ---
+		// 2.7.3: added schema markup options
+		'schema_enable' => array(
+			'type'    => 'checkbox',
+			'label'   => $admin ? __( 'Enable Schema Markup', 'radio-station' ) : '',
+			'default' => 'yes',
+			'value'   => 'yes',
+			'helper'  => $admin ? __( 'Output Schema.org structured data (JSON-LD) for your Station, using your General Station and Broadcast settings.', 'radio-station' ) : '',
+			'tab'     => 'seo',
+			'section' => 'schema',
+		),
+
+		// --- Station Schema Type ---
+		'schema_station_type' => array(
+			'type'    => 'select',
+			'label'   => $admin ? __( 'Station Type', 'radio-station' ) : '',
+			'options' => array(
+				'broadcast' => $admin ? __( 'Broadcast Station (RadioStation)', 'radio-station' ) : '',
+				'internet'  => $admin ? __( 'Internet Station (Organization)', 'radio-station' ) : '',
+			),
+			'default' => 'broadcast',
+			'helper'  => $admin ? __( 'Broadcast Stations include Frequency, Band and Location. Use Internet Station if you only stream online.', 'radio-station' ) : '',
+			'tab'     => 'seo',
+			'section' => 'schema',
+		),
+
+		// --- [Pro] Show Schema ---
+		'schema_shows' => array(
+			'type'    => 'checkbox',
+			'label'   => $admin ? __( 'Show Schema', 'radio-station' ) : '',
+			'default' => 'yes',
+			'value'   => 'yes',
+			'helper'  => $admin ? __( 'Add RadioSeries markup to single Show pages.', 'radio-station' ) : '',
+			'tab'     => 'seo',
+			'section' => 'schema',
+			'pro'     => true,
+		),
+
+		// --- [Pro] Schedule Schema ---
+		'schema_schedule' => array(
+			'type'    => 'checkbox',
+			'label'   => $admin ? __( 'Airtime Schema', 'radio-station' ) : '',
+			'default' => 'yes',
+			'value'   => 'yes',
+			'helper'  => $admin ? __( 'Add upcoming BroadcastEvent airtimes (including Overrides) for the next 7 days to Show pages and the Schedule page.', 'radio-station' ) : '',
+			'tab'     => 'seo',
+			'section' => 'schema',
+			'pro'     => true,
+		),
+
+		// --- [Pro] Host and Producer Schema ---
+		'schema_profiles' => array(
+			'type'    => 'checkbox',
+			'label'   => $admin ? __( 'Host and Producer Schema', 'radio-station' ) : '',
+			'default' => 'yes',
+			'value'   => 'yes',
+			'helper'  => $admin ? __( 'Add Person markup for Hosts and Producers to Show and Profile pages.', 'radio-station' ) : '',
+			'tab'     => 'seo',
+			'section' => 'schema',
+			'pro'     => true,
+		),
+
+		// --- [Pro] Episode Schema ---
+		'schema_episodes' => array(
+			'type'    => 'checkbox',
+			'label'   => $admin ? __( 'Episode Schema', 'radio-station' ) : '',
+			'default' => 'yes',
+			'value'   => 'yes',
+			'helper'  => $admin ? __( 'Add RadioEpisode markup with episode audio to single Episode pages.', 'radio-station' ) : '',
+			'tab'     => 'seo',
+			'section' => 'schema',
+			'pro'     => true,
+		),
+
+		// --- [Pro] Playlist Schema ---
+		'schema_playlists' => array(
+			'type'    => 'checkbox',
+			'label'   => $admin ? __( 'Playlist Schema', 'radio-station' ) : '',
+			'default' => 'yes',
+			'value'   => 'yes',
+			'helper'  => $admin ? __( 'Add MusicPlaylist markup with tracks to single Playlist pages.', 'radio-station' ) : '',
+			'tab'     => 'seo',
+			'section' => 'schema',
+			'pro'     => true,
+		),
+
+		// --- [Pro] Now Playing Schema ---
+		'schema_now_playing' => array(
+			'type'    => 'checkbox',
+			'label'   => $admin ? __( 'Now Playing Schema', 'radio-station' ) : '',
+			'default' => '',
+			'value'   => 'yes',
+			'helper'  => $admin ? __( 'Update Now Playing track markup live in the page as Player metadata changes.', 'radio-station' ) : '',
+			'tab'     => 'seo',
+			'section' => 'schema',
+			'pro'     => true,
+		),
+
+		// --- [Pro] SEO Plugin Integration ---
+		'schema_seo_merge' => array(
+			'type'    => 'checkbox',
+			'label'   => $admin ? __( 'SEO Plugin Integration', 'radio-station' ) : '',
+			'default' => 'yes',
+			'value'   => 'yes',
+			'helper'  => $admin ? __( 'Merge Station schema into the Yoast SEO, Rank Math or All in One SEO schema graph when one of these is active.', 'radio-station' ) : '',
+			'tab'     => 'seo',
+			'section' => 'schema',
+			'pro'     => true,
+		),
+
 		// === Tabs and Sections ===
 
 		// --- Tab Labels ---
@@ -1878,6 +1990,7 @@ function radio_station_plugin_options( $admin = false ) {
 		// 2.3.3.8: move templates section onto pages tab
 		// 2.4.0.6: added separate archives tab
 		// 2.7.0: add subscribe and app tabs
+		// 2.7.3: add seo tab
 		'tabs' => array(
 			'general'   => $admin ? __( 'General', 'radio-station' ) : '',
 			'player'    => $admin ? __( 'Player', 'radio-station' ) : '',
@@ -1888,6 +2001,7 @@ function radio_station_plugin_options( $admin = false ) {
 			'widgets'   => $admin ? __( 'Widgets', 'radio-station' ) : '',
 			'roles'     => $admin ? __( 'Roles', 'radio-station' ) : '',
 			'app'	    => $admin ? __( 'App', 'radio-station' ) : '',
+			'seo'       => $admin ? __( 'SEO', 'radio-station' ) : '',
 		),
 
 		// --- Section Labels ---
@@ -1923,6 +2037,9 @@ function radio_station_plugin_options( $admin = false ) {
 			'loading'     => $admin ? __( 'Widget Loading', 'radio-station' ) : '',
 			// --- roles ---
 			'permissions' => $admin ? __( 'Permissions', 'radio-station' ) : '',
+			// --- seo ---
+			// 2.7.3: added schema markup section
+			'schema'      => $admin ? __( 'Schema Markup', 'radio-station' ) : '',
 		),
 	);
 

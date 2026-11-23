@@ -345,6 +345,8 @@ function radio_station_add_admin_menus() {
 	// --- settings submenu items ---
 	do_action( 'radio_station_admin_submenu_settings_top' );
 	add_submenu_page( 'radio-station', $rs . ' ' . __( 'Settings', 'radio-station' ), __( 'Settings', 'radio-station' ), $settings_cap, 'radio-station', 'radio_station_settings_page' );
+	// 2.7.3: added SEO menu item (links to SEO settings tab)
+	add_submenu_page( 'radio-station', $rs . ' ' . __( 'SEO', 'radio-station' ), __( 'SEO', 'radio-station' ), $settings_cap, 'radio-station-seo', 'radio_station_settings_page' );
 	// 2.3.0: rename Help page to Documentation
 	add_submenu_page( 'radio-station', $rs . ' ' . __( 'Documentation', 'radio-station' ), __( 'Help', 'radio-station' ), 'publish_playlists', 'radio-station-docs', 'radio_station_plugin_docs_page' );
 
@@ -404,6 +406,10 @@ function radio_station_add_admin_menus() {
 					case 'producers':
 						$submenu[$i][$j][2] = 'edit.php?post_type=' . RADIO_STATION_PRODUCER_SLUG;
 						break;
+					// 2.7.3: link SEO item to settings page SEO tab
+					case 'radio-station-seo':
+						$submenu[$i][$j][2] = 'admin.php?page=' . RADIO_STATION_SLUG . '&tab=seo';
+						break;
 				}
 			}
 		}
@@ -429,6 +435,18 @@ function radio_station_fix_genre_parent( $parent_file = '' ) {
 	}
 
 	return $parent_file;
+}
+
+// ---------------------------------
+// SEO Settings Tab Submenu Item Fix
+// ---------------------------------
+// 2.7.3: set SEO submenu item to current when loading SEO settings tab
+add_filter( 'submenu_file', 'radio_station_fix_seo_submenu_file', 10, 2 );
+function radio_station_fix_seo_submenu_file( $submenu_file, $parent_file ) {
+	if ( ( RADIO_STATION_SLUG == $parent_file ) && isset( $_GET['tab'] ) && ( 'seo' == sanitize_text_field( wp_unslash( $_GET['tab'] ) ) ) ) {
+		$submenu_file = 'admin.php?page=' . RADIO_STATION_SLUG . '&tab=seo';
+	}
+	return $submenu_file;
 }
 
 // -------------------------
